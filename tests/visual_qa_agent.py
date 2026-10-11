@@ -7,6 +7,7 @@ The approved concept drawings are visual targets, not screenshots of code.
 from collections import defaultdict
 from hashlib import sha256
 from pathlib import Path
+from PIL import Image
 import json
 import os
 import shutil
@@ -57,8 +58,8 @@ REPORT = {
 def asset_name(model,year,paint):
     slug=model.lower().replace(' ','_').replace('+','_plus')
     if model=='G6' and year=='2026':
-        return 'g6-2026-'+paint+'.webp'
-    return 'models/'+slug+'-'+paint+'.webp'
+        return 'cutouts/g6-2026-'+paint+'.webp'
+    return 'cutouts/models/'+slug+'-'+paint+'.webp'
 
 hashes=defaultdict(list)
 for item in CATALOG['models']:
@@ -69,6 +70,11 @@ for item in CATALOG['models']:
         if not asset.is_file():
             REPORT['failed'].append('Missing asset '+str(asset.relative_to(ROOT)))
             continue
+        # The exact model art is still subject to visual review, but the
+        # old studio rectangle must never be shipped on the monitor.
+        with Image.open(asset) as cutout:
+            if cutout.mode!='RGBA' or cutout.getpixel((0,0))[3]>10:
+                REPORT['failed'].append('Opaque studio backdrop in '+str(asset.relative_to(ROOT)))
         if p['id']=='arctic_white':
             hashes[sha256(asset.read_bytes()).hexdigest()].append(model)
 for models in hashes.values():
