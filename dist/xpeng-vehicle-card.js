@@ -240,14 +240,25 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-subtle-link{bottom:15px;left:5%}
 .xp-version{right:10px;bottom:3px}
 }
+.xp-meta-tools{position:absolute;z-index:25;right:4.4%;top:14%;display:flex;align-items:flex-end;flex-direction:column;gap:8px}
+.xp-meta-trigger{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;border:1px solid #7399c077;background:#03172bba;color:#c9e1fa}
+.xp-meta-trigger:hover,.xp-meta-trigger:focus-visible{background:#194465}
+.xp-meta-popover{width:min(310px,83vw);border:1px solid #6580a388;border-radius:15px;background:#061829f0;padding:16px;box-shadow:0 16px 45px #000b;backdrop-filter:blur(12px)}
+.xp-meta-popover>div:not(.xp-cabin-mini){display:flex;justify-content:space-between;align-items:center;gap:14px;margin:6px 0}
+.xp-meta-popover small{font-size:12px;color:#b1c0d3}
+.xp-meta-popover strong{font-size:12px;text-align:right;max-width:60%;overflow-wrap:anywhere}
+.xp-meta-popover p{font-size:10px;line-height:1.4;color:#94a8bd;margin:6px 0 0}
+.xp-cabin-mini{width:100%;height:auto;max-height:140px;margin-top:10px;display:block}
+.xp-updated{display:none!important}
+@media(max-width:850px){.xp-meta-tools{top:151px;right:5%}.xp-charge .xp-meta-tools{top:158px}}
 @media(max-width:400px){.xp-charge-meta>div{padding:0 7px}.xp-charge-heading{font-size:19px}.xp-charge-meta b{font-size:12px}.xp-overview-stat{top:219px}.xp-status-panel{grid-template-columns:repeat(3,minmax(0,1fr))}}
 `;
 class XpengVehicleCard extends HTMLElement{
  constructor(){
-  super();this.attachShadow({mode:'open'});this._config={};this._hass=null;this._view='overview';this._lastCharging=undefined;this._expanded=false;this._vehicleIndex=0;
+  super();this.attachShadow({mode:'open'});this._config={};this._hass=null;this._view='overview';this._lastCharging=undefined;this._expanded=false;this._vehicleIndex=0;this._infoOpen=false;
   this.shadowRoot.addEventListener('click',ev=>{
     const b=ev.target.closest('button');if(!b)return;
-    if(b.hasAttribute('data-expand')){this.toggleFullScreen();return;}
+    if(b.hasAttribute('data-expand')){this.toggleFullScreen();return;}\n     if(b.hasAttribute('data-meta-toggle')){this._infoOpen=!this._infoOpen;this.render();return;}
     if(b.dataset.view){this._view=b.dataset.view;this.render();return;}
     if(b.hasAttribute('data-cycle')){this._vehicleIndex=(this._vehicleIndex+1)%this.vehicles().length;this._lastCharging=undefined;this.render();}
   });
@@ -260,7 +271,7 @@ class XpengVehicleCard extends HTMLElement{
   if(config.prefix&&!/^[a-z0-9_]+$/.test(config.prefix))throw Error('XPENG prefix must be a slug');
   if(config.image_path&&!/^\/(?:local|hacsfiles)\/[a-zA-Z0-9/_-]+\/?$/.test(config.image_path))throw Error('Invalid local image_path');
   const v={prefix:'my_xpeng',year:'2026',model:'G6',trim:'core_plus_rwd',color:'arctic_white',interior:'dark_gray',theme:'dark',...config};
-  this._config=xpNormalizeAppearance(v);this.render();
+  this._config=xpNormalizeAppearance(v);this._infoOpen=false;this.render();
  }
  set hass(hass){
   this._hass=hass;
@@ -387,11 +398,43 @@ class XpengVehicleCard extends HTMLElement{
  socHtml(){
   const v=this.number('soc');return v===null?'—':xpNum(v)+'<span class="xp-unit">%</span>';
  }
- updated(){return `<div class="xp-updated">Last update<strong>${xpEsc(this.lastUpdate())}</strong></div>`;}
- carArt(){
-   return `<img class="xp-car xp-paint-${xpEsc(this.paint())}" src="${xpEsc(this.asset())}" alt="XPENG ${xpEsc(this.model())} vehicle" loading="eager">`;
- }
- overview(){
+ updated(){
+    const age=xpEsc(this.lastUpdate()),conn=xpEsc(xpConnText(this.val('connection')));
+    const v=this.appearance();
+    const finish=xpEsc(XP_INTERIORS.find(x=>x.id===v.interior)?.label||v.interior);
+    return `<div class="xp-meta-tools">
+      <button class="xp-meta-trigger" type="button" data-meta-toggle aria-label="Last vehicle update and information"
+      aria-expanded="${this._infoOpen?'true':'false'}" title="Vehicle information">${xpIcon('info',22)}</button>
+      ${this._infoOpen?`<div class="xp-meta-popover" role="region" aria-label="Last vehicle update">
+        <div><small>Last vehicle update</small><strong>${age}</strong></div>
+        <div><small>Connection</small><strong>${conn}</strong></div>
+        <div><small>Interior finish</small><strong>${finish}</strong></div>
+        ${this.interiorPreview()}
+        <p>Cabin illustration is colour guidance, not a photograph.</p>
+      </div>`:''}</div>`;
+  }
+  interiorPreview(){
+    const a=this.appearance(),finish=XP_INTERIORS.find(x=>x.id===a.interior)||XP_INTERIORS[0];
+    const colour=xpEsc(finish.hex),shade=xpEsc(finish.secondary);
+    return `<svg class="xp-cabin-mini" viewBox="0 0 350 155" role="img"
+      aria-label="${xpEsc(a.model+' '+a.year+' cabin, '+finish.label)}">
+      <rect x="0" y="0" width="350" height="155" rx="14" fill="#091a2c"/>
+      <path d="M16 36Q175 -4 334 36L322 91H28Z" fill="${shade}" stroke="#687c93" stroke-width="2"/>
+      <path d="M20 90l43-12 34 65H5Z M330 90l-43-12-34 65h92Z" fill="${colour}" stroke="#475d71"/>
+      <circle cx="107" cy="75" r="26" fill="none" stroke="${colour}" stroke-width="11"/>
+      <path d="M107 75v22M83 67h49" stroke="#ccd8e1" stroke-width="3"/>
+      <path d="M138 79h77l18 60H124Z" fill="${shade}"/>
+      <path d="M157 89h51v30h-51z" fill="#243a50"/>
+      <path d="M69 141l9-43q30-15 52 7l20 36Z M213 141l15-36q22-22 49-7l11 43Z" fill="${colour}" stroke="${shade}" stroke-width="4"/>
+      <path d="M146 141l12-22h32l14 22Z" fill="${colour}"/>
+    </svg>`;
+  }
+  carArt(){
+    const a=this.appearance();
+    return `<img class="xp-car" data-car-art src="${xpEsc(this.asset())}"
+      alt="${xpEsc('XPENG '+a.model+' '+a.year+', '+a.color.replaceAll('_',' '))}" loading="eager">`;
+  }
+  overview(){
   const rows=[['gauge','Odometer',this.num('odometer','km')],['tire','Tire pressure',this.tireSummary()],['pin','Location',this.locationText()]];
   return `${this.title()}${this.updated()}${this.carArt()}
     <section class="xp-overview-stat" aria-label="Battery and estimated range">
@@ -425,7 +468,7 @@ class XpengVehicleCard extends HTMLElement{
   const isCharging=this._view==='charging';
   this.shadowRoot.innerHTML=`<style>${XP_CSS}</style><ha-card><div class="xp-scene ${isCharging?'xp-charge':'xp-overview'}">
    ${this.sceneBackdrop()}${this.header()}${isCharging?this.charging():this.overview()}
-   <span class="xp-version">Dashboard v0.1.1</span>
+   
    </div></ha-card>`;
  }
 }
