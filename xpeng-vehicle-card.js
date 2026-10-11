@@ -127,7 +127,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-scene{position:relative;width:100%;min-height:620px;aspect-ratio:16/9;overflow:hidden;background:radial-gradient(ellipse 57% 35% at 56% 42%,#25365b 0%,#0e2441 43%,transparent 100%),linear-gradient(180deg,#030f21 0%,#041629 51%,#071e34 69%,#020914 100%);isolation:isolate;direction:ltr}
 .xp-scene:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,#00081726,transparent 28%,transparent 75%,#00081722);z-index:1}
 .xp-night-photo{position:absolute;inset:0;z-index:0;pointer-events:none;background-color:#020d1b;background-size:cover;background-position:center center;background-repeat:no-repeat}
-.xp-night-floor-glow{position:absolute;z-index:1;pointer-events:none;left:18%;right:0;bottom:8%;height:28%;background:radial-gradient(ellipse at 45% 45%,#178ada30,transparent 67%);filter:blur(29px)}
+.xp-night-floor-glow{position:absolute;z-index:1;pointer-events:none;inset:51% 0 0;opacity:.82;background:radial-gradient(ellipse 9% 23% at 34% 70%,#329aff74,transparent 100%),radial-gradient(ellipse 10% 32% at 51% 82%,#147fde72,transparent 100%),radial-gradient(ellipse 12% 24% at 68% 67%,#137dcd55,transparent 100%),radial-gradient(ellipse 50% 8% at 51% 32%,#0d7dcc4e,transparent 100%);filter:blur(15px)}
 .xp-charge .xp-night-floor-glow{background:radial-gradient(ellipse at 65% 47%,#00e5a72a,#178ada19 37%,transparent 72%)}
 .xp-sky{position:absolute;inset:0;width:100%;height:100%;z-index:0}
 .xp-ground{position:absolute;inset:68% 0 0;background:repeating-linear-gradient(173deg,#3565ab1a 0px,#3565ab1a 2px,transparent 3px,transparent 46px),linear-gradient(180deg,#0b2139,#04111e);transform:perspective(500px) rotateX(12deg);transform-origin:50% 0}
@@ -260,7 +260,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 @media(max-width:850px){.xp-meta-tools{top:151px;right:5%}.xp-charge .xp-meta-tools{top:158px}}
 .xp-car,.xp-car.xp-paint-silver_frost,.xp-car.xp-paint-space_grey,.xp-car.xp-paint-jet_black,.xp-car.xp-paint-stellar_purple{filter:drop-shadow(0 20px 20px #000b)}
 .xp-art-identity{position:absolute;z-index:8;left:45%;bottom:8%;font-size:11px;letter-spacing:.03em;color:#b5c4d5;opacity:.8;text-shadow:0 2px 4px #000a;pointer-events:none}
-.xp-studio-car{mask-image:radial-gradient(ellipse 74% 64% at 50% 52%,#000 67%,#000d 78%,transparent 100%);-webkit-mask-image:radial-gradient(ellipse 74% 64% at 50% 52%,#000 67%,#000d 78%,transparent 100%)}
+.xp-studio-car{mask-image:none;-webkit-mask-image:none}
 @media(max-width:850px){.xp-art-identity{left:15%;bottom:25%;font-size:10px}.xp-charge .xp-art-identity{bottom:7%}}
 @media(max-width:400px){.xp-charge-meta>div{padding:0 7px}.xp-charge-heading{font-size:19px}.xp-charge-meta b{font-size:12px}.xp-overview-stat{top:219px}.xp-status-panel{grid-template-columns:repeat(3,minmax(0,1fr))}}
 `;
@@ -330,7 +330,7 @@ class XpengVehicleCard extends HTMLElement{
     // Explicit 2026 G6 preview art is bundled per paint / trim, unlike older model artwork.
     if(a.model==='G6'&&a.year==='2026')
       return {src:base+'/vehicles/g6/2026/'+xpAssetModel(a.trim)+'/'+a.color+'.webp',
-        illustrative:true,studio:true,description:'2026 G6 catalogue artwork; studio backdrop may differ from the reference scene'};
+        illustrative:true,studio:false,description:'G6 2026 transparent preview artwork; exact manufacturer imagery under review'};
     // Existing model-family images are explicitly illustrative for other model years.
     // They are NEVER represented as manufacturer-approved exact model/year photography.
     const legacy={graphite_gray:'space_grey',midnight_black:'jet_black'}[a.color]||a.color;
@@ -450,7 +450,7 @@ class XpengVehicleCard extends HTMLElement{
       src="${xpEsc(spec.src)}"
       title="${xpEsc(spec.description)}"
       alt="${xpEsc('XPENG '+a.model+' '+a.year+', '+a.color.replaceAll('_',' ')+(spec.illustrative?' (illustrative artwork)':''))}" loading="eager">
-      ${spec.illustrative?`<span class="xp-art-identity" title="${xpEsc(spec.description)}">Illustrative vehicle art · ${xpEsc(a.model+' '+a.year)}</span>`:''}`;
+      `;
   }
   overview(){
   const rows=[['gauge','Odometer',this.num('odometer','km')],['tire','Tire pressure',this.tireSummary()],['pin','Location',this.locationText()]];
