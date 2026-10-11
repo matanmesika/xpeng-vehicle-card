@@ -251,14 +251,21 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-cabin-mini{width:100%;height:auto;max-height:140px;margin-top:10px;display:block}
 .xp-updated{display:none!important}
 @media(max-width:850px){.xp-meta-tools{top:151px;right:5%}.xp-charge .xp-meta-tools{top:158px}}
+.xp-car,.xp-car.xp-paint-silver_frost,.xp-car.xp-paint-space_grey,.xp-car.xp-paint-jet_black,.xp-car.xp-paint-stellar_purple{filter:drop-shadow(0 20px 20px #000b)}
 @media(max-width:400px){.xp-charge-meta>div{padding:0 7px}.xp-charge-heading{font-size:19px}.xp-charge-meta b{font-size:12px}.xp-overview-stat{top:219px}.xp-status-panel{grid-template-columns:repeat(3,minmax(0,1fr))}}
 `;
 class XpengVehicleCard extends HTMLElement{
  constructor(){
   super();this.attachShadow({mode:'open'});this._config={};this._hass=null;this._view='overview';this._lastCharging=undefined;this._expanded=false;this._vehicleIndex=0;this._infoOpen=false;
-  this.shadowRoot.addEventListener('click',ev=>{
+  this.shadowRoot.addEventListener('error',ev=>{
+      const img=ev.target;
+      if(!img?.matches?.('img[data-car-art]')||img.dataset.fallbackUsed)return;
+      img.dataset.fallbackUsed='true';img.src=this.placeholderArt();
+    },true);
+   this.shadowRoot.addEventListener('click',ev=>{
     const b=ev.target.closest('button');if(!b)return;
-    if(b.hasAttribute('data-expand')){this.toggleFullScreen();return;}\n     if(b.hasAttribute('data-meta-toggle')){this._infoOpen=!this._infoOpen;this.render();return;}
+    if(b.hasAttribute('data-expand')){this.toggleFullScreen();return;}
+     if(b.hasAttribute('data-meta-toggle')){this._infoOpen=!this._infoOpen;this.render();return;}
     if(b.dataset.view){this._view=b.dataset.view;this.render();return;}
     if(b.hasAttribute('data-cycle')){this._vehicleIndex=(this._vehicleIndex+1)%this.vehicles().length;this._lastCharging=undefined;this.render();}
   });
@@ -333,13 +340,26 @@ class XpengVehicleCard extends HTMLElement{
  bool(key){return xpBool(this.val(key));}
  num(key,unit='',dec=0){const v=this.number(key);return v===null?'—':xpNum(v,dec)+(unit?' '+unit:'');}
  asset(){
-   const base=(this._config.image_path||'/hacsfiles/xpeng-vehicle-card/assets').replace(/\/$/,'');
-   const img=this.vehicle().image||this._config.image;
-   if(img&&/^\/(?:local|hacsfiles)\/[a-zA-Z0-9/_\-.]+$/.test(img))return img;
-   if(this.model()==='G6'&&this.year()==='2026')return base+'/g6-studio.webp';
-   return base+'/models/'+xpAssetModel(this.model())+'-'+this.paint()+'.webp';
- }
- lastUpdate(){
+    const base=(this._config.image_path||'/hacsfiles/xpeng-vehicle-card/assets').replace(/\/$/,'');
+    const custom=this.vehicle()?.image||this._config.image;
+    if(custom&&/^\/(?:local|hacsfiles)\/[a-zA-Z0-9/_\-.]+$/.test(custom))return custom;
+    const a=this.appearance();
+    return base+'/vehicles/'+xpAssetModel(a.model)+'/'+a.year+'/'+xpAssetModel(a.trim)+'/'+a.color+'.webp';
+  }
+  placeholderArt(){
+    const a=this.appearance(),colour=XP_PAINTS.find(x=>x.id===a.color)?.hex||'#b6bdc2';
+    const shape=xpModel(a.model)?.shape||'suv';
+    const roof=shape==='mpv'?'M140 220L200 83H613L735 225':shape.includes('sedan')||shape==='fastback'?'M140 220L298 125H558L735 225':'M140 220L246 105H607L735 225';
+    const label=xpEsc(a.model+' '+a.year);
+    const svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850 420">'+
+      '<path d="'+roof+'L785 254L774 324H67L65 253Z" fill="'+colour+'" stroke="#9dbad4" stroke-width="4"/>'+
+      '<circle cx="223" cy="325" r="61" fill="#08101e" stroke="#8297ad" stroke-width="11"/>'+
+      '<circle cx="649" cy="325" r="61" fill="#08101e" stroke="#8297ad" stroke-width="11"/>'+
+      '<text x="425" y="397" text-anchor="middle" fill="#c2d9f1" font-family="Arial" font-size="20">'+label+' • Preview artwork</text>'+
+      '</svg>';
+    return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+  }
+  lastUpdate(){
    const raw=this.val('last_update'),stamp=this.data('last_update')?.entity?.last_updated;
    const t=raw||stamp;if(!t)return 'Unavailable';
    const parsed=Date.parse(String(t));if(!Number.isFinite(parsed))return String(t);
