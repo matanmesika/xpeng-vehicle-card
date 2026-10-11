@@ -517,7 +517,7 @@ class XpengVehicleCardEditor extends HTMLElement{
    const auto=spec[0]+'.'+prefix+'_'+spec[1];
    return '<label class="xp-map-row"><span>'+xpEsc(field.label)+'</span><input data-entity="'+xpEsc(field.key)+'" list="xp-entity-choices" autocomplete="off" value="'+xpEsc(v.entities?.[field.key]||'')+'" placeholder="Auto: '+xpEsc(auto)+'" title="Leave blank for automatic sensor mapping"></label>';
   }).join('');
-  const expanded=this.shadowRoot.querySelector('details[data-mappings]')?.open===true;
+  const expanded=this.shadowRoot.querySelector?.('details[data-mappings]')?.open===true;
   this.shadowRoot.innerHTML=`<style>section{display:grid;gap:13px;padding:14px;font:inherit}label{display:grid;gap:5px;font-size:13px}input,select{border:1px solid #8b959e;border-radius:7px;padding:10px;background:var(--card-background-color,#fff);color:var(--primary-text-color,#111)}p{font-size:12px;opacity:.8;line-height:1.5}
    h3{margin:8px 0 0;font-size:15px}
    details{border:1px solid var(--divider-color,#7d879a77);border-radius:9px;padding:11px}
