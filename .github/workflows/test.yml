@@ -29,12 +29,12 @@ jobs:
       - name: Run two-screen UI acceptance tests
         run: |
           python tests/test_rewrite_v1.py
-      - name: Upload XPENG Dashboard v0.1.0 browser screenshots
+      - name: Upload XPENG Dashboard v0.1.1 browser screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: xpeng-dashboard-v010-browser-screenshots
-          path: previews/dashboard-v010/*.png
+          name: xpeng-dashboard-v011-browser-screenshots
+          path: previews/dashboard-v011/*.png
           if-no-files-found: warn
       - name: Verify branding independence
         run: |
