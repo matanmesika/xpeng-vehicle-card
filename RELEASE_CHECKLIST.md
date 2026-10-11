@@ -1,15 +1,15 @@
-# Public Alpha release checklist
+# Dashboard v0.1.0 release checklist
 
-- [x] Source JS and assets included in distributable `dist/`.
-- [x] All UI/product descriptions refer to XPENG Vehicle Card only.
-- [x] English/Hebrew documentation, security, license, trademark and change log.
-- [x] Code contains no remote control commands or simulated live sensor values.
-- [x] Syntax, JSON, asset and browser checks locally defined.
-- [ ] GitHub source push, workflow checks and HACS action completed successfully.
-- [ ] Live Home Assistant test on an actual installation.
-- [ ] Install as HACS custom Dashboard repo and verify resources/assets.
-- [ ] Confirm the brand assets and renderings are approved for publication.
-- [ ] Confirm official remote API permission and mapping before enabling controls.
-- [ ] Review public support scope and real-car testing prior to stable `v1.0.0`.
+- [x] Scope separated from XPENG integration (no integration code modified).
+- [x] Exactly two render paths: Vehicle status and Charging.
+- [x] Screen switches based on `is_charging` state.
+- [x] No invented SOC/range/charging readings.
+- [x] Retain HACS `dist/xpeng-vehicle-card.js` and existing image assets.
+- [x] Responsive styling and full-viewport fallback implemented.
+- [ ] GitHub automated checks all green.
+- [ ] Compare actual desktop and mobile Home Assistant screenshots with the two supplied reference designs.
+- [ ] Test direct HACS custom repository install and resource caching.
+- [ ] Test against real XPENG integration entities (if authorized/available).
+- [ ] Publish the dashboard-only `v0.1.0` tag after the gates above.
 
-Alpha tags and pre-releases must be marked experimental, **not stable**.
+This release changes the dashboard only, not the separate XPENG backend/integration. It is read-only and independent of the manufacturer's official product.
