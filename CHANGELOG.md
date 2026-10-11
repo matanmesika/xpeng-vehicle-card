@@ -1,5 +1,16 @@
 # XPENG Dashboard changelog
 
+## Dashboard v0.1.1 — 2026-10-11 (initial multi-model release)
+
+- Support 53 manual model-year appearance profiles across 16 catalogue entries (including generic/research profiles).
+- Only the Home Assistant card editor controls model, year, trim, exterior paint, interior finish, and 15 manual sensor mappings.
+- Unmapped telemetry is resolved automatically from HA entities; missing sensors remain unavailable.
+- Keep exactly two auto-switching screens (Vehicle status and Charging), full-screen mode, and a small metadata icon replacing the Last update label.
+- Bundle year/colour G6 2026 art with transparent backgrounds and capture actual desktop/mobile browser screenshots using labelled demo readings.
+- Guarantee an illustration or clearly marked silhouette for every offered profile, **without claiming exact factory-year imagery where unverified**.
+- Remain fully separate from the XPENG integration/backend.
+
+
 ## Dashboard v0.1.0 — 2026-10-11
 
 - Establish a new **dashboard-only** baseline independent of the XPENG vehicle integration.
