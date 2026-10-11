@@ -32,6 +32,7 @@ jobs:
           python tests/test_g6_2026_ui.py
           python tests/test_interior_palette.py
           python tests/test_dashboard_release.py
+          python tests/test_cockpit_layout.py
       - name: Verify branding independence
         run: |
           python -m pytest -q tests/test_brand_independence.py

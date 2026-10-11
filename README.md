@@ -76,7 +76,7 @@ The card is a **frontend component**. It cannot generate new sensors or discover
 
 ## Release status
 
-- Version: `v0.5.0-alpha.5` — preview-quality release candidate, **not stable**.
+- Version: `v0.6.0-alpha.1` — preview-quality release candidate, **not stable**.
 - Checks: JS/JSON validation, asset verification, and browser regression tests defined in GitHub Actions.
 - Remaining gate: green CI, real Home Assistant installation test, HACS custom-repository installation test, and future XPENG API verification for controls.
 - Files: [Hebrew documentation](README_HE.md), [release checklist](RELEASE_CHECKLIST.md), [changes](CHANGELOG.md), [contributing](CONTRIBUTING.md), [security](SECURITY.md), [trademark statement](TRADEMARK.md).
@@ -84,3 +84,11 @@ The card is a **frontend component**. It cannot generate new sensors or discover
 ## License and attribution
 
 MIT for original project code (see `LICENSE`). XPENG brand names and marks remain the property of their owners. Original illustrative model images are **not guaranteed factory-accurate**. No affiliation or endorsement is claimed.
+
+## Cockpit for 2026 XPENG G6
+
+Version `v0.6.0-alpha.1` introduces an **opt-in**, vehicle-centered `dashboard_layout: cockpit` with large model-aware car art, navigation, charging, climate, vehicle status, tires, fullscreen and Comfort (steering wheel heating, seat heating, ventilation and massage). Existing configurations keep the `classic` layout.
+
+The owner's full sections-view YAML retaining the `main_nav` navbar and the `core_performance_awd` trim is available at [`dashboards/xpeng-g6-cockpit.yaml`](dashboards/xpeng-g6-cockpit.yaml).
+
+**Safety:** all comfort remote controls are disabled. There is no validated consumer-account XPENG direct API; disconnected readings remain unavailable. The visual interface is not proof of feature support or actual connected status.
