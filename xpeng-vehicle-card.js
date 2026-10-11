@@ -256,6 +256,9 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-updated{display:none!important}
 @media(max-width:850px){.xp-meta-tools{top:151px;right:5%}.xp-charge .xp-meta-tools{top:158px}}
 .xp-car,.xp-car.xp-paint-silver_frost,.xp-car.xp-paint-space_grey,.xp-car.xp-paint-jet_black,.xp-car.xp-paint-stellar_purple{filter:drop-shadow(0 20px 20px #000b)}
+.xp-art-identity{position:absolute;z-index:8;left:45%;bottom:8%;font-size:11px;letter-spacing:.03em;color:#b5c4d5;opacity:.8;text-shadow:0 2px 4px #000a;pointer-events:none}
+.xp-studio-car{mask-image:radial-gradient(ellipse 74% 64% at 50% 52%,#000 67%,#000d 78%,transparent 100%);-webkit-mask-image:radial-gradient(ellipse 74% 64% at 50% 52%,#000 67%,#000d 78%,transparent 100%)}
+@media(max-width:850px){.xp-art-identity{left:15%;bottom:25%;font-size:10px}.xp-charge .xp-art-identity{bottom:7%}}
 @media(max-width:400px){.xp-charge-meta>div{padding:0 7px}.xp-charge-heading{font-size:19px}.xp-charge-meta b{font-size:12px}.xp-overview-stat{top:219px}.xp-status-panel{grid-template-columns:repeat(3,minmax(0,1fr))}}
 `;
 class XpengVehicleCard extends HTMLElement{
@@ -315,13 +318,27 @@ class XpengVehicleCard extends HTMLElement{
  number(key){const v=this.val(key);return v===null||v===''||!Number.isFinite(Number(v))?null:Number(v);}
  bool(key){return xpBool(this.val(key));}
  num(key,unit='',dec=0){const v=this.number(key);return v===null?'—':xpNum(v,dec)+(unit?' '+unit:'');}
- asset(){
+ assetSpec(){
     const base=(this._config.image_path||'/hacsfiles/xpeng-vehicle-card/assets').replace(/\/$/,'');
     const custom=this.vehicle()?.image||this._config.image;
-    if(custom&&/^\/(?:local|hacsfiles)\/[a-zA-Z0-9/_\-.]+$/.test(custom))return custom;
-    const a=this.appearance();
-    return base+'/vehicles/'+xpAssetModel(a.model)+'/'+a.year+'/'+xpAssetModel(a.trim)+'/'+a.color+'.webp';
+    const a=this.appearance(),model=xpAssetModel(a.model);
+    if(custom&&/^\/(?:local|hacsfiles)\/[a-zA-Z0-9/_\-.]+$/.test(custom))
+      return {src:custom,illustrative:false,studio:false,description:'User-supplied vehicle artwork'};
+    // Explicit 2026 G6 preview art is bundled per paint / trim, unlike older model artwork.
+    if(a.model==='G6'&&a.year==='2026')
+      return {src:base+'/vehicles/g6/2026/'+xpAssetModel(a.trim)+'/'+a.color+'.webp',
+        illustrative:true,studio:true,description:'2026 G6 catalogue artwork; studio backdrop may differ from the reference scene'};
+    // Existing model-family images are explicitly illustrative for other model years.
+    // They are NEVER represented as manufacturer-approved exact model/year photography.
+    const legacy={graphite_gray:'space_grey',midnight_black:'jet_black'}[a.color]||a.color;
+    const available=['arctic_white','silver_frost','space_grey','jet_black','stellar_purple'];
+    if(available.includes(legacy))
+      return {src:base+'/models/'+model+'-'+legacy+'.webp',
+        illustrative:true,studio:false,description:'Generic model-family illustration; exact '+a.year+' image pending'};
+    return {src:this.placeholderArt(),illustrative:true,studio:false,
+      description:'Coloured silhouette; exact '+a.model+' '+a.year+' photography pending'};
   }
+  asset(){return this.assetSpec().src;}
   placeholderArt(){
     const a=this.appearance(),colour=XP_PAINTS.find(x=>x.id===a.color)?.hex||'#b6bdc2';
     const shape=xpModel(a.model)?.shape||'suv';
@@ -426,9 +443,12 @@ class XpengVehicleCard extends HTMLElement{
     </svg>`;
   }
   carArt(){
-    const a=this.appearance();
-    return `<img class="xp-car" data-car-art src="${xpEsc(this.asset())}"
-      alt="${xpEsc('XPENG '+a.model+' '+a.year+', '+a.color.replaceAll('_',' '))}" loading="eager">`;
+    const a=this.appearance(),spec=this.assetSpec();
+    return `<img class="xp-car ${spec.studio?'xp-studio-car':''}" data-car-art
+      src="${xpEsc(spec.src)}"
+      title="${xpEsc(spec.description)}"
+      alt="${xpEsc('XPENG '+a.model+' '+a.year+', '+a.color.replaceAll('_',' ')+(spec.illustrative?' (illustrative artwork)':''))}" loading="eager">
+      ${spec.illustrative?`<span class="xp-art-identity" title="${xpEsc(spec.description)}">Illustrative vehicle art · ${xpEsc(a.model+' '+a.year)}</span>`:''}`;
   }
   overview(){
   const rows=[['gauge','Odometer',this.num('odometer','km')],['tire','Tire pressure',this.tireSummary()],['pin','Location',this.locationText()]];
