@@ -324,7 +324,7 @@ const XP_CSS = `
 .xv-title h2 span{color:#8ab8ff}
 .xv-title p{margin:8px 0 0;color:#8ba0bd;font-size:clamp(15px,1.7vw,25px)}
 .xv-car{position:absolute;inset:11% 15% 6% 19%;display:flex;align-items:center;justify-content:center;z-index:2;pointer-events:none}
-.xv-car img{max-width:100%;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 25px 24px #0009)}
+.xv-car img{max-width:100%;width:100%;height:100%;object-fit:contain;mix-blend-mode:lighten;-webkit-mask-image:radial-gradient(ellipse 79% 67% at 50% 50%,#000 69%,transparent 99%);mask-image:radial-gradient(ellipse 79% 67% at 50% 50%,#000 69%,transparent 99%);filter:brightness(1.04) contrast(1.08)}
 .xv-car-glow{position:absolute;bottom:9%;left:9%;right:9%;height:18%;border-radius:50%;background:radial-gradient(ellipse,#177ed259,transparent 74%);filter:blur(9px);z-index:-1}
 .xv-metrics{position:absolute;top:43%;left:0;width:clamp(156px,23%,295px);z-index:4}
 .xv-label{font-size:clamp(12px,1.1vw,18px);color:#a6bad2}
