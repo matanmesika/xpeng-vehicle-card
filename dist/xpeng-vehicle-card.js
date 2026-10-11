@@ -297,36 +297,8 @@ class XpengVehicleCard extends HTMLElement{
  vehicles(){return Array.isArray(this._config.vehicles)&&this._config.vehicles.length?this._config.vehicles:[this._config];}
  vehicle(){return this.vehicles()[Math.min(this._vehicleIndex,this.vehicles().length-1)];}
  prefix(){return this.vehicle()?.prefix||this._config.prefix||'my_xpeng';}
- appearanceEntity(field){
-    const prefix=this.prefix();
-    const keys={model:['vehicle_model','model'],year:['model_year','vehicle_year','year'],
-      trim:['vehicle_trim','trim'],color:['exterior_color','vehicle_color','color','paint'],
-      interior:['interior_color','vehicle_interior','cabin_color','interior']}[field]||[];
-    const explicit=this.vehicle()?.appearance_entities?.[field]||this._config.appearance_entities?.[field]||
-      this.vehicle()?.entities?.[field]||this._config.entities?.[field];
-    const ids=explicit?[explicit]:keys.flatMap(key=>['sensor.'+prefix+'_'+key,'select.'+prefix+'_'+key]);
-    for(const id of ids){
-      if(!/^(sensor|select)\.[a-z0-9_]+$/.test(id))continue;
-      const raw=this._hass?.states?.[id]?.state;
-      if(raw!==undefined&&raw!==null&&!XP_INVALID.has(String(raw).toLowerCase()))return String(raw);
-    }
-    for(const id of ['sensor.'+prefix+'_vehicle_profile','sensor.'+prefix+'_vehicle_model']){
-      const attrs=this._hass?.states?.[id]?.attributes;
-      for(const key of [field,...keys]){
-        const raw=attrs?.[key];
-        if(raw!==undefined&&raw!==null&&!XP_INVALID.has(String(raw).toLowerCase()))return String(raw);
-      }
-    }
-    return null;
-  }
-  appearance(){
-    const config={...this._config,...this.vehicle()};
-    for(const field of ['model','year','trim','color','interior']){
-      const value=this.appearanceEntity(field);
-      if(value!==null)config[field]=value;
-    }
-    return xpNormalizeAppearance(config);
-  }
+ // Vehicle model, year, trim and both colours are MANUALLY selected in the card editor/YAML only.
+ appearance(){return xpNormalizeAppearance({...this._config,...this.vehicle()});}
  model(){return this.appearance().model;}
  year(){return this.appearance().year;}
  paint(){return this.appearance().color;}
