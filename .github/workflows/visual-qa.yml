@@ -24,7 +24,7 @@ jobs:
           node --check dist/xpeng-vehicle-card.js
       - name: Install Chromium and visual QA dependencies
         run: |
-          python -m pip install playwright
+          python -m pip install playwright pillow
           python -m playwright install --with-deps chromium
       - name: Render actual Home Assistant custom card in Chromium
         run: python tests/visual_qa_agent.py
