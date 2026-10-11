@@ -104,3 +104,51 @@ test('editor exists; no vehicle-control API calls or old page renderers',()=>{
  assert.doesNotMatch(source,/hass\.callService|vehicleMenuPanel\(|xpCabinSvg\(/);
  assert.match(source,/Dashboard v0\.1\.0/);
 });
+
+test('vehicle appearance follows HA profile selections when those entities exist',()=>{
+  const states=data();
+  states['sensor.my_xpeng_vehicle_model']={state:'G9'};
+  states['sensor.my_xpeng_model_year']={state:'2026'};
+  states['sensor.my_xpeng_exterior_color']={state:'Kaitoke Green Matte'};
+  states['sensor.my_xpeng_interior_color']={state:'Coffee'};
+  const card=setup(states);
+  assert.equal(card.appearance().model,'G9');
+  assert.equal(card.appearance().color,'kaitoke_green_matte');
+  assert.equal(card.appearance().interior,'coffee');
+  assert.match(card.asset(),/\/vehicles\/g9\/2026\/unspecified\/kaitoke_green_matte\.webp$/);
+});
+
+test('when backend has no appearance entities, editor configuration is used',()=>{
+  const card=setup(data());
+  card.setConfig({prefix:'my_xpeng',year:'2026',model:'G6',color:'arctic_white',interior:'light_gray'});
+  card.hass={states:data()};
+  assert.equal(card.appearance().interior,'light_gray');
+  assert.equal(card.appearance().color,'arctic_white');
+});
+
+test('official 2026 paints and cabin colours depend on model',()=>{
+  const x=vm.runInNewContext(source+'\n({xpAllowedPaints,xpAllowedInteriors,xpIsVerifiedPalette})',context);
+  assert.equal(x.xpIsVerifiedPalette('G6','2026'),true);
+  assert.equal(x.xpIsVerifiedPalette('G6','2024'),false);
+  assert.equal(x.xpAllowedPaints('G6','2026','core_plus_rwd').some(v=>v.id==='kaitoke_green_matte'),false);
+  assert.equal(x.xpAllowedPaints('G9','2026','unspecified').some(v=>v.id==='kaitoke_green_matte'),true);
+  assert.equal(x.xpAllowedInteriors('G9','2026','unspecified').some(v=>v.id==='saddle'),true);
+});
+
+test('update time is behind an accessible info button, not static text',()=>{
+  const card=setup(data());
+  let html=card.shadowRoot.innerHTML;
+  assert.match(html,/data-meta-toggle/);
+  assert.doesNotMatch(html,/class="xp-updated"/);
+  card.shadowRoot.handlers.click({target:{closest:()=>({hasAttribute:key=>key==='data-meta-toggle',dataset:{}})}});
+  html=card.shadowRoot.innerHTML;
+  assert.match(html,/Last vehicle update/);
+  assert.match(html,/xp-cabin-mini/);
+});
+
+test('rendering missing exact art uses safe shape fallback, not previous-year imagery',()=>{
+ const card=setup(data());
+ assert.match(card.asset(),/\/vehicles\/g6\/2026\/core_plus_rwd\/arctic_white\.webp$/);
+ assert.match(card.placeholderArt(),/^data:image\/svg\+xml;/);
+ assert.doesNotMatch(card.asset(),/g6-studio\.webp/);
+});
