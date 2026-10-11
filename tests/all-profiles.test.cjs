@@ -84,7 +84,7 @@ test('any unknown-year image is clearly labelled illustrative, no false official
  card.setConfig({model:'G9',year:'2024',color:'arctic_white'});
  assert.equal(card.assetSpec().illustrative,true);
  assert.match(card.assetSpec().description,/Generic model-family/);
- assert.match(card.shadowRoot.innerHTML,/Illustrative vehicle art/);
+ assert.match(card.shadowRoot.innerHTML,/illustrative artwork/); // descriptive alt, no watermark
  card.setConfig({model:'G9',year:'2026',color:'kaitoke_green_matte'});
  assert.match(card.asset(),/^data:image\/svg\+xml/);
 });

@@ -276,6 +276,7 @@ filter:blur(2px)}
 .xp-cabin-mini{width:100%;height:auto;max-height:140px;margin-top:10px;display:block}
 .xp-updated{display:none!important}
 @media(max-width:850px){.xp-meta-tools{top:151px;right:5%}.xp-charge .xp-meta-tools{top:158px}}
+@media(max-width:850px){.xp-charge-port{display:none}}
 .xp-car,.xp-car.xp-paint-silver_frost,.xp-car.xp-paint-space_grey,.xp-car.xp-paint-jet_black,.xp-car.xp-paint-stellar_purple{filter:drop-shadow(0 20px 20px #000b)}
 .xp-art-identity{position:absolute;z-index:8;left:45%;bottom:8%;font-size:11px;letter-spacing:.03em;color:#b5c4d5;opacity:.8;text-shadow:0 2px 4px #000a;pointer-events:none}
 .xp-studio-car{mask-image:radial-gradient(ellipse 74% 64% at 50% 52%,#000 67%,#000d 78%,transparent 100%);-webkit-mask-image:radial-gradient(ellipse 74% 64% at 50% 52%,#000 67%,#000d 78%,transparent 100%)}
