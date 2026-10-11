@@ -646,7 +646,7 @@ class XpengVehicleCard extends HTMLElement{
      '<div><small>Estimated range</small><strong>'+xpEsc(range)+'</strong></div></div>'+
      '<div class="xv-charge-details"><div><small>Charging power</small><strong>'+xpEsc(this.value('power','kW',1))+'</strong></div>'+
      '<div><small>Time remaining</small><strong>'+xpEsc(eta)+'</strong></div>'+
-     '<div><small>Charge limit</small><strong>'+xpEsc(this.value('target','%'))+'</strong></div></div></section>';
+     '<div><small>Charge limit</small><strong>'+xpEsc((this.number('target')===null?'—':xpNum(this.number('target'))+'%'))+'</strong></div></div></section>';
    const charger=charging?'<div class="xv-charger-art" aria-hidden="true"><div class="xv-charge-pole">✕</div><div class="xv-energy-wave"></div></div>':'';
    this.setAttribute('data-display-state',charging?'charging':'vehicle');
    this.setAttribute('data-model',this.model());
