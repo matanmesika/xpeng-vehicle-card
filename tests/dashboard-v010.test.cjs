@@ -105,17 +105,17 @@ test('editor exists; no vehicle-control API calls or old page renderers',()=>{
  assert.match(source,/Dashboard v0\.1\.1/);
 });
 
-test('vehicle appearance follows HA profile selections when those entities exist',()=>{
-  const states=data();
-  states['sensor.my_xpeng_vehicle_model']={state:'G9'};
-  states['sensor.my_xpeng_model_year']={state:'2026'};
-  states['sensor.my_xpeng_exterior_color']={state:'Kaitoke Green Matte'};
-  states['sensor.my_xpeng_interior_color']={state:'Coffee'};
-  const card=setup(states);
-  assert.equal(card.appearance().model,'G9');
-  assert.equal(card.appearance().color,'kaitoke_green_matte');
-  assert.equal(card.appearance().interior,'coffee');
-  assert.match(card.asset(),/\/vehicles\/g9\/2026\/unspecified\/kaitoke_green_matte\.webp$/);
+test('manual appearance in card editor always wins over integration profile entities',()=>{
+ const states=data();
+ states['sensor.my_xpeng_vehicle_model']={state:'G9'};
+ states['sensor.my_xpeng_exterior_color']={state:'Kaitoke Green Matte'};
+ states['sensor.my_xpeng_interior_color']={state:'Coffee'};
+ const card=setup(states);
+ assert.equal(card.appearance().model,'G6');
+ assert.equal(card.appearance().color,'arctic_white');
+ assert.equal(card.appearance().interior,'dark_gray');
+ assert.match(card.asset(),/\/vehicles\/g6\/2026\/unspecified\/arctic_white\.webp$/);
+ assert.doesNotMatch(card.shadowRoot.innerHTML,/Manual sensor mapping|Exterior paint|Interior cabin finish/);
 });
 
 test('when backend has no appearance entities, editor configuration is used',()=>{
@@ -151,4 +151,54 @@ test('rendering missing exact art uses safe shape fallback, not previous-year im
  assert.match(card.asset(),/\/vehicles\/g6\/2026\/core_plus_rwd\/arctic_white\.webp$/);
  assert.match(card.placeholderArt(),/^data:image\/svg\+xml;/);
  assert.doesNotMatch(card.asset(),/g6-studio\.webp/);
+});
+
+test('card editor offers model/year/paint/interior only in settings, alongside 15 mapping fields',()=>{
+  const Editor=tags.get('xpeng-vehicle-card-editor');
+  const editor=new Editor();
+  editor.setConfig({type:'custom:xpeng-vehicle-card',prefix:'my_xpeng',model:'G6',year:'2026',trim:'core_plus_rwd',
+    color:'arctic_white',interior:'light_gray'});
+  editor.hass={states:{'sensor.custom_battery':{state:'93'},'binary_sensor.custom_charging':{state:'on'}}};
+  const html=editor.shadowRoot.innerHTML;
+  assert.match(html,/Manual sensor mapping/);
+  assert.match(html,/data-key="year"/);
+  assert.match(html,/data-key="model"/);
+  assert.match(html,/data-key="trim"/);
+  assert.match(html,/data-key="color"/);
+  assert.match(html,/data-key="interior"/);
+  assert.match(html,/data-entity="soc"/);
+  assert.match(html,/data-entity="charging"/);
+  assert.match(html,/sensor.custom_battery/);
+  assert.match(html,/binary_sensor.custom_charging/);
+});
+
+test('manual sensor mapping persists as entities and overrides automatic prefix lookup',()=>{
+  const Editor=tags.get('xpeng-vehicle-card-editor');
+  const editor=new Editor();
+  editor.setConfig({type:'custom:xpeng-vehicle-card',prefix:'my_xpeng',model:'G6',year:'2026',color:'arctic_white'});
+  const el={dataset:{entity:'soc'},value:'sensor.alternate_battery',hasAttribute:k=>k==='data-entity',
+    setCustomValidity(){},reportValidity(){}};
+  editor.shadowRoot.handlers.change({target:{closest:()=>el}});
+  assert.equal(editor._cfg.entities.soc,'sensor.alternate_battery');
+  const states=data();
+  states['sensor.alternate_battery']={state:'81'};
+  const card=setup(states);
+  card.setConfig({...editor._cfg});
+  card.hass={states};
+  assert.match(card.shadowRoot.innerHTML,/81<span class="xp-unit">%<\/span>/);
+  el.value='';
+  editor.shadowRoot.handlers.change({target:{closest:()=>el}});
+  assert.equal(editor._cfg.entities.soc,undefined);
+});
+
+test('card editor rejects invalid manual entity IDs',()=>{
+  const Editor=tags.get('xpeng-vehicle-card-editor');
+  const editor=new Editor();
+  editor.setConfig({prefix:'my_xpeng',year:'2026',model:'G6'});
+  let rejected=false;
+  const el={dataset:{entity:'soc'},value:'sensor.BAD-ID',hasAttribute:k=>k==='data-entity',
+    setCustomValidity:message=>{rejected=Boolean(message);},reportValidity(){}};
+  editor.shadowRoot.handlers.change({target:{closest:()=>el}});
+  assert.equal(rejected,true);
+  assert.equal(editor._cfg.entities?.soc,undefined);
 });
