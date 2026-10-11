@@ -94,6 +94,32 @@ with sync_playwright() as p:
         assert '12,548 km' in host.locator('.xp-status-panel').inner_text()
         assert '2.5 bar' in host.locator('.xp-status-panel').inner_text()
         assert 'Ramat Gan, Israel' in host.locator('.xp-status-panel').inner_text()
+        if tag == 'desktop':
+            # Independent design reviewer: compare key element coordinates against
+            # the user's original 1536x864 screenshot. These checks verify layout
+            # only, NOT photographic/pixel identity of the car or environment.
+            geometry = host.evaluate("""node => {
+                const root=node.shadowRoot, rect=selector=>{
+                    const el=root.querySelector(selector),r=el.getBoundingClientRect();
+                    return {left:r.left,top:r.top,width:r.width,height:r.height};
+                };
+                return {
+                  header:rect('.xp-brand'),
+                  title:rect('.xp-title'),
+                  battery:rect('.xp-overview-stat'),
+                  rightPanel:rect('.xp-status-panel')
+                };
+            }""")
+            expected = {
+              'header': (30, 27),
+              'title': (67, 150),
+              'battery': (67, 382),
+              'rightPanel': (1180, 520)
+            }
+            for name, (left, top) in expected.items():
+                got = geometry[name]
+                assert abs(got['left'] - left) <= 26, (name, 'left', got, left)
+                assert abs(got['top'] - top) <= 26, (name, 'top', got, top)
         page.screenshot(path=str(OUT / f'{tag}-overview-DEMO.png'), full_page=True)
 
         # The real charging binary entity switches the entire scene, not a secondary details page.
@@ -106,6 +132,20 @@ with sync_playwright() as p:
         assert '11.2 kW' in host.locator('.xp-charge-card').inner_text()
         assert '2h 15m' in host.locator('.xp-charge-card').inner_text()
         assert '90 %' in host.locator('.xp-charge-card').inner_text()
+        if tag == 'desktop':
+            geometry = host.evaluate("""node => {
+                const root=node.shadowRoot, rect=selector=>{
+                  const r=root.querySelector(selector).getBoundingClientRect();
+                  return {left:r.left,top:r.top,width:r.width,height:r.height};
+                };
+                return {title:rect('.xp-title'),chargeCard:rect('.xp-charge-card')};
+            }""")
+            for name,left,top in [('title',81,161),('chargeCard',42,289)]:
+                got=geometry[name]
+                assert abs(got['left']-left)<=26, (name,'left',got,left)
+                assert abs(got['top']-top)<=26, (name,'top',got,top)
+            assert abs(geometry['chargeCard']['width']-621)<=30
+            assert geometry['chargeCard']['height']>=405
         page.screenshot(path=str(OUT / f'{tag}-charging-DEMO.png'), full_page=True)
 
         # Home is a view switch, not a vehicle-control command.
