@@ -14,6 +14,12 @@ assert 'Dashboard v0.1.1' in SCRIPT
 assert 'localStorage' not in SCRIPT and 'callService(' not in SCRIPT and 'fetch(' not in SCRIPT
 OUT = ROOT / 'previews' / 'dashboard-v010'
 OUT.mkdir(parents=True, exist_ok=True)
+# Release gate: do not silently validate a placeholder SVG or an outdated image.
+EXPECTED_ART = ROOT / 'dist/assets/vehicles/g6/2026/core_plus_rwd/arctic_white.webp'
+assert EXPECTED_ART.is_file(), (
+    f'Missing verified G6 2026 exterior artwork: {EXPECTED_ART}. '
+    'Add manufacturer-year-correct source artwork before publishing.'
+)
 
 
 def sensor(value):
@@ -46,7 +52,7 @@ with sync_playwright() as p:
         page.on('pageerror', lambda e: errors.append(str(e)))
 
         def serve_asset(route):
-            file = ROOT / 'assets' / route.request.url.split('/local/xpeng/', 1)[-1]
+            file = ROOT / 'dist' / 'assets' / route.request.url.split('/local/xpeng/', 1)[-1]
             if not file.is_file():
                 missing.append(str(file))
                 return route.fulfill(status=404, body='Missing artwork')
