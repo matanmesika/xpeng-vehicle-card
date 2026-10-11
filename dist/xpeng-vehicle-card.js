@@ -124,10 +124,10 @@ const XP_CSS = `
 ha-card{background:transparent!important;border:0!important;box-shadow:none!important;overflow:visible!important}
 button{font:inherit;color:inherit;cursor:pointer}
 button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
-.xp-scene{position:relative;width:100%;min-height:620px;aspect-ratio:16/9;overflow:hidden;background:radial-gradient(ellipse 57% 35% at 56% 42%,#25365b 0%,#0e2441 43%,transparent 100%),linear-gradient(180deg,#030f21 0%,#041629 51%,#071e34 69%,#020914 100%);isolation:isolate;direction:ltr}
+.xp-scene{position:relative;width:100%;min-height:620px;aspect-ratio:16/9;overflow:hidden;background:radial-gradient(ellipse 43% 16% at 51% 39%,#4c477f88 0%,#243c6988 43%,transparent 100%),radial-gradient(ellipse 64% 28% at 52% 45%,#27497777,transparent 76%),linear-gradient(180deg,#010917 0%,#04142a 32%,#0b2243 59%,#071933 73%,#010815 100%);isolation:isolate;direction:ltr}
 .xp-scene:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 65% 8% at 60% 69%,#147fbb75,transparent),radial-gradient(ellipse 63% 16% at 67% 81%,#173c7a95,transparent);z-index:1}
 .xp-sky{position:absolute;inset:0;width:100%;height:100%;z-index:0}
-.xp-ground{position:absolute;inset:68% 0 0;background:repeating-linear-gradient(173deg,#3565ab1a 0px,#3565ab1a 2px,transparent 3px,transparent 46px),linear-gradient(180deg,#0b2139,#04111e);transform:perspective(500px) rotateX(12deg);transform-origin:50% 0}
+.xp-ground{position:absolute;inset:64% 0 0;background:radial-gradient(ellipse 42% 9% at 58% 9%,#70bcfc9c,transparent 90%),radial-gradient(ellipse 18% 34% at 62% 55%,#1c94ff39,transparent 85%),radial-gradient(ellipse 42% 30% at 58% 74%,#204e9d33,transparent 88%),repeating-linear-gradient(177deg,#326caa17 0px,#3565ab17 1px,transparent 3px,transparent 22px),linear-gradient(180deg,#0b2440,#021020 78%,#010713);transform:perspective(500px) rotateX(5deg);transform-origin:50% 0}
 .xp-ground:before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 48% 48% at 59% 24%,#137ace4a,transparent 70%)}
 .xp-stage-glow{position:absolute;left:22%;right:6%;bottom:18%;height:12%;background:#168de7;border-radius:100%;filter:blur(34px);opacity:.25}
 .xp-stage-glow:after{content:"";position:absolute;inset:58% 2% 27%;background:#28bbff;filter:blur(8px)}
@@ -190,7 +190,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-charge-meta>div:last-child{padding-right:0;border-right:0}
 .xp-charge-meta small{font-size:clamp(10px,1vw,16px);color:#9eb3d0;white-space:nowrap}
 .xp-charge-meta b{font-size:clamp(12px,1.5vw,25px);font-weight:560;white-space:nowrap}
-.xp-charge .xp-car{width:49%;left:40.6%;bottom:14.0%;height:auto;max-height:70%;z-index:7}
+.xp-charge .xp-car{width:49%;left:39%;bottom:16%;height:auto;max-height:70%;z-index:7}
 .xp-charge .xp-title{left:5.3%;top:18.65%}
 .xp-charge .xp-brand{visibility:hidden}
 .xp-charge .xp-updated{right:19%;top:14%}
@@ -203,6 +203,12 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 :host([data-expanded]) ha-card,:host([data-expanded]) .xp-scene{width:100%!important;height:100dvh!important;min-height:550px!important;aspect-ratio:auto!important}
 /* Design-parity coordinates for the supplied 1536×864 references.
    The user-approved placement wins; all appearance controls remain editor-only. */
+.xp-ground:after{content:"";position:absolute;inset:0;opacity:.65;mix-blend-mode:screen;pointer-events:none;
+background:repeating-linear-gradient(177deg,transparent 0 12px,#318bdd24 13px,transparent 14px 25px),repeating-linear-gradient(92deg,transparent 0 103px,#416fbc1a 104px,transparent 105px 207px),
+radial-gradient(ellipse 42% 7% at 64% 31%,#55b1e56b,transparent 75%);
+filter:blur(2px)}
+.xp-scene:after{content:"";position:absolute;pointer-events:none;inset:30% 0 20%;z-index:1;opacity:.65;background:radial-gradient(ellipse 55% 13% at 49% 37%,#7698f93d,transparent 94%);filter:blur(15px)}
+.xp-stage-glow{mix-blend-mode:screen;opacity:.32}
 @media(min-width:851px){
  .xp-overview .xp-title{left:4.35%;top:17.35%}
  .xp-overview .xp-car{left:21.75%;bottom:18.3%;width:55%}
@@ -396,12 +402,21 @@ class XpengVehicleCard extends HTMLElement{
  }
  sceneBackdrop(){
   return `<svg class="xp-sky" viewBox="0 0 1500 850" preserveAspectRatio="none" aria-hidden="true">
-    <defs><linearGradient id="xp-ridge" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#152a49"/><stop offset="1" stop-color="#031425"/></linearGradient>
+    <defs><filter id="xp-soft" x="-20%" y="-25%" width="140%" height="150%"><feGaussianBlur stdDeviation="3.1"/></filter>
+    <filter id="xp-noise" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".009 .018" numOctaves="4" seed="13" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
+    <linearGradient id="xp-ridge" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#152a49"/><stop offset="1" stop-color="#031425"/></linearGradient>
       <linearGradient id="xp-haze" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#314778"/><stop offset="1" stop-color="#031b35"/></linearGradient></defs>
-    <path d="M0 337L45 331 98 308 140 334 188 303 248 315 298 279 351 308 407 293 456 315 525 291 590 315 634 278 683 302 733 273 785 302 830 269 880 300 935 273 983 297 1034 260 1093 288 1154 255 1207 281 1250 270 1319 303 1370 275 1430 303 1500 282V710H0Z" fill="url(#xp-haze)" opacity=".6"/>
+    <rect x="0" y="0" width="1500" height="470" fill="#c1c5f4" opacity=".035" filter="url(#xp-noise)"/>
+    <ellipse cx="755" cy="300" rx="700" ry="100" fill="#5961a5" opacity=".19" filter="url(#xp-soft)"/>
+    <g filter="url(#xp-soft)"><path d="M0 337L45 331 98 308 140 334 188 303 248 315 298 279 351 308 407 293 456 315 525 291 590 315 634 278 683 302 733 273 785 302 830 269 880 300 935 273 983 297 1034 260 1093 288 1154 255 1207 281 1250 270 1319 303 1370 275 1430 303 1500 282V710H0Z" fill="url(#xp-haze)" opacity=".6"/></g>
     <path d="M0 430L57 415 103 390 151 409 198 385 245 401 289 373 324 394 392 355 437 373 475 340 527 366 565 338 602 356 646 331 686 363 737 324 788 349 828 327 866 353 910 316 951 356 1004 331 1053 357 1098 320 1155 346 1222 311 1265 343 1310 309 1359 340 1408 314 1454 344 1500 323V690H0Z" fill="url(#xp-ridge)" opacity=".9"/>
     <path d="M0 552L60 534 106 518 174 536 227 499 273 507 327 485 384 508 419 486 462 506 516 478 558 496 620 471 666 496 726 472 769 486 821 464 871 488 912 470 964 489 1015 472 1072 492 1109 478 1158 505 1227 485 1264 517 1330 496 1391 525 1450 512 1500 527V692H0Z" fill="#061326" opacity=".9"/>
-  </svg><div class="xp-ground"></div><div class="xp-stage-glow"></div>`;
+  <g opacity=".75" fill="#051024">
+    <path d="M0 504 l22 -30 8 22 14 -49 15 48 18 -25 12 32 18 -36 15 38 18 -48 16 42 17 -34 18 52 15 -43 15 38 11 -28 15 47 13 -34 18 40 15 -42 25 60 h-350z" />
+    <path d="M1130 509l27 -51 14 42 19 -63 14 54 18 -39 15 52 19 -46 14 43 24 -63 17 53 19 -45 14 57 24 -49 19 50 26 -70 21 63 19 -38 34 66v50H1130z"/>
+    </g>
+    <path d="M0 584Q470 552 760 580T1500 588" stroke="#2888d6" stroke-width="4" opacity=".42" fill="none" filter="url(#xp-soft)"/>
+    </svg><div class="xp-ground"></div><div class="xp-stage-glow"></div>`;
  }
  header(){
    const now=new Date().toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});
