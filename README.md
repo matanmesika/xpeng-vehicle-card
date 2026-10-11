@@ -75,7 +75,7 @@ The card is a **frontend component**. It cannot generate new sensors or discover
 
 ## Release status
 
-- Version: `v0.5.0-alpha.3` — preview-quality release candidate, **not stable**.
+- Version: `v0.5.0-alpha.4` — preview-quality release candidate, **not stable**.
 - Checks: JS/JSON validation, asset verification, and browser regression tests defined in GitHub Actions.
 - Remaining gate: green CI, real Home Assistant installation test, HACS custom-repository installation test, and future XPENG API verification for controls.
 - Files: [Hebrew documentation](README_HE.md), [release checklist](RELEASE_CHECKLIST.md), [changes](CHANGELOG.md), [contributing](CONTRIBUTING.md), [security](SECURITY.md), [trademark statement](TRADEMARK.md).

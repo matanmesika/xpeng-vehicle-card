@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.5.0-alpha.4 (2026-10-11)
+- Worldwide presentation catalogue: 16 listed model profiles, 5 exterior paints, 2 interior themes; removed country-specific trim labels.
+- Added dashboard full-window expansion and exit control. No remote vehicle commands.
+- Continued explicit warnings: public XPENG cloud account API and consumer login are not verified.
+
 ## v0.5.0-alpha.3 — public repository preparation
 
 - Expanded English/Hebrew setup and feature documentation.
