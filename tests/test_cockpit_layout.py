@@ -95,6 +95,9 @@ with sync_playwright() as playwright:
     return {viewport:innerWidth,body:document.body.scrollWidth,cockpit:s.querySelector('.xp-studio').getBoundingClientRect().width}}""")
    assert sizes['body']<=sizes['viewport']+3,sizes
    assert sizes['cockpit']<=sizes['viewport']+3,sizes
+   # Every navigation tab should be discoverable without hidden single-tab scrolling.
+   nav=page.evaluate("""()=>{const c=document.querySelector('xpeng-vehicle-card').shadowRoot;return [...c.querySelectorAll('.xs-nav button')].map(b=>({r:b.getBoundingClientRect().right,w:innerWidth}))}""")
+   assert all(row['r']<=row['w']+2 for row in nav),nav
   assert not errors,errors
   assert not asset_failures,asset_failures
   page.close()
