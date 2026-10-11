@@ -1,0 +1,1210 @@
+{
+  "version": "0.1.1",
+  "kind": "frontend-visual-profiles",
+  "as_of": "2026-10-11",
+  "catalogue_source": "model-catalog.json",
+  "includes_official_market_guarantees": false,
+  "profile_count": 53,
+  "model_count": 16,
+  "profiles": [
+    {
+      "model": "G3",
+      "year": "2018",
+      "display_name": "G3 2018",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "G3",
+      "year": "2019",
+      "display_name": "G3 2019",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "G3",
+      "year": "2020",
+      "display_name": "G3 2020",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "G3",
+      "year": "2021",
+      "display_name": "G3 2021",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "G3i",
+      "year": "2021",
+      "display_name": "G3i 2021",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "G3i",
+      "year": "2022",
+      "display_name": "G3i 2022",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "G3i",
+      "year": "2023",
+      "display_name": "G3i 2023",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "P5",
+      "year": "2021",
+      "display_name": "P5 2021",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "P5",
+      "year": "2022",
+      "display_name": "P5 2022",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "P5",
+      "year": "2023",
+      "display_name": "P5 2023",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "P5",
+      "year": "2024",
+      "display_name": "P5 2024",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "P7",
+      "year": "2020",
+      "display_name": "P7 (Original) 2020",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "P7",
+      "year": "2021",
+      "display_name": "P7 (Original) 2021",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "P7",
+      "year": "2022",
+      "display_name": "P7 (Original) 2022",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "P7",
+      "year": "2023",
+      "display_name": "P7 (Original) 2023",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "P7",
+      "year": "2024",
+      "display_name": "P7 (Original) 2024",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "P7i",
+      "year": "2023",
+      "display_name": "P7i 2023",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "P7i",
+      "year": "2024",
+      "display_name": "P7i 2024",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "P7i",
+      "year": "2025",
+      "display_name": "P7i 2025",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "Next P7",
+      "year": "2025",
+      "display_name": "Next P7 2025",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "Next P7",
+      "year": "2026",
+      "display_name": "Next P7 2026",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "P7+",
+      "year": "2024",
+      "display_name": "P7+ 2024",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "P7+",
+      "year": "2025",
+      "display_name": "P7+ 2025",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "P7+",
+      "year": "2026",
+      "display_name": "P7+ 2026",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "G6",
+      "year": "2023",
+      "display_name": "G6 2023",
+      "trims": [
+        "unspecified",
+        "standard_range_rwd",
+        "long_range_rwd",
+        "performance_awd"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "G6",
+      "year": "2024",
+      "display_name": "G6 2024",
+      "trims": [
+        "unspecified",
+        "standard_range_rwd",
+        "long_range_rwd",
+        "performance_awd"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "G6",
+      "year": "2025",
+      "display_name": "G6 2025",
+      "trims": [
+        "unspecified",
+        "standard_range_rwd",
+        "long_range_rwd",
+        "performance_awd"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "G6",
+      "year": "2026",
+      "display_name": "G6 2026",
+      "trims": [
+        "core_rwd",
+        "core_plus_rwd",
+        "core_performance_awd",
+        "black_edition",
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "manufacturer-model-page; market/trim unconfirmed",
+      "art_status": "g6-2026-bundled-studio-photo-illustrative",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "G7",
+      "year": "2025",
+      "display_name": "G7 2025",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "G7",
+      "year": "2026",
+      "display_name": "G7 2026",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "G9",
+      "year": "2022",
+      "display_name": "G9 2022",
+      "trims": [
+        "unspecified",
+        "standard_range_rwd",
+        "long_range_rwd",
+        "performance_awd"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "G9",
+      "year": "2023",
+      "display_name": "G9 2023",
+      "trims": [
+        "unspecified",
+        "standard_range_rwd",
+        "long_range_rwd",
+        "performance_awd"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "G9",
+      "year": "2024",
+      "display_name": "G9 2024",
+      "trims": [
+        "unspecified",
+        "standard_range_rwd",
+        "long_range_rwd",
+        "performance_awd"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "G9",
+      "year": "2025",
+      "display_name": "G9 2025",
+      "trims": [
+        "unspecified",
+        "standard_range_rwd",
+        "long_range_rwd",
+        "performance_awd"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "G9",
+      "year": "2026",
+      "display_name": "G9 2026",
+      "trims": [
+        "unspecified",
+        "standard_range_rwd",
+        "long_range_rwd",
+        "performance_awd"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "kaitoke_green_matte"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "coffee",
+        "saddle",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "manufacturer-model-page; market/trim unconfirmed",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "G9L",
+      "year": "2026",
+      "display_name": "G9L 2026",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "X9",
+      "year": "2024",
+      "display_name": "X9 2024",
+      "trims": [
+        "unspecified",
+        "fwd_long_range"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "X9",
+      "year": "2025",
+      "display_name": "X9 2025",
+      "trims": [
+        "unspecified",
+        "fwd_long_range"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "X9",
+      "year": "2026",
+      "display_name": "X9 2026",
+      "trims": [
+        "unspecified",
+        "fwd_long_range"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "MONA M03",
+      "year": "2024",
+      "display_name": "MONA M03 2024",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "MONA M03",
+      "year": "2025",
+      "display_name": "MONA M03 2025",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "MONA M03",
+      "year": "2026",
+      "display_name": "MONA M03 2026",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "L03",
+      "year": "2026",
+      "display_name": "L03 2026",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "GX",
+      "year": "2026",
+      "display_name": "GX (fleet/research) 2026",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "Other",
+      "year": "2018",
+      "display_name": "Other / Future XPENG 2018",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "Other",
+      "year": "2019",
+      "display_name": "Other / Future XPENG 2019",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "Other",
+      "year": "2020",
+      "display_name": "Other / Future XPENG 2020",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "Other",
+      "year": "2021",
+      "display_name": "Other / Future XPENG 2021",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "Other",
+      "year": "2022",
+      "display_name": "Other / Future XPENG 2022",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "Other",
+      "year": "2023",
+      "display_name": "Other / Future XPENG 2023",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "Other",
+      "year": "2024",
+      "display_name": "Other / Future XPENG 2024",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "Other",
+      "year": "2025",
+      "display_name": "Other / Future XPENG 2025",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    },
+    {
+      "model": "Other",
+      "year": "2026",
+      "display_name": "Other / Future XPENG 2026",
+      "trims": [
+        "unspecified"
+      ],
+      "paint_options": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interior_options": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "exterior_catalogue_status": "illustrative-unverified",
+      "art_status": "generic-model-family-illustration",
+      "art_note": "A visual placeholder is not proof of exact model year, trim or factory paint availability."
+    }
+  ]
+}
