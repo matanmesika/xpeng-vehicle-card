@@ -10,14 +10,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Verify real dashboard image asset in README
+      - name: Verify frontend bundle and documented manual configuration
         run: |
-          test -s dist/assets/g6-studio.webp
-          grep -Fq '![Vehicle artwork used by the dashboard](dist/assets/g6-studio.webp)' README.md
+          test -s dist/xpeng-vehicle-card.js
+          grep -Fq 'Manual sensor mapping' dist/xpeng-vehicle-card.js
+          grep -Fq 'Manual sensor mapping' README.md
       - uses: hacs/action@main
         with:
           category: plugin
-          # The upstream images check validates the latest release, not always a PR's
-          # README. Our preceding job verifies the actual image and the browser
-          # acceptance workflow checks that it loads correctly.
+          # The upstream images check validates the latest release, not always a PR.
+          # Exact model-year artwork is checked separately by the blocking browser
+          # acceptance workflow; do not claim images are released without it.
           ignore: images

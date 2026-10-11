@@ -1,6 +1,6 @@
 {
-  "version": 3,
-  "reviewed_as_of": "2026-10-10",
+  "version": 4,
+  "reviewed_as_of": "2026-10-11",
   "years": [
     2026,
     2025,
@@ -151,14 +151,19 @@
       "hex": "#F2F4F2"
     },
     {
+      "id": "graphite_gray",
+      "label": "Graphite Gray",
+      "hex": "#66717B"
+    },
+    {
+      "id": "midnight_black",
+      "label": "Midnight Black",
+      "hex": "#15191F"
+    },
+    {
       "id": "silver_frost",
       "label": "Silver Frost",
       "hex": "#BCC4C9"
-    },
-    {
-      "id": "space_grey",
-      "label": "Space Grey",
-      "hex": "#66717B"
     },
     {
       "id": "stellar_purple",
@@ -166,9 +171,9 @@
       "hex": "#867592"
     },
     {
-      "id": "jet_black",
-      "label": "Jet Black",
-      "hex": "#1C2026"
+      "id": "kaitoke_green_matte",
+      "label": "Kaitoke Green Matte",
+      "hex": "#526F64"
     }
   ],
   "trims": {
@@ -251,19 +256,65 @@
     "https://www.sec.gov/Archives/edgar/data/1810997/000119312526157849/d36361d20f.htm",
     "https://ir.xiaopeng.com/static-files/10e70f1b-cbed-4fb1-9f2f-f6be521d72a2"
   ],
-  "disclaimer": "Visual appearance presets are available across the supported XPENG model catalog. Model-year, market, trim and factory colour combinations require independent verification. Generic artwork is illustrative and does not represent exact manufacturer photography.",
+  "disclaimer": "Only G6/G9 2026 display palettes are scoped to manufacturer model pages; other model/year options are illustrative previews pending region- and trim-specific verification. A palette being included does not guarantee factory availability in Israel. Exact year/model/trim/paint car artwork is pending.",
   "interiors": [
     {
       "id": "dark_gray",
       "label": "Dark Gray",
-      "source": "https://www.xpeng.com/model/g6",
-      "validation": "official G6 refreshed interior colors; regional restrictions unknown"
+      "hex": "#40454b",
+      "source": "https://www.xpeng.com/model/g6"
     },
     {
       "id": "light_gray",
       "label": "Light Gray",
-      "source": "https://www.xpeng.com/model/g6",
-      "validation": "official G6 refreshed interior colors; regional restrictions unknown"
+      "hex": "#d8d9d4",
+      "source": "https://www.xpeng.com/model/g6"
+    },
+    {
+      "id": "coffee",
+      "label": "Coffee",
+      "hex": "#93725b",
+      "source": "https://www.xpeng.com/model/g9"
+    },
+    {
+      "id": "saddle",
+      "label": "Saddle",
+      "hex": "#aa704d",
+      "source": "https://www.xpeng.com/model/g9"
     }
-  ]
+  ],
+  "verified_model_year_palettes": {
+    "G6:2026": {
+      "source": "https://www.xpeng.com/model/g6",
+      "exteriors": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "interiors": [
+        "dark_gray",
+        "light_gray"
+      ],
+      "market_note": "Verify regional restrictions and trim combinations before factory-availability claims."
+    },
+    "G9:2026": {
+      "source": "https://www.xpeng.com/model/g9",
+      "exteriors": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "kaitoke_green_matte"
+      ],
+      "interiors": [
+        "dark_gray",
+        "coffee",
+        "saddle",
+        "light_gray"
+      ],
+      "market_note": "Verify regional restrictions and trim combinations before factory-availability claims."
+    }
+  }
 }

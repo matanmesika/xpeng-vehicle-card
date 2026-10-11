@@ -1,4 +1,4 @@
-"""Chromium acceptance for XPENG Dashboard v0.1.0 (frontend only).
+"""Chromium acceptance for XPENG Dashboard v0.1.1 (frontend only).
 
 The injected values below are *test fixtures* and must never be hardcoded in
 the actual card. The vehicle integration is outside the scope of this test.
@@ -10,10 +10,16 @@ from playwright.sync_api import sync_playwright
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = (ROOT / 'dist/xpeng-vehicle-card.js').read_text(encoding='utf-8')
 assert SCRIPT == (ROOT / 'xpeng-vehicle-card.js').read_text(encoding='utf-8')
-assert 'Dashboard v0.1.0' in SCRIPT
+assert 'Dashboard v0.1.1' in SCRIPT
 assert 'localStorage' not in SCRIPT and 'callService(' not in SCRIPT and 'fetch(' not in SCRIPT
-OUT = ROOT / 'previews' / 'dashboard-v010'
+OUT = ROOT / 'previews' / 'dashboard-v011'
 OUT.mkdir(parents=True, exist_ok=True)
+# Release gate: do not silently validate a placeholder SVG or an outdated image.
+EXPECTED_ART = ROOT / 'dist/assets/vehicles/g6/2026/core_plus_rwd/arctic_white.webp'
+assert EXPECTED_ART.is_file(), (
+    f'Missing packaged G6 2026 preview artwork: {EXPECTED_ART}. '
+    'Add model-year imagery or mark unverified styling before publishing.'
+)
 
 
 def sensor(value):
@@ -46,7 +52,7 @@ with sync_playwright() as p:
         page.on('pageerror', lambda e: errors.append(str(e)))
 
         def serve_asset(route):
-            file = ROOT / 'assets' / route.request.url.split('/local/xpeng/', 1)[-1]
+            file = ROOT / 'dist' / 'assets' / route.request.url.split('/local/xpeng/', 1)[-1]
             if not file.is_file():
                 missing.append(str(file))
                 return route.fulfill(status=404, body='Missing artwork')
@@ -76,7 +82,7 @@ with sync_playwright() as p:
         assert host.locator('.xt-panel,.xt-nav-row,.xd-details-nav,.xt-climate-area').count() == 0
         page.wait_for_function("""() => {
             const image = document.querySelector('xpeng-vehicle-card').shadowRoot.querySelector('.xp-car');
-            return image && image.complete && image.naturalWidth > 800;
+            return image && image.complete && image.naturalWidth >= 350;
         }""")
         page.screenshot(path=str(OUT / f'{tag}-overview-UNAVAILABLE.png'), full_page=True)
 
@@ -88,7 +94,7 @@ with sync_playwright() as p:
         assert '12,548 km' in host.locator('.xp-status-panel').inner_text()
         assert '2.5 bar' in host.locator('.xp-status-panel').inner_text()
         assert 'Ramat Gan, Israel' in host.locator('.xp-status-panel').inner_text()
-        page.screenshot(path=str(OUT / f'{tag}-overview-TEST-DATA.png'), full_page=True)
+        page.screenshot(path=str(OUT / f'{tag}-overview-DEMO.png'), full_page=True)
 
         # The real charging binary entity switches the entire scene, not a secondary details page.
         page.evaluate("states => document.querySelector('xpeng-vehicle-card').hass = {states}", CHARGING)
@@ -100,7 +106,7 @@ with sync_playwright() as p:
         assert '11.2 kW' in host.locator('.xp-charge-card').inner_text()
         assert '2h 15m' in host.locator('.xp-charge-card').inner_text()
         assert '90 %' in host.locator('.xp-charge-card').inner_text()
-        page.screenshot(path=str(OUT / f'{tag}-charging-TEST-DATA.png'), full_page=True)
+        page.screenshot(path=str(OUT / f'{tag}-charging-DEMO.png'), full_page=True)
 
         # Home is a view switch, not a vehicle-control command.
         host.locator('[data-view="overview"]').click()
@@ -139,10 +145,15 @@ with sync_playwright() as p:
         }""")
         editor = page.locator('xpeng-vehicle-card-editor')
         assert editor.locator('[data-key="color"]').count() == 1
-        assert editor.locator('[data-key="interior"]').count() == 0
+        assert editor.locator('[data-key="interior"]').count() == 1
+        assert editor.locator('[data-entity="soc"]').count() == 1
+        assert editor.locator('[data-entity="charging"]').count() == 1
+        assert editor.locator('[data-entity="tire_fl"]').count() == 1
+        assert host.locator('[data-key="color"],[data-entity]').count() == 0
 
         assert not errors, errors
-        assert not missing, missing
+        # Release gate: all model/year/colour assets must exist before release.
+        assert not missing, f'MISSING MODEL-YEAR ART: {missing}'
         page.close()
     browser.close()
-print('PASS: Dashboard v0.1.0 2-screen Chromium acceptance on desktop and phone')
+print('PASS: Dashboard v0.1.1 2-screen Chromium acceptance on desktop and phone')
