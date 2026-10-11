@@ -84,6 +84,23 @@ with sync_playwright() as p:
             const image = document.querySelector('xpeng-vehicle-card').shadowRoot.querySelector('.xp-car');
             return image && image.complete && image.naturalWidth >= 350;
         }""")
+        # A studio image with an opaque rectangular backdrop is a visual
+        # regression, even if the file exists and renders. Verify actual
+        # decoded WebP transparency in Chromium, not just its filename.
+        if tag == 'desktop':
+            matte = host.evaluate("""node => {
+                const image = node.shadowRoot.querySelector('.xp-car');
+                const canvas = document.createElement('canvas');
+                canvas.width=image.naturalWidth; canvas.height=image.naturalHeight;
+                const ctx=canvas.getContext('2d',{willReadFrequently:true});
+                ctx.drawImage(image,0,0);
+                const alpha=(x,y)=>ctx.getImageData(x,y,1,1).data[3];
+                const w=canvas.width,h=canvas.height;
+                return {corners:[alpha(0,0),alpha(w-1,0),alpha(0,h-1),alpha(w-1,h-1)],
+                        center:alpha(Math.floor(w/2),Math.floor(h/2))};
+            }""")
+            assert max(matte['corners']) == 0, f'OPAQUE STUDIO RECTANGLE: {matte}'
+            assert matte['center'] > 200, f'CAR ART EMPTY/UNREADABLE: {matte}'
         page.screenshot(path=str(OUT / f'{tag}-overview-UNAVAILABLE.png'), full_page=True)
 
         # Only the overview: no buttons to enter old detailed control pages.
