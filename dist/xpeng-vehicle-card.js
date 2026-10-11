@@ -1,5 +1,5 @@
 /**
- * XPENG Vehicle Card v0.8.0-alpha.1 — XPENG vehicle monitoring dashboard (read-only).
+ * XPENG Vehicle Card v1.0.0-alpha.1 — XPENG vehicle monitoring dashboard (read-only).
  * Independent implementation. Uses no external vehicle-control APIs.
  * Reads only Home Assistant state. Does not send vehicle commands.
  */
