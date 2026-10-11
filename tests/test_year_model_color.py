@@ -87,6 +87,13 @@ with sync_playwright() as p:
  assert artifact()['model']=='G9',artifact()
  assert artifact()['trim']=='unspecified'
  card().locator('button[data-color="stellar_purple"]').click()
+ # Wait for the new artwork, not the previous image (CI event handlers are asynchronous).
+ page.wait_for_function("""() => {
+   const c = document.querySelector('xpeng-vehicle-card');
+   const i = c?.shadowRoot?.querySelector('.hero img');
+   return i && i.getAttribute('src')?.endsWith('models/g9-stellar_purple.webp')
+     && i.complete && i.naturalWidth > 0;
+ }""", timeout=15000)
  assert artifact()['src'].endswith('models/g9-stellar_purple.webp'),artifact()
  assert artifact()['loaded'],artifact()
  page.screenshot(path=str(previews/'g9-2026-purple-picker.png'),full_page=True)
