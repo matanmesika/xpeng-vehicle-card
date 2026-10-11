@@ -1,6 +1,6 @@
 # XPENG Dashboard
 
-**Dashboard v0.1.0** — a standalone, read-only Home Assistant frontend card for XPENG vehicles.
+**Dashboard v0.1.1** — a standalone, read-only Home Assistant frontend card for XPENG vehicles.
 
 ![Vehicle artwork used by the dashboard](dist/assets/g6-studio.webp)
 
@@ -63,7 +63,7 @@ The dashboard supports model, trim and exterior paint configuration. The supplie
 
 ## Scope and version policy
 
-- **Dashboard version:** 0.1.0 (new baseline defined by the two reference screenshots).
+- **Dashboard version:** 0.1.1 (new baseline defined by the two reference screenshots).
 - **XPENG integration version:** entirely separate; no changes to it in this release.
 - The existing Git history is retained to permit rollback, but the old dashboard pages are removed from the active card.
 - Card verification: JavaScript syntax, automated data/transition tests and a real Home Assistant/HACS visual check are separate release gates. See [release checklist](RELEASE_CHECKLIST.md).
@@ -71,3 +71,15 @@ The dashboard supports model, trim and exterior paint configuration. The supplie
 [Hebrew guide](README_HE.md) · [Changelog](CHANGELOG.md) · [Dashboard YAML](dashboards/xpeng-g6-cockpit.yaml) · [Entity mapping](docs/ENTITY_MAPPING.md)
 
 _Not an official XPENG product. XPENG trademarks belong to their respective owners._
+
+## v0.1.1 developer preview — not release-ready
+
+- The status/charging UI is the **same two-screen frontend**; last-update text is now hidden behind an accessible information icon. The icon also presents a schematic cabin finish preview.
+- Appearance metadata is read from Home Assistant entity state or whitelisted attributes **when available** (model, year, trim, exterior paint and interior). Dashboard YAML/editor settings remain the fallback, not a duplicate permanent colour preference.
+- The companion XPENG integration **currently does not expose year/trim/exterior/interior as HA entities**; choosing colours during its setup does not automatically synchronize until its backend exposes those profile fields. No backend files were changed in this dashboard branch.
+- Officially published 2026 G6 and G9 exterior/interior display palettes are model-specific. Other model years and profiles retain *illustrative*, non-factory-certified choices until a region-specific catalogue is reviewed.
+- Art must be installed per exact `assets/vehicles/<model>/<year>/<trim>/<color>.webp`. Missing art shows a clearly labelled SVG **preview**, not a misleading older model-year photo. This is intentional but **not visually acceptable as a final release**.
+- Existing HACS assets do **not yet** cover every exact combination. This branch is for review, not a completed/pixel-perfect dashboard. See `AGENTS.md` for release gates.
+- Native cabin material/finish visuals and the mountain/night scene still require designer-approved production assets. The current schematic cabin is only a selectable-colour preview, not manufacturer-accurate interior photography.
+
+Manufacturer catalogue references: [XPENG New G6](https://www.xpeng.com/model/g6) and [XPENG New G9](https://www.xpeng.com/model/g9).
