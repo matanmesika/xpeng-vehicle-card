@@ -365,6 +365,7 @@ class XpengVehicleCard extends HTMLElement{
  val(key){return this.data(key)?.value??null;}
  bool(key){return xpBool(this.val(key));}
  n(key,dec=0){return xpNum(this.val(key),dec);}
+ number(key){const value=this.val(key);return value===null||value===''||!Number.isFinite(Number(value))?null:Number(value);}
  tireValue(key){
    const kpa=this.val(key);
    if(kpa===null||!Number.isFinite(Number(kpa)))return '—';
