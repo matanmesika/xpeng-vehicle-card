@@ -114,7 +114,7 @@ test('manual appearance in card editor always wins over integration profile enti
  assert.equal(card.appearance().model,'G6');
  assert.equal(card.appearance().color,'arctic_white');
  assert.equal(card.appearance().interior,'dark_gray');
- assert.match(card.asset(),/\/vehicles\/g6\/2026\/unspecified\/arctic_white\.webp$/);
+ assert.match(card.asset(),/\/vehicles\/g6\/2026\/core_plus_rwd\/arctic_white\.webp$/);
  assert.doesNotMatch(card.shadowRoot.innerHTML,/Manual sensor mapping|Exterior paint|Interior cabin finish/);
 });
 
