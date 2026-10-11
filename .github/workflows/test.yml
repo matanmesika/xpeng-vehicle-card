@@ -31,6 +31,7 @@ jobs:
           python tests/test_year_model_color.py
           python tests/test_g6_2026_ui.py
           python tests/test_interior_palette.py
+          python tests/test_dashboard_release.py
       - name: Verify branding independence
         run: |
           python -m pytest -q tests/test_brand_independence.py

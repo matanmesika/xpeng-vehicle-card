@@ -30,21 +30,22 @@ jobs:
           python tests/test_year_model_color.py
           python tests/test_g6_2026_ui.py
           python tests/test_interior_palette.py
+          python tests/test_dashboard_release.py
       - name: Verify current version has not already been released
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if gh release view v0.5.0-alpha.3 >/dev/null 2>&1; then
-            echo 'v0.5.0-alpha.3 already exists; no changes were made.'
+          if gh release view v0.5.0-alpha.5 >/dev/null 2>&1; then
+            echo 'v0.5.0-alpha.5 already exists; no changes were made.'
             exit 1
           fi
       - name: Create explicitly experimental pre-release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create v0.5.0-alpha.3 \
+          gh release create v0.5.0-alpha.5 \
             --repo "${GITHUB_REPOSITORY}" \
             --target "${GITHUB_SHA}" \
-            --title "XPENG Vehicle Card v0.5.0-alpha.3 (Alpha)" \
-            --notes-file RELEASE_NOTES_v0.5.0-alpha.3.md \
+            --title "XPENG Vehicle Card v0.5.0-alpha.5 (Alpha)" \
+            --notes-file RELEASE_NOTES_v0.5.0-alpha.5.md \
             --prerelease

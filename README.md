@@ -10,6 +10,7 @@
 
 ## Features
 
+- Category-aware central artwork: a cabin for climate/interior, annotated car for doors/tires and distinct charging/location overlays.
 - Dedicated **Overview**, **Charging**, **Climate**, **Interior & seats**, **Controls**, **Vehicle information**, **Location** and **Tire pressure** pages.
 - XPENG G6 2026 facelift visual with hood-mounted X mark, configurable trim and exterior paint.
 - Interior finish option **Dark Gray** / **Light Gray**. The choice changes the dashboard, wheel, door inserts, centre console and all seats *together* in a vector cabin illustration. Exterior and interior styles are independent.
@@ -75,7 +76,7 @@ The card is a **frontend component**. It cannot generate new sensors or discover
 
 ## Release status
 
-- Version: `v0.5.0-alpha.4` — preview-quality release candidate, **not stable**.
+- Version: `v0.5.0-alpha.5` — preview-quality release candidate, **not stable**.
 - Checks: JS/JSON validation, asset verification, and browser regression tests defined in GitHub Actions.
 - Remaining gate: green CI, real Home Assistant installation test, HACS custom-repository installation test, and future XPENG API verification for controls.
 - Files: [Hebrew documentation](README_HE.md), [release checklist](RELEASE_CHECKLIST.md), [changes](CHANGELOG.md), [contributing](CONTRIBUTING.md), [security](SECURITY.md), [trademark statement](TRADEMARK.md).

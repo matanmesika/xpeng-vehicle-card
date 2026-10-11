@@ -1,5 +1,5 @@
 /**
- * XPENG Vehicle Card v0.5.0-alpha.4 — XPENG vehicle monitoring dashboard (read-only).
+ * XPENG Vehicle Card v0.5.0-alpha.5 — XPENG vehicle monitoring dashboard (read-only).
  * Independent implementation. Uses no external vehicle-control APIs.
  * Reads only Home Assistant state. Does not send vehicle commands.
  */
@@ -170,10 +170,45 @@ const XP_CSS = `
 .xp-interior-list{display:grid;grid-template-columns:1fr 1fr;gap:5px 12px;margin:15px 0}
 .xp-interior-list>div{font-size:12px;padding:8px 0;color:var(--xp-soft);border-bottom:1px solid var(--xp-line)}
 
+
+/* Category-aware vehicle visualisation, fullscreen layout. */
+:host([data-expanded]),:host(:fullscreen){position:fixed!important;inset:0!important;z-index:2147483000!important;display:block!important;width:100vw!important;max-width:none!important;height:100vh!important;height:100dvh!important;background:var(--xp-bg)!important;overflow:auto!important;margin:0!important}
+:host([data-expanded]) ha-card,:host(:fullscreen) ha-card{border-radius:0!important;min-height:100%!important;overflow:auto!important}
+:host([data-expanded]) .app,:host(:fullscreen) .app{max-width:1500px!important;width:100%!important;min-height:100%!important;margin:0 auto!important;padding:clamp(18px,3vh,40px) 2vw!important}
+:host([data-expanded]) .hero,:host(:fullscreen) .hero{height:clamp(360px,48vh,700px)!important}
+:host([data-expanded]) .hero img,:host(:fullscreen) .hero img{max-width:1150px!important}
+:host([data-expanded]) .content,:host(:fullscreen) .content{max-width:1080px!important}
+:host([data-expanded]) .rows,:host(:fullscreen) .rows{max-width:1000px!important}
+:host([data-expanded]) .navicons,:host(:fullscreen) .navicons{max-width:950px!important}
+.hero[data-hero-view]{isolation:isolate}
+.xp-view-caption{position:absolute;z-index:3;top:15px;left:24px;color:var(--xp-soft);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+.xp-page-visual{position:absolute;z-index:2;pointer-events:none}
+.xp-charge-visual{right:8%;top:20%;display:grid;justify-items:center;gap:6px;padding:17px;background:#11251fea;border:1px solid #39d78d6c;border-radius:20px;color:#a1f9d0;box-shadow:0 16px 30px #0006}
+.xp-charge-visual strong{font-size:30px;color:white}.xp-charge-visual small{font-size:10px;letter-spacing:.7px}
+.xp-pin-visual{right:10%;top:20%;display:grid;place-items:center;gap:7px;width:98px;height:98px;border:1px solid #47779077;border-radius:50%;color:#8cd8ff;background:#092538cc}
+.xp-hero-cabin{height:344px!important;background:radial-gradient(ellipse at center,#333e46,transparent 75%)}
+.xp-hero-cabin .xp-cabin-svg{height:100%!important;width:auto!important;max-width:100%;max-height:100%;margin:auto;filter:drop-shadow(0 9px 19px #000b)}
+.xp-hero-plan{height:325px!important;background:radial-gradient(ellipse at center,#293740,transparent 72%)}
+.xp-top-car{position:absolute;inset:0;width:100%;height:100%;filter:drop-shadow(0 10px 18px #000a)}
+.xp-pin-label{position:absolute;z-index:3;min-width:113px;padding:8px 10px;border-radius:11px;background:#101923ef;border:1px solid #62708070;color:#dbe4ec;font-size:11px;line-height:1.35}
+.xp-pin-label b{display:block;font-weight:700;color:white;margin-top:2px}.xp-pin-label.is-open{border-color:#ff987b}.xp-pin-label.is-open b{color:#ff987b}
+.xp-pin-fl{top:20%;left:4%}.xp-pin-fr{top:20%;right:4%}.xp-pin-rl{bottom:20%;left:4%}.xp-pin-rr{bottom:20%;right:4%}
+@media(max-width:470px){.xp-hero-plan,.xp-hero-cabin{height:290px!important}.xp-pin-label{min-width:88px;padding:5px 7px;font-size:10px}.xp-pin-fl,.xp-pin-rl{left:1%}.xp-pin-fr,.xp-pin-rr{right:1%}.xp-view-caption{top:9px;left:14px}.xp-charge-visual{right:2%;top:24%;padding:9px}.xp-charge-visual strong{font-size:23px}}
+@media(prefers-reduced-motion:reduce){.hero.is-charging:after{animation:none}}
+
 `;
 class XpengVehicleCard extends HTMLElement{
- constructor(){super();this.attachShadow({mode:'open'});this._expanded=false;this._config={prefix:'my_xpeng',theme:'dark'};this._view='overview';this._hass=null;this._vehicleIndex=0;this._preferences={};
+ constructor(){super();this.attachShadow({mode:'open'});this._expanded=false;this._nativeFull=false;this._config={prefix:'my_xpeng',theme:'dark'};this._view='overview';this._hass=null;this._vehicleIndex=0;this._preferences={};
    this.shadowRoot.addEventListener('click',e=>{const target=e.target.closest('button[data-view],button[data-back],button[data-cycle],button[data-color],button[data-interior],button[data-expand]');if(!target)return;
+    if(target.hasAttribute('data-expand')){
+      this._expanded=!this._expanded;
+      if(this._expanded&&typeof this.requestFullscreen==='function'){
+        this._nativeFull=true;this.requestFullscreen().catch(()=>{this._nativeFull=false;});
+      }else if(!this._expanded&&document.fullscreenElement===this&&typeof document.exitFullscreen==='function'){
+        document.exitFullscreen().catch(()=>{});
+      }
+      this.render();return;
+    }
     if(target.dataset.color){const v=target.dataset.color;if(xpAllowedPaints(this.selectedModel(),this.year(),this.trim()).some(p=>p.id===v)){this._saveAppearance({...this.appearance(),color:v});this.render();}}
     else if(target.dataset.interior){const v=target.dataset.interior;if(xpAllowedInteriors(this.selectedModel(),this.year(),this.trim()).some(x=>x.id===v)){this._saveAppearance({...this.appearance(),interior:v});this.render();}}
     else if(target.dataset.view){this._view=target.dataset.view;this.render();}
@@ -187,6 +222,11 @@ class XpengVehicleCard extends HTMLElement{
     if(k==='trim'){values.color=xpAllowedPaints(values.model,values.year,values.trim).some(p=>p.id===values.color)?values.color:xpAllowedPaints(values.model,values.year,values.trim)[0].id;values.interior=xpAllowedInteriors(values.model,values.year,values.trim).some(x=>x.id===values.interior)?values.interior:'dark_gray';}
     this._saveAppearance(xpNormalizeAppearance(values));this.render();});
  }
+ connectedCallback(){
+   if(!this._fsListener)this._fsListener=()=>{if(this._nativeFull&&!document.fullscreenElement){this._nativeFull=false;this._expanded=false;this.render();}};
+   document.addEventListener('fullscreenchange',this._fsListener);
+ }
+ disconnectedCallback(){if(this._fsListener)document.removeEventListener('fullscreenchange',this._fsListener);}
  setConfig(config){if(config.prefix&&!/^[a-z0-9_]+$/.test(config.prefix))throw Error('XPENG prefix must be a slug');
  if(config.image_path&&!/^\/(?:local|hacsfiles)\/[a-zA-Z0-9/_-]+\/?$/.test(config.image_path))throw Error('image_path must be a local Home Assistant directory');
  const original={prefix:'my_xpeng',theme:'dark',model:'G6',year:'2026',trim:'core_plus_rwd',color:'arctic_white',interior:'dark_gray',...config};
@@ -236,7 +276,40 @@ class XpengVehicleCard extends HTMLElement{
  ];}
  header(){const soc=xpPercent(this.val('soc')),trim=xpAllowedTrims(this.model(),this.year()).find(x=>x.id===this.trim());const trLabel=trim&&this.trim()!=='unspecified'?` · ${trim.label}`:'';
  return `<header class="head"><div><div class="vehicle-title-line"><img class="brand-mini" alt="XPENG" src="${xpEsc((this._config.image_path||'/hacsfiles/xpeng-vehicle-card/assets').replace(/\/$/,'')+'/xpeng-logo.png')}"><div class="vehicle-name">${xpEsc(this.name())}${this.vehicles().length>1?` <button class="back" data-cycle aria-label="Switch vehicle">⌄</button>`:''}</div></div><div class="trim-label">${xpEsc(this.year()+trLabel)}</div><div class="meta"><span class="battery-ico"><span style="width:${soc??0}%"></span></span><b>${soc===null?'—':xpNum(soc)+'%'}</b><span>${this.val('range')===null?'—':this.n('range')+' km'}</span></div><div class="sub-status ${this.charging()?'charging-text':''}">${xpEsc(this.stateText())}</div></div><div class="head-tools"><button type="button" data-expand aria-label="${this._expanded?'Exit full screen':'Full screen'}" title="${this._expanded?'Exit full screen':'Full screen'}">${this._expanded?'✕':'⛶'}</button><button data-view="appearance" aria-label="Customize vehicle" title="Customize vehicle">${xpIcon('settings',20)}</button><button data-view="info" title="Connection details" aria-label="Connection details">${xpIcon('info',20)}</button></div></header>`;}
- hero(){const charging=this.charging();const model=this.model();const cls=this.isG6()?'g6':'';return `<div class="hero ${cls} ${charging?'is-charging':''}"><img alt="XPENG ${xpEsc(model)} vehicle artwork" src="${xpEsc(this.asset())}" loading="eager">${charging?`<div class="hero-badge">${xpIcon('bolt',15)} ${this.n('power',1)} kW</div>`:''}</div>`;}
+ topVisual(){
+   const tires=this._view==='tires';
+   const entries=tires
+    ?[['tire_fl','Front left','xp-pin-fl'],['tire_fr','Front right','xp-pin-fr'],['tire_rl','Rear left','xp-pin-rl'],['tire_rr','Rear right','xp-pin-rr']]
+    :[['door_fl','Front left','xp-pin-fl'],['door_fr','Front right','xp-pin-fr'],['door_rl','Rear left','xp-pin-rl'],['door_rr','Rear right','xp-pin-rr']];
+   const labels=entries.map(([key,label,pos])=>{
+     const value=tires?this.value(key,'kPa'):this.status(key,'Open','Closed');
+     return `<div class="xp-pin-label ${pos} ${!tires&&this.bool(key)===true?'is-open':''}">${xpEsc(label)}<b>${xpEsc(value)}</b></div>`;
+   }).join('');
+   return `<svg class="xp-top-car" viewBox="0 0 560 340" role="img" aria-label="Vehicle viewed from above" xmlns="http://www.w3.org/2000/svg">
+     <defs><linearGradient id="xp-body" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8697a6"/><stop offset=".5" stop-color="#445666"/><stop offset="1" stop-color="#202c36"/></linearGradient></defs>
+     <ellipse cx="280" cy="297" rx="100" ry="15" fill="#070b0e" opacity=".5"/>
+     <rect x="202" y="56" width="15" height="61" rx="6" fill="#0d1116"/><rect x="343" y="56" width="15" height="61" rx="6" fill="#0d1116"/><rect x="202" y="228" width="15" height="61" rx="6" fill="#0d1116"/><rect x="343" y="228" width="15" height="61" rx="6" fill="#0d1116"/>
+     <rect x="211" y="25" width="138" height="288" rx="47" fill="url(#xp-body)" stroke="#9aa8b2" stroke-width="1.5"/>
+     <path d="M226 95 Q280 74 334 95 L330 225 Q280 245 230 225Z" fill="#172b39" stroke="#7a919d" stroke-width="3"/>
+     <path d="M228 115 H332 M230 221 H330 M280 115 V221" stroke="#8096a6" stroke-width="3" fill="none" opacity=".76"/>
+     <rect x="248" y="42" width="65" height="5" rx="3" fill="#e5f3fa"/><rect x="246" y="294" width="68" height="5" rx="3" fill="#f16d6a"/>
+   </svg>${labels}`;
+ }
+ hero(){
+   const view=this._view,model=this.model();
+   if(view==='climate'||view==='interior')
+     return `<div class="hero xp-hero-cabin" data-hero-view="${xpEsc(view)}"><div class="xp-view-caption">${view==='climate'?'Climate & cabin':'Interior & seats'}</div>${xpCabinSvg(this.interior())}</div>`;
+   if(view==='controls'||view==='vehicle'||view==='tires')
+     return `<div class="hero xp-hero-plan" data-hero-view="${xpEsc(view)}"><div class="xp-view-caption">${view==='tires'?'Tire monitoring':'Vehicle access'}</div>${this.topVisual()}</div>`;
+   const charging=this.charging(),soc=xpPercent(this.val('soc'));
+   const chargeOverlay=view==='charging'
+    ?`<div class="xp-charge-visual xp-page-visual"><small>BATTERY</small><strong>${soc===null?'—':xpNum(soc)+'%'}</strong><small>${this.val('power')===null?'Power unavailable':xpEsc(this.n('power',1)+' kW')}</small></div>`:'';
+   const locationOverlay=view==='location'
+    ?`<div class="xp-pin-visual xp-page-visual">${xpIcon('pin',37)}<small>LOCATION</small></div>`:'';
+   const headerText={charging:'Charging system',location:'Vehicle location',info:'Vehicle information',appearance:'Exterior appearance'};
+   return `<div class="hero ${this.isG6()?'g6':''} ${charging?'is-charging':''}" data-hero-view="${xpEsc(view)}">${headerText[view]?`<div class="xp-view-caption">${headerText[view]}</div>`:''}<img alt="XPENG ${xpEsc(model)} vehicle artwork" src="${xpEsc(this.asset())}" loading="eager">${chargeOverlay}${locationOverlay}${charging&&view==='overview'?`<div class="hero-badge">${xpIcon('bolt',15)} ${this.val('power')===null?'Charging':this.n('power',1)+' kW'}</div>`:''}</div>`;
+ }
+
  nav(){const opts=[['controls','lock'],['vehicle','car'],['charging','bolt'],['climate','fan']];return `<div class="navicons" aria-label="Vehicle panels">${opts.map(([view,iconName])=>`<button type="button" class="quick ${this._view===view?'selected':''} ${view==='charging'&&this.charging()?'positive':''}" data-view="${view}" title="${xpEsc(view)}" aria-label="Show ${xpEsc(view)} panel">${xpIcon(iconName,25)}</button>`).join('')}</div>`;}
  overview(){return `<section class="rows" aria-label="Vehicle status">${this.items().map(([view,ico,name,sub])=>`<button type="button" class="listrow" data-view="${view}"><span class="rowicon">${xpIcon(ico,21)}</span><span class="rowtext"><span class="rowtitle">${xpEsc(name)}</span><span class="rowsub">${xpEsc(sub)}</span></span><span class="rowarrow">${xpIcon('arrow',16)}</span></button>`).join('')}</section>`;}
  field(label,value){return `<div class="detailrow"><span>${xpEsc(label)}</span><strong>${xpEsc(value)}</strong></div>`;}
@@ -245,8 +318,8 @@ class XpengVehicleCard extends HTMLElement{
  chargingView(){const soc=xpPercent(this.val('soc')), target=xpPercent(this.val('target'));return `<div class="hint">${this.charging()?'⚡ Charging now':this.plugged()?'Charging cable connected':'Charging is not active'}</div><div class="metric-hero"><strong>${soc===null?'—':xpNum(soc)+'%'}</strong><span>${this.n('range')} km estimated</span></div><div class="track"><div class="fill" style="width:${soc??0}%"></div>${target!==null?`<div class="target" style="--target:${target}%"></div>`:''}</div><div class="progressfoot"><span>Battery</span><span>Charge limit: ${target===null?'—':xpNum(target)+'%'}</span></div><div class="metrics">${this.metric('Charging power','power','kW',1)}${this.metric('Time remaining','remaining','min')}${this.metric('Energy added','energy','kWh',2)}${this.metric('Voltage','voltage','V',1)}${this.metric('Current','current','A',1)}${this.metric('Range','range','km')}</div><p class="notice">Monitoring only. Charging controls will appear after XPENG remote commands are validated. Charging power (kW) and energy (kWh) are separate measurements.</p>`;}
  controlsView(){const b=(k,a)=>this.status(k,a,'Closed');return `<div class="door-grid"><div class="door-col"><div class="door-pill ${this.bool('door_fl')?'open':''}">Front left<b>${b('door_fl','Open')}</b></div><div class="door-pill ${this.bool('door_rl')?'open':''}">Rear left<b>${b('door_rl','Open')}</b></div></div><div class="door-mid" aria-label="Top-down car silhouette"></div><div class="door-col"><div class="door-pill ${this.bool('door_fr')?'open':''}">Front right<b>${b('door_fr','Open')}</b></div><div class="door-pill ${this.bool('door_rr')?'open':''}">Rear right<b>${b('door_rr','Open')}</b></div></div></div>${this.field('Door locks',this.status('locked','Locked','Unlocked'))}${this.field('Trunk',b('trunk','Open'))}${this.field('Front hood',b('hood','Open'))}<p class="notice">Door indicators are read-only. No unlock or open commands are sent.</p>`;}
  vehicleView(){return this.controlsView();}
- climateView(){return `<div class="metric-hero"><strong>${xpEsc(this.value('cabin','°C',1))}</strong><span>Cabin temperature</span></div><div class="xp-cabin-wrap">${xpCabinSvg(this.interior())}</div>${this.field('Air conditioning',this.status('climate','On','Off'))}${this.field('Outside temperature',this.value('outside','°C',1))}<button class="trim-option" type="button" data-view="interior">Interior & seat finish ${xpIcon('arrow',16)}</button><p class="notice">Steering wheel heating, front seat heat, ventilation and massage are not currently mapped to any VERIFIED direct XPENG cloud control entities. No buttons are activated or hidden API sensors invented.</p>`;}
- interiorView(){const v=this.interior();const choices=xpAllowedInteriors(this.model(),this.year(),this.trim());const buttons=choices.map(c=>`<button type="button" class="xp-interior-choice" data-interior="${c.id}" aria-pressed="${v===c.id}"><span class="xp-interior-chip" style="background:linear-gradient(130deg,${c.hex} 60%,${c.secondary} 61%)"></span>${xpEsc(c.label)}</button>`).join('');return `<div class="xp-cabin-wrap">${xpCabinSvg(v)}</div><div class="xp-cabin-note">Conceptual top-down cabin illustration • Trim colour applies to steering wheel, dashboard, console, door inserts, front seats and rear seats together.</div><div class="settings-label">Interior finish · ${xpEsc(this.model())} ${xpEsc(this.year())}</div><div class="xp-interior-grid">${buttons}</div><div class="xp-interior-list">${['Steering wheel','Dashboard','Door panels','Centre console','Driver & passenger seats','Rear seating'].map(x=>`<div>${xpEsc(x)}</div>`).join('')}</div><p class="notice">Interior selection is visual-only and does not change the real vehicle. Official Dark Gray and Light Gray themes are published for the refreshed G6; availability and upholstery materials vary by market and variant. Controls require verified XPENG API entities.</p>`;}
+ climateView(){return `<div class="metric-hero"><strong>${xpEsc(this.value('cabin','°C',1))}</strong><span>Cabin temperature</span></div>${this.field('Air conditioning',this.status('climate','On','Off'))}${this.field('Outside temperature',this.value('outside','°C',1))}<button class="trim-option" type="button" data-view="interior">Interior & seat finish ${xpIcon('arrow',16)}</button><p class="notice">Steering wheel heating, front seat heat, ventilation and massage are not currently mapped to any VERIFIED direct XPENG cloud control entities. No buttons are activated or hidden API sensors invented.</p>`;}
+ interiorView(){const v=this.interior();const choices=xpAllowedInteriors(this.model(),this.year(),this.trim());const buttons=choices.map(c=>`<button type="button" class="xp-interior-choice" data-interior="${c.id}" aria-pressed="${v===c.id}"><span class="xp-interior-chip" style="background:linear-gradient(130deg,${c.hex} 60%,${c.secondary} 61%)"></span>${xpEsc(c.label)}</button>`).join('');return `<div class="xp-cabin-note">Conceptual top-down cabin illustration • Trim colour applies to steering wheel, dashboard, console, door inserts, front seats and rear seats together.</div><div class="settings-label">Interior finish · ${xpEsc(this.model())} ${xpEsc(this.year())}</div><div class="xp-interior-grid">${buttons}</div><div class="xp-interior-list">${['Steering wheel','Dashboard','Door panels','Centre console','Driver & passenger seats','Rear seating'].map(x=>`<div>${xpEsc(x)}</div>`).join('')}</div><p class="notice">Interior selection is visual-only and does not change the real vehicle. Official Dark Gray and Light Gray themes are published for the refreshed G6; availability and upholstery materials vary by market and variant. Controls require verified XPENG API entities.</p>`;}
 
  tiresView(){return `<div class="metrics">${this.metric('Front left','tire_fl','kPa')}${this.metric('Front right','tire_fr','kPa')}${this.metric('Rear left','tire_rl','kPa')}${this.metric('Rear right','tire_rr','kPa')}</div><p class="notice">Readings depend on actual cloud telemetry. G6 OBD mappings are not treated as verified cloud API fields.</p>`;}
  locationView(){const loc=this.data('location')?.entity;const lat=Number(loc?.attributes?.latitude),lon=Number(loc?.attributes?.longitude),ok=loc&&Number.isFinite(lat)&&Number.isFinite(lon);return `${this.field('Location status',ok?'GPS available':'Not available')}${ok?this.field('Latitude',lat.toFixed(5))+this.field('Longitude',lon.toFixed(5)):''}${this.field('Last update',this.val('last_update')||'—')}<p class="notice">The card does not send your vehicle position to external map providers.</p>`;}
@@ -264,7 +337,7 @@ class XpengVehicleCard extends HTMLElement{
  <p class="notice">Appearance changes are stored in this browser. To apply to all devices, select the same values in the card's Home Assistant editor. Model-year availability is a catalog approximation: variants and paint offerings differ by region. Except for the specially illustrated G6 2026 facelift, the vehicle images are stylized concept art and not manufacturer-accurate photos for each year.</p>`;
  }
  detail(){const names={interior:'Interior & seats',appearance:'Appearance',controls:'Controls',vehicle:'Vehicle',charging:'Charging',climate:'Climate',location:'Location',tires:'Tire pressure',info:'Vehicle information'};const fn={interior:'interiorView',appearance:'appearanceView',controls:'controlsView',vehicle:'vehicleView',charging:'chargingView',climate:'climateView',location:'locationView',tires:'tiresView',info:'infoView'}[this._view]||'infoView';return `<div class="detail-head"><button class="back" data-back aria-label="Back to overview">${xpIcon('back',24)}</button><h2>${names[this._view]||'Details'}</h2></div><div class="content">${this[fn]()}</div>`;}
- render(){if(!this.shadowRoot)return;this.setAttribute('data-theme',this._config.theme==='light'?'light':'dark');this.toggleAttribute('data-expanded',this._expanded);const conn=this.val('connection');const unconfigured=conn===null||conn==='not_configured';this.shadowRoot.innerHTML=`<style>${XP_CSS}</style><ha-card><div class="app">${this.header()}${['interior','climate'].includes(this._view)?'':this.hero()+this.nav()}${unconfigured?'<div class="disconnected-note">XPENG API not connected · All live vehicle data remains unavailable</div>':''}${this._view==='overview'?this.overview():this.detail()}<footer class="footer-brand">XPENG · COMMUNITY VEHICLE CARD</footer></div></ha-card>`;}
+ render(){if(!this.shadowRoot)return;this.setAttribute('data-theme',this._config.theme==='light'?'light':'dark');this.toggleAttribute('data-expanded',this._expanded);const conn=this.val('connection');const unconfigured=conn===null||conn==='not_configured';this.shadowRoot.innerHTML=`<style>${XP_CSS}</style><ha-card><div class="app">${this.header()}${this.hero()+this.nav()}${unconfigured?'<div class="disconnected-note">XPENG API not connected · All live vehicle data remains unavailable</div>':''}${this._view==='overview'?this.overview():this.detail()}<footer class="footer-brand">XPENG · COMMUNITY VEHICLE CARD</footer></div></ha-card>`;}
 }
 class XpengVehicleCardEditor extends HTMLElement{
  constructor(){super();this.attachShadow({mode:'open'});this._cfg=xpNormalizeAppearance({prefix:'my_xpeng',model:'G6',year:'2026',trim:'core_plus_rwd',color:'arctic_white',interior:'dark_gray',theme:'dark'});

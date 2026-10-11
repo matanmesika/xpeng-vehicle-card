@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.5.0-alpha.5 (2026-10-11)
+- Central category-specific visual, fully wired fullscreen button and browser regression.
+- HACS release automation updated to publish current alpha, not older alpha.3.
+
 ## v0.5.0-alpha.4 (2026-10-11)
 - Worldwide presentation catalogue: 16 listed model profiles, 5 exterior paints, 2 interior themes; removed country-specific trim labels.
 - Added dashboard full-window expansion and exit control. No remote vehicle commands.
