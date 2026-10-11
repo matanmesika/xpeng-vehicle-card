@@ -16,12 +16,12 @@ This repository is the **Lovelace dashboard frontend**. Never change or publish 
 No third page, no vehicle commands. Interior preview may appear only in the transient metadata popover until a new layout is expressly approved.
 
 ## Critical release gates
-- **Visual fidelity**: both screenshots reviewed; no fake live SOC/ETA/location values.
-- **Model-year fidelity**: correct shape and trim details, not an older G6/G9 image relabelled as 2026.
+- **Visual fidelity**: both screens must render successfully using real HTML and explicitly labelled DEMO sensor data in screenshots. Initial v0.1.1 permits visibly marked illustrative vehicle art; pixel-identical manufacturer render parity is a separate enhancement gate.
+- **Model-year fidelity**: exact year/trim render only when verified; otherwise mark image as illustrative preview and never claim it is factory-accurate.
 - **Verified vehicle palettes**: G6/G9 2026 official catalogue included; do not claim older or other model palettes have been independently verified.
-- **Assets**: all selected `assets/vehicles/<model>/<year>/<trim>/<color>.webp` available and reviewed (unless deliberately declared unsupported). A generated SVG silhouette is only a visible missing-asset placeholder, never release-quality art.
+- **Assets**: every available profile must have a bundled source asset or a clearly labelled SVG silhouette; missing files must not silently break the dashboard. Initial v0.1.1 treats illustrative art as provisional. Future production-grade pixel-fidelity releases require verified photography.
 - **Privacy**: never commit VINs, tokens, locations or real car telemetry.
 - **Sync**: `dist/xpeng-vehicle-card.js` and `xpeng-vehicle-card.js` must be identical.
 - **No backend edits**: a missing integration profile entity is an integration feature gap to track separately, not an excuse to scrape HA internals.
 
-Current status: layout/metadata plumbing is under review. Manufacturer-accurate artwork for all model/year/trim/paint variants and full visual parity are **not complete**.
+Initial v0.1.1 status: all 53 model-year configurations and fallback visual profiles function; exact manufacturer-accurate artwork for all years/trim/paint variants and pixel-identical visual parity remain tracked improvements.
