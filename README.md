@@ -102,3 +102,8 @@ Version `v0.7.0-alpha.1` removes the in-card Settings/Appearance page and paint/
 The previous concept screenshots were **not browser captures of the implementation**; this release replaces the generic box layouts with a cohesive car-centered layout. The main `G6 2026` image stays prominent in each section, with per-page overlays, a contextual right rail and native Home Assistant telemetry. No fabricated SOC, location, climate or remote command success.
 
 Screenshots from the actual Chromium-rendered card are attached to the [v0.7 alpha release](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v0.7.0-alpha.1), covering desktop and mobile Overview, Controls, Climate, Comfort, Charging, Tires and Interior. The owner YAML with the existing `main_nav` is in `dashboards/xpeng-g6-cockpit.yaml`.
+
+
+## Rebuild preview (v0.9.0-alpha.1, not yet released)
+
+A clean single-card vehicle app with four home menu rows, large XPENG car image, Controls, Climate (including steering wheel heat and seat functions), Charging and Location. No sidebars or multiple dashboard panels. Uses editor-only paint/upholstery and the same G6 2026 YAML. See [preview specification](docs/REBUILD_FROM_SCRATCH.md) and browser screenshots in PR CI artifacts. XPENG cloud API remains unverified; commands stay disabled.

@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.9.0-alpha.1 (preview, pending visual approval)
+- Clean rewrite of XPENG Cockpit as one vehicle-app style card, four quick actions, four main menu rows and replacing subpages.
+- Owner model/year/trim/paint/upholstery remains editor-only; Home Assistant navbar retained separately.
+- Original XPENG top-down controls, cabin visual, charging view, and safe read-only entity mapping.
+- Desktop and phone Chromium screenshot tests, HACS packaging and brand independence checks.
+- Not yet released: awaits owner visual approval and authorized XPENG API before enabling remote commands.
+
+
 ## v0.7.0-alpha.1 (2026-10-11)
 - Large actual G6 vehicle image across every Studio cockpit page; contextual cabin/doors/tires overlays and reorganized status cards.
 - Responsive composition with photo-led stage, side nav, right telemetry rail and bottom dashboard modules.

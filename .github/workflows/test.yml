@@ -28,17 +28,13 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Run browser regressions
         run: |
-          python tests/test_year_model_color.py
-          python tests/test_g6_2026_ui.py
-          python tests/test_interior_palette.py
-          python tests/test_dashboard_release.py
-          python tests/test_cockpit_layout.py
+          python tests/test_clean_rebuild.py
       - name: Upload real rendered Cockpit screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: xpeng-v070-cockpit-browser-screenshots
-          path: previews/cockpit-v070/*.png
+          name: xpeng-clean-rebuild-v090-browser-screenshots
+          path: previews/clean-rebuild-v090/*.png
           if-no-files-found: warn
       - name: Verify branding independence
         run: |

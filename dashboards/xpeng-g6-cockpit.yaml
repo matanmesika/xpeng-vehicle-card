@@ -6,7 +6,7 @@ max_columns: 4
 dense_section_placement: false
 badges: []
 cards: []
-# The card itself has the full vehicle heading. No duplicate Markdown header.
+# No duplicate markdown header — XPENG card itself provides the title.
 sections:
   - type: grid
     column_span: 4
@@ -20,6 +20,7 @@ sections:
         interior: dark_gray
         theme: dark
         dashboard_layout: cockpit
+        layout: wide
         grid_options:
           columns: full
           rows: auto
