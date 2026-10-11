@@ -23,6 +23,7 @@ const XP_KEYS = Object.freeze({
  speed:['sensor','vehicle_speed_kmh','vehicle_speed']
 });
 const XP_ICONS = {
+ home:'<path d="M3 10.5 12 3l9 7.5V21h-6v-7H9v7H3Z"/>',
  lock:'<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
  unlock:'<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0V6a4 4 0 0 0-7-2"/>',
  car:'<path d="M4 16H2v-5l2-5h16l2 5v5h-2M4 16h16M4 16v3m16-3v3M2 11h20M7 6l-2 5m12-5 2 5"/><circle cx="6.5" cy="15" r=".8"/><circle cx="17.5" cy="15" r=".8"/>',
@@ -128,12 +129,12 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-title h1{font-size:clamp(32px,3.7vw,62px);line-height:1.02;letter-spacing:.035em;font-weight:730;margin:0;white-space:nowrap}
 .xp-title h1 em{font-style:normal;color:#7eaeff}
 .xp-subtitle{font-size:clamp(15px,2vw,30px);color:#8192b6;font-weight:400}
-.xp-car{position:absolute;z-index:3;width:66%;height:auto;max-height:73%;object-fit:contain;left:23%;bottom:13%;filter:drop-shadow(0 20px 20px #000b) brightness(1.32) contrast(1.08)}
+.xp-car{position:absolute;z-index:3;width:57%;height:auto;max-height:73%;object-fit:contain;left:21%;bottom:16%;filter:drop-shadow(0 20px 20px #000b) brightness(1.32) contrast(1.08)}
 .xp-car.xp-paint-silver_frost{filter:drop-shadow(0 20px 20px #000b) brightness(1.13)}
 .xp-car.xp-paint-space_grey{filter:drop-shadow(0 20px 20px #000b) brightness(.78) hue-rotate(4deg)}
 .xp-car.xp-paint-jet_black{filter:drop-shadow(0 20px 20px #000b) brightness(.45)}
 .xp-car.xp-paint-stellar_purple{filter:drop-shadow(0 20px 20px #000b) brightness(.84) sepia(.13) hue-rotate(190deg)}
-.xp-overview-stat{position:absolute;left:5.3%;top:42%;z-index:5;width:24%;max-width:365px;display:flex;flex-direction:column;gap:4px}
+.xp-overview-stat{position:absolute;left:5.3%;top:42%;z-index:5;width:18%;max-width:290px;display:flex;flex-direction:column;gap:4px}
 .xp-batt-line{display:flex;align-items:center;gap:18px}
 .xp-batt-glyph{width:62px;height:90px;border:3px solid #cad7e7;border-radius:11px;position:relative;padding:7px;flex:none;display:flex;align-items:flex-end}
 .xp-batt-glyph:before{content:"";position:absolute;width:22px;height:8px;border:3px solid #cad7e7;border-bottom:0;top:-10px;left:calc(50% - 11px);border-radius:4px 4px 0 0}
@@ -169,7 +170,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-charge-meta>div:last-child{padding-right:0;border-right:0}
 .xp-charge-meta small{font-size:clamp(10px,1vw,16px);color:#9eb3d0;white-space:nowrap}
 .xp-charge-meta b{font-size:clamp(12px,1.5vw,25px);font-weight:560;white-space:nowrap}
-.xp-charge .xp-car{width:49%;left:40%;bottom:12%;height:auto;max-height:70%}
+.xp-charge .xp-car{width:52%;left:41%;bottom:12%;height:auto;max-height:70%;z-index:7}
 .xp-charge .xp-title{left:5.3%;top:17%}
 .xp-charge .xp-brand{visibility:hidden}
 .xp-charge .xp-updated{right:19%;top:14%}
@@ -218,7 +219,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-charge-meta{margin-top:15px;padding-top:15px}
 .xp-charge-meta small{font-size:10px;white-space:normal}
 .xp-charge-meta b{font-size:14px}
-.xp-charge .xp-car{width:105%;left:-4%;bottom:9%;max-height:36%}
+.xp-charge .xp-car{width:96%;left:2%;bottom:9%;max-height:36%}
 .xp-station{right:5%;bottom:22%;height:13%;min-width:40px;font-size:16px}
 .xp-subtle-link{bottom:15px;left:5%}
 .xp-version{right:10px;bottom:3px}
@@ -329,7 +330,7 @@ class XpengVehicleCard extends HTMLElement{
    const connected=['connected','online'].includes(conn);
    return `<header class="xp-header"><div class="xp-brand"><span class="xp-x-mark">✕</span><span>XPENG</span></div>
      <div class="xp-header-right"><span class="xp-wifi ${connected?'xp-connected':''}" aria-label="${xpEsc(xpConnText(this.val('connection')))}"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M2 8c5.7-5.6 14.3-5.6 20 0M5 12c4-3.6 10-3.6 14 0M9 16c1.8-1.4 4.2-1.4 6 0"/><circle cx="12" cy="20" r="1.3" fill="currentColor" stroke="none"/></svg></span>
-     <button class="xp-head-button" type="button" data-view="overview" aria-label="Vehicle overview">${xpIcon('car',23)}</button>
+     <button class="xp-head-button" type="button" data-view="overview" aria-label="Vehicle overview">${xpIcon('home',23)}</button>
      <button class="xp-head-button" type="button" data-expand aria-label="${this._expanded?'Exit full screen':'Full screen'}">${this._expanded?'✕':'⛶'}</button>
      <span class="xp-head-separator"></span><span class="xp-clock">${xpEsc(now)}</span></div></header>`;
  }
