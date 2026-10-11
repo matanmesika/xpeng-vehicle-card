@@ -14,19 +14,8 @@ sections:
         prefix: my_xpeng
         model: G6
         year: '2026'
-        trim: core_performance_awd
+        trim: core_plus_rwd
         color: arctic_white
-        interior: dark_gray
-        theme: dark
-        dashboard_layout: cockpit
         grid_options:
           columns: full
           rows: auto
-      - type: custom:navbar-card
-        template: main_nav
-        grid_options:
-          columns: full
-          rows: auto
-card_mod:
-  style: |
-    :host { padding-bottom: max(128px, calc(100px + env(safe-area-inset-bottom))); }

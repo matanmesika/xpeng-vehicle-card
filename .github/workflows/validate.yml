@@ -9,6 +9,15 @@ jobs:
   hacs:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+      - name: Verify real dashboard image asset in README
+        run: |
+          test -s dist/assets/g6-studio.webp
+          grep -Fq '![Vehicle artwork used by the dashboard](dist/assets/g6-studio.webp)' README.md
       - uses: hacs/action@main
         with:
           category: plugin
+          # The upstream images check validates the latest release, not always a PR's
+          # README. Our preceding job verifies the actual image and the browser
+          # acceptance workflow checks that it loads correctly.
+          ignore: images
