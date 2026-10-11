@@ -390,9 +390,11 @@ const XP_CSS = `
  .xs-control-buttons{grid-template-columns:1fr}
 }
 
-/* v0.8 experimental Tesla-like structure, independently implemented for XPENG. */
+/* v0.8 experimental vehicle-app style structure, independently implemented for XPENG. */
 :host([data-cockpit]) ha-card{background:transparent!important;border:0!important;box-shadow:none!important;overflow:visible!important}
 :host([data-cockpit]) .app{padding:0!important;background:transparent!important;max-width:none!important;margin:0 auto!important}
+:host([data-cockpit]) .app{min-height:0!important;height:auto!important}
+:host([data-cockpit]){display:block}
 .xt-card{width:100%;max-width:900px;box-sizing:border-box;margin:0 auto;background:#17181a;border:1px solid #303235;color:#f4f5f6;border-radius:22px;padding:24px 25px 14px;box-shadow:0 18px 55px #0003;font-family:system-ui,-apple-system,Segoe UI,sans-serif}
 .xt-card button{font:inherit;color:inherit}
 .xt-card button:focus-visible{outline:2px solid #7cbbff;outline-offset:2px}
@@ -751,9 +753,9 @@ class XpengVehicleCard extends HTMLElement{
    }else{content=`<div class="xs-data-grid">${[['Model',this.model()],['Year',this.year()],['Odometer',this.value('odometer','km')],['Battery health',this.value('health','%')],['API status',this.val('connection')||'Not configured'],['Powertrain',this.val('powertrain')||'—']].map(([label,value])=>`<div class="xs-data-chip"><span>${xpEsc(label)}</span><strong>${xpEsc(value)}</strong></div>`).join('')}</div>`;}
    return `<section class="xs-detail" aria-label="${xpEsc(panelTitle)}"><div class="xs-detail-heading"><h3>${xpEsc(panelTitle)}</h3><button type="button" data-view="overview">${xpIcon('back',17)} Home</button></div>${content}</section>`;
  }
- // Vehicle-first UX adapted independently from the Tesla-style menu flow.
+ // Vehicle-first UX adapted independently from the vehicle-app style menu flow.
  // Original XPENG UI and car assets. No third-party app assets or commands.
- teslaLikeHeader(){
+ vehicleMenuHeader(){
   const soc=xpPercent(this.val('soc')),range=this.value('range','km');
   const trim=xpAllowedTrims(this.model(),this.year()).find(v=>v.id===this.trim())?.label||'';
   return `<header class="xt-header">
@@ -766,7 +768,7 @@ class XpengVehicleCard extends HTMLElement{
     </div>
   </header>`;
  }
- teslaLikeLanding(){
+ vehicleMenuLanding(){
   const charging=this.bool('charging');
   const locked=this.bool('locked');
   const menu=[
@@ -790,7 +792,7 @@ class XpengVehicleCard extends HTMLElement{
       ${menu.map(([view,label,icon,subtitle])=>`<button type="button" class="xt-nav-row" data-view="${view}"><span class="xt-nav-icon">${icon}</span><span class="xt-nav-copy"><b>${label}</b><small>${xpEsc(subtitle)}</small></span>${xpIcon('arrow',17)}</button>`).join('')}
     </nav></div>`;
  }
- teslaLikePanel(){
+ vehicleMenuPanel(){
   const view=this._view;
   const labels={controls:'Controls',vehicle:'Controls',tires:'Tire Pressure',charging:'Charging',climate:'Climate',comfort:'Comfort',interior:'Interior',location:'Location',info:'Vehicle Information'};
   const top=`<div class="xt-panel-head"><button type="button" data-back aria-label="Back to car">${xpIcon('back',23)}</button><h2>${xpEsc(labels[view]||'Vehicle')}</h2></div>`;
@@ -851,12 +853,12 @@ class XpengVehicleCard extends HTMLElement{
   }else{
    content=`<div class="xt-values">${[['Model',this.model()],['Year',this.year()],['Edition',this.trim()],['Odometer',this.value('odometer','km')],['Powertrain',this.val('powertrain')||'—'],['Connection',xpConnText(this.val('connection'))]].map(([k,v])=>`<div><span>${xpEsc(k)}</span><b>${xpEsc(v)}</b></div>`).join('')}</div>`;
   }
-  return top+`<section class="xt-panel" data-tesla-style-panel="${xpEsc(view)}">${content}</section>`;
+  return top+`<section class="xt-panel" data-xpeng-menu-panel="${xpEsc(view)}">${content}</section>`;
  }
  cockpit(){
    const active=this._view!=='overview';
-   return `<div class="xt-card">${!active?this.teslaLikeHeader():''}
-       ${active?this.teslaLikePanel():this.teslaLikeLanding()}
+   return `<div class="xt-card">${!active?this.vehicleMenuHeader():''}
+       ${active?this.vehicleMenuPanel():this.vehicleMenuLanding()}
        <div class="xt-footnote">XPENG Direct · ${xpEsc(xpConnText(this.val('connection')))} · Read only pending manufacturer-approved control API</div>
    </div>`;
  }

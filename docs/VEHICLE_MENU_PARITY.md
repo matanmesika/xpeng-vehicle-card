@@ -1,8 +1,8 @@
 # XPENG single-card flow — reference review and implementation boundaries
 
-Reference: https://github.com/ds2000/homeassistant-fe-tesla
+Reference: community vehicle-card menu layout reviewed for navigation behaviour. Code and assets are independently implemented.
 
-**Intent:** Match the Tesla card's single-vehicle experience and interaction flow
+**Intent:** Match the reference vehicle card's single-vehicle experience and interaction flow
 with original XPENG code and original XPENG-compatible visual assets.
 
 ## Reference behavior
@@ -27,7 +27,7 @@ trim, color and cabin interior. Exterior and upholstery editing remains
 **card editor only**.
 
 The source reference currently has **no LICENSE file** at the GitHub root,
-so its code, Tesla artwork and SVG button library are NOT copied or redistributed.
+so its code, third-party artwork and SVG button library are NOT copied or redistributed.
 Visual consistency and XPENG-specific imagery must be improved with
 properly licensed assets before claiming pixel-perfect parity.
 

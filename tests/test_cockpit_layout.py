@@ -1,6 +1,6 @@
-"""XPENG screen flow replicates the Tesla-style *user interaction structure*.
+"""XPENG screen flow replicates the single-vehicle *user interaction structure*.
 
-Original implementation, images and business logic. No Tesla source/assets.
+Original implementation, images and business logic. No external source/assets.
 Browser shots prove it is not a concept render. Remote commands stay disabled.
 """
 from pathlib import Path
@@ -12,7 +12,7 @@ assert JS==(ROOT/'xpeng-vehicle-card.js').read_text(encoding='utf-8')
 assert 'localStorage' not in JS
 assert 'callService(' not in JS and '.call_service(' not in JS
 assert 'v0.8.0-alpha.1' in JS
-PREV=ROOT/'previews'/'tesla-flow-v080'
+PREV=ROOT/'previews'/'vehicle-flow-v080'
 PREV.mkdir(parents=True,exist_ok=True)
 STATES={'sensor.my_xpeng_api_connection_status':{'state':'not_configured','attributes':{}}}
 with sync_playwright() as p:
@@ -52,14 +52,14 @@ with sync_playwright() as p:
   page.screenshot(path=str(PREV/f'{device}-home.png'),full_page=True)
   def enter(menu):
    c.locator(f'.xt-nav-row[data-view="{menu}"]').click()
-   assert c.locator(f'.xt-panel[data-tesla-style-panel="{menu}"]').count()==1
+   assert c.locator(f'.xt-panel[data-xpeng-menu-panel="{menu}"]').count()==1
   enter('controls')
   assert c.locator('.xt-control-stage').count()==1
   assert c.locator('.xt-control-bar button:not([disabled])').count()==0
   assert c.locator('.xt-car-zones button:not([disabled])').count()==0
   page.screenshot(path=str(PREV/f'{device}-controls.png'),full_page=True)
   c.locator('button[data-view="tires"]').click()
-  assert c.locator('.xt-panel[data-tesla-style-panel="tires"]').count()==1
+  assert c.locator('.xt-panel[data-xpeng-menu-panel="tires"]').count()==1
   assert '—' in c.locator('.xt-values').inner_text()
   c.locator('button[data-back]').click()
   enter('climate')

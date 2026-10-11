@@ -38,7 +38,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: xpeng-v080-single-card-browser-screenshots
-          path: previews/tesla-flow-v080/*.png
+          path: previews/vehicle-flow-v080/*.png
           if-no-files-found: warn
       - name: Verify branding independence
         run: |
