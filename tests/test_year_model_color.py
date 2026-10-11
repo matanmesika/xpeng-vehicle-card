@@ -57,7 +57,12 @@ with sync_playwright() as p:
  def artifact():return page.evaluate('''() => {let c=document.querySelector('xpeng-vehicle-card');let img=c.shadowRoot.querySelector('.hero img');return {src:img.getAttribute('src'),loaded:img.complete&&img.naturalWidth>0, year:c.year(),model:c.model(),trim:c.trim(),paint:c.paint()}}''')
  def change(k,v):
   card().locator('[data-appearance="'+k+'"]').select_option(v)
-  page.wait_for_timeout(250)
+  # Wait for the actual image to load; time delays are flaky in hosted CI.
+  page.wait_for_function("""() => {
+    const c = document.querySelector('xpeng-vehicle-card');
+    const img = c?.shadowRoot?.querySelector('.hero img');
+    return img && img.complete && img.naturalWidth > 0;
+  }""", timeout=15000)
  initialize()
  assert artifact()['src'].endswith('g6-2026-arctic_white.webp'),artifact()
  assert artifact()['loaded'],artifact()
