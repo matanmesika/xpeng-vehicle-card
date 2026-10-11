@@ -26,15 +26,15 @@ jobs:
         run: |
           python -m pip install playwright pytest
           python -m playwright install --with-deps chromium
-      - name: Run fresh UI acceptance tests
+      - name: Run two-screen UI acceptance tests
         run: |
           python tests/test_rewrite_v1.py
-      - name: Upload real rewritten XPENG screenshots
+      - name: Upload XPENG Dashboard v0.1.0 browser screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: xpeng-clean-v1-browser-screenshots
-          path: previews/rewrite-v1/*.png
+          name: xpeng-dashboard-v010-browser-screenshots
+          path: previews/dashboard-v010/*.png
           if-no-files-found: warn
       - name: Verify branding independence
         run: |
