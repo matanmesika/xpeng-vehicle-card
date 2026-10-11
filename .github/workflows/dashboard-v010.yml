@@ -1,0 +1,28 @@
+name: XPENG dashboard v0.1.0 checks
+on:
+  push:
+    branches: [main, dashboard-v0.1.0-two-screens]
+    paths:
+      - 'dist/xpeng-vehicle-card.js'
+      - 'tests/dashboard-v010.test.cjs'
+      - '.github/workflows/dashboard-v010.yml'
+  pull_request:
+    paths:
+      - 'dist/xpeng-vehicle-card.js'
+      - 'tests/dashboard-v010.test.cjs'
+      - '.github/workflows/dashboard-v010.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  dashboard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check JavaScript syntax
+        run: node --check dist/xpeng-vehicle-card.js
+      - name: Run dashboard telemetry and view tests
+        run: node --test tests/dashboard-v010.test.cjs
