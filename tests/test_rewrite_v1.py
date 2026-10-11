@@ -1,4 +1,4 @@
-"""Chromium acceptance for XPENG Dashboard v0.1.0 (frontend only).
+"""Chromium acceptance for XPENG Dashboard v0.1.1 (frontend only).
 
 The injected values below are *test fixtures* and must never be hardcoded in
 the actual card. The vehicle integration is outside the scope of this test.
@@ -10,7 +10,7 @@ from playwright.sync_api import sync_playwright
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = (ROOT / 'dist/xpeng-vehicle-card.js').read_text(encoding='utf-8')
 assert SCRIPT == (ROOT / 'xpeng-vehicle-card.js').read_text(encoding='utf-8')
-assert 'Dashboard v0.1.0' in SCRIPT
+assert 'Dashboard v0.1.1' in SCRIPT
 assert 'localStorage' not in SCRIPT and 'callService(' not in SCRIPT and 'fetch(' not in SCRIPT
 OUT = ROOT / 'previews' / 'dashboard-v010'
 OUT.mkdir(parents=True, exist_ok=True)
@@ -139,10 +139,11 @@ with sync_playwright() as p:
         }""")
         editor = page.locator('xpeng-vehicle-card-editor')
         assert editor.locator('[data-key="color"]').count() == 1
-        assert editor.locator('[data-key="interior"]').count() == 0
+        assert editor.locator('[data-key="interior"]').count() == 1
 
         assert not errors, errors
-        assert not missing, missing
+        # Release gate: all model/year/colour assets must exist before release.
+        assert not missing, f'MISSING MODEL-YEAR ART: {missing}'
         page.close()
     browser.close()
-print('PASS: Dashboard v0.1.0 2-screen Chromium acceptance on desktop and phone')
+print('PASS: Dashboard v0.1.1 2-screen Chromium acceptance on desktop and phone')
