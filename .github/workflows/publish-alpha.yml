@@ -1,6 +1,10 @@
 name: Publish XPENG alpha pre-release
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-alpha.yml'
 
 permissions:
   contents: write
