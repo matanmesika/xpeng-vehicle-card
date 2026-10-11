@@ -67,6 +67,10 @@ with sync_playwright() as p:
   assert dims['svgHeight']<=dims['parentHeight']+2,dims
   assert dims['svgWidth']<=dims['parentWidth']+2,dims
   assert 'Steering wheel heating' in card.locator('.xt-seat-functions').inner_text()
+  assert card.locator('.xt-seat-functions>div').count()==8
+  assert 'Driver seat ventilation' in card.locator('.xt-seat-functions').inner_text()
+  assert 'Passenger seat massage' in card.locator('.xt-seat-functions').inner_text()
+  assert card.locator('.xt-comfort-quick button:not([disabled])').count()==0
   assert card.locator('.xt-seat-functions button:not([disabled])').count()==0
   page.screenshot(path=str(OUT/f'{tag}-climate.png'),full_page=True)
   card.locator('[data-back]').click()

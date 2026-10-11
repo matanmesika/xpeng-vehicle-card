@@ -211,6 +211,7 @@ const XP_CSS = `
 .xt-temp-panel strong{font-size:21px}
 .xt-climate-stepper{display:flex!important;flex-direction:row!important;align-items:center;gap:9px}
 .xt-climate-stepper button,.xt-stepper button{background:#2b2d30;border:0;border-radius:7px;width:38px;height:38px;font-size:22px;opacity:.5}
+.xt-comfort-quick{display:flex;gap:8px;justify-content:space-between;margin:0 0 14px}.xt-comfort-quick button{display:flex;align-items:center;justify-content:center;gap:7px;flex:1;background:#272a2e;border:1px solid #3d434a;border-radius:9px;padding:10px 5px;font-size:11px;cursor:not-allowed}
 .xt-seat-functions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .xt-seat-functions>div{display:flex;justify-content:space-between;gap:9px;align-items:center;padding:12px;border:1px solid #34383b;border-radius:11px;background:#222427}
 .xt-seat-functions span{display:flex;align-items:center;gap:7px;font-size:12px}
@@ -419,8 +420,14 @@ class XpengVehicleCard extends HTMLElement{
   }else if(view==='climate'||view==='comfort'||view==='interior'){
    const cab=XP_INTERIORS.find(x=>x.id===this.interior())?.label||'—';
    const modes=[
-    ['steering wheel heat','Steering wheel heating'],['seat heat','Front seat heating'],
-    ['seat cooling','Seat ventilation'],['seat massage','Seat massage']
+    ['steering','Steering wheel heating'],
+    ['driver_heat','Driver seat heating'],
+    ['passenger_heat','Passenger seat heating'],
+    ['rear_heat','Rear seat heating'],
+    ['driver_cooling','Driver seat ventilation'],
+    ['passenger_cooling','Passenger seat ventilation'],
+    ['driver_massage','Driver seat massage'],
+    ['passenger_massage','Passenger seat massage']
    ];
    content=`<div class="xt-climate-area">
       <div class="xt-cabin-surface">${xpCabinSvg(this.interior())}</div>
@@ -435,6 +442,7 @@ class XpengVehicleCard extends HTMLElement{
        <div class="xt-climate-stepper"><button disabled aria-label="Lower target temperature">−</button><b>— °C</b><button disabled aria-label="Raise target temperature">+</button></div>
        <div><small>Climate status</small><strong>${xpEsc(this.status('climate','On','Off'))}</strong></div>
     </div>
+    <div class="xt-comfort-quick"><button disabled aria-label="Air conditioning remote control unavailable">${xpIcon('fan',19)} A/C</button><button disabled aria-label="Defrost remote control unavailable">${xpIcon('sun',19)} Defrost</button><button disabled aria-label="Vent windows remote control unavailable">${xpIcon('car',19)} Vent windows</button></div>
     <div class="xt-seat-functions">
       ${modes.map(([key,label])=>`<div><span>${xpIcon('thermometer',20)} ${label}</span><button disabled title="No XPENG authorized cloud command">Unavailable</button></div>`).join('')}
     </div><div class="xt-inline-foot">Interior: ${xpEsc(cab)} · Change exterior and upholstery only in Home Assistant Edit card.</div>`;
