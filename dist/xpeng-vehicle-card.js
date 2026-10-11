@@ -1,5 +1,5 @@
 /**
- * XPENG Vehicle Card v1.0.0-alpha.1 — XPENG vehicle monitoring dashboard (read-only).
+ * XPENG Vehicle Card v0.1.0 — XPENG vehicle monitoring dashboard (read-only).
  * Independent implementation. Uses no external vehicle-control APIs.
  * Reads only Home Assistant state. Does not send vehicle commands.
  */
@@ -311,21 +311,7 @@ const XP_CSS = `
 `;
 class XpengVehicleCard extends HTMLElement{
  constructor(){super();this.attachShadow({mode:'open'});this._expanded=false;this._nativeFull=false;this._config={prefix:'my_xpeng',theme:'dark'};this._view='overview';this._hass=null;this._vehicleIndex=0;this._tireUnit='kPa';
-   this.shadowRoot.addEventListener('click',e=>{const target=e.target.closest('button[data-view],button[data-back],button[data-cycle],button[data-expand],button[data-tire-unit]');if(!target)return;
-    if(target.hasAttribute('data-tire-unit')){this._tireUnit=this._tireUnit==='kPa'?'bar':this._tireUnit==='bar'?'psi':'kPa';this.render();return;}
-    if(target.hasAttribute('data-expand')){
-      this._expanded=!this._expanded;
-      if(this._expanded&&typeof this.requestFullscreen==='function'){
-        this._nativeFull=true;this.requestFullscreen().catch(()=>{this._nativeFull=false;});
-      }else if(!this._expanded&&document.fullscreenElement===this&&typeof document.exitFullscreen==='function'){
-        document.exitFullscreen().catch(()=>{});
-      }
-      this.render();return;
-    }
-    if(target.dataset.view){this._view=target.dataset.view;this.render();}
-    else if(target.dataset.back!==undefined){this._view='overview';this.render();}
-    else if(target.dataset.cycle!==undefined){this._vehicleIndex=(this._vehicleIndex+1)%this.vehicles().length;this._view='overview';this.render();}});
-   
+
  }
  connectedCallback(){
    if(!this._fsListener)this._fsListener=()=>{if(this._nativeFull&&!document.fullscreenElement){this._nativeFull=false;this._expanded=false;this.render();}};
@@ -574,20 +560,58 @@ class XpengVehicleCard extends HTMLElement{
   }
   return top+`<section class="xt-panel" data-xpeng-menu-panel="${xpEsc(view)}">${content}</section>`;
  }
- cockpit(){
-   const active=this._view!=='overview';
-   return `<div class="xt-card">${!active?this.vehicleMenuHeader():''}
-       ${active?this.vehicleMenuPanel():this.vehicleMenuLanding()}
-       <div class="xt-footnote">XPENG Direct · ${xpEsc(xpConnText(this.val('connection')))} · Read only pending manufacturer-approved control API</div>
-   </div>`;
+
+ statusDisplay(){
+   const charging=this.bool('charging')===true&&['connected','online'].includes(String(this.val('connection')||'').toLowerCase());
+   const soc=xpPercent(this.val('soc')),range=this.value('range','km');
+   const odometer=this.value('odometer','km');
+   const pressures=['tire_fl','tire_fr','tire_rl','tire_rr'].map(k=>this.number(k));
+   const tires=pressures.every(v=>v!==null&&v>0)?xpNum(pressures.reduce((a,b)=>a+b,0)/400,2)+' bar avg':'—';
+   const location=this.data('location')?.entity;
+   const locationState=this.val('location');
+   const lat=location?.attributes?.latitude,lon=location?.attributes?.longitude;
+   const gps=locationState!==null&&lat!=null&&lon!=null&&Number.isFinite(Number(lat))&&Number.isFinite(Number(lon));
+   const locationLabel=!gps?'—':locationState==='home'?'Home':locationState==='not_home'?'Away':String(location?.attributes?.friendly_name||locationState);
+   const rawUpdate=this.val('last_update');
+   const t=rawUpdate===null?null:new Date(rawUpdate);
+   const time=t&&!Number.isNaN(t.getTime())?'Updated '+t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'';
+   const m=this.number('remaining'),eta=m===null||m<0?'—':(Math.floor(m/60)?Math.floor(m/60)+'h ':'')+Math.round(m%60)+'m';
+   const progress=soc===null?0:soc;
+   const bar='<div class="xv-progress" role="progressbar" aria-label="Battery state of charge" aria-valuemin="0" aria-valuemax="100"'+(soc===null?'':' aria-valuenow="'+soc+'"')+'><span style="width:'+progress+'%"></span></div>';
+   const number=soc===null?'—':xpNum(soc)+'%';
+   const header='<header class="xv-head"><span class="xv-brand"><b class="xv-brand-symbol">✕</b> XPENG</span><span class="xv-update">'+xpEsc(time)+'</span></header>';
+   const heading='<div class="xv-title"><h2>XPENG <span>'+xpEsc(this.model())+'</span></h2><p>'+(charging?'Charging now':'Vehicle status')+'</p></div>';
+   const car='<div class="xv-car"><div class="xv-car-glow"></div><img src="'+xpEsc(this.asset())+'" alt="XPENG '+xpEsc(this.model())+' '+xpEsc(this.year())+' '+xpEsc(this.paint())+'" loading="eager" /></div>';
+   const metrics='<div class="xv-metrics"><div class="xv-label">Battery</div><div class="xv-battery-value">'+xpIcon('battery',32)+'<strong>'+xpEsc(number)+'</strong></div>'+bar+
+     '<div class="xv-label xv-range-label">Estimated range</div><div class="xv-range-value">'+xpIcon('gauge',28)+'<strong>'+xpEsc(range)+'</strong></div></div>';
+   const info='<aside class="xv-info" aria-label="Other vehicle information">'+
+     '<div>'+xpIcon('gauge',23)+'<span>Odometer<strong>'+xpEsc(odometer)+'</strong></span></div>'+
+     '<div>'+xpIcon('tire',23)+'<span>Tire pressure<strong>'+xpEsc(tires)+'</strong></span></div>'+
+     '<div>'+xpIcon('pin',23)+'<span>Location<strong>'+xpEsc(locationLabel)+'</strong></span></div></aside>';
+   const chargingInfo='<section class="xv-charge" aria-label="Charging information">'+
+     '<h3>'+xpIcon('bolt',31)+' Charging now</h3>'+bar+
+     '<div class="xv-charge-primary"><div><small>Battery</small><strong>'+xpEsc(number)+'</strong></div>'+
+     '<div><small>Estimated range</small><strong>'+xpEsc(range)+'</strong></div></div>'+
+     '<div class="xv-charge-details"><div><small>Charging power</small><strong>'+xpEsc(this.value('power','kW',1))+'</strong></div>'+
+     '<div><small>Time remaining</small><strong>'+xpEsc(eta)+'</strong></div>'+
+     '<div><small>Charge limit</small><strong>'+xpEsc(this.value('target','%'))+'</strong></div></div></section>';
+   const charger=charging?'<div class="xv-charger-art" aria-hidden="true"><div class="xv-charge-pole">✕</div><div class="xv-energy-wave"></div></div>':'';
+   this.setAttribute('data-display-state',charging?'charging':'vehicle');
+   this.setAttribute('data-model',this.model());
+   return '<div class="xv-screen '+(charging?'xv-charging':'xv-idle')+'" aria-label="XPENG automatic vehicle status display">'+
+     '<div class="xv-landscape" aria-hidden="true"></div>'+header+
+     '<div class="xv-main">'+heading+car+(charging?chargingInfo:metrics+info)+charger+'</div>'+
+     '<div class="xv-bottom-line" aria-hidden="true"></div></div>';
  }
+
+ cockpit(){return this.statusDisplay();}
 
  render(){
    if(!this.shadowRoot)return;
    this.setAttribute('data-theme',this._config.theme==='light'?'light':'dark');
    this.toggleAttribute('data-expanded',this._expanded);
    this.toggleAttribute('data-cockpit',true);
-   this.shadowRoot.innerHTML=`<style>${XP_CSS}</style><ha-card><div class="app">${this.cockpit()}</div></ha-card>`;
+   this.shadowRoot.innerHTML=`<style>${XP_CSS}</style><ha-card>${this.cockpit()}</ha-card>`;
   }
 }
 class XpengVehicleCardEditor extends HTMLElement{
