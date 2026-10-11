@@ -31,8 +31,14 @@ with sync_playwright() as p:
  page.wait_for_timeout(300)
  def current_image():
   return page.evaluate('() => {let im=document.querySelector("xpeng-vehicle-card").shadowRoot.querySelector(".hero img");return {src:im.getAttribute("src"),loaded:im.complete&&im.naturalWidth>0}}')
- assert current_image()['src'].endswith('g6-2026-arctic_white.webp'),current_image()
- page.wait_for_function('''() => {const im=document.querySelector('xpeng-vehicle-card').shadowRoot.querySelector('.hero img');return im&&im.complete&&im.naturalWidth>0;}''',timeout=7000)
+ def wait_for_art(filename):
+  # Events update the image asynchronously: only accept the requested new asset.
+  page.wait_for_function("""file => {
+   const c = document.querySelector('xpeng-vehicle-card');
+   const im = c?.shadowRoot?.querySelector('.hero img');
+   return !!im && im.getAttribute('src')?.endsWith(file) && im.complete && im.naturalWidth > 0;
+  }""", filename, timeout=15000)
+ wait_for_art('g6-2026-arctic_white.webp')
  assert current_image()['loaded'],current_image()
  assert 'XPENG API not connected' in scope.locator('.disconnected-note').inner_text()
  page.screenshot(path=str(ROOT/'previews/g6-2026-white-home.png'),full_page=True)
@@ -40,20 +46,20 @@ with sync_playwright() as p:
  assert 'Exterior paint' in scope.locator('.content').inner_text()
  assert len(scope.locator('button[data-color]').all())==5
  scope.locator('button[data-color="stellar_purple"]').click()
- assert current_image()['src'].endswith('g6-2026-stellar_purple.webp'),current_image()
+ wait_for_art('g6-2026-stellar_purple.webp')
  assert current_image()['loaded']
  page.screenshot(path=str(ROOT/'previews/g6-2026-purple-color-picker.png'),full_page=True)
  scope.locator('select[data-appearance="trim"]').select_option('black_edition')
  assert len(scope.locator('button[data-color]').all())==1
  assert scope.locator('button[data-color="jet_black"]').get_attribute('aria-pressed')=='true'
- assert current_image()['src'].endswith('g6-2026-jet_black.webp')
+ wait_for_art('g6-2026-jet_black.webp')
  page.screenshot(path=str(ROOT/'previews/g6-2026-black-edition-picker.png'),full_page=True)
  scope.locator('select[data-appearance="trim"]').select_option('core_plus_rwd')
  scope.locator('button[data-color="silver_frost"]').click()
- assert current_image()['src'].endswith('g6-2026-silver_frost.webp')
+ wait_for_art('g6-2026-silver_frost.webp')
  # settings selection persists after changing view
  scope.locator('button[data-back]').click()
- assert current_image()['src'].endswith('g6-2026-silver_frost.webp')
+ wait_for_art('g6-2026-silver_frost.webp')
  # visual card editor has trim, year, color controls
  page.evaluate('()=>{const ed=document.createElement("xpeng-vehicle-card-editor");document.body.appendChild(ed);ed.setConfig({prefix:"my_xpeng",model:"G6",year:"2026",trim:"core_performance_awd",color:"jet_black"});}')
  ed=page.locator('xpeng-vehicle-card-editor')
