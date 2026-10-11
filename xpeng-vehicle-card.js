@@ -48,6 +48,13 @@ const XP_ICONS = {
 function xpIcon(name,size=22){return `<svg viewBox="0 0 24 24" width="${size}" height="${size}" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">${XP_ICONS[name]||XP_ICONS.info}</svg>`;}
 function xpEsc(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
 function xpNum(v,dec=0){if(v===null||v===undefined||v===''||!Number.isFinite(Number(v)))return '—';return Number(v).toLocaleString('en-US',{maximumFractionDigits:dec});}
+function xpConnText(v){
+  const raw=String(v??'').trim().toLowerCase();
+  if(!raw || ['not_configured','not_connected','unavailable','unknown','none','null','offline'].includes(raw))return 'Not connected';
+  if(['connected','online'].includes(raw))return 'Connected';
+  if(['error','connection_error','auth_error'].includes(raw))return 'Connection error';
+  return String(v).replace(/_/g,' ');
+}
 function xpBool(v){return v==='on'?true:v==='off'?false:null;}
 function xpPercent(v){if(v===null||v===undefined||v===''||!Number.isFinite(Number(v)))return null;return Math.max(0,Math.min(100,Number(v)));}
 function xpArt(model){let m=String(model).toUpperCase();if(/^G6(\W|$)/.test(m))return 'g6-studio.webp';if(/X9|MPV/.test(m))return 'mpv.svg';if(/P7|P5|M03|MONA|SEDAN/.test(m))return 'sedan.svg';return 'suv.svg';}
@@ -361,6 +368,28 @@ const XP_CSS = `
 @media(max-width:760px){.xp-studio{grid-template-columns:minmax(0,1fr)!important}.xs-sidebar{gap:9px;padding:9px 10px;border-right:0;border-bottom:1px solid #2d3a51}.xs-brand{font-size:14px;padding:0 5px}.xs-nav{display:flex;overflow-x:auto;gap:5px;scrollbar-width:thin}.xs-nav button{flex:0 0 auto;min-height:37px;padding:8px 11px;gap:7px;font-size:11px}.xs-nav-footer{display:none}.xs-main{padding:12px}.xs-hero{min-height:360px}.xs-rail{grid-template-columns:1fr}.xs-module-grid{gap:8px}.xs-actions{gap:5px}.xs-action{min-height:75px;padding:8px 2px}.xs-action strong{font-size:10px}.xs-action small{font-size:9px}.xs-head{gap:8px}.xs-heading h2{font-size:20px}.xs-private-status{display:none}.xs-data-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:470px){.xs-hero{min-height:320px}.xs-car-photo{object-position:60% center}.xs-hero-shade{background:linear-gradient(90deg,#0a111df5 0%,#0a1222bc 44%,transparent 86%),linear-gradient(0deg,#09111b,transparent 36%)}.xs-hero-copy{top:15px;left:14px;width:150px}.xs-hero-copy h3{font-size:22px}.xs-connection{margin-bottom:15px}.xs-charge-figure strong{font-size:29px}.xs-hero-detail{right:5px;top:65px}.xs-hero-cabin{height:200px;width:100px}.xs-hero-map{height:230px;width:145px}.xs-hero-map .xp-pin-label{font-size:7px;max-width:70px}.xs-actions{grid-template-columns:repeat(5,minmax(0,1fr))}.xs-action strong{font-size:9px}.xs-action svg{height:20px;width:20px}.xs-module{min-height:155px;padding:13px}.xs-module>strong{font-size:18px}.xs-comfort-grid{grid-template-columns:1fr}.xs-data-grid{grid-template-columns:1fr}.xs-bottom-note{margin-bottom:92px}.xs-hero-photo-note{font-size:8px;right:6px}}
 
+.xs-control-buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px}
+.xs-control-buttons button[disabled]{display:flex;align-items:center;justify-content:center;gap:7px;border:1px solid #324861;border-radius:10px;background:#202e40;color:#8c9fb3;padding:11px 5px;font-size:12px;cursor:not-allowed;opacity:.76}
+@media(max-width:760px){
+ .xs-nav{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:4px!important;overflow:visible!important}
+ .xs-nav button{width:100%!important;min-width:0!important;min-height:54px!important;display:flex!important;flex-direction:column;justify-content:center;gap:3px!important;padding:6px 1px!important;font-size:9px!important;text-align:center!important}
+ .xs-nav button span{font-size:9.5px;white-space:nowrap}
+ .xs-nav button svg{width:17px;height:17px}
+}
+@media(max-width:470px){
+ .xs-hero{min-height:355px!important}
+ .xs-car-photo{object-fit:contain!important;object-position:center center!important;transform:translateY(42px)}
+ .xs-hero-copy h3{font-size:21px!important;max-width:150px!important;margin-bottom:9px!important}
+ .xs-hero-copy{top:14px!important}
+ .xs-connection{margin-bottom:10px!important;font-size:10px!important}
+ .xs-charge-figure strong{font-size:26px!important}
+ .xs-charge-figure svg{height:20px;width:20px}
+ .xs-hero-copy p{margin:4px 0 6px!important;font-size:10px}
+ .xs-hero-copy p strong{font-size:15px!important}
+ .xs-progress{height:5px!important;max-width:132px!important}
+ .xs-control-buttons{grid-template-columns:1fr}
+}
+
 `;
 class XpengVehicleCard extends HTMLElement{
  constructor(){super();this.attachShadow({mode:'open'});this._expanded=false;this._nativeFull=false;this._config={prefix:'my_xpeng',theme:'dark'};this._view='overview';this._hass=null;this._vehicleIndex=0;
@@ -508,12 +537,12 @@ class XpengVehicleCard extends HTMLElement{
      <div><div class="xs-eyebrow">VEHICLE CONTROL CENTER</div><div class="xs-heading"><h2>${xpEsc(this.name())}</h2><span class="xs-edition">${xpEsc(this.year())} · ${xpEsc(trim)}</span></div>
        <div class="xs-head-reading">${xpIcon('battery',19)} ${soc===null?'—':xpNum(soc)+'%'} <span>·</span> ${range===null?'—':xpNum(range)+' km'}</div>
      </div>
-     <div class="xs-head-tools"><span class="xs-private-status">${xpEsc(this.val('connection')||'Not connected')}</span><button type="button" data-expand aria-label="${this._expanded?'Exit full screen':'Full screen'}" title="${this._expanded?'Exit full screen':'Full screen'}">${this._expanded?'✕':'⛶'}</button></div>
+     <div class="xs-head-tools"><span class="xs-private-status">${xpEsc(xpConnText(this.val('connection')))}</span><button type="button" data-expand aria-label="${this._expanded?'Exit full screen':'Full screen'}" title="${this._expanded?'Exit full screen':'Full screen'}">${this._expanded?'✕':'⛶'}</button></div>
    </header>`;
  }
  studioHero(){
    const soc=xpPercent(this.val('soc')),range=this.val('range');
-   const title={overview:'Your XPENG G6',controls:'Vehicle access',vehicle:'Vehicle access',climate:'Cabin climate',charging:'Charging',comfort:'Cabin comfort',tires:'Tire pressure',location:'Vehicle location',info:'Vehicle information',interior:'Interior & upholstery'}[this._view]||this.model();
+   const title={overview:'Your XPENG '+this.model(),controls:'Vehicle access',vehicle:'Vehicle access',climate:'Cabin climate',charging:'Charging',comfort:'Cabin comfort',tires:'Tire pressure',location:'Vehicle location',info:'Vehicle information',interior:'Interior & upholstery'}[this._view]||this.model();
    const img=this.asset();
    const conn=this.val('connection');
    const online=conn==='connected' || conn==='online';
@@ -529,7 +558,7 @@ class XpengVehicleCard extends HTMLElement{
       <div class="xs-hero-copy">
         <span class="xs-hero-kicker">XPENG · ${xpEsc(this.year())}</span>
         <h3>${xpEsc(title)}</h3>
-        <div class="xs-connection ${online?'xs-online':''}"><span></span>${online?'Connected':this.val('connection')===null?'Not connected':xpEsc(this.val('connection'))}</div>
+        <div class="xs-connection ${online?'xs-online':''}"><span></span>${xpEsc(xpConnText(this.val('connection')))}</div>
         <div class="xs-charge-figure"><span>${xpIcon('battery',29)}</span><strong>${soc===null?'—':xpNum(soc)+'%'}</strong></div>
         <p>Estimated range <strong>${range===null?'—':xpNum(range)+' km'}</strong></p>
         <div class="xs-progress"><div style="width:${soc===null?0:soc}%"></div></div>
@@ -563,18 +592,21 @@ class XpengVehicleCard extends HTMLElement{
      </section>
      <section class="xs-rail-box xs-alert">
        <div class="xs-rail-title">${xpIcon('shield',18)}<h3>Integration status</h3></div>
-       <p>${xpEsc(this.val('connection')||'Not configured')}</p>
+       <p>${xpEsc(xpConnText(this.val('connection')))}</p>
        <small>Remote commands are unavailable until a manufacturer-authorized API is verified.</small>
      </section>
    </aside>`;
  }
  studioModules(){
    const soc=xpPercent(this.val('soc'));
+   const rawLoc=this.data('location')?.entity?.attributes||{};
+   const locPresent=rawLoc.latitude!=null&&rawLoc.longitude!=null&&Number.isFinite(Number(rawLoc.latitude))&&Number.isFinite(Number(rawLoc.longitude));
+
    const panels=[
       {v:'charging',icon:'bolt',title:'Charging',value:soc===null?'—':xpNum(soc)+'%',sub:this.bool('charging')===null?'Status unavailable':this.status('charging','Charging','Not charging'),bottom:'Charging power: '+this.value('power','kW',1)},
       {v:'climate',icon:'fan',title:'Climate control',value:this.value('cabin','°C',1),sub:this.status('climate','Climate on','Climate off'),bottom:'Outside: '+this.value('outside','°C',1)},
       {v:'comfort',icon:'thermometer',title:'Seats & wheel',value:'Unavailable',sub:'Steering wheel heating',bottom:'Seat heating, cooling & massage'},
-      {v:'location',icon:'pin',title:'Location',value:'Unavailable',sub:'Vehicle position',bottom:'No location shared externally'}
+      {v:'location',icon:'pin',title:'Location',value:locPresent?'Available':'Unavailable',sub:'Vehicle position',bottom:'No location shared externally'}
    ];
    return `<div class="xs-module-grid" aria-label="Quick vehicle information">
       ${panels.map(x=>`<button data-view="${x.v}" type="button" class="xs-module">
@@ -591,6 +623,7 @@ class XpengVehicleCard extends HTMLElement{
    let content='';
    if(view==='controls'||view==='vehicle'){
      content=`<div class="xs-data-grid">${[['Front left','door_fl'],['Front right','door_fr'],['Rear left','door_rl'],['Rear right','door_rr'],['Trunk','trunk'],['Front hood','hood']].map(([label,key])=>`<div class="xs-data-chip"><span>${xpEsc(label)}</span><strong>${xpEsc(this.status(key,'Open','Closed'))}</strong></div>`).join('')}</div>
+       <div class="xs-control-buttons">${[['Lock','lock'],['Unlock','unlock'],['Open trunk','car']].map(([label,icon])=>`<button type="button" disabled title="No verified XPENG command API">${xpIcon(icon,18)} ${label}</button>`).join('')}</div>
        <div class="xs-control-notice">${xpIcon('lock',18)} Remote lock / unlock and trunk actions are disabled until verified by XPENG.</div>`;
    }else if(view==='tires'){
      content=`<div class="xs-data-grid">${[['Front left','tire_fl'],['Front right','tire_fr'],['Rear left','tire_rl'],['Rear right','tire_rr']].map(([label,key])=>`<div class="xs-data-chip"><span>${xpEsc(label)}</span><strong>${xpEsc(this.value(key,'kPa'))}</strong></div>`).join('')}</div>`;
