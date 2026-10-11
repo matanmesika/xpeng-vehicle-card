@@ -308,6 +308,58 @@ const XP_CSS = `
 @media(max-width:800px){.xd-layout{grid-template-columns:1fr}.xd-car-image{height:300px}.xd-status{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}.xd-status-title{grid-column:span 2}.xd-status-extra{grid-column:span 2}.xd-state-row{min-height:80px}.xd-details-nav{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:470px){.xt-card{padding:14px 12px 12px}.xd-heading{margin:8px 0 12px}.xd-car-stage{min-height:220px}.xd-car-image{height:235px}.xd-status{display:block}.xd-state-row{min-height:76px}.xd-live-charge-data strong{font-size:13px}.xd-charge-panel{padding:13px}.xd-main-battery>strong{font-size:39px}.xd-range b{font-size:15px}.xd-details-nav button{min-height:42px}.xd-car-chip{font-size:10px}}
 
+/* XPENG 0.1.0: approved dual-state read-only, display-first composition */
+:host{display:block}
+:host ha-card{border-radius:19px!important;border:1px solid #223a52!important;overflow:hidden!important;background:#030b18!important;color:#f0f7ff!important}
+.xv-screen{position:relative;width:100%;min-height:570px;aspect-ratio:16/9;background:radial-gradient(ellipse at 60% 51%,#28446b 0%,#0e1d36 41%,#020917 82%);color:#f0f6fc;overflow:hidden;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;isolation:isolate}
+.xv-landscape{position:absolute;inset:27% -5% -15%;z-index:-1;pointer-events:none;background:linear-gradient(180deg,#0d1e36 0%,#040d1c 38%,#05111f 85%);clip-path:polygon(0 31%,11% 26%,19% 35%,29% 20%,36% 30%,45% 15%,53% 27%,66% 16%,73% 31%,87% 14%,100% 25%,100% 100%,0 100%)}
+.xv-bottom-line{position:absolute;top:62%;left:0;right:0;height:2px;z-index:-1;background:linear-gradient(90deg,transparent,#2463b6,#59a8f7,transparent);box-shadow:0 0 29px 6px #1489ff48}
+.xv-head{position:absolute;z-index:5;top:3%;left:3.2%;right:3.2%;display:flex;justify-content:space-between;align-items:center;gap:15px}
+.xv-brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:clamp(15px,1.7vw,22px);letter-spacing:4px}
+.xv-brand-symbol{font-size:clamp(19px,2.6vw,31px);transform:scaleX(1.3);font-weight:700}
+.xv-update{color:#839cba;font-size:clamp(9px,.95vw,12px);opacity:.7}
+.xv-main{position:absolute;inset:12% 3.4% 5%}
+.xv-title{position:absolute;left:0;top:2%;z-index:5;pointer-events:none}
+.xv-title h2{margin:0;font-size:clamp(31px,4.2vw,61px);font-weight:600;line-height:1.1;letter-spacing:1px;white-space:nowrap}
+.xv-title h2 span{color:#8ab8ff}
+.xv-title p{margin:8px 0 0;color:#8ba0bd;font-size:clamp(15px,1.7vw,25px)}
+.xv-car{position:absolute;inset:11% 15% 6% 19%;display:flex;align-items:center;justify-content:center;z-index:2;pointer-events:none}
+.xv-car img{max-width:100%;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 25px 24px #0009)}
+.xv-car-glow{position:absolute;bottom:9%;left:9%;right:9%;height:18%;border-radius:50%;background:radial-gradient(ellipse,#177ed259,transparent 74%);filter:blur(9px);z-index:-1}
+.xv-metrics{position:absolute;top:43%;left:0;width:clamp(156px,23%,295px);z-index:4}
+.xv-label{font-size:clamp(12px,1.1vw,18px);color:#a6bad2}
+.xv-battery-value,.xv-range-value{display:flex;align-items:center;gap:10px;font-size:clamp(25px,3.4vw,52px);font-variant-numeric:tabular-nums;white-space:nowrap}
+.xv-battery-value strong,.xv-range-value strong{font-weight:625;letter-spacing:-.4px}
+.xv-progress{height:10px;border-radius:99px;background:#314968;overflow:hidden;margin-top:12px}
+.xv-progress>span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#43df90,#3aebbc);transition:width .8s ease}
+.xv-range-label{margin-top:28px}
+.xv-info{position:absolute;right:0;bottom:3%;width:clamp(210px,24%,330px);padding:9px 18px;border:1px solid #284665;border-radius:16px;background:linear-gradient(160deg,#101f35e6,#061425eb);z-index:4}
+.xv-info>div{display:flex;align-items:center;gap:14px;min-height:69px;padding:7px 0}
+.xv-info>div:not(:last-child){border-bottom:1px solid #273c57}
+.xv-info>div>svg{color:#d0e5ff;flex:0 0 23px}
+.xv-info span{font-size:12px;color:#b0c2d6;display:flex;flex-direction:column;gap:5px}
+.xv-info strong{font-size:15px;color:#f2f7ff;font-weight:510;overflow-wrap:anywhere}
+.xv-charging .xv-car{inset:19% -2% 6% 36%}
+.xv-charging .xv-metrics,.xv-charging .xv-info{display:none!important}
+.xv-charge{position:absolute;top:28%;left:0;width:clamp(265px,39%,580px);z-index:6;border:1px solid #2b718d;background:linear-gradient(155deg,#081c2aec,#051428ec);padding:23px 25px;border-radius:15px;box-shadow:0 0 29px #16bda91b}
+.xv-charge h3{display:flex;align-items:center;gap:15px;margin:0;color:#5cf3ba;font-size:clamp(19px,2.2vw,32px);font-weight:640}
+.xv-charge .xv-progress{height:14px;margin:23px 0}
+.xv-charge-primary{display:grid;grid-template-columns:1fr 1fr;gap:15px;padding-bottom:20px;border-bottom:1px solid #284767}
+.xv-charge-primary>div,.xv-charge-details>div{display:flex;flex-direction:column;gap:5px}
+.xv-charge small{color:#99b0c8;font-size:clamp(10px,1.05vw,14px)}
+.xv-charge-primary strong{font-size:clamp(26px,3.5vw,50px);font-weight:620;line-height:1.1;white-space:nowrap}
+.xv-charge-details{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;padding-top:18px}
+.xv-charge-details strong{font-size:clamp(13px,1.35vw,20px);font-weight:570;white-space:nowrap}
+.xv-charger-art{position:absolute;right:0;bottom:14%;width:12%;height:50%;z-index:1;opacity:.86;pointer-events:none}
+.xv-charge-pole{height:69%;width:52%;margin-left:auto;margin-right:10%;border:2px solid #58bfe5ad;border-radius:9px;background:linear-gradient(90deg,#061424,#16425e,#091425);box-shadow:0 0 27px #07e4aa3b;display:flex;align-items:flex-start;justify-content:center;padding-top:12px;font-size:22px}
+.xv-energy-wave{position:absolute;bottom:17%;right:17%;width:190%;height:25%;border-radius:50%;border-bottom:3px solid #3fffc2;transform:rotate(-11deg);filter:drop-shadow(0 0 9px #3fffc2);animation:xv-energy 2s ease-in-out infinite}
+.xv-charging .xv-car img{animation:xv-vehicle 7s ease-in-out infinite}
+@keyframes xv-energy{0%,100%{opacity:.53}50%{opacity:1;filter:drop-shadow(0 0 18px #3fffc2)}}
+@keyframes xv-vehicle{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@media(max-width:900px){.xv-screen{aspect-ratio:auto;min-height:670px}.xv-main{inset:78px 18px 16px}.xv-title h2{font-size:37px}.xv-car{inset:15% 2% 35%}.xv-metrics{top:57%;width:45%}.xv-range-label{margin-top:12px}.xv-info{bottom:0;width:50%}.xv-charging .xv-car{inset:14% 0 41%}.xv-charge{top:49%;width:100%}.xv-charger-art{top:25%;bottom:auto;right:2%;height:34%}}
+@media(max-width:480px){.xv-screen{min-height:690px}.xv-head{top:12px}.xv-brand{font-size:14px}.xv-update{font-size:9px}.xv-main{inset:62px 12px 15px}.xv-title h2{font-size:27px}.xv-title p{font-size:13px}.xv-car{inset:13% 0 43%}.xv-metrics{top:50%;width:100%}.xv-metrics .xv-label{font-size:11px}.xv-battery-value,.xv-range-value{font-size:26px}.xv-progress{max-width:135px;height:7px;margin-top:3px}.xv-range-label{margin-top:10px}.xv-info{bottom:0;width:100%;padding:4px;display:grid;grid-template-columns:repeat(3,1fr)}.xv-info>div{display:flex;flex-direction:column;text-align:center;gap:3px;min-height:72px;border-bottom:0!important;padding:7px 1px}.xv-info svg{width:18px;height:18px}.xv-info span{font-size:10px}.xv-info strong{font-size:11px}.xv-charging .xv-car{inset:13% 0 45%}.xv-charge{top:46%;padding:15px;width:100%}.xv-charge h3{font-size:20px}.xv-charge .xv-progress{margin:13px 0}.xv-charge-primary strong{font-size:25px}.xv-charge-details strong{font-size:12px}.xv-charger-art{top:22%;height:24%}}
+@media(prefers-reduced-motion:reduce){.xv-charging .xv-car img,.xv-energy-wave{animation:none!important}.xv-progress>span{transition:none!important}}
+
 `;
 class XpengVehicleCard extends HTMLElement{
  constructor(){super();this.attachShadow({mode:'open'});this._expanded=false;this._nativeFull=false;this._config={prefix:'my_xpeng',theme:'dark'};this._view='overview';this._hass=null;this._vehicleIndex=0;this._tireUnit='kPa';
