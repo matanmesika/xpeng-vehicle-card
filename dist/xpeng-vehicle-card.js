@@ -6,21 +6,21 @@
 const XP_INVALID = new Set(['unknown','unavailable','none','null','']);
 const XP_KEYS = Object.freeze({
  model:['sensor','vehicle_model'],name:['sensor','vehicle_name'],powertrain:['sensor','vehicle_powertrain'],
- connection:['sensor','api_connection_status'],soc:['sensor','battery'],range:['sensor','estimated_range'],
- charging:['binary_sensor','charging'],plugged:['binary_sensor','plugged_in'],target:['sensor','charging_target'],
- power:['sensor','charging_power'],energy:['sensor','charge_session_energy'],remaining:['sensor','charge_remaining'],
- current:['sensor','charge_current'],voltage:['sensor','charge_voltage'],odometer:['sensor','odometer'],
- locked:['binary_sensor','locked'],door_fl:['binary_sensor','door_front_left_open'],
+ connection:['sensor','api_connection_status'],soc:['sensor','soc','battery'],range:['sensor','range_km','estimated_range'],
+ charging:['binary_sensor','is_charging','charging'],plugged:['binary_sensor','is_plugged_in','plugged_in'],target:['sensor','charge_target','charging_target'],
+ power:['sensor','charge_power_kw','charging_power'],energy:['sensor','charge_session_energy_kwh','charge_session_energy'],remaining:['sensor','charge_remaining_min','charge_remaining'],
+ current:['sensor','charge_current_a','charge_current'],voltage:['sensor','charge_voltage_v','charge_voltage'],odometer:['sensor','odometer_km','odometer'],
+ locked:['binary_sensor','is_locked','locked'],door_fl:['binary_sensor','door_front_left_open'],
  door_fr:['binary_sensor','door_front_right_open'],door_rl:['binary_sensor','door_rear_left_open'],
  door_rr:['binary_sensor','door_rear_right_open'],trunk:['binary_sensor','trunk_open'],hood:['binary_sensor','hood_open'],
- climate:['binary_sensor','climate_active'],cabin:['sensor','cabin_temperature'],outside:['sensor','outside_temperature'],
- health:['sensor','battery_health'],battery_voltage:['sensor','battery_voltage'],
- battery_current:['sensor','battery_current'],battery_12v:['sensor','12v_supply_voltage'],
- tire_fl:['sensor','front_left_tire_pressure'],tire_fr:['sensor','front_right_tire_pressure'],
- tire_rl:['sensor','rear_left_tire_pressure'],tire_rr:['sensor','rear_right_tire_pressure'],
- fuel:['sensor','fuel_level'],fuel_range:['sensor','fuel_powered_range'],combined:['sensor','combined_range'],
- last_update:['sensor','last_vehicle_update'],location:['device_tracker','location'],
- speed:['sensor','vehicle_speed']
+ climate:['binary_sensor','climate_active'],cabin:['sensor','cabin_temperature_c','cabin_temperature'],outside:['sensor','outside_temperature_c','outside_temperature'],
+ health:['sensor','battery_soh','battery_health'],battery_voltage:['sensor','battery_voltage'],
+ battery_current:['sensor','battery_current'],battery_12v:['sensor','battery_12v_voltage_v','12v_supply_voltage'],
+ tire_fl:['sensor','tire_pressure_front_left_kpa','front_left_tire_pressure'],tire_fr:['sensor','tire_pressure_front_right_kpa','front_right_tire_pressure'],
+ tire_rl:['sensor','tire_pressure_rear_left_kpa','rear_left_tire_pressure'],tire_rr:['sensor','tire_pressure_rear_right_kpa','rear_right_tire_pressure'],
+ fuel:['sensor','fuel_level_pct','fuel_level'],fuel_range:['sensor','fuel_range_km','fuel_powered_range'],combined:['sensor','total_range_km','combined_range'],
+ last_update:['sensor','last_update','last_vehicle_update'],location:['device_tracker','location'],
+ speed:['sensor','vehicle_speed_kmh','vehicle_speed']
 });
 const XP_ICONS = {
  lock:'<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
@@ -256,6 +256,58 @@ const XP_CSS = `
  .xt-footnote{padding-bottom:92px}
 }
 
+/* Dashboard-first home. Detailed screens remain secondary and read only. */
+.xt-card{max-width:1150px!important;background:linear-gradient(145deg,#101720,#0b1018 75%)!important}
+.xt-header{padding-bottom:11px;border-bottom:1px solid #273545;margin-bottom:12px}
+.xd-home{min-width:0}
+.xd-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:11px 0 15px}
+.xd-heading h2{font-size:17px;font-weight:650;margin:0}
+.xd-connection{display:flex;gap:7px;align-items:center;font-size:11px;color:#94a6bb}
+.xd-layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(260px,.82fr);gap:14px;align-items:stretch}
+.xd-main{display:flex;flex-direction:column;gap:12px;min-width:0}
+.xd-car-stage{position:relative;display:flex;align-items:center;justify-content:center;min-height:260px;border-radius:17px;background:radial-gradient(ellipse at 48% 52%,#303b4b,#152131 66%,#101720);overflow:hidden}
+.xd-car-image{width:100%;max-width:none;height:292px;object-fit:contain;display:block}
+.xd-car-chip{position:absolute;left:14px;bottom:12px;border:1px solid #53606e99;background:#101924df;padding:8px 12px;border-radius:100px;display:flex;align-items:center;gap:7px;font-size:11px;color:#bfcbd7}
+.xd-car-chip.xd-charge-on{color:#76ecc2;border-color:#3fbd8a;background:#092d25db}
+.xd-charge-panel{border:1px solid #344258;background:linear-gradient(140deg,#172434,#101924);border-radius:17px;padding:16px 18px 17px;min-width:0}
+.xd-charge-panel.xd-charge-active{border-color:#3d967d;box-shadow:inset 0 0 24px #37af8220}
+.xd-charge-panel-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:9px}
+.xd-charge-panel-top button{border:0;background:transparent;padding:5px;border-radius:8px;color:#b2c7d9}
+.xd-charge-panel-top button:hover{background:#263a4c}
+.xd-charge-label{display:flex;align-items:center;gap:9px;font-size:14px;color:#c7d3e1;font-weight:650}
+.xd-charge-active .xd-charge-label{color:#73ebba}
+.xd-main-battery{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.xd-main-battery>strong{font-size:clamp(34px,4vw,53px);font-variant-numeric:tabular-nums;font-weight:720;line-height:1.18}
+.xd-range{display:flex;flex-direction:column;gap:5px;text-align:right}
+.xd-range span{font-size:11px;color:#94a7bb}
+.xd-range b{font-size:18px;color:#e1ecf8}
+.xd-charge-progress{position:relative;border-radius:100px;height:10px;background:#44556a;overflow:hidden;margin:11px 0 8px}
+.xd-charge-progress>div{height:100%;background:linear-gradient(90deg,#48ba90,#65efbf);border-radius:100px}
+.xd-charge-target{position:absolute;top:0;bottom:0;width:2px;background:#fff;opacity:.65;transform:translateX(-50%)}
+.xd-charge-foot{display:flex;justify-content:space-between;gap:10px;color:#a5b6c6;font-size:11px}
+.xd-live-charge-data{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid #34475b;margin-top:15px;padding-top:13px;gap:10px}
+.xd-live-charge-data>div{display:flex;flex-direction:column;gap:6px;min-width:0}
+.xd-live-charge-data small{color:#99abbe;font-size:10px}
+.xd-live-charge-data strong{font-size:16px;color:#f1f7ff;white-space:nowrap}
+.xd-status{border:1px solid #334155;background:linear-gradient(140deg,#172434,#0f1825);border-radius:17px;padding:12px 15px 14px;display:flex;flex-direction:column}
+.xd-status-title{display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:650;padding:7px 3px 13px;border-bottom:1px solid #334257}
+.xd-state-row{display:flex;gap:10px;align-items:center;text-align:left;padding:14px 0;border:0;border-bottom:1px solid #2e3b4c;background:none;min-height:85px;width:100%}
+.xd-state-row:hover{background:#1c2b3d}
+.xd-state-icon{display:grid;place-items:center;flex:0 0 40px;height:40px;color:#d3e5fa;border:1px solid #40526a;border-radius:12px;background:#243449}
+.xd-state-copy{display:flex;flex:1;flex-direction:column;gap:3px;min-width:0}
+.xd-state-copy small{color:#a3b2c3;font-size:11px}
+.xd-state-copy strong{color:#f3f8fd;font-size:15px;font-weight:600}
+.xd-state-copy em{color:#8ea4b9;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-style:normal}
+.xd-state-row>svg{color:#8196aa;flex:none}
+.xd-status-extra{display:flex;flex-direction:column;gap:5px;margin:auto 0 0;padding:16px 3px 3px;color:#91a5b9;font-size:11px}
+.xd-status-extra strong{font-size:11px;color:#bdcfdf;overflow-wrap:anywhere;font-weight:500}
+.xd-details-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:15px}
+.xd-details-nav button{display:flex;align-items:center;gap:7px;justify-content:center;border:1px solid #303e50;border-radius:12px;background:#152030;color:#bfcfe1;min-height:48px;font-size:11px;padding:9px 5px}
+.xd-details-nav button:hover{background:#22364a}
+.xd-details-nav button>svg:last-child{width:12px;height:12px;color:#8194a8}
+@media(max-width:800px){.xd-layout{grid-template-columns:1fr}.xd-car-image{height:300px}.xd-status{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}.xd-status-title{grid-column:span 2}.xd-status-extra{grid-column:span 2}.xd-state-row{min-height:80px}.xd-details-nav{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:470px){.xt-card{padding:14px 12px 12px}.xd-heading{margin:8px 0 12px}.xd-car-stage{min-height:220px}.xd-car-image{height:235px}.xd-status{display:block}.xd-state-row{min-height:76px}.xd-live-charge-data strong{font-size:13px}.xd-charge-panel{padding:13px}.xd-main-battery>strong{font-size:39px}.xd-range b{font-size:15px}.xd-details-nav button{min-height:42px}.xd-car-chip{font-size:10px}}
+
 `;
 class XpengVehicleCard extends HTMLElement{
  constructor(){super();this.attachShadow({mode:'open'});this._expanded=false;this._nativeFull=false;this._config={prefix:'my_xpeng',theme:'dark'};this._view='overview';this._hass=null;this._vehicleIndex=0;this._tireUnit='kPa';
@@ -302,7 +354,14 @@ class XpengVehicleCard extends HTMLElement{
  interior(){return this.appearance().interior;}
  isG6(){return this.selectedModel()==='G6';}
 
- data(key){const explicit=this.vehicle().entities?.[key]||this._config.entities?.[key];const tuple=XP_KEYS[key];if(!tuple)return null;const id=explicit||`${tuple[0]}.${this.prefix()}_${tuple[1]}`;const entity=this._hass?.states?.[id];const raw=entity?.state??null;return {id,entity,value:raw===null||(typeof raw==='string'&&XP_INVALID.has(raw.toLowerCase()))?null:raw};}
+ data(key){
+   const spec=XP_KEYS[key];if(!spec)return null;
+   const override=this.vehicle().entities?.[key]||this._config.entities?.[key];
+   const ids=override?[override]:spec.slice(1).map(suffix=>spec[0]+'.'+this.prefix()+'_'+suffix);
+   const id=ids.find(v=>this._hass?.states?.[v])||ids[0];
+   const entity=this._hass?.states?.[id];const raw=entity?.state??null;
+   return {id,entity,value:raw===null||(typeof raw==='string'&&XP_INVALID.has(raw.toLowerCase()))?null:raw};
+ }
  val(key){return this.data(key)?.value??null;}
  bool(key){return xpBool(this.val(key));}
  n(key,dec=0){return xpNum(this.val(key),dec);}
@@ -372,30 +431,78 @@ class XpengVehicleCard extends HTMLElement{
     </div>
   </header>`;
  }
+
  vehicleMenuLanding(){
-  const charging=this.bool('charging');
-  const locked=this.bool('locked');
-  const menu=[
-    ['controls','Controls',xpIcon('car',20),this.status('locked','Locked','Unlocked')],
-    ['climate','Climate',xpIcon('fan',20),this.status('climate','On','Off')+' · '+this.value('cabin','°C',1)],
-    ['location','Location',xpIcon('pin',20),this.val('location')===null?'Not available':'Open location details'],
-    ['charging','Charging',xpIcon('bolt',20),charging===null?'Not available':charging?'Charging':'Not charging']
+  const soc=xpPercent(this.val('soc')),target=xpPercent(this.val('target'));
+  const charging=this.bool('charging'),plugged=this.bool('plugged');
+  const conn=String(this.val('connection')||'').toLowerCase();
+  const stale=['stale_vehicle_data','connection_error'].includes(conn);
+  const isCharging=charging===true,active=isCharging&&!stale;
+  const chargeStatus=isCharging?(stale?'Charging reported · data stale':'Charging'):
+   plugged===true?'Plugged in · not charging':
+   charging===false?'Not charging':'Charging status unavailable';
+  const chargeTime=this.number('remaining');
+  const remaining=chargeTime===null||chargeTime<0?'—':
+   (Math.floor(chargeTime/60)>0?Math.floor(chargeTime/60)+'h ':'')+Math.round(chargeTime%60)+'m';
+  const connectedPort=plugged===true?'Connected':plugged===false?'Disconnected':'Unavailable';
+  const locks=this.bool('locked');
+  const doorStates=['door_fl','door_fr','door_rl','door_rr'].map(k=>this.bool(k));
+  const doors=doorStates.some(v=>v===true)?'Door open':doorStates.every(v=>v===false)?'All doors closed':'Unavailable';
+  const climate=this.bool('climate'),cabin=this.value('cabin','°C',1);
+  const location=this.data('location')?.entity;
+  const lat=location?.attributes?.latitude,lon=location?.attributes?.longitude;
+  const hasLocation=lat!=null&&lon!=null&&Number.isFinite(Number(lat))&&Number.isFinite(Number(lon));
+  const last=this.val('last_update');
+  const statusRows=[
+    ['controls','Vehicle security','lock',locks===null?'Unavailable':locks?'Locked':'Unlocked',doors],
+    ['climate','Cabin climate','fan',cabin,climate===null?'Climate status unavailable':climate?'Climate on':'Climate off'],
+    ['location','Vehicle location','pin',hasLocation?'Location available':'Unavailable',
+      hasLocation&&String(location?.state||'').toLowerCase()==='home'?'At Home':'Open location details']
   ];
-  return `<div class="xt-landing"><div class="xt-left">
-    <div class="xt-car-stage"><img src="${xpEsc(this.asset())}" alt="XPENG ${xpEsc(this.model())} in ${xpEsc(this.paint())}" loading="eager">
-      ${charging===true?'<div class="xt-charge-tag">⚡ Charging</div>':''}
+  const chargingStats=isCharging?[['Charging power',this.value('power','kW',1)],['Time remaining',remaining],['Energy added',this.value('energy','kWh',1)]]:[];
+  const statsHTML=chargingStats.map(([label,value])=>`<div><small>${xpEsc(label)}</small><strong>${xpEsc(value)}</strong></div>`).join('');
+  const statusHTML=statusRows.map(([view,label,icon,value,foot])=>`<button type="button" class="xd-state-row" data-view="${view}">
+    <span class="xd-state-icon">${xpIcon(icon,20)}</span><span class="xd-state-copy">
+    <small>${xpEsc(label)}</small><strong>${xpEsc(value)}</strong><em>${xpEsc(foot)}</em></span>${xpIcon('arrow',16)}
+  </button>`).join('');
+  const sections=[['controls','Doors & controls','car'],['climate','Climate & comfort','fan'],
+    ['charging','Charging details','bolt'],['location','Location','pin']];
+  const navHTML=sections.map(([view,label,icon])=>`<button type="button" data-view="${view}">${xpIcon(icon,18)}<span>${xpEsc(label)}</span>${xpIcon('arrow',14)}</button>`).join('');
+  return `<div class="xd-home" aria-label="XPENG vehicle status dashboard">
+    <div class="xd-heading"><h2>Vehicle overview</h2><span class="xd-connection">${xpIcon('shield',16)} ${xpEsc(xpConnText(this.val('connection')))}</span></div>
+    <div class="xd-layout">
+      <div class="xd-main">
+        <section class="xd-car-stage" aria-label="Configured XPENG vehicle">
+          <img class="xd-car-image" src="${xpEsc(this.asset())}" alt="XPENG ${xpEsc(this.model())} exterior in ${xpEsc(this.paint())}" loading="eager">
+          <div class="xd-car-chip ${active?'xd-charge-on':''}">${xpIcon(isCharging?'bolt':'battery',17)} ${xpEsc(chargeStatus)}</div>
+        </section>
+        <section class="xd-charge-panel ${active?'xd-charge-active':''}" aria-label="Battery and charging status">
+          <div class="xd-charge-panel-top">
+            <div class="xd-charge-label">${xpIcon('bolt',20)}<span>${xpEsc(chargeStatus)}</span></div>
+            <button type="button" data-view="charging" aria-label="Open charging details">${xpIcon('arrow',20)}</button>
+          </div>
+          <div class="xd-main-battery">
+            <strong>${soc===null?'—':xpNum(soc)+'%'}</strong>
+            <div class="xd-range"><span>Estimated range</span><b>${xpEsc(this.value('range','km'))}</b></div>
+          </div>
+          <div class="xd-charge-progress" role="progressbar" aria-label="Battery level" aria-valuemin="0" aria-valuemax="100" ${soc===null?'':'aria-valuenow="'+soc+'"'}>
+            <div style="width:${soc===null?0:soc}%"></div>
+            ${target===null?'':`<i class="xd-charge-target" style="left:${target}%"></i>`}
+          </div>
+          <div class="xd-charge-foot"><span>${target===null?'Target unavailable':'Target '+xpNum(target)+'%'}</span><span>Port: ${connectedPort}</span></div>
+          ${isCharging?`<div class="xd-live-charge-data">${statsHTML}</div>`:''}
+        </section>
+      </div>
+      <aside class="xd-status" aria-label="Vehicle at a glance">
+        <div class="xd-status-title">Vehicle status <span>${xpIcon('car',17)}</span></div>
+        ${statusHTML}
+        <div class="xd-status-extra"><span>Last vehicle update</span><strong>${xpEsc(last===null?'Unavailable':String(last))}</strong></div>
+      </aside>
     </div>
-    <div class="xt-shortcuts" aria-label="Vehicle quick functions">
-      <button type="button" disabled aria-label="Lock or unlock unavailable without approved XPENG API" title="Remote locks unavailable">${xpIcon(locked?'lock':'unlock',23)}</button>
-      <button type="button" data-view="controls" aria-label="Controls">${xpIcon('car',23)}</button>
-      <button type="button" data-view="charging" aria-label="Charging">${xpIcon('bolt',23)}</button>
-      <button type="button" data-view="climate" aria-label="Climate">${xpIcon('fan',23)}</button>
-    </div>
-    </div>
-    <nav class="xt-navigation" aria-label="Vehicle menus">
-      ${menu.map(([view,label,icon,subtitle])=>`<button type="button" class="xt-nav-row" data-view="${view}"><span class="xt-nav-icon">${icon}</span><span class="xt-nav-copy"><b>${label}</b><small>${xpEsc(subtitle)}</small></span>${xpIcon('arrow',17)}</button>`).join('')}
-    </nav></div>`;
+    <nav class="xd-details-nav" aria-label="Open detailed vehicle screens">${navHTML}</nav>
+  </div>`;
  }
+
  vehicleMenuPanel(){
   const view=this._view;
   const labels={controls:'Controls',vehicle:'Controls',tires:'Tire Pressure',charging:'Charging',climate:'Climate',comfort:'Comfort',interior:'Interior',location:'Location',info:'Vehicle Information'};

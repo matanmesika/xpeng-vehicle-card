@@ -256,6 +256,58 @@ const XP_CSS = `
  .xt-footnote{padding-bottom:92px}
 }
 
+/* Dashboard-first home. Detailed screens remain secondary and read only. */
+.xt-card{max-width:1150px!important;background:linear-gradient(145deg,#101720,#0b1018 75%)!important}
+.xt-header{padding-bottom:11px;border-bottom:1px solid #273545;margin-bottom:12px}
+.xd-home{min-width:0}
+.xd-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:11px 0 15px}
+.xd-heading h2{font-size:17px;font-weight:650;margin:0}
+.xd-connection{display:flex;gap:7px;align-items:center;font-size:11px;color:#94a6bb}
+.xd-layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(260px,.82fr);gap:14px;align-items:stretch}
+.xd-main{display:flex;flex-direction:column;gap:12px;min-width:0}
+.xd-car-stage{position:relative;display:flex;align-items:center;justify-content:center;min-height:260px;border-radius:17px;background:radial-gradient(ellipse at 48% 52%,#303b4b,#152131 66%,#101720);overflow:hidden}
+.xd-car-image{width:100%;max-width:none;height:292px;object-fit:contain;display:block}
+.xd-car-chip{position:absolute;left:14px;bottom:12px;border:1px solid #53606e99;background:#101924df;padding:8px 12px;border-radius:100px;display:flex;align-items:center;gap:7px;font-size:11px;color:#bfcbd7}
+.xd-car-chip.xd-charge-on{color:#76ecc2;border-color:#3fbd8a;background:#092d25db}
+.xd-charge-panel{border:1px solid #344258;background:linear-gradient(140deg,#172434,#101924);border-radius:17px;padding:16px 18px 17px;min-width:0}
+.xd-charge-panel.xd-charge-active{border-color:#3d967d;box-shadow:inset 0 0 24px #37af8220}
+.xd-charge-panel-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:9px}
+.xd-charge-panel-top button{border:0;background:transparent;padding:5px;border-radius:8px;color:#b2c7d9}
+.xd-charge-panel-top button:hover{background:#263a4c}
+.xd-charge-label{display:flex;align-items:center;gap:9px;font-size:14px;color:#c7d3e1;font-weight:650}
+.xd-charge-active .xd-charge-label{color:#73ebba}
+.xd-main-battery{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.xd-main-battery>strong{font-size:clamp(34px,4vw,53px);font-variant-numeric:tabular-nums;font-weight:720;line-height:1.18}
+.xd-range{display:flex;flex-direction:column;gap:5px;text-align:right}
+.xd-range span{font-size:11px;color:#94a7bb}
+.xd-range b{font-size:18px;color:#e1ecf8}
+.xd-charge-progress{position:relative;border-radius:100px;height:10px;background:#44556a;overflow:hidden;margin:11px 0 8px}
+.xd-charge-progress>div{height:100%;background:linear-gradient(90deg,#48ba90,#65efbf);border-radius:100px}
+.xd-charge-target{position:absolute;top:0;bottom:0;width:2px;background:#fff;opacity:.65;transform:translateX(-50%)}
+.xd-charge-foot{display:flex;justify-content:space-between;gap:10px;color:#a5b6c6;font-size:11px}
+.xd-live-charge-data{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid #34475b;margin-top:15px;padding-top:13px;gap:10px}
+.xd-live-charge-data>div{display:flex;flex-direction:column;gap:6px;min-width:0}
+.xd-live-charge-data small{color:#99abbe;font-size:10px}
+.xd-live-charge-data strong{font-size:16px;color:#f1f7ff;white-space:nowrap}
+.xd-status{border:1px solid #334155;background:linear-gradient(140deg,#172434,#0f1825);border-radius:17px;padding:12px 15px 14px;display:flex;flex-direction:column}
+.xd-status-title{display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:650;padding:7px 3px 13px;border-bottom:1px solid #334257}
+.xd-state-row{display:flex;gap:10px;align-items:center;text-align:left;padding:14px 0;border:0;border-bottom:1px solid #2e3b4c;background:none;min-height:85px;width:100%}
+.xd-state-row:hover{background:#1c2b3d}
+.xd-state-icon{display:grid;place-items:center;flex:0 0 40px;height:40px;color:#d3e5fa;border:1px solid #40526a;border-radius:12px;background:#243449}
+.xd-state-copy{display:flex;flex:1;flex-direction:column;gap:3px;min-width:0}
+.xd-state-copy small{color:#a3b2c3;font-size:11px}
+.xd-state-copy strong{color:#f3f8fd;font-size:15px;font-weight:600}
+.xd-state-copy em{color:#8ea4b9;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-style:normal}
+.xd-state-row>svg{color:#8196aa;flex:none}
+.xd-status-extra{display:flex;flex-direction:column;gap:5px;margin:auto 0 0;padding:16px 3px 3px;color:#91a5b9;font-size:11px}
+.xd-status-extra strong{font-size:11px;color:#bdcfdf;overflow-wrap:anywhere;font-weight:500}
+.xd-details-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:15px}
+.xd-details-nav button{display:flex;align-items:center;gap:7px;justify-content:center;border:1px solid #303e50;border-radius:12px;background:#152030;color:#bfcfe1;min-height:48px;font-size:11px;padding:9px 5px}
+.xd-details-nav button:hover{background:#22364a}
+.xd-details-nav button>svg:last-child{width:12px;height:12px;color:#8194a8}
+@media(max-width:800px){.xd-layout{grid-template-columns:1fr}.xd-car-image{height:300px}.xd-status{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}.xd-status-title{grid-column:span 2}.xd-status-extra{grid-column:span 2}.xd-state-row{min-height:80px}.xd-details-nav{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:470px){.xt-card{padding:14px 12px 12px}.xd-heading{margin:8px 0 12px}.xd-car-stage{min-height:220px}.xd-car-image{height:235px}.xd-status{display:block}.xd-state-row{min-height:76px}.xd-live-charge-data strong{font-size:13px}.xd-charge-panel{padding:13px}.xd-main-battery>strong{font-size:39px}.xd-range b{font-size:15px}.xd-details-nav button{min-height:42px}.xd-car-chip{font-size:10px}}
+
 `;
 class XpengVehicleCard extends HTMLElement{
  constructor(){super();this.attachShadow({mode:'open'});this._expanded=false;this._nativeFull=false;this._config={prefix:'my_xpeng',theme:'dark'};this._view='overview';this._hass=null;this._vehicleIndex=0;this._tireUnit='kPa';
