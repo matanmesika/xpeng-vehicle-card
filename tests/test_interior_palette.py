@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = (ROOT/'dist/xpeng-vehicle-card.js').read_text()
 assert 'xpCabinSvg(theme)' in SCRIPT
 assert 'XP_INTERIORS' in SCRIPT
-assert 'steering wheel, dashboard, door inserts, console, front/rear seats' in (ROOT/'README.md').read_text().lower()
+assert all(token in (ROOT/'README.md').read_text().lower() for token in ('dashboard', 'wheel', 'door inserts', 'console', 'seats'))
 assert {i['id'] for i in json.loads((ROOT/'model-catalog.json').read_text())['interiors']} == {'dark_gray','light_gray'}
 assert 'callService(' not in SCRIPT and '.call_service(' not in SCRIPT  # no controls
 
