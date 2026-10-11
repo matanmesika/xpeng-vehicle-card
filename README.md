@@ -2,6 +2,10 @@
 
 **Dashboard v0.1.0** — a standalone, read-only Home Assistant frontend card for XPENG vehicles.
 
+![Vehicle artwork used by the dashboard](dist/assets/g6-studio.webp)
+
+*Illustrative G6 artwork. The two dynamic dashboard screens are rendered by the Lovelace card, not by this static image.*
+
 This repository contains the **dashboard**, not the XPENG integration. The integration is responsible for connecting to the vehicle and exposing Home Assistant entities. The dashboard only reads those entities and displays them. Updating this repository never updates the integration.
 
 ## Two screens only
