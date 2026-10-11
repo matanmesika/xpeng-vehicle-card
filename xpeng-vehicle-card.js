@@ -6,21 +6,21 @@
 const XP_INVALID = new Set(['unknown','unavailable','none','null','']);
 const XP_KEYS = Object.freeze({
  model:['sensor','vehicle_model'],name:['sensor','vehicle_name'],powertrain:['sensor','vehicle_powertrain'],
- connection:['sensor','api_connection_status'],soc:['sensor','battery'],range:['sensor','estimated_range'],
- charging:['binary_sensor','charging'],plugged:['binary_sensor','plugged_in'],target:['sensor','charging_target'],
- power:['sensor','charging_power'],energy:['sensor','charge_session_energy'],remaining:['sensor','charge_remaining'],
- current:['sensor','charge_current'],voltage:['sensor','charge_voltage'],odometer:['sensor','odometer'],
- locked:['binary_sensor','locked'],door_fl:['binary_sensor','door_front_left_open'],
+ connection:['sensor','api_connection_status'],soc:['sensor','soc','battery'],range:['sensor','range_km','estimated_range'],
+ charging:['binary_sensor','is_charging','charging'],plugged:['binary_sensor','is_plugged_in','plugged_in'],target:['sensor','charge_target','charging_target'],
+ power:['sensor','charge_power_kw','charging_power'],energy:['sensor','charge_session_energy_kwh','charge_session_energy'],remaining:['sensor','charge_remaining_min','charge_remaining'],
+ current:['sensor','charge_current_a','charge_current'],voltage:['sensor','charge_voltage_v','charge_voltage'],odometer:['sensor','odometer_km','odometer'],
+ locked:['binary_sensor','is_locked','locked'],door_fl:['binary_sensor','door_front_left_open'],
  door_fr:['binary_sensor','door_front_right_open'],door_rl:['binary_sensor','door_rear_left_open'],
  door_rr:['binary_sensor','door_rear_right_open'],trunk:['binary_sensor','trunk_open'],hood:['binary_sensor','hood_open'],
- climate:['binary_sensor','climate_active'],cabin:['sensor','cabin_temperature'],outside:['sensor','outside_temperature'],
- health:['sensor','battery_health'],battery_voltage:['sensor','battery_voltage'],
- battery_current:['sensor','battery_current'],battery_12v:['sensor','12v_supply_voltage'],
- tire_fl:['sensor','front_left_tire_pressure'],tire_fr:['sensor','front_right_tire_pressure'],
- tire_rl:['sensor','rear_left_tire_pressure'],tire_rr:['sensor','rear_right_tire_pressure'],
- fuel:['sensor','fuel_level'],fuel_range:['sensor','fuel_powered_range'],combined:['sensor','combined_range'],
- last_update:['sensor','last_vehicle_update'],location:['device_tracker','location'],
- speed:['sensor','vehicle_speed']
+ climate:['binary_sensor','climate_active'],cabin:['sensor','cabin_temperature_c','cabin_temperature'],outside:['sensor','outside_temperature_c','outside_temperature'],
+ health:['sensor','battery_soh','battery_health'],battery_voltage:['sensor','battery_voltage'],
+ battery_current:['sensor','battery_current'],battery_12v:['sensor','battery_12v_voltage_v','12v_supply_voltage'],
+ tire_fl:['sensor','tire_pressure_front_left_kpa','front_left_tire_pressure'],tire_fr:['sensor','tire_pressure_front_right_kpa','front_right_tire_pressure'],
+ tire_rl:['sensor','tire_pressure_rear_left_kpa','rear_left_tire_pressure'],tire_rr:['sensor','tire_pressure_rear_right_kpa','rear_right_tire_pressure'],
+ fuel:['sensor','fuel_level_pct','fuel_level'],fuel_range:['sensor','fuel_range_km','fuel_powered_range'],combined:['sensor','total_range_km','combined_range'],
+ last_update:['sensor','last_update','last_vehicle_update'],location:['device_tracker','location'],
+ speed:['sensor','vehicle_speed_kmh','vehicle_speed']
 });
 const XP_ICONS = {
  lock:'<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
@@ -302,7 +302,14 @@ class XpengVehicleCard extends HTMLElement{
  interior(){return this.appearance().interior;}
  isG6(){return this.selectedModel()==='G6';}
 
- data(key){const explicit=this.vehicle().entities?.[key]||this._config.entities?.[key];const tuple=XP_KEYS[key];if(!tuple)return null;const id=explicit||`${tuple[0]}.${this.prefix()}_${tuple[1]}`;const entity=this._hass?.states?.[id];const raw=entity?.state??null;return {id,entity,value:raw===null||(typeof raw==='string'&&XP_INVALID.has(raw.toLowerCase()))?null:raw};}
+ data(key){
+   const spec=XP_KEYS[key];if(!spec)return null;
+   const override=this.vehicle().entities?.[key]||this._config.entities?.[key];
+   const ids=override?[override]:spec.slice(1).map(suffix=>spec[0]+'.'+this.prefix()+'_'+suffix);
+   const id=ids.find(v=>this._hass?.states?.[v])||ids[0];
+   const entity=this._hass?.states?.[id];const raw=entity?.state??null;
+   return {id,entity,value:raw===null||(typeof raw==='string'&&XP_INVALID.has(raw.toLowerCase()))?null:raw};
+ }
  val(key){return this.data(key)?.value??null;}
  bool(key){return xpBool(this.val(key));}
  n(key,dec=0){return xpNum(this.val(key),dec);}
