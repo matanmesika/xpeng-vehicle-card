@@ -1,0 +1,42 @@
+name: Generate real XPENG dashboard screenshots
+on:
+  push:
+    branches:
+      - feature/appearance-sync-and-info-v011
+    paths:
+      - .github/workflows/publish-dashboard-previews.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Playwright browser
+        run: |
+          python -m pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: Render actual dashboard with DEMO HA sensor states
+        run: python tests/test_rewrite_v1.py
+      - name: Commit Chromium screenshots to dashboard repository
+        run: |
+          test -s previews/dashboard-v011/desktop-overview-DEMO.png
+          test -s previews/dashboard-v011/desktop-charging-DEMO.png
+          test -s previews/dashboard-v011/phone-overview-DEMO.png
+          test -s previews/dashboard-v011/phone-charging-DEMO.png
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add previews/dashboard-v011/*-DEMO.png
+          if git diff --cached --quiet; then
+            echo "Screenshots unchanged"
+          else
+            git commit -m "docs: publish real dashboard Chromium demo screenshots"
+            git push origin HEAD:feature/appearance-sync-and-info-v011
+          fi
