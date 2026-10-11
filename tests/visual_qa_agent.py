@@ -127,7 +127,7 @@ with sync_playwright() as p:
             assert '391 km' in card.locator('.xv-metrics').inner_text()
             metrics=card.locator('.xv-screen').evaluate("""el=>{
               const r=s=>el.querySelector(s).getBoundingClientRect();
-              const st=r('.xv-screen'),car=r('.xv-car'),left=r('.xv-metrics'),right=r('.xv-info');
+              const st=el.getBoundingClientRect(),car=r('.xv-car'),left=r('.xv-metrics'),right=r('.xv-info');
               return {screen:st.width,car:car.width,carLeft:car.left-st.left,metricsLeft:left.left-st.left,
                 rightLeft:right.left-st.left,carHeight:car.height};
             }""")
