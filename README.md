@@ -76,7 +76,7 @@ The card is a **frontend component**. It cannot generate new sensors or discover
 
 ## Release status
 
-- Version: `v0.6.0-alpha.2` — preview-quality release candidate, **not stable**.
+- Version: `v0.7.0-alpha.1` — preview-quality release candidate, **not stable**.
 - Checks: JS/JSON validation, asset verification, and browser regression tests defined in GitHub Actions.
 - Remaining gate: green CI, real Home Assistant installation test, HACS custom-repository installation test, and future XPENG API verification for controls.
 - Files: [Hebrew documentation](README_HE.md), [release checklist](RELEASE_CHECKLIST.md), [changes](CHANGELOG.md), [contributing](CONTRIBUTING.md), [security](SECURITY.md), [trademark statement](TRADEMARK.md).
@@ -87,7 +87,7 @@ MIT for original project code (see `LICENSE`). XPENG brand names and marks remai
 
 ## Cockpit for 2026 XPENG G6
 
-Version `v0.6.0-alpha.2` introduces an **opt-in**, vehicle-centered `dashboard_layout: cockpit` with large model-aware car art, navigation, charging, climate, vehicle status, tires, fullscreen and Comfort (steering wheel heating, seat heating, ventilation and massage). Existing configurations keep the `classic` layout.
+Version `v0.7.0-alpha.1` introduces an **opt-in**, vehicle-centered `dashboard_layout: cockpit` with large model-aware car art, navigation, charging, climate, vehicle status, tires, fullscreen and Comfort (steering wheel heating, seat heating, ventilation and massage). Existing configurations keep the `classic` layout.
 
 The owner's full sections-view YAML retaining the `main_nav` navbar and the `core_performance_awd` trim is available at [`dashboards/xpeng-g6-cockpit.yaml`](dashboards/xpeng-g6-cockpit.yaml).
 
@@ -95,4 +95,10 @@ The owner's full sections-view YAML retaining the `main_nav` navbar and the `cor
 
 ## Appearance editing policy
 
-Version `v0.6.0-alpha.2` removes the in-card Settings/Appearance page and paint/upholstery buttons. Select `color` and `interior` using the Home Assistant card editor or YAML only. The read-only Interior page shows the chosen whole-cabin finish, including upholstery and dashboard trim. No localStorage preferences can override the shared configuration on iPhone, desktop, or other clients.
+Version `v0.7.0-alpha.1` removes the in-card Settings/Appearance page and paint/upholstery buttons. Select `color` and `interior` using the Home Assistant card editor or YAML only. The read-only Interior page shows the chosen whole-cabin finish, including upholstery and dashboard trim. No localStorage preferences can override the shared configuration on iPhone, desktop, or other clients.
+
+## v0.7 Studio Cockpit actual implementation
+
+The previous concept screenshots were **not browser captures of the implementation**; this release replaces the generic box layouts with a cohesive car-centered layout. The main `G6 2026` image stays prominent in each section, with per-page overlays, a contextual right rail and native Home Assistant telemetry. No fabricated SOC, location, climate or remote command success.
+
+Screenshots from the actual Chromium-rendered card are attached to the [v0.7 alpha release](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v0.7.0-alpha.1), covering desktop and mobile Overview, Controls, Climate, Comfort, Charging, Tires and Interior. The owner YAML with the existing `main_nav` is in `dashboards/xpeng-g6-cockpit.yaml`.

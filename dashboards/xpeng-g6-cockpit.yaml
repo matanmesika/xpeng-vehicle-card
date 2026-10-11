@@ -6,21 +6,7 @@ max_columns: 4
 dense_section_placement: false
 badges: []
 cards: []
-header:
-  card:
-    type: markdown
-    text_only: true
-    content: |
-      # 🚘 EV Control Center
-
-      ### Vehicle • Battery & Range • Charging Station • Live Location • Energy Monitoring
-    card_mod:
-      style: |
-        ha-card, h1, h2, h3 {
-          text-align: center !important;
-          margin-left: auto !important;
-          margin-right: auto !important;
-        }
+# The card itself has the full vehicle heading. No duplicate Markdown header.
 sections:
   - type: grid
     column_span: 4
@@ -45,5 +31,5 @@ sections:
 card_mod:
   style: |
     :host {
-      padding-bottom: max(120px, calc(90px + env(safe-area-inset-bottom)));
+      padding-bottom: max(136px, calc(110px + env(safe-area-inset-bottom)));
     }

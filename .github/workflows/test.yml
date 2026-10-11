@@ -33,6 +33,13 @@ jobs:
           python tests/test_interior_palette.py
           python tests/test_dashboard_release.py
           python tests/test_cockpit_layout.py
+      - name: Upload real rendered Cockpit screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xpeng-v070-cockpit-browser-screenshots
+          path: previews/cockpit-v070/*.png
+          if-no-files-found: warn
       - name: Verify branding independence
         run: |
           python -m pytest -q tests/test_brand_independence.py
