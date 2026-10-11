@@ -127,7 +127,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-scene{position:relative;width:100%;min-height:620px;aspect-ratio:16/9;overflow:hidden;background:radial-gradient(ellipse 43% 16% at 51% 39%,#4c477f88 0%,#243c6988 43%,transparent 100%),radial-gradient(ellipse 64% 28% at 52% 45%,#27497777,transparent 76%),linear-gradient(180deg,#010917 0%,#04142a 32%,#0b2243 59%,#071933 73%,#010815 100%);isolation:isolate;direction:ltr}
 .xp-scene:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 65% 8% at 60% 69%,#147fbb75,transparent),radial-gradient(ellipse 63% 16% at 67% 81%,#173c7a95,transparent);z-index:1}
 .xp-sky{position:absolute;inset:0;width:100%;height:100%;z-index:0}
-.xp-ground{position:absolute;inset:64% 0 0;background:radial-gradient(ellipse 42% 9% at 58% 9%,#70bcfc9c,transparent 90%),radial-gradient(ellipse 18% 34% at 62% 55%,#1c94ff39,transparent 85%),radial-gradient(ellipse 42% 30% at 58% 74%,#204e9d33,transparent 88%),repeating-linear-gradient(177deg,#326caa17 0px,#3565ab17 1px,transparent 3px,transparent 22px),linear-gradient(180deg,#0b2440,#021020 78%,#010713);transform:perspective(500px) rotateX(5deg);transform-origin:50% 0}
+.xp-ground{position:absolute;inset:64% 0 0;background:radial-gradient(ellipse 38% 5% at 58% 7%,#549cce6b,transparent 90%),radial-gradient(ellipse 16% 45% at 60% 62%,#196ec949,transparent 85%),radial-gradient(ellipse 42% 30% at 58% 74%,#204e9d33,transparent 88%),repeating-linear-gradient(177deg,#326caa17 0px,#3565ab17 1px,transparent 3px,transparent 22px),linear-gradient(180deg,#08192c,#020e1b 65%,#000713);transform:perspective(500px) rotateX(5deg);transform-origin:50% 0}
 .xp-ground:before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 48% 48% at 59% 24%,#137ace4a,transparent 70%)}
 .xp-stage-glow{position:absolute;left:22%;right:6%;bottom:18%;height:12%;background:#168de7;border-radius:100%;filter:blur(34px);opacity:.25}
 .xp-stage-glow:after{content:"";position:absolute;inset:58% 2% 27%;background:#28bbff;filter:blur(8px)}
@@ -207,7 +207,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 background:repeating-linear-gradient(177deg,transparent 0 12px,#318bdd24 13px,transparent 14px 25px),repeating-linear-gradient(92deg,transparent 0 103px,#416fbc1a 104px,transparent 105px 207px),
 radial-gradient(ellipse 42% 7% at 64% 31%,#55b1e56b,transparent 75%);
 filter:blur(2px)}
-.xp-scene:after{content:"";position:absolute;pointer-events:none;inset:30% 0 20%;z-index:1;opacity:.65;background:radial-gradient(ellipse 55% 13% at 49% 37%,#7698f93d,transparent 94%);filter:blur(15px)}
+.xp-scene:after{content:"";position:absolute;pointer-events:none;inset:24% 0 36%;z-index:1;opacity:.26;background:radial-gradient(ellipse 42% 11% at 51% 47%,#9c8dd33d,transparent 97%);filter:blur(27px)}
 .xp-stage-glow{mix-blend-mode:screen;opacity:.32}
 @media(min-width:851px){
  .xp-overview .xp-title{left:4.35%;top:17.35%}
@@ -411,10 +411,8 @@ class XpengVehicleCard extends HTMLElement{
     <g filter="url(#xp-soft)"><path d="M0 337L45 331 98 308 140 334 188 303 248 315 298 279 351 308 407 293 456 315 525 291 590 315 634 278 683 302 733 273 785 302 830 269 880 300 935 273 983 297 1034 260 1093 288 1154 255 1207 281 1250 270 1319 303 1370 275 1430 303 1500 282V710H0Z" fill="url(#xp-haze)" opacity=".6"/></g>
     <path d="M0 430L57 415 103 390 151 409 198 385 245 401 289 373 324 394 392 355 437 373 475 340 527 366 565 338 602 356 646 331 686 363 737 324 788 349 828 327 866 353 910 316 951 356 1004 331 1053 357 1098 320 1155 346 1222 311 1265 343 1310 309 1359 340 1408 314 1454 344 1500 323V690H0Z" fill="url(#xp-ridge)" opacity=".9"/>
     <path d="M0 552L60 534 106 518 174 536 227 499 273 507 327 485 384 508 419 486 462 506 516 478 558 496 620 471 666 496 726 472 769 486 821 464 871 488 912 470 964 489 1015 472 1072 492 1109 478 1158 505 1227 485 1264 517 1330 496 1391 525 1450 512 1500 527V692H0Z" fill="#061326" opacity=".9"/>
-  <g opacity=".75" fill="#051024">
-    <path d="M0 504 l22 -30 8 22 14 -49 15 48 18 -25 12 32 18 -36 15 38 18 -48 16 42 17 -34 18 52 15 -43 15 38 11 -28 15 47 13 -34 18 40 15 -42 25 60 h-350z" />
-    <path d="M1130 509l27 -51 14 42 19 -63 14 54 18 -39 15 52 19 -46 14 43 24 -63 17 53 19 -45 14 57 24 -49 19 50 26 -70 21 63 19 -38 34 66v50H1130z"/>
-    </g>
+<path d="M0 490Q64 458 110 481T229 469Q285 457 338 478T489 461Q589 450 652 481T836 469Q904 449 978 470T1148 465Q1221 456 1308 480T1500 467L1500 586H0Z"
+      fill="#03111f" opacity=".48" filter="url(#xp-soft)"/>
     <path d="M0 584Q470 552 760 580T1500 588" stroke="#2888d6" stroke-width="4" opacity=".42" fill="none" filter="url(#xp-soft)"/>
     </svg><div class="xp-ground"></div><div class="xp-stage-glow"></div>`;
  }
