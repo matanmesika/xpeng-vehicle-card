@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - feature/appearance-sync-and-info-v011
+      - release/dashboard-v0.1.1-profiles-visuals
     paths:
       - .github/workflows/publish-dashboard-previews.yml
   workflow_dispatch:
@@ -38,5 +39,5 @@ jobs:
             echo "Screenshots unchanged"
           else
             git commit -m "docs: publish real dashboard Chromium demo screenshots"
-            git push origin HEAD:feature/appearance-sync-and-info-v011
+            git push origin HEAD:${{ github.ref_name }}
           fi
