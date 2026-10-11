@@ -1,26 +1,26 @@
 /**
- * XPENG Vehicle Card v0.7.0-alpha.1 — XPENG vehicle monitoring dashboard (read-only).
+ * XPENG Vehicle Card v1.0.0-alpha.1 — XPENG vehicle monitoring dashboard (read-only).
  * Independent implementation. Uses no external vehicle-control APIs.
  * Reads only Home Assistant state. Does not send vehicle commands.
  */
 const XP_INVALID = new Set(['unknown','unavailable','none','null','']);
 const XP_KEYS = Object.freeze({
  model:['sensor','vehicle_model'],name:['sensor','vehicle_name'],powertrain:['sensor','vehicle_powertrain'],
- connection:['sensor','api_connection_status'],soc:['sensor','battery'],range:['sensor','estimated_range'],
- charging:['binary_sensor','charging'],plugged:['binary_sensor','plugged_in'],target:['sensor','charging_target'],
- power:['sensor','charging_power'],energy:['sensor','charge_session_energy'],remaining:['sensor','charge_remaining'],
- current:['sensor','charge_current'],voltage:['sensor','charge_voltage'],odometer:['sensor','odometer'],
- locked:['binary_sensor','locked'],door_fl:['binary_sensor','door_front_left_open'],
+ connection:['sensor','api_connection_status'],soc:['sensor','soc','battery'],range:['sensor','range_km','estimated_range'],
+ charging:['binary_sensor','is_charging','charging'],plugged:['binary_sensor','is_plugged_in','plugged_in'],target:['sensor','charge_target','charging_target'],
+ power:['sensor','charge_power_kw','charging_power'],energy:['sensor','charge_session_energy_kwh','charge_session_energy'],remaining:['sensor','charge_remaining_min','charge_remaining'],
+ current:['sensor','charge_current_a','charge_current'],voltage:['sensor','charge_voltage_v','charge_voltage'],odometer:['sensor','odometer_km','odometer'],
+ locked:['binary_sensor','is_locked','locked'],door_fl:['binary_sensor','door_front_left_open'],
  door_fr:['binary_sensor','door_front_right_open'],door_rl:['binary_sensor','door_rear_left_open'],
  door_rr:['binary_sensor','door_rear_right_open'],trunk:['binary_sensor','trunk_open'],hood:['binary_sensor','hood_open'],
- climate:['binary_sensor','climate_active'],cabin:['sensor','cabin_temperature'],outside:['sensor','outside_temperature'],
- health:['sensor','battery_health'],battery_voltage:['sensor','battery_voltage'],
- battery_current:['sensor','battery_current'],battery_12v:['sensor','12v_supply_voltage'],
- tire_fl:['sensor','front_left_tire_pressure'],tire_fr:['sensor','front_right_tire_pressure'],
- tire_rl:['sensor','rear_left_tire_pressure'],tire_rr:['sensor','rear_right_tire_pressure'],
- fuel:['sensor','fuel_level'],fuel_range:['sensor','fuel_powered_range'],combined:['sensor','combined_range'],
- last_update:['sensor','last_vehicle_update'],location:['device_tracker','location'],
- speed:['sensor','vehicle_speed']
+ climate:['binary_sensor','climate_active'],cabin:['sensor','cabin_temperature_c','cabin_temperature'],outside:['sensor','outside_temperature_c','outside_temperature'],
+ health:['sensor','battery_soh','battery_health'],battery_voltage:['sensor','battery_voltage'],
+ battery_current:['sensor','battery_current'],battery_12v:['sensor','battery_12v_voltage_v','12v_supply_voltage'],
+ tire_fl:['sensor','tire_pressure_front_left_kpa','front_left_tire_pressure'],tire_fr:['sensor','tire_pressure_front_right_kpa','front_right_tire_pressure'],
+ tire_rl:['sensor','tire_pressure_rear_left_kpa','rear_left_tire_pressure'],tire_rr:['sensor','tire_pressure_rear_right_kpa','rear_right_tire_pressure'],
+ fuel:['sensor','fuel_level_pct','fuel_level'],fuel_range:['sensor','fuel_range_km','fuel_powered_range'],combined:['sensor','total_range_km','combined_range'],
+ last_update:['sensor','last_update','last_vehicle_update'],location:['device_tracker','location'],
+ speed:['sensor','vehicle_speed_kmh','vehicle_speed']
 });
 const XP_ICONS = {
  lock:'<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
@@ -143,257 +143,176 @@ function xpCabinSvg(theme){
 
 function xpAssetModel(model){return model.toLowerCase().replace(/\s+/g,'_').replace(/\+/g,'_plus').replace(/[^a-z0-9_]/g,'');}
 const XP_CSS = `
-:host{display:block;--xp-bg:#171819;--xp-text:#fafafa;--xp-soft:#8b8f93;--xp-line:#292b2d;--xp-panel:#202224;--xp-green:#39d78d;--xp-card:#1c1e20;color:var(--xp-text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
-:host([data-theme="light"]) .brand-mini{filter:invert(1)}:host([data-theme="light"]){--xp-bg:#f5f6f7;--xp-text:#1d2024;--xp-soft:#6f7981;--xp-line:#e0e3e6;--xp-panel:#e9edef;--xp-card:#fff;--xp-green:#168a57}
-*{box-sizing:border-box}ha-card{display:block;background:var(--xp-bg)!important;color:var(--xp-text)!important;border:0!important;border-radius:17px!important;overflow:hidden;box-shadow:none!important}
-.app{max-width:920px;min-height:700px;margin:auto;padding:21px 0 8px;direction:ltr}
-.head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:0 24px}
-.vehicle-name{font-size:28px;line-height:1.12;font-weight:730;letter-spacing:-.6px;max-width:255px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.vehicle-title-line{display:flex;align-items:center;gap:9px}.brand-mini{display:block;width:26px;height:26px;object-fit:contain}.trim-label{font-size:11px;letter-spacing:.13px;color:var(--xp-soft);margin-top:6px}.meta{display:flex;align-items:center;gap:9px;margin-top:6px;font-size:12px;color:var(--xp-text)}.battery-ico{display:inline-flex;align-items:center;width:24px;height:12px;padding:1.5px;border:1px solid var(--xp-text);border-radius:2px;position:relative}.battery-ico:after{content:"";position:absolute;width:2px;height:6px;background:var(--xp-text);right:-4px;border-radius:0 2px 2px 0}.battery-ico span{background:var(--xp-text);height:100%;display:block;border-radius:1px}
-.meta .charging-text{color:var(--xp-green)}.sub-status{font-size:12px;color:var(--xp-soft);margin-top:5px;min-height:18px}.head-tools{display:flex;gap:14px;padding-top:4px}.head-tools button,.back{border:0;background:transparent;color:var(--xp-soft);cursor:pointer;padding:3px;line-height:0}.head-tools button:hover,.back:hover{color:var(--xp-text)}
-.hero{height:276px;display:flex;justify-content:center;align-items:center;position:relative;overflow:hidden;margin:0 auto 0}.hero img{width:100%;height:100%;object-fit:contain;object-position:center;filter:drop-shadow(0 10px 11px #0006);position:relative;z-index:1}.hero:before{content:"";position:absolute;left:16%;right:16%;bottom:13px;height:33px;border-radius:50%;background:#0006;filter:blur(24px)}.hero.g6 img{transform:scale(.96)}
-.hero.is-charging:after{content:"";position:absolute;width:34%;height:12%;left:48%;bottom:15px;background:radial-gradient(ellipse,rgba(36,219,125,.34),transparent 72%);filter:blur(10px);animation:xpPulse 2s ease-in-out infinite alternate;z-index:0}@keyframes xpPulse{to{opacity:.25}}
-.hero-badge{position:absolute;bottom:8px;right:20px;background:rgba(29,37,32,.95);color:var(--xp-green);font-size:12px;padding:6px 10px;border-radius:24px;z-index:2;display:flex;align-items:center;gap:6px}
-.navicons{display:grid;grid-template-columns:repeat(4,1fr);padding:8px 16px 13px;gap:7px;align-items:center;border-bottom:1px solid var(--xp-line)}button.quick{appearance:none;border:0;background:transparent;color:#818588;display:grid;place-items:center;min-height:47px;cursor:pointer;position:relative}button.quick:hover,button.quick.selected{color:var(--xp-text)}button.quick.selected:after{content:"";background:var(--xp-green);position:absolute;bottom:0;width:25px;height:2px;border-radius:4px}button.quick.positive{color:var(--xp-green)}
-.rows{padding:0 19px}.listrow{width:100%;display:flex;align-items:center;text-align:left;gap:15px;border:0;border-bottom:1px solid var(--xp-line);color:var(--xp-text);background:transparent;padding:17px 4px 17px 1px;min-height:70px;cursor:pointer;font:inherit}.listrow:hover{background:rgba(127,127,127,.045)}.listrow:last-child{border-bottom:0}.rowicon{display:flex;align-items:center;justify-content:center;color:var(--xp-soft);width:25px;flex:0 0 25px}.rowtext{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}.rowtitle{font-size:14px;font-weight:680}.rowsub{font-size:11px;color:var(--xp-soft);text-overflow:ellipsis;overflow:hidden;white-space:nowrap}.rowarrow{color:#707477;flex:0 0 auto}
-.detail-head{display:flex;align-items:center;gap:8px;margin:5px 20px 6px}.detail-head button{color:var(--xp-text);display:grid;place-items:center}.detail-head h2{font-weight:680;font-size:20px;margin:0 0 0 3px}.content{border-top:1px solid var(--xp-line);margin:0 19px;padding:16px 3px 25px}.section-caption{font-size:12px;color:var(--xp-soft);line-height:1.55}.metric-hero{display:flex;align-items:baseline;justify-content:space-between;margin:4px 0 15px}.metric-hero strong{font-size:36px;line-height:1.25;letter-spacing:-1.1px}.metric-hero span{color:var(--xp-soft);font-size:13px}.track{width:100%;height:10px;border-radius:7px;overflow:hidden;background:#454a4c;position:relative}.track>.fill{height:100%;background:var(--xp-green);transition:width 350ms}.track>.target{position:absolute;left:var(--target);top:0;width:3px;background:white;height:100%;opacity:.8}.progressfoot{display:flex;justify-content:space-between;margin:9px 0 22px;color:var(--xp-soft);font-size:12px}
-.metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--xp-line);border-radius:10px;overflow:hidden;margin-bottom:13px}.metric{padding:16px 13px;background:var(--xp-card);min-height:79px}.metric b{display:block;font-size:22px;font-weight:660;margin:4px 0}.metric small{color:var(--xp-soft);font-size:11px}.detailrow{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 0;border-bottom:1px solid var(--xp-line);font-size:13px}.detailrow span:first-child{color:var(--xp-soft)}.detailrow strong{text-align:right;font-weight:620;direction:ltr}.notice{color:var(--xp-soft);font-size:12px;line-height:1.65;margin:15px 0 0}.hint{padding:9px 12px;background:rgba(48,191,123,.1);border-radius:8px;color:var(--xp-green);font-size:12px;margin-bottom:13px}
-.door-grid{display:grid;grid-template-columns:1fr 100px 1fr;align-items:stretch;gap:5px;margin:8px 0 14px}.door-mid{border-radius:49px;background:linear-gradient(0deg,#40464c,#1e2227,#40464c);min-height:230px;position:relative;border:5px solid #525b64;box-shadow:0 4px 15px #0008;overflow:hidden}.door-mid:before{content:"";position:absolute;inset:16% 12% 29%;border-radius:35px;background:linear-gradient(90deg,#111923,#3c4752,#10151c)}.door-mid:after{content:"";position:absolute;inset:71% 12% 11%;border-radius:20px;background:linear-gradient(90deg,#10151c,#333f49,#10151c)}.door-col{display:flex;flex-direction:column;justify-content:space-around;gap:10px}.door-pill{font-size:11px;line-height:1.35;color:var(--xp-soft);text-align:center}.door-pill b{display:block;color:var(--xp-text);font-size:13px;margin-top:5px}.door-pill.open b{color:#ff9869}
-.vehicle-list{margin-top:2px}.footer-brand{font-size:10px;letter-spacing:2px;color:#75787a;text-align:center;padding:15px 0 7px}.disconnected-note{text-align:center;background:rgba(222,154,69,.10);color:#d4ae75;border-radius:8px;margin:2px 21px 12px;font-size:11px;padding:9px;line-height:1.4}
-@media(max-width:470px){.app{min-height:665px}.hero{height:254px}.head{padding:0 20px}.hero.g6 img{transform:scale(.96)}.vehicle-name{font-size:27px}.listrow{min-height:68px;padding:15px 4px}.navicons{padding-top:4px;padding-bottom:9px}}
-.xp-appearance-select{display:block;width:100%;border-radius:9px;border:1px solid var(--xp-line);background:var(--xp-card);padding:12px;color:var(--xp-text);margin:8px 0 18px;font:inherit;font-size:13px;min-height:43px;}
-.paint-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:14px 0 18px}.paint-option{border:1px solid var(--xp-line);border-radius:10px;min-height:76px;padding:8px 3px;color:var(--xp-text);background:var(--xp-card);cursor:pointer;font-size:10px;display:grid;justify-items:center;align-items:center;gap:4px;text-align:center}.paint-option[aria-pressed="true"]{border-color:var(--xp-green);outline:1px solid var(--xp-green)}.paint-dot{width:27px;height:27px;border-radius:50%;border:1px solid #7e8287;box-shadow:0 1px 8px #0005}.trim-option{display:block;width:100%;background:transparent;color:var(--xp-text);border:1px solid var(--xp-line);border-radius:9px;padding:12px;margin:8px 0;text-align:left;font-size:13px;cursor:pointer}.trim-option[aria-pressed="true"]{border-color:var(--xp-green);color:var(--xp-green)}.settings-label{font-size:13px;color:var(--xp-soft);margin:15px 0 3px}
-@media(min-width:800px){.app{max-width:810px}.hero{height:330px}.hero img{max-width:720px}.rows{max-width:720px;margin:auto}.navicons{max-width:700px;margin:auto}.head{padding:0 42px}.content{max-width:700px;margin:auto}.detail-head{max-width:700px;margin:8px auto}}
+:host{display:block;--xp-bg:#171819;--xp-text:#f5f6f7;--xp-soft:#98a1aa;--xp-green:#4cbd87;color:var(--xp-text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}*{box-sizing:border-box}ha-card{display:block;width:100%;background:#171819!important;color:#f5f6f7!important;border:0!important;border-radius:20px!important;overflow:hidden!important}.app{width:100%;max-width:none;min-height:0;margin:0;padding:0;direction:ltr}:host([data-theme="light"]){--xp-text:#18212b;--xp-soft:#697988} :host([data-theme="light"]) .xt-card{background:#f8f9fb;color:#1b222a}:host([data-theme="light"]) .xt-nav-row{border-color:#dde2e6}:host([data-theme="light"]) .xt-nav-copy small{color:#596b7c}:host([data-theme="light"]) .xt-shortcuts button{background:#e5e9ee;color:#263644}:host([data-theme="light"]) .xt-car-stage{background:#eceff3}:host([data-theme="light"]) .xt-panel-head button{color:#273343}:host([data-expanded]),:host(:fullscreen){position:fixed!important;inset:0!important;z-index:2147483100!important;max-width:none!important;width:100vw!important;height:100vh!important;height:100dvh!important;overflow:auto!important;background:#181a1c!important}:host([data-expanded]) ha-card,:host(:fullscreen) ha-card{border-radius:0!important;min-height:100%!important}:host([data-expanded]) .xt-card,:host(:fullscreen) .xt-card{max-width:1300px;min-height:95vh}
+/* v0.8 experimental vehicle-app style structure, independently implemented for XPENG. */
+:host([data-cockpit]) ha-card{background:transparent!important;border:0!important;box-shadow:none!important;overflow:visible!important}
+:host([data-cockpit]) .app{padding:0!important;background:transparent!important;max-width:none!important;margin:0 auto!important}
+:host([data-cockpit]) .app{min-height:0!important;height:auto!important}
+:host([data-cockpit]){display:block}
+.xt-card{width:100%;max-width:900px;box-sizing:border-box;margin:0 auto;background:#17181a;border:1px solid #303235;color:#f4f5f6;border-radius:22px;padding:24px 25px 14px;box-shadow:0 18px 55px #0003;font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+.xt-card button{font:inherit;color:inherit}
+.xt-card button:focus-visible{outline:2px solid #7cbbff;outline-offset:2px}
+.xt-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:0 2px 13px}
+.xt-car-name{display:flex;align-items:center;gap:6px;font-size:24px;font-weight:700;letter-spacing:-.5px}
+.xt-car-name button{border:0;background:transparent;color:#aab0b5;cursor:pointer}
+.xt-head-details{display:flex;align-items:center;gap:14px;color:#e1e3e6;margin-top:8px;font-size:14px;font-weight:580}
+.xt-mini-battery{display:flex;align-items:center;gap:6px}
+.xt-muted{font-size:11px;color:#8a919a;margin-top:8px;line-height:1.5}
+.xt-head-buttons button,.xt-panel-head button{border:0;background:transparent;padding:5px 9px;color:#cacfd5;font-size:24px;cursor:pointer}
+.xt-landing{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(255px,1fr);gap:24px;align-items:center}
+.xt-left{min-width:0}
+.xt-car-stage{position:relative;aspect-ratio:1.7;display:flex;justify-content:center;align-items:center;overflow:hidden;border-radius:10px;background:#1e2023}
+.xt-car-stage img{display:block;width:100%;height:100%;object-fit:contain}
+.xt-charge-tag{position:absolute;right:8px;bottom:8px;background:#15382a;color:#8bffbb;border-radius:12px;padding:6px 10px;font-size:11px}
+.xt-shortcuts{display:flex;justify-content:space-evenly;gap:12px;margin-top:15px}
+.xt-shortcuts button{display:grid;place-items:center;min-height:49px;min-width:49px;border-radius:50%;border:0;background:#25272a;cursor:pointer;color:#f2f3f5}
+.xt-shortcuts button:hover:not(:disabled){background:#303b4a}
+.xt-shortcuts button[disabled]{opacity:.45;cursor:not-allowed}
+.xt-navigation{min-width:0;align-self:stretch;display:flex;flex-direction:column;justify-content:center}
+.xt-nav-row{display:flex;align-items:center;gap:14px;border:0;background:transparent;border-bottom:1px solid #33363a;padding:15px 5px;min-height:66px;cursor:pointer;text-align:left;width:100%}
+.xt-nav-row:last-child{border-bottom:0}
+.xt-nav-row:hover{background:#202225}
+.xt-nav-icon{display:grid;place-items:center;width:36px;color:#d9e0e6}
+.xt-nav-copy{display:flex;flex-direction:column;flex:1;gap:3px}
+.xt-nav-copy b{font-weight:600;font-size:15px}
+.xt-nav-copy small{font-size:11px;color:#8f969c}
+.xt-nav-row>svg{color:#858b93}
+.xt-footnote{text-align:center;margin-top:17px;font-size:10px;color:#858c97}
+.xt-panel-head{height:43px;display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.xt-panel-head h2{font-size:22px;margin:0;font-weight:600}
+.xt-panel{min-height:300px}
+.xt-control-stage{position:relative;background:#181a1d;border-radius:11px;min-height:350px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.xt-diagram{position:relative;width:80%;height:330px}
+.xt-diagram .xp-top-car{position:absolute;inset:0;width:100%;height:100%}
+.xt-diagram .xp-pin-label{max-width:125px}
+.xp-pin-label{position:absolute;z-index:2;max-width:112px;min-width:84px;padding:6px 8px;background:#171e28e6;border:1px solid #556574;border-radius:10px;color:#dfe7ef;font-size:10px;line-height:1.3}
+.xp-pin-label b{display:block;margin-top:3px;font-size:11px}
+.xp-pin-fl{top:20%;left:4%}.xp-pin-fr{top:20%;right:4%}.xp-pin-rl{bottom:19%;left:4%}.xp-pin-rr{bottom:19%;right:4%}
+.xp-pin-label.is-open{border-color:#eab090}
 
-/* Interior-wide, linked material palette. All upholstering is a single selection. */
-.xp-cabin-wrap{max-width:460px;margin:6px auto 16px;position:relative;padding:10px;border:1px solid var(--xp-line);border-radius:19px;background:radial-gradient(ellipse at 50% 30%,#303943 0%,#15191e 66%,#101316 100%)}
-.xp-cabin-svg{display:block;width:100%;max-height:525px;object-fit:contain;filter:drop-shadow(0 9px 14px #0009)}
-.xp-cabin-note{font-size:11px;color:var(--xp-soft);text-align:center;max-width:420px;margin:0 auto 18px;line-height:1.5}
-.xp-interior-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0 16px}
-.xp-interior-choice{min-height:81px;background:var(--xp-card);color:var(--xp-text);border:1px solid var(--xp-line);border-radius:12px;font:inherit;font-size:12px;display:flex;align-items:center;flex-direction:column;justify-content:center;gap:7px;cursor:pointer}
-.xp-interior-choice[aria-pressed="true"]{border-color:var(--xp-green);outline:1px solid var(--xp-green)}
-.xp-interior-chip{width:54px;height:28px;border-radius:7px;border:1px solid #a2a5a977;box-shadow:inset 0 0 0 4px #1115}
-.xp-interior-choice:focus-visible{outline:3px solid var(--xp-green)}
-.xp-interior-list{display:grid;grid-template-columns:1fr 1fr;gap:5px 12px;margin:15px 0}
-.xp-interior-list>div{font-size:12px;padding:8px 0;color:var(--xp-soft);border-bottom:1px solid var(--xp-line)}
-
-
-/* Category-aware vehicle visualisation, fullscreen layout. */
-:host([data-expanded]),:host(:fullscreen){position:fixed!important;inset:0!important;z-index:2147483000!important;display:block!important;width:100vw!important;max-width:none!important;height:100vh!important;height:100dvh!important;background:var(--xp-bg)!important;overflow:auto!important;margin:0!important}
-:host([data-expanded]) ha-card,:host(:fullscreen) ha-card{border-radius:0!important;min-height:100%!important;overflow:auto!important}
-:host([data-expanded]) .app,:host(:fullscreen) .app{max-width:1500px!important;width:100%!important;min-height:100%!important;margin:0 auto!important;padding:clamp(18px,3vh,40px) 2vw!important}
-:host([data-expanded]) .hero,:host(:fullscreen) .hero{height:clamp(360px,48vh,700px)!important}
-:host([data-expanded]) .hero img,:host(:fullscreen) .hero img{max-width:1150px!important}
-:host([data-expanded]) .content,:host(:fullscreen) .content{max-width:1080px!important}
-:host([data-expanded]) .rows,:host(:fullscreen) .rows{max-width:1000px!important}
-:host([data-expanded]) .navicons,:host(:fullscreen) .navicons{max-width:950px!important}
-.hero[data-hero-view]{isolation:isolate}
-.xp-view-caption{position:absolute;z-index:3;top:15px;left:24px;color:var(--xp-soft);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
-.xp-page-visual{position:absolute;z-index:2;pointer-events:none}
-.xp-charge-visual{right:8%;top:20%;display:grid;justify-items:center;gap:6px;padding:17px;background:#11251fea;border:1px solid #39d78d6c;border-radius:20px;color:#a1f9d0;box-shadow:0 16px 30px #0006}
-.xp-charge-visual strong{font-size:30px;color:white}.xp-charge-visual small{font-size:10px;letter-spacing:.7px}
-.xp-pin-visual{right:10%;top:20%;display:grid;place-items:center;gap:7px;width:98px;height:98px;border:1px solid #47779077;border-radius:50%;color:#8cd8ff;background:#092538cc}
-.xp-hero-cabin{height:344px!important;background:radial-gradient(ellipse at center,#333e46,transparent 75%)}
-.xp-hero-cabin .xp-cabin-svg{height:100%!important;width:auto!important;max-width:100%;max-height:100%;margin:auto;filter:drop-shadow(0 9px 19px #000b)}
-.xp-hero-plan{height:325px!important;background:radial-gradient(ellipse at center,#293740,transparent 72%)}
-.xp-top-car{position:absolute;inset:0;width:100%;height:100%;filter:drop-shadow(0 10px 18px #000a)}
-.xp-pin-label{position:absolute;z-index:3;min-width:113px;padding:8px 10px;border-radius:11px;background:#101923ef;border:1px solid #62708070;color:#dbe4ec;font-size:11px;line-height:1.35}
-.xp-pin-label b{display:block;font-weight:700;color:white;margin-top:2px}.xp-pin-label.is-open{border-color:#ff987b}.xp-pin-label.is-open b{color:#ff987b}
-.xp-pin-fl{top:20%;left:4%}.xp-pin-fr{top:20%;right:4%}.xp-pin-rl{bottom:20%;left:4%}.xp-pin-rr{bottom:20%;right:4%}
-@media(max-width:470px){.xp-hero-plan,.xp-hero-cabin{height:290px!important}.xp-pin-label{min-width:88px;padding:5px 7px;font-size:10px}.xp-pin-fl,.xp-pin-rl{left:1%}.xp-pin-fr,.xp-pin-rr{right:1%}.xp-view-caption{top:9px;left:14px}.xp-charge-visual{right:2%;top:24%;padding:9px}.xp-charge-visual strong{font-size:23px}}
-@media(prefers-reduced-motion:reduce){.hero.is-charging:after{animation:none}}
-
-
-/* Optional vehicle-centered XPENG cockpit; classic remains unchanged. */
-:host([data-cockpit]){--xp-bg:#0b111c;--xp-text:#eaf4ff;--xp-soft:#9aafc7;--xp-line:#293b52;--xp-panel:#142136;--xp-card:#142238;--xp-green:#54d5a6}
-:host([data-cockpit]) .app{max-width:none!important;width:100%;min-height:760px!important;margin:0;padding:0!important}
-:host([data-cockpit]) ha-card{background:#0a111d!important;border:1px solid #2a3950!important;border-radius:18px!important}
-.xp-cockpit{display:grid;grid-template-columns:178px minmax(0,1fr);min-height:760px;background:linear-gradient(135deg,#08101b 10%,#0d1724 70%);overflow:hidden}
-.xp-side{padding:21px 9px;display:flex;flex-direction:column;gap:26px;background:#090f19;border-right:1px solid #26354b}
-.xp-side-brand{display:flex;align-items:center;gap:9px;letter-spacing:2.5px;color:#f2f8ff;font-size:14px;padding-left:12px}
-.xp-side-brand img{width:29px;height:29px;object-fit:contain}
-.xp-side-menu{display:grid;gap:5px}
-.xp-side-menu button{display:flex;align-items:center;gap:11px;min-height:43px;padding:10px 12px;border:0;border-radius:10px;background:transparent;color:#9bb1c8;text-align:left;font:inherit;font-size:12px;cursor:pointer}
-.xp-side-menu button:hover,.xp-side-menu button.active{background:#173761;color:#e1f1ff}
-.xp-side-menu button.active{box-shadow:inset 3px 0 #52a5ff}
-.xp-side-foot{margin-top:auto;color:#8293a7;font-size:10px;padding:15px 8px 0;border-top:1px solid #26354b}
-.xp-main{min-width:0;min-height:740px;padding:22px clamp(14px,2.3vw,36px) 12px}
-:host([data-cockpit]) .head{padding:0 5px 15px}
-:host([data-cockpit]) .vehicle-name{font-size:29px;max-width:none}
-:host([data-cockpit]) .brand-mini{height:28px;width:28px}
-:host([data-cockpit]) .disconnected-note{margin:0 2px 12px;text-align:left;border:1px solid #92754740}
-.xp-workspace{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(220px,.81fr);gap:13px;align-items:start}
-.xp-primary{min-width:0;border:1px solid #314258;background:radial-gradient(ellipse at center,#1a2c40aa,#111c2b 82%);border-radius:17px;overflow:hidden;padding:8px 12px 14px}
-:host([data-cockpit]) .xp-primary .hero{height:339px!important;max-width:100%;margin:0 auto}
-:host([data-cockpit]) .xp-primary .hero img{max-width:700px;object-fit:contain}
-:host([data-cockpit]) .xp-primary .xp-hero-plan{height:325px!important}
-:host([data-cockpit]) .xp-primary .xp-hero-cabin{height:360px!important}
-.xp-actions{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin:0 3px 14px}
-.xp-action{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:85px;padding:9px 3px;background:#21344a;border:1px solid #334961;border-radius:11px;color:#f0f6ff;font:inherit;cursor:pointer}
-.xp-action:hover{background:#2c4664}.xp-action strong{font-size:11px;font-weight:650;text-align:center}.xp-action small{font-size:10px;color:#9fb1c2}
-.xp-rail{display:grid;gap:12px}.xp-rail-box{min-width:0;padding:16px;background:#172437d9;border:1px solid #283b52;border-radius:14px}
-.xp-rail-box h3{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;margin:0 0 13px;color:#f0f5fc}
-.xp-map-stub{min-height:115px;border:1px solid #29465f;background:radial-gradient(ellipse at center,#294965,#101f31);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:#a2c5df;font-size:12px;text-align:center}
-.xp-rail-link{display:flex;align-items:center;justify-content:space-between;width:100%;border:0;background:none;color:#bad6f5;padding:13px 4px 0;font:inherit;font-size:12px;cursor:pointer}
-.xp-rail-box .detailrow{padding:11px 0;font-size:12px}.xp-rail-box .detailrow strong{color:#e7f1fa}
-.xp-rail-box p{font-size:13px;color:#bbccde}.xp-rail-box small{color:#8da4bb;font-size:11px;line-height:1.5}
-.xp-tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:16px 0 6px}
-.xp-tile{display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:12px;min-height:134px;padding:16px;text-align:left;border:1px solid #293d56;border-radius:15px;background:#17253a;color:#edf5ff;font:inherit;cursor:pointer}
-.xp-tile:hover{background:#203550}.xp-tile span{display:flex;align-items:center;gap:7px;font-size:13px}.xp-tile strong{font-size:20px}.xp-tile small{font-size:11px;color:#91aac5}
-:host([data-cockpit]) .rows{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:0 3px}
-:host([data-cockpit]) .listrow{background:#172537;border:1px solid #2e4058;border-radius:10px;min-height:58px;padding:10px;gap:8px}
-:host([data-cockpit]) .listrow:last-child{border:1px solid #2e4058}
-:host([data-cockpit]) .content{max-width:100%;margin:0;padding:12px 8px 24px;border-top:1px solid #2f4360}
-:host([data-cockpit]) .detail-head{margin:8px 5px 12px}
-.xp-comfort-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px}
-.xp-comfort-item{display:grid;gap:9px;border:1px solid #31465e;background:#1a2a40;border-radius:12px;padding:13px}
-.xp-comfort-item span{display:flex;align-items:center;gap:8px}.xp-comfort-item strong{font-size:12px}
-.xp-comfort-item button[disabled]{min-height:34px;background:#26364a;border:1px solid #4a5c71;border-radius:10px;color:#a2b4c6;cursor:not-allowed}
-:host([data-cockpit]) .footer-brand{padding-top:18px}
-:host([data-cockpit]) button:focus-visible{outline:2px solid #65aaff;outline-offset:2px}
-:host([data-cockpit][data-expanded]) .xp-cockpit{min-height:100%}
-@media(max-width:1020px){.xp-workspace{grid-template-columns:minmax(0,1fr)}.xp-rail{grid-template-columns:repeat(3,minmax(0,1fr))}.xp-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:720px){.xp-cockpit{grid-template-columns:minmax(0,1fr)}.xp-side{padding:11px;gap:8px;border-right:0;border-bottom:1px solid #273a52}.xp-side-brand{padding:0 4px}.xp-side-menu{display:flex;gap:5px;overflow-x:auto;padding-bottom:5px}.xp-side-menu button{flex:0 0 auto;padding:8px 10px;min-height:37px;font-size:11px;gap:5px}.xp-side-foot{display:none}.xp-main{min-height:650px;padding:10px}:host([data-cockpit]) .head{padding:0 5px 11px}:host([data-cockpit]) .vehicle-name{font-size:23px}.xp-rail{grid-template-columns:1fr}.xp-actions{grid-template-columns:repeat(3,minmax(0,1fr))}.xp-action{min-height:75px}.xp-tiles{gap:8px}.xp-tile{min-height:105px;padding:12px}.xp-comfort-grid{grid-template-columns:1fr}:host([data-cockpit]) .rows{grid-template-columns:1fr}}
-@media(max-width:440px){:host([data-cockpit]) .xp-primary .hero{height:255px!important}:host([data-cockpit]) .xp-primary .xp-hero-cabin{height:300px!important}.xp-main{padding:8px}.xp-primary{padding:5px}.xp-tile strong{font-size:16px}}
-
-/* v0.7 redesign: real car art, editorial dashboard, per-view panels (no fake commands). */
-:host([data-cockpit]){--xp-bg:#08101a;--xp-text:#eef6ff;--xp-soft:#9baec6}
-:host([data-cockpit]) ha-card{background:#080f19!important;border:1px solid #26364a!important;border-radius:20px!important;overflow:hidden}
-:host([data-cockpit]) .app{max-width:none!important;width:100%!important;padding:0!important;background:transparent!important}
-.xp-studio{display:grid!important;grid-template-columns:178px minmax(0,1fr)!important;min-height:830px!important;background:linear-gradient(125deg,#080e17,#0a1422 66%)!important;color:#eaf2fe;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.xs-sidebar{background:#080d16;border-right:1px solid #253447;padding:27px 11px 17px;min-width:0;display:flex;flex-direction:column;gap:34px}
-.xs-brand{display:flex;align-items:center;gap:9px;padding:0 12px;font-size:19px;letter-spacing:3px;font-weight:650;color:#f1f5fa;white-space:nowrap}
-.xs-brand-mark{display:grid;place-items:center;width:31px;height:30px;color:#e9f4ff;font-size:25px;font-weight:700;transform:scaleX(1.25)}
-.xs-nav{display:grid;gap:5px}
-.xs-nav button{display:flex;align-items:center;gap:13px;width:100%;min-height:44px;padding:10px 14px;background:transparent;color:#a9bbd0;border:0;border-radius:9px;text-align:left;font:inherit;font-size:13px;cursor:pointer}
-.xs-nav button.selected{background:linear-gradient(90deg,#0d386b,#12253f);box-shadow:inset 3px 0 #49aaff;color:#effaff}
-.xs-nav button:hover:not(.selected){background:#18283b;color:white}
-.xs-nav-footer{margin-top:auto;padding:14px 6px 0;border-top:1px solid #263449;color:#7890ac;font-size:10px;display:flex;align-items:center;gap:6px}
-.xs-state-dot,.xs-connection span{width:8px;height:8px;display:inline-block;flex:none;border-radius:50%;background:#9eabc0}
-.xs-main{min-width:0;padding:23px clamp(16px,2.5vw,34px) 18px}
-.xs-head{display:flex;justify-content:space-between;gap:18px;align-items:center;margin:0 0 15px}
-.xs-eyebrow{font-size:10px;letter-spacing:2.3px;color:#688fbb;font-weight:750;margin-bottom:8px}
-.xs-heading{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
-.xs-heading h2{font-size:25px;line-height:1.2;font-weight:650;letter-spacing:.15px;margin:0;color:#f7fbff}
-.xs-edition{font-size:11px;color:#8fa2bb}
-.xs-head-reading{display:flex;gap:8px;align-items:center;color:#bccde0;font-size:13px;margin-top:9px}
-.xs-head-reading span{color:#536781}
-.xs-head-tools{display:flex;gap:13px;align-items:center}
-.xs-private-status{font-size:11px;color:#97aabd;max-width:180px;text-overflow:ellipsis;overflow:hidden;white-space:nowrap}
-.xs-head-tools button{border:1px solid #2c435c;background:#142438;color:white;border-radius:10px;min-width:41px;min-height:39px;cursor:pointer;font-size:25px}
-.xs-not-connected{border:1px solid #63584266;background:#30271950;color:#e6cda4;border-radius:9px;font-size:11px;padding:9px 12px;margin-bottom:13px}
-.xs-workspace{display:grid;grid-template-columns:minmax(0,2.65fr) minmax(230px,1fr);gap:15px;align-items:start}
-.xs-left{min-width:0}
-.xs-hero{position:relative;min-height:440px;overflow:hidden;background:radial-gradient(ellipse at 65% 60%,#233044,#101826);border:1px solid #33445c;border-radius:20px;isolation:isolate}
-.xs-car-photo{display:block!important;position:absolute;inset:0;width:100%!important;height:100%!important;max-width:none!important;object-fit:cover;object-position:center 48%;filter:saturate(.98)}
-.xs-hero-shade{position:absolute;inset:0;background:linear-gradient(90deg,#09111df2 0%,#0c1929db 22%,#11203735 57%,#09142311 100%),linear-gradient(0deg,#09111be5,transparent 36%);pointer-events:none}
-.xs-hero-copy{position:absolute;z-index:4;top:30px;left:26px;width:clamp(150px,32%,250px);text-shadow:0 2px 12px #06101dee}
-.xs-hero-kicker{display:block;color:#c7d8eb;font-size:10px;letter-spacing:2.2px;font-weight:700;margin-bottom:8px}
-.xs-hero-copy h3{font-size:clamp(23px,2.8vw,37px);line-height:1.13;font-weight:650;letter-spacing:-.5px;color:white;margin:0 0 18px;max-width:215px}
-.xs-connection{font-size:11px;color:#c2d2e6;display:flex;align-items:center;gap:8px;margin-bottom:25px}
-.xs-connection.xs-online span{background:#36d68e;box-shadow:0 0 0 4px #35bd871c}
-.xs-charge-figure{display:flex;align-items:center;gap:12px}
-.xs-charge-figure span{color:#60d8aa}
-.xs-charge-figure strong{font-size:38px;color:#f9fcff;font-weight:690}
-.xs-hero-copy p{font-size:11px;margin:6px 0 12px;color:#adbed0}
-.xs-hero-copy p strong{display:block;font-size:19px;color:#fff;margin-top:3px}
-.xs-progress{width:180px;max-width:92%;height:8px;background:#53677e88;border-radius:100px;overflow:hidden}
-.xs-progress div,.xs-charge-track div{height:100%;background:linear-gradient(90deg,#35d79a,#63dda7);border-radius:100px}
-.xs-hero-photo-note{position:absolute;bottom:12px;right:14px;font-size:9px;letter-spacing:.05px;color:#bfd0e7bb;z-index:4;text-shadow:0 1px 9px #000}
-.xs-hero-detail{position:absolute;right:20px;top:30px;z-index:3;border:1px solid #68819d55;border-radius:17px;background:#101b2abf;backdrop-filter:blur(6px);box-shadow:0 14px 30px #0006}
-.xs-hero-map{width:min(43%,285px);height:315px;overflow:hidden}
-.xs-hero-map .xp-top-car{width:100%;height:100%;position:absolute;inset:0}
-.xs-hero-map .xp-pin-label{min-width:0;max-width:100px;padding:6px;font-size:9px;background:#0c1829ef}
-.xs-hero-map .xp-pin-fl,.xs-hero-map .xp-pin-rl{left:0}
-.xs-hero-map .xp-pin-fr,.xs-hero-map .xp-pin-rr{right:0}
-.xs-hero-cabin{width:min(35%,205px);height:315px;display:flex;align-items:center;justify-content:center}
-.xs-hero-cabin .xp-cabin-svg{width:100%;height:100%;max-height:300px;max-width:100%;filter:drop-shadow(0 7px 14px #0009)}
-.xs-battery-symbol{display:flex;flex-direction:column;align-items:center;gap:8px;padding:20px;right:24px;color:#d1edfc;font-size:12px}
-.xs-battery-symbol b{font-size:14px;color:#fff}
-.xs-actions{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;margin-top:12px}
-.xs-action{min-height:94px;display:flex;align-items:center;justify-content:center;gap:6px;flex-direction:column;background:linear-gradient(150deg,#1b2b42,#111d2d);border:1px solid #3a4b61;border-radius:15px;color:#eff7ff;cursor:pointer;font:inherit;padding:12px 4px;text-align:center}
-.xs-action:hover,.xs-module:hover{background:#1a3350}
-.xs-action strong{font-size:11px;font-weight:580}
-.xs-action small{font-size:10px;color:#8ca1b6}
-.xs-rail{display:grid;gap:13px}
-.xs-rail-box,.xs-module,.xs-detail{border:1px solid #2b3a50;border-radius:17px;background:linear-gradient(145deg,#131f30,#0e1929);color:#eef4ff}
-.xs-rail-box{padding:16px}
-.xs-rail-title{display:flex;align-items:center;gap:9px}
-.xs-rail-title h3{margin:0;font-size:14px;font-weight:610}
-.xs-location{margin-top:12px;text-align:center;border:1px solid #2d4663;background:#101f31;border-radius:11px;overflow:hidden}
-.xs-location-grid{display:grid;place-items:center;min-height:111px;background-image:linear-gradient(43deg,transparent 49%,#3b5b7444 50%,transparent 51%),linear-gradient(130deg,transparent 49%,#39567355 50%,transparent 51%),linear-gradient(#30486124 1px,transparent 1px),linear-gradient(90deg,#30486124 1px,transparent 1px);background-size:100% 100%,100% 100%,27px 27px,27px 27px;background-color:#152438}
-.xs-location-marker{display:grid;place-items:center;width:43px;height:43px;background:#123b70;border:1px solid #5ba3ff;color:#a2d8ff;border-radius:50%}
-.xs-location p{margin:8px 0 0;color:#bbccdf;font-size:11px}
-.xs-location small{display:block;margin:0 0 10px;font-size:9px;color:#8697a8}
-.xs-link{display:flex;justify-content:space-between;align-items:center;width:100%;border:0;background:transparent;color:#a6caff;font:inherit;font-size:11px;margin-top:9px;cursor:pointer}
-.xs-rail-box .detailrow{border-bottom:1px solid #27364a;padding:11px 0!important;font-size:11px;gap:12px}
-.xs-rail-box .detailrow:last-child{border-bottom:0}
-.xs-rail-box .detailrow strong{font-size:11px;color:#dbeaf7;max-width:60%;text-align:right}
-.xs-alert p{font-size:13px;margin:14px 0 8px;color:#c2d3e8;overflow-wrap:anywhere}
-.xs-alert small{font-size:11px;line-height:1.5;color:#95a7b9}
-.xs-module-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:15px}
-.xs-module{position:relative;display:flex;align-items:flex-start;text-align:left;flex-direction:column;gap:10px;min-height:190px;padding:17px 17px 30px;cursor:pointer;font:inherit}
-.xs-module-title{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:650;color:#d9e8f7}
-.xs-module>strong{font-size:24px;line-height:1.15;color:white}
-.xs-module>span:not(.xs-module-title):not(.xs-module-arrow){font-size:11px;color:#ced8e6}
-.xs-module small{font-size:10px;line-height:1.4;color:#889fb6}
-.xs-module-arrow{position:absolute;right:11px;bottom:10px;color:#7fa8d2}
-.xs-detail{padding:21px;margin-top:15px}
-.xs-detail-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 18px}
-.xs-detail-heading h3{font-size:18px;margin:0;color:white}
-.xs-detail-heading button,.xs-panel-link{display:flex;align-items:center;gap:7px;background:#192d44;border:1px solid #3a5878;border-radius:9px;color:#c7deff;padding:10px 13px;font:inherit;font-size:11px;cursor:pointer}
-.xs-data-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.xs-data-chip,.xs-comfort-item{border:1px solid #30435a;border-radius:12px;background:#101f30;padding:14px;min-width:0}
-.xs-data-chip span{display:block;font-size:11px;color:#8ea5ba;margin-bottom:10px}
-.xs-data-chip strong{font-size:14px;color:#e8f2ff;overflow-wrap:anywhere}
-.xs-comfort-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.xs-comfort-item{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.xs-comfort-item span{display:flex;align-items:center;gap:7px;font-size:12px}
-.xs-comfort-item button[disabled]{border:1px solid #37506b;border-radius:9px;padding:7px;background:#24344a;color:#a7b7c8;cursor:not-allowed;font-size:10px}
-.xs-control-notice{margin-top:17px;background:#132134;border:1px solid #2c3c50;border-radius:10px;color:#a3b5c9;padding:13px;font-size:11px;line-height:1.5}
-.xs-climate-control{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px}
-.xs-climate-control span{font-size:11px;color:#9eb3ca}
-.xs-climate-control strong{display:block;font-size:36px;margin:3px 0;color:white}
-.xs-climate-status{padding:9px 14px;background:#1b2d45;border:1px solid #3a526d;border-radius:12px}
-.xs-panel-link{margin-top:15px}
-.xs-charge-meter{display:grid;grid-template-columns:1fr auto;align-items:center;margin-bottom:20px;gap:8px}
-.xs-charge-meter>span{font-size:12px;color:#b5c6d6}
-.xs-charge-meter b{font-size:27px}
-.xs-charge-track{grid-column:span 2;background:#465871;border-radius:30px;height:9px;overflow:hidden}
-.xs-bottom-note{font-size:10px;color:#6f829c;letter-spacing:.1px;margin:15px 0 0;text-align:right}
-:host([data-cockpit][data-expanded]) .xp-studio{min-height:100vh!important}
-:host([data-cockpit][data-expanded]) .xs-hero{min-height:clamp(460px,50vh,770px)}
-.xp-studio button:focus-visible{outline:2px solid #53a6ff!important;outline-offset:2px}
-@media(max-width:1140px){.xs-workspace{grid-template-columns:minmax(0,1fr)}.xs-rail{grid-template-columns:repeat(3,minmax(0,1fr))}.xs-rail-box{padding:12px}.xs-module-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:760px){.xp-studio{grid-template-columns:minmax(0,1fr)!important}.xs-sidebar{gap:9px;padding:9px 10px;border-right:0;border-bottom:1px solid #2d3a51}.xs-brand{font-size:14px;padding:0 5px}.xs-nav{display:flex;overflow-x:auto;gap:5px;scrollbar-width:thin}.xs-nav button{flex:0 0 auto;min-height:37px;padding:8px 11px;gap:7px;font-size:11px}.xs-nav-footer{display:none}.xs-main{padding:12px}.xs-hero{min-height:360px}.xs-rail{grid-template-columns:1fr}.xs-module-grid{gap:8px}.xs-actions{gap:5px}.xs-action{min-height:75px;padding:8px 2px}.xs-action strong{font-size:10px}.xs-action small{font-size:9px}.xs-head{gap:8px}.xs-heading h2{font-size:20px}.xs-private-status{display:none}.xs-data-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:470px){.xs-hero{min-height:320px}.xs-car-photo{object-position:60% center}.xs-hero-shade{background:linear-gradient(90deg,#0a111df5 0%,#0a1222bc 44%,transparent 86%),linear-gradient(0deg,#09111b,transparent 36%)}.xs-hero-copy{top:15px;left:14px;width:150px}.xs-hero-copy h3{font-size:22px}.xs-connection{margin-bottom:15px}.xs-charge-figure strong{font-size:29px}.xs-hero-detail{right:5px;top:65px}.xs-hero-cabin{height:200px;width:100px}.xs-hero-map{height:230px;width:145px}.xs-hero-map .xp-pin-label{font-size:7px;max-width:70px}.xs-actions{grid-template-columns:repeat(5,minmax(0,1fr))}.xs-action strong{font-size:9px}.xs-action svg{height:20px;width:20px}.xs-module{min-height:155px;padding:13px}.xs-module>strong{font-size:18px}.xs-comfort-grid{grid-template-columns:1fr}.xs-data-grid{grid-template-columns:1fr}.xs-bottom-note{margin-bottom:92px}.xs-hero-photo-note{font-size:8px;right:6px}}
-
-.xs-control-buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px}
-.xs-control-buttons button[disabled]{display:flex;align-items:center;justify-content:center;gap:7px;border:1px solid #324861;border-radius:10px;background:#202e40;color:#8c9fb3;padding:11px 5px;font-size:12px;cursor:not-allowed;opacity:.76}
-@media(max-width:760px){
- .xs-nav{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:4px!important;overflow:visible!important}
- .xs-nav button{width:100%!important;min-width:0!important;min-height:54px!important;display:flex!important;flex-direction:column;justify-content:center;gap:3px!important;padding:6px 1px!important;font-size:9px!important;text-align:center!important}
- .xs-nav button span{font-size:9.5px;white-space:nowrap}
- .xs-nav button svg{width:17px;height:17px}
+.xt-car-zones{position:absolute;inset:0;pointer-events:none}
+.xt-car-zones button{position:absolute;pointer-events:none;border:1px solid #4d5359;border-radius:7px;background:#23262ae0;padding:7px 10px;font-size:11px;color:#8a939c;opacity:.8}
+.xt-car-zones button:nth-child(1){top:8%;left:46%}
+.xt-car-zones button:nth-child(2){top:43%;left:47%}
+.xt-car-zones button:nth-child(3){bottom:10%;left:46%}
+.xt-segmented{display:flex;justify-content:space-between;align-items:center;padding:12px 4px;gap:16px;color:#acb7c4;font-size:12px}
+.xt-segmented button{display:flex;align-items:center;gap:7px;background:#292d31;border:0;border-radius:7px;padding:8px 12px;font-size:12px;cursor:pointer}
+.xt-control-bar{display:flex;justify-content:space-around;gap:8px;padding:16px 0}
+.xt-control-bar button{display:flex;align-items:center;flex-direction:column;gap:7px;background:transparent;border:0;padding:6px;color:#7c858f;opacity:.65;cursor:not-allowed}
+.xt-control-bar small{font-size:11px}
+.xt-climate-area{height:330px;position:relative;display:grid;place-items:center;background:linear-gradient(180deg,#232528,#141618);border-radius:11px;overflow:hidden}
+.xt-cabin-surface{position:absolute;inset:0;height:100%;width:100%;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.xt-cabin-surface svg{display:block;flex:none;height:96%;max-height:100%;width:auto;max-width:100%;object-fit:contain}
+.xt-cabin-overlay{position:absolute;left:calc(50% - 80px);top:31%;width:160px;height:105px;pointer-events:none;display:flex;justify-content:space-between;align-items:center}
+.xt-cabin-overlay button{border:1px solid #5b6670;border-radius:50%;width:36px;height:36px;background:#161d25bb;opacity:.5;cursor:not-allowed;display:grid;place-items:center}
+.xt-temp-panel{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:20px 9px}
+.xt-temp-panel>div{display:flex;flex-direction:column;align-items:center;gap:5px}
+.xt-temp-panel small{font-size:11px;color:#989fa8}
+.xt-temp-panel strong{font-size:21px}
+.xt-climate-stepper{display:flex!important;flex-direction:row!important;align-items:center;gap:9px}
+.xt-climate-stepper button,.xt-stepper button{background:#2b2d30;border:0;border-radius:7px;width:38px;height:38px;font-size:22px;opacity:.5}
+.xt-comfort-quick{display:flex;gap:8px;justify-content:space-between;margin:0 0 14px}.xt-comfort-quick button{display:flex;align-items:center;justify-content:center;gap:7px;flex:1;background:#272a2e;border:1px solid #3d434a;border-radius:9px;padding:10px 5px;font-size:11px;cursor:not-allowed}
+.xt-seat-functions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.xt-seat-functions>div{display:flex;justify-content:space-between;gap:9px;align-items:center;padding:12px;border:1px solid #34383b;border-radius:11px;background:#222427}
+.xt-seat-functions span{display:flex;align-items:center;gap:7px;font-size:12px}
+.xt-seat-functions button{font-size:11px;background:#303236;border:0;border-radius:7px;padding:8px;color:#a2abb4;cursor:not-allowed}
+.xt-inline-foot{font-size:10px;color:#858c95;padding-top:12px}
+.xt-charger-image{height:230px;display:grid;place-items:center;background:#202225;border-radius:11px;overflow:hidden}
+.xt-charger-image img{width:100%;height:100%;object-fit:contain}
+.xt-battery,.xt-charging-setting{padding:18px 6px;border-bottom:1px solid #363a3f}
+.xt-battery>div:first-child,.xt-charging-setting label{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.xt-battery span,.xt-charging-setting label{font-size:13px}
+.xt-battery strong{font-size:23px}
+.xt-battery>span{display:block;font-size:11px;color:#a5adb5;margin-top:10px}
+.xt-track{background:#32383a;border-radius:90px;height:12px;margin-top:13px;overflow:hidden}
+.xt-track div{height:100%;background:#4abb88;border-radius:90px}
+.xt-charging-setting input{width:100%;accent-color:#4abb88;margin-top:14px;opacity:.5}
+.xt-stepper{display:flex;justify-content:center;align-items:center;gap:18px;padding:10px 0}
+.xt-port-button{display:block;border:0;background:transparent;color:#9eabb4!important;margin:22px auto 7px;opacity:.55;cursor:not-allowed}
+.xt-location-map{min-height:300px;display:flex;align-items:center;flex-direction:column;justify-content:center;background:#20252a;border-radius:10px;gap:13px;color:#c6cdd6}
+.xt-location-map small{color:#929ca6;font-size:11px}
+.xt-values{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.xt-values>div{background:#232528;border-radius:9px;padding:14px;display:flex;justify-content:space-between;gap:8px}
+.xt-values span{font-size:12px;color:#a2adb7}
+.xt-values b{font-size:12px;color:#e9edef}
+:host([data-cockpit][data-expanded]) .xt-card{max-width:1150px;min-height:98vh}
+:host([data-cockpit][data-expanded]) .xt-car-stage{min-height:48vh}
+@media(max-width:680px){
+ .xt-card{border-radius:14px;padding:17px 12px 12px}
+ .xt-car-name{font-size:22px}
+ .xt-landing{display:block}
+ .xt-car-stage{aspect-ratio:1.55}
+ .xt-navigation{margin-top:15px}
+ .xt-nav-row{min-height:56px;padding:11px}
+ .xt-shortcuts{margin-top:12px}
+ .xt-climate-area{height:300px}
+ .xt-control-stage{min-height:310px}
+ .xt-diagram{width:100%;height:290px}
+ .xt-car-zones button:nth-child(1){left:43%}
+ .xt-car-zones button:nth-child(2){left:44%}
+ .xt-car-zones button:nth-child(3){left:43%}
+ .xt-seat-functions{grid-template-columns:1fr}
+ .xt-temp-panel{padding:14px 0}
+ .xt-footnote{padding-bottom:92px}
 }
-@media(max-width:470px){
- .xs-hero{min-height:355px!important}
- .xs-car-photo{object-fit:contain!important;object-position:center center!important;transform:translateY(42px)}
- .xs-hero-copy h3{font-size:21px!important;max-width:150px!important;margin-bottom:9px!important}
- .xs-hero-copy{top:14px!important}
- .xs-connection{margin-bottom:10px!important;font-size:10px!important}
- .xs-charge-figure strong{font-size:26px!important}
- .xs-charge-figure svg{height:20px;width:20px}
- .xs-hero-copy p{margin:4px 0 6px!important;font-size:10px}
- .xs-hero-copy p strong{font-size:15px!important}
- .xs-progress{height:5px!important;max-width:132px!important}
- .xs-control-buttons{grid-template-columns:1fr}
-}
+
+/* Dashboard-first home. Detailed screens remain secondary and read only. */
+.xt-card{max-width:1150px!important;background:linear-gradient(145deg,#101720,#0b1018 75%)!important}
+.xt-header{padding-bottom:11px;border-bottom:1px solid #273545;margin-bottom:12px}
+.xd-home{min-width:0}
+.xd-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:11px 0 15px}
+.xd-heading h2{font-size:17px;font-weight:650;margin:0}
+.xd-connection{display:flex;gap:7px;align-items:center;font-size:11px;color:#94a6bb}
+.xd-layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(260px,.82fr);gap:14px;align-items:stretch}
+.xd-main{display:flex;flex-direction:column;gap:12px;min-width:0}
+.xd-car-stage{position:relative;display:flex;align-items:center;justify-content:center;min-height:260px;border-radius:17px;background:radial-gradient(ellipse at 48% 52%,#303b4b,#152131 66%,#101720);overflow:hidden}
+.xd-car-image{width:100%;max-width:none;height:292px;object-fit:contain;display:block}
+.xd-car-chip{position:absolute;left:14px;bottom:12px;border:1px solid #53606e99;background:#101924df;padding:8px 12px;border-radius:100px;display:flex;align-items:center;gap:7px;font-size:11px;color:#bfcbd7}
+.xd-car-chip.xd-charge-on{color:#76ecc2;border-color:#3fbd8a;background:#092d25db}
+.xd-charge-panel{border:1px solid #344258;background:linear-gradient(140deg,#172434,#101924);border-radius:17px;padding:16px 18px 17px;min-width:0}
+.xd-charge-panel.xd-charge-active{border-color:#3d967d;box-shadow:inset 0 0 24px #37af8220}
+.xd-charge-panel-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:9px}
+.xd-charge-panel-top button{border:0;background:transparent;padding:5px;border-radius:8px;color:#b2c7d9}
+.xd-charge-panel-top button:hover{background:#263a4c}
+.xd-charge-label{display:flex;align-items:center;gap:9px;font-size:14px;color:#c7d3e1;font-weight:650}
+.xd-charge-active .xd-charge-label{color:#73ebba}
+.xd-main-battery{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.xd-main-battery>strong{font-size:clamp(34px,4vw,53px);font-variant-numeric:tabular-nums;font-weight:720;line-height:1.18}
+.xd-range{display:flex;flex-direction:column;gap:5px;text-align:right}
+.xd-range span{font-size:11px;color:#94a7bb}
+.xd-range b{font-size:18px;color:#e1ecf8}
+.xd-charge-progress{position:relative;border-radius:100px;height:10px;background:#44556a;overflow:hidden;margin:11px 0 8px}
+.xd-charge-progress>div{height:100%;background:linear-gradient(90deg,#48ba90,#65efbf);border-radius:100px}
+.xd-charge-target{position:absolute;top:0;bottom:0;width:2px;background:#fff;opacity:.65;transform:translateX(-50%)}
+.xd-charge-foot{display:flex;justify-content:space-between;gap:10px;color:#a5b6c6;font-size:11px}
+.xd-live-charge-data{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid #34475b;margin-top:15px;padding-top:13px;gap:10px}
+.xd-live-charge-data>div{display:flex;flex-direction:column;gap:6px;min-width:0}
+.xd-live-charge-data small{color:#99abbe;font-size:10px}
+.xd-live-charge-data strong{font-size:16px;color:#f1f7ff;white-space:nowrap}
+.xd-status{border:1px solid #334155;background:linear-gradient(140deg,#172434,#0f1825);border-radius:17px;padding:12px 15px 14px;display:flex;flex-direction:column}
+.xd-status-title{display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:650;padding:7px 3px 13px;border-bottom:1px solid #334257}
+.xd-state-row{display:flex;gap:10px;align-items:center;text-align:left;padding:14px 0;border:0;border-bottom:1px solid #2e3b4c;background:none;min-height:85px;width:100%}
+.xd-state-row:hover{background:#1c2b3d}
+.xd-state-icon{display:grid;place-items:center;flex:0 0 40px;height:40px;color:#d3e5fa;border:1px solid #40526a;border-radius:12px;background:#243449}
+.xd-state-copy{display:flex;flex:1;flex-direction:column;gap:3px;min-width:0}
+.xd-state-copy small{color:#a3b2c3;font-size:11px}
+.xd-state-copy strong{color:#f3f8fd;font-size:15px;font-weight:600}
+.xd-state-copy em{color:#8ea4b9;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-style:normal}
+.xd-state-row>svg{color:#8196aa;flex:none}
+.xd-status-extra{display:flex;flex-direction:column;gap:5px;margin:auto 0 0;padding:16px 3px 3px;color:#91a5b9;font-size:11px}
+.xd-status-extra strong{font-size:11px;color:#bdcfdf;overflow-wrap:anywhere;font-weight:500}
+.xd-details-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:15px}
+.xd-details-nav button{display:flex;align-items:center;gap:7px;justify-content:center;border:1px solid #303e50;border-radius:12px;background:#152030;color:#bfcfe1;min-height:48px;font-size:11px;padding:9px 5px}
+.xd-details-nav button:hover{background:#22364a}
+.xd-details-nav button>svg:last-child{width:12px;height:12px;color:#8194a8}
+@media(max-width:800px){.xd-layout{grid-template-columns:1fr}.xd-car-image{height:300px}.xd-status{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}.xd-status-title{grid-column:span 2}.xd-status-extra{grid-column:span 2}.xd-state-row{min-height:80px}.xd-details-nav{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:470px){.xt-card{padding:14px 12px 12px}.xd-heading{margin:8px 0 12px}.xd-car-stage{min-height:220px}.xd-car-image{height:235px}.xd-status{display:block}.xd-state-row{min-height:76px}.xd-live-charge-data strong{font-size:13px}.xd-charge-panel{padding:13px}.xd-main-battery>strong{font-size:39px}.xd-range b{font-size:15px}.xd-details-nav button{min-height:42px}.xd-car-chip{font-size:10px}}
 
 `;
 class XpengVehicleCard extends HTMLElement{
- constructor(){super();this.attachShadow({mode:'open'});this._expanded=false;this._nativeFull=false;this._config={prefix:'my_xpeng',theme:'dark'};this._view='overview';this._hass=null;this._vehicleIndex=0;
-   this.shadowRoot.addEventListener('click',e=>{const target=e.target.closest('button[data-view],button[data-back],button[data-cycle],button[data-expand]');if(!target)return;
+ constructor(){super();this.attachShadow({mode:'open'});this._expanded=false;this._nativeFull=false;this._config={prefix:'my_xpeng',theme:'dark'};this._view='overview';this._hass=null;this._vehicleIndex=0;this._tireUnit='kPa';
+   this.shadowRoot.addEventListener('click',e=>{const target=e.target.closest('button[data-view],button[data-back],button[data-cycle],button[data-expand],button[data-tire-unit]');if(!target)return;
+    if(target.hasAttribute('data-tire-unit')){this._tireUnit=this._tireUnit==='kPa'?'bar':this._tireUnit==='bar'?'psi':'kPa';this.render();return;}
     if(target.hasAttribute('data-expand')){
       this._expanded=!this._expanded;
       if(this._expanded&&typeof this.requestFullscreen==='function'){
@@ -420,7 +339,7 @@ class XpengVehicleCard extends HTMLElement{
  // For older configs, coerce only values that are no longer valid in the selected model year.
  const normalized=xpNormalizeAppearance(original);this._config={...original,...normalized};this.render();}
  set hass(hass){this._hass=hass;this.render();}get hass(){return this._hass;}
- getCardSize(){return this._view==='overview'?8:7;}
+ getCardSize(){return this._view==='overview'?6:9;}
  static getConfigElement(){return document.createElement('xpeng-vehicle-card-editor');}
  static getStubConfig(){return {type:'custom:xpeng-vehicle-card',prefix:'my_xpeng',model:'G6',year:'2026',trim:'core_plus_rwd',color:'arctic_white',interior:'dark_gray',theme:'dark'};}
  vehicles(){const list=this._config.vehicles;return Array.isArray(list)&&list.length?list:[this._config];}
@@ -435,39 +354,44 @@ class XpengVehicleCard extends HTMLElement{
  interior(){return this.appearance().interior;}
  isG6(){return this.selectedModel()==='G6';}
 
- data(key){const explicit=this.vehicle().entities?.[key]||this._config.entities?.[key];const tuple=XP_KEYS[key];if(!tuple)return null;const id=explicit||`${tuple[0]}.${this.prefix()}_${tuple[1]}`;const entity=this._hass?.states?.[id];const raw=entity?.state??null;return {id,entity,value:raw===null||(typeof raw==='string'&&XP_INVALID.has(raw.toLowerCase()))?null:raw};}
+ data(key){
+   const spec=XP_KEYS[key];if(!spec)return null;
+   const override=this.vehicle().entities?.[key]||this._config.entities?.[key];
+   const ids=override?[override]:spec.slice(1).map(suffix=>spec[0]+'.'+this.prefix()+'_'+suffix);
+   const id=ids.find(v=>this._hass?.states?.[v])||ids[0];
+   const entity=this._hass?.states?.[id];const raw=entity?.state??null;
+   return {id,entity,value:raw===null||(typeof raw==='string'&&XP_INVALID.has(raw.toLowerCase()))?null:raw};
+ }
  val(key){return this.data(key)?.value??null;}
  bool(key){return xpBool(this.val(key));}
  n(key,dec=0){return xpNum(this.val(key),dec);}
+ number(key){const value=this.val(key);return value===null||value===''||!Number.isFinite(Number(value))?null:Number(value);}
+ tireValue(key){
+   const kpa=this.val(key);
+   if(kpa===null||!Number.isFinite(Number(kpa)))return '—';
+   const k=Number(kpa);
+   if(this._tireUnit==='bar')return xpNum(k/100,2)+' bar';
+   if(this._tireUnit==='psi')return xpNum(k/6.894757293,1)+' psi';
+   return xpNum(k)+' kPa';
+ }
+ value(key,unit='',digits=0){const raw=this.val(key);return raw===null||raw===''||!Number.isFinite(Number(raw))?'—':xpNum(raw,digits)+(unit?' '+unit:'');}
  model(){return this.selectedModel();}
  name(){const n=this.vehicle().name||this.val('name');return n&&n!=='My XPENG'&&n!=='XPENG'?n:'XPENG '+this.model();}
  charging(){return this.bool('charging')===true;}
  plugged(){return this.bool('plugged')===true;}
- stateText(){if(this.charging())return `Charging${this.val('power')!==null?' · '+this.n('power',1)+' kW':''}`;if(this.plugged())return 'Plugged in';const conn=this.val('connection');if(conn==='not_configured'||conn===null)return 'Waiting for XPENG API';if(conn==='stale_vehicle_data')return 'Vehicle data stale';if(conn==='connection_error')return 'Connection error';return this.bool('locked')===true?'Parked · Locked':this.bool('locked')===false?'Parked · Unlocked':'Parked · Status unavailable';}
  asset(){const base=(this._config.image_path||'/hacsfiles/xpeng-vehicle-card/assets').replace(/\/$/,'');const img=this.vehicle().image||this._config.image;
  if(img&&/^\/(?:local|hacsfiles)\/[a-zA-Z0-9/_\-.]+$/.test(img))return img;
  if(this.isG6()&&this.year()==='2026')return `${base}/g6-2026-${this.paint()}.webp`;
  return `${base}/models/${xpAssetModel(this.model())}-${this.paint()}.webp`;
  }
  status(key,onLabel,offLabel){const b=this.bool(key);return b===null?'Not available':b?onLabel:offLabel;}
- items(){const loc=this.data('location')?.entity;const gps=loc?.attributes&&Number.isFinite(Number(loc.attributes.latitude))&&Number.isFinite(Number(loc.attributes.longitude));return [
-  ['controls','car','Controls',this.status('locked','Locked','Unlocked')],
-  ['climate','fan','Climate',this.status('climate','On','Off')+(this.val('cabin')!==null?' · '+this.n('cabin',1)+'°C':'')],
-  ['interior','car','Interior & seats',XP_INTERIORS.find(x=>x.id===this.interior())?.label||'Dark Gray'],
-  ['location','pin','Location',gps?'GPS available':'Not available'],
-  ['charging','bolt','Charging',this.charging()?`${this.n('power',1)} kW · ${this.n('soc')}%`:this.plugged()?'Plugged in':'Not charging'],
-  ['tires','tire','Tire pressure',this.val('tire_fl')!==null?`${this.n('tire_fl')} kPa front left`:'Not available'],
-  ['info','info','Vehicle information',this.val('odometer')!==null?`${this.n('odometer')} km`:'Model '+this.model()]
- ];}
- header(){const soc=xpPercent(this.val('soc')),trim=xpAllowedTrims(this.model(),this.year()).find(x=>x.id===this.trim());const trLabel=trim&&this.trim()!=='unspecified'?` · ${trim.label}`:'';
- return `<header class="head"><div><div class="vehicle-title-line"><img class="brand-mini" alt="XPENG" src="${xpEsc((this._config.image_path||'/hacsfiles/xpeng-vehicle-card/assets').replace(/\/$/,'')+'/xpeng-logo.png')}"><div class="vehicle-name">${xpEsc(this.name())}${this.vehicles().length>1?` <button class="back" data-cycle aria-label="Switch vehicle">⌄</button>`:''}</div></div><div class="trim-label">${xpEsc(this.year()+trLabel)}</div><div class="meta"><span class="battery-ico"><span style="width:${soc??0}%"></span></span><b>${soc===null?'—':xpNum(soc)+'%'}</b><span>${this.val('range')===null?'—':this.n('range')+' km'}</span></div><div class="sub-status ${this.charging()?'charging-text':''}">${xpEsc(this.stateText())}</div></div><div class="head-tools"><button type="button" data-expand aria-label="${this._expanded?'Exit full screen':'Full screen'}" title="${this._expanded?'Exit full screen':'Full screen'}">${this._expanded?'✕':'⛶'}</button><button data-view="info" title="Connection details" aria-label="Connection details">${xpIcon('info',20)}</button></div></header>`;}
  topVisual(){
    const tires=this._view==='tires';
    const entries=tires
     ?[['tire_fl','Front left','xp-pin-fl'],['tire_fr','Front right','xp-pin-fr'],['tire_rl','Rear left','xp-pin-rl'],['tire_rr','Rear right','xp-pin-rr']]
     :[['door_fl','Front left','xp-pin-fl'],['door_fr','Front right','xp-pin-fr'],['door_rl','Rear left','xp-pin-rl'],['door_rr','Rear right','xp-pin-rr']];
    const labels=entries.map(([key,label,pos])=>{
-     const value=tires?this.value(key,'kPa'):this.status(key,'Open','Closed');
+     const value=tires?this.tireValue(key):this.status(key,'Open','Closed');
      return `<div class="xp-pin-label ${pos} ${!tires&&this.bool(key)===true?'is-open':''}">${xpEsc(label)}<b>${xpEsc(value)}</b></div>`;
    }).join('');
    return `<svg class="xp-top-car" viewBox="0 0 560 340" role="img" aria-label="Vehicle viewed from above" xmlns="http://www.w3.org/2000/svg">
@@ -495,181 +419,176 @@ class XpengVehicleCard extends HTMLElement{
    return `<div class="hero ${this.isG6()?'g6':''} ${charging?'is-charging':''}" data-hero-view="${xpEsc(view)}">${headerText[view]?`<div class="xp-view-caption">${headerText[view]}</div>`:''}<img alt="XPENG ${xpEsc(model)} vehicle artwork" src="${xpEsc(this.asset())}" loading="eager">${chargeOverlay}${locationOverlay}${charging&&view==='overview'?`<div class="hero-badge">${xpIcon('bolt',15)} ${this.val('power')===null?'Charging':this.n('power',1)+' kW'}</div>`:''}</div>`;
  }
 
- nav(){const opts=[['controls','lock'],['vehicle','car'],['charging','bolt'],['climate','fan']];return `<div class="navicons" aria-label="Vehicle panels">${opts.map(([view,iconName])=>`<button type="button" class="quick ${this._view===view?'selected':''} ${view==='charging'&&this.charging()?'positive':''}" data-view="${view}" title="${xpEsc(view)}" aria-label="Show ${xpEsc(view)} panel">${xpIcon(iconName,25)}</button>`).join('')}</div>`;}
- overview(){return `<section class="rows" aria-label="Vehicle status">${this.items().map(([view,ico,name,sub])=>`<button type="button" class="listrow" data-view="${view}"><span class="rowicon">${xpIcon(ico,21)}</span><span class="rowtext"><span class="rowtitle">${xpEsc(name)}</span><span class="rowsub">${xpEsc(sub)}</span></span><span class="rowarrow">${xpIcon('arrow',16)}</span></button>`).join('')}</section>`;}
- field(label,value){return `<div class="detailrow"><span>${xpEsc(label)}</span><strong>${xpEsc(value)}</strong></div>`;}
- value(key,unit='',digits=0){const v=this.val(key);return v===null?'—':`${xpNum(v,digits)}${unit?' '+unit:''}`;}
- metric(label,key,unit='',digits=0){return `<div class="metric"><small>${xpEsc(label)}</small><b>${xpEsc(this.value(key,unit,digits))}</b></div>`;}
- chargingView(){const soc=xpPercent(this.val('soc')), target=xpPercent(this.val('target'));return `<div class="hint">${this.charging()?'⚡ Charging now':this.plugged()?'Charging cable connected':'Charging is not active'}</div><div class="metric-hero"><strong>${soc===null?'—':xpNum(soc)+'%'}</strong><span>${this.n('range')} km estimated</span></div><div class="track"><div class="fill" style="width:${soc??0}%"></div>${target!==null?`<div class="target" style="--target:${target}%"></div>`:''}</div><div class="progressfoot"><span>Battery</span><span>Charge limit: ${target===null?'—':xpNum(target)+'%'}</span></div><div class="metrics">${this.metric('Charging power','power','kW',1)}${this.metric('Time remaining','remaining','min')}${this.metric('Energy added','energy','kWh',2)}${this.metric('Voltage','voltage','V',1)}${this.metric('Current','current','A',1)}${this.metric('Range','range','km')}</div><p class="notice">Monitoring only. Charging controls will appear after XPENG remote commands are validated. Charging power (kW) and energy (kWh) are separate measurements.</p>`;}
- controlsView(){const b=(k,a)=>this.status(k,a,'Closed');return `<div class="door-grid"><div class="door-col"><div class="door-pill ${this.bool('door_fl')?'open':''}">Front left<b>${b('door_fl','Open')}</b></div><div class="door-pill ${this.bool('door_rl')?'open':''}">Rear left<b>${b('door_rl','Open')}</b></div></div><div class="door-mid" aria-label="Top-down car silhouette"></div><div class="door-col"><div class="door-pill ${this.bool('door_fr')?'open':''}">Front right<b>${b('door_fr','Open')}</b></div><div class="door-pill ${this.bool('door_rr')?'open':''}">Rear right<b>${b('door_rr','Open')}</b></div></div></div>${this.field('Door locks',this.status('locked','Locked','Unlocked'))}${this.field('Trunk',b('trunk','Open'))}${this.field('Front hood',b('hood','Open'))}<p class="notice">Door indicators are read-only. No unlock or open commands are sent.</p>`;}
- vehicleView(){return this.controlsView();}
- climateView(){return `<div class="metric-hero"><strong>${xpEsc(this.value('cabin','°C',1))}</strong><span>Cabin temperature</span></div>${this.field('Air conditioning',this.status('climate','On','Off'))}${this.field('Outside temperature',this.value('outside','°C',1))}<button class="trim-option" type="button" data-view="comfort">Seat & steering-wheel comfort</button><button class="trim-option" type="button" data-view="interior">Interior overview ${xpIcon('arrow',16)}</button><p class="notice">Steering wheel heating, front seat heat, ventilation and massage are not currently mapped to any VERIFIED direct XPENG cloud control entities. No buttons are activated or hidden API sensors invented.</p>`;}
- comfortView(){
-   const functions=['Steering wheel heating','Driver seat heating','Passenger seat heating','Rear seat heating','Driver seat ventilation','Passenger seat ventilation','Driver seat massage','Passenger seat massage'];
-   return `<p class="notice">Comfort controls will be enabled only when an authorized XPENG command API and matching vehicle features have been verified.</p><div class="xp-comfort-grid">${functions.map(label=>`<div class="xp-comfort-item"><span>${xpIcon('thermometer',22)}<strong>${xpEsc(label)}</strong></span><button type="button" disabled aria-label="${xpEsc(label)} unavailable">Unavailable</button></div>`).join('')}</div>`;
+ vehicleMenuHeader(){
+  const soc=xpPercent(this.val('soc')),range=this.value('range','km');
+  const trim=xpAllowedTrims(this.model(),this.year()).find(v=>v.id===this.trim())?.label||'';
+  return `<header class="xt-header">
+    <div><div class="xt-car-name">${xpEsc(this.name())}${this.vehicles().length>1?`<button type="button" data-cycle aria-label="Switch vehicle">⌄</button>`:''}</div>
+      <div class="xt-head-details"><span class="xt-mini-battery">${xpIcon('battery',19)} <span>${soc===null?'—':xpNum(soc)+'%'}</span></span><span>${xpEsc(range)}</span></div>
+      <div class="xt-muted">${xpEsc(this.year())} · ${xpEsc(trim)} · ${xpEsc(xpConnText(this.val('connection')))}</div>
+    </div>
+    <div class="xt-head-buttons">
+      <button type="button" data-expand aria-label="${this._expanded?'Exit full screen':'Full screen'}">${this._expanded?'✕':'⛶'}</button>
+    </div>
+  </header>`;
  }
- interiorView(){
-    const finish=XP_INTERIORS.find(x=>x.id===this.interior())?.label||'Not specified';
-    return `<div class="xp-cabin-note">Your configured cabin finish applies to the dashboard, steering wheel, door panels, centre console and all seats together.</div>
-      ${this.field('Interior finish',finish)}
-      <div class="xp-interior-list">${['Steering wheel','Dashboard','Door panels','Centre console','Driver & passenger seats','Rear seating'].map(x=>`<div>${xpEsc(x)}</div>`).join('')}</div>
-      <p class="notice">To change vehicle paint or cabin upholstery, open Home Assistant dashboard Edit mode → Edit card → Exterior paint / Interior finish. Settings are saved in card configuration for all devices. No appearance controls exist inside the dashboard.</p>`;
-  }
- tiresView(){return `<div class="metrics">${this.metric('Front left','tire_fl','kPa')}${this.metric('Front right','tire_fr','kPa')}${this.metric('Rear left','tire_rl','kPa')}${this.metric('Rear right','tire_rr','kPa')}</div><p class="notice">Readings depend on actual cloud telemetry. G6 OBD mappings are not treated as verified cloud API fields.</p>`;}
- locationView(){const loc=this.data('location')?.entity;const lat=Number(loc?.attributes?.latitude),lon=Number(loc?.attributes?.longitude),ok=loc&&Number.isFinite(lat)&&Number.isFinite(lon);return `${this.field('Location status',ok?'GPS available':'Not available')}${ok?this.field('Latitude',lat.toFixed(5))+this.field('Longitude',lon.toFixed(5)):''}${this.field('Last update',this.val('last_update')||'—')}<p class="notice">The card does not send your vehicle position to external map providers.</p>`;}
- infoView(){const reev=String(this.val('powertrain')||this.vehicle().powertrain||'').toUpperCase()==='REEV';return `${this.field('Brand','XPENG')}${this.field('Model',this.model())}${this.field('Model year',this.year())}${this.field('Edition',xpAllowedTrims(this.model(),this.year()).find(t=>t.id===this.trim())?.label||'—')}${this.field('Powertrain',this.val('powertrain')||this.vehicle().powertrain||'—')}${this.field('Odometer',this.value('odometer','km'))}${this.field('Battery health',this.value('health','%'))}${this.field('High-voltage battery',this.value('battery_voltage','V',1))}${this.field('Battery current',this.value('battery_current','A',1))}${this.field('12V system',this.value('battery_12v','V',1))}${reev?this.field('Fuel level',this.value('fuel','%'))+this.field('Fuel range',this.value('fuel_range','km')):''}${this.field('API status',this.val('connection')||'not configured')}<p class="notice">XPENG Direct is experimental. No public XPENG cloud account login or control API has been verified for this integration.</p>`;}
- 
- detail(){const names={comfort:'Comfort',interior:'Interior & seats',controls:'Controls',vehicle:'Vehicle',charging:'Charging',climate:'Climate',location:'Location',tires:'Tire pressure',info:'Vehicle information'};const fn={comfort:'comfortView',interior:'interiorView',controls:'controlsView',vehicle:'vehicleView',charging:'chargingView',climate:'climateView',location:'locationView',tires:'tiresView',info:'infoView'}[this._view]||'infoView';return `<div class="detail-head"><button class="back" data-back aria-label="Back to overview">${xpIcon('back',24)}</button><h2>${names[this._view]||'Details'}</h2></div><div class="content">${this[fn]()}</div>`;}
 
-
- cockpitSidebar(){
-   const pages=[['overview','Home','car'],['controls','Controls','lock'],['climate','Climate','fan'],['charging','Charging','bolt'],['comfort','Comfort','thermometer'],['tires','Tires','tire'],['location','Location','pin'],['info','Vehicle','info'],['interior','Interior','carfront']];
-   return `<aside class="xs-sidebar" aria-label="XPENG vehicle navigation">
-     <div class="xs-brand" aria-label="XPENG"><span class="xs-brand-mark" aria-hidden="true">✕</span><span>XPENG</span></div>
-     <nav class="xs-nav" aria-label="Vehicle sections">${pages.map(([id,label,icon])=>`<button type="button" data-view="${id}" class="${this._view===id?'selected':''}" aria-current="${this._view===id?'page':'false'}">${xpIcon(icon,19)}<span>${label}</span></button>`).join('')}</nav>
-     <div class="xs-nav-footer"><span class="xs-state-dot"></span><span>Community interface</span></div>
-   </aside>`;
- }
- studioHeader(){
-   const soc=xpPercent(this.val('soc')),range=this.val('range');
-   const trim=xpAllowedTrims(this.model(),this.year()).find(t=>t.id===this.trim())?.label||'';
-   return `<header class="xs-head">
-     <div><div class="xs-eyebrow">VEHICLE CONTROL CENTER</div><div class="xs-heading"><h2>${xpEsc(this.name())}</h2><span class="xs-edition">${xpEsc(this.year())} · ${xpEsc(trim)}</span></div>
-       <div class="xs-head-reading">${xpIcon('battery',19)} ${soc===null?'—':xpNum(soc)+'%'} <span>·</span> ${range===null?'—':xpNum(range)+' km'}</div>
-     </div>
-     <div class="xs-head-tools"><span class="xs-private-status">${xpEsc(xpConnText(this.val('connection')))}</span><button type="button" data-expand aria-label="${this._expanded?'Exit full screen':'Full screen'}" title="${this._expanded?'Exit full screen':'Full screen'}">${this._expanded?'✕':'⛶'}</button></div>
-   </header>`;
- }
- studioHero(){
-   const soc=xpPercent(this.val('soc')),range=this.val('range');
-   const title={overview:'Your XPENG '+this.model(),controls:'Vehicle access',vehicle:'Vehicle access',climate:'Cabin climate',charging:'Charging',comfort:'Cabin comfort',tires:'Tire pressure',location:'Vehicle location',info:'Vehicle information',interior:'Interior & upholstery'}[this._view]||this.model();
-   const img=this.asset();
-   const conn=this.val('connection');
-   const online=conn==='connected' || conn==='online';
-   const graph=(this._view==='controls'||this._view==='vehicle'||this._view==='tires')
-      ?`<div class="xs-hero-detail xs-hero-map" aria-hidden="true">${this.topVisual()}</div>`
-      :(this._view==='climate'||this._view==='comfort'||this._view==='interior')
-      ?`<div class="xs-hero-detail xs-hero-cabin" aria-hidden="true">${xpCabinSvg(this.interior())}</div>`
-      :this._view==='charging'?`<div class="xs-hero-detail xs-battery-symbol">${xpIcon('bolt',36)}<span>Charging status</span><b>${this.bool('charging')===null?'Unavailable':this.status('charging','Charging','Not charging')}</b></div>`
-      :'';
-   return `<section class="xs-hero" data-cockpit-view="${xpEsc(this._view)}" aria-label="${xpEsc(title)}">
-      <img class="xs-car-photo" src="${xpEsc(img)}" alt="XPENG ${xpEsc(this.model())} ${xpEsc(this.year())} vehicle in ${xpEsc(this.paint().replace(/_/g,' '))}" loading="eager">
-      <div class="xs-hero-shade" aria-hidden="true"></div>
-      <div class="xs-hero-copy">
-        <span class="xs-hero-kicker">XPENG · ${xpEsc(this.year())}</span>
-        <h3>${xpEsc(title)}</h3>
-        <div class="xs-connection ${online?'xs-online':''}"><span></span>${xpEsc(xpConnText(this.val('connection')))}</div>
-        <div class="xs-charge-figure"><span>${xpIcon('battery',29)}</span><strong>${soc===null?'—':xpNum(soc)+'%'}</strong></div>
-        <p>Estimated range <strong>${range===null?'—':xpNum(range)+' km'}</strong></p>
-        <div class="xs-progress"><div style="width:${soc===null?0:soc}%"></div></div>
+ vehicleMenuLanding(){
+  const soc=xpPercent(this.val('soc')),target=xpPercent(this.val('target'));
+  const charging=this.bool('charging'),plugged=this.bool('plugged');
+  const conn=String(this.val('connection')||'').toLowerCase();
+  const stale=['stale_vehicle_data','connection_error'].includes(conn);
+  const isCharging=charging===true,active=isCharging&&!stale;
+  const chargeStatus=isCharging?(stale?'Charging reported · data stale':'Charging'):
+   plugged===true?'Plugged in · not charging':
+   charging===false?'Not charging':'Charging status unavailable';
+  const chargeTime=this.number('remaining');
+  const remaining=chargeTime===null||chargeTime<0?'—':
+   (Math.floor(chargeTime/60)>0?Math.floor(chargeTime/60)+'h ':'')+Math.round(chargeTime%60)+'m';
+  const connectedPort=plugged===true?'Connected':plugged===false?'Disconnected':'Unavailable';
+  const locks=this.bool('locked');
+  const doorStates=['door_fl','door_fr','door_rl','door_rr'].map(k=>this.bool(k));
+  const doors=doorStates.some(v=>v===true)?'Door open':doorStates.every(v=>v===false)?'All doors closed':'Unavailable';
+  const climate=this.bool('climate'),cabin=this.value('cabin','°C',1);
+  const location=this.data('location')?.entity;
+  const lat=location?.attributes?.latitude,lon=location?.attributes?.longitude;
+  const hasLocation=lat!=null&&lon!=null&&Number.isFinite(Number(lat))&&Number.isFinite(Number(lon));
+  const last=this.val('last_update');
+  const statusRows=[
+    ['controls','Vehicle security','lock',locks===null?'Unavailable':locks?'Locked':'Unlocked',doors],
+    ['climate','Cabin climate','fan',cabin,climate===null?'Climate status unavailable':climate?'Climate on':'Climate off'],
+    ['location','Vehicle location','pin',hasLocation?'Location available':'Unavailable',
+      hasLocation&&String(location?.state||'').toLowerCase()==='home'?'At Home':'Open location details']
+  ];
+  const chargingStats=isCharging?[['Charging power',this.value('power','kW',1)],['Time remaining',remaining],['Energy added',this.value('energy','kWh',1)]]:[];
+  const statsHTML=chargingStats.map(([label,value])=>`<div><small>${xpEsc(label)}</small><strong>${xpEsc(value)}</strong></div>`).join('');
+  const statusHTML=statusRows.map(([view,label,icon,value,foot])=>`<button type="button" class="xd-state-row" data-view="${view}">
+    <span class="xd-state-icon">${xpIcon(icon,20)}</span><span class="xd-state-copy">
+    <small>${xpEsc(label)}</small><strong>${xpEsc(value)}</strong><em>${xpEsc(foot)}</em></span>${xpIcon('arrow',16)}
+  </button>`).join('');
+  const sections=[['controls','Doors & controls','car'],['climate','Climate & comfort','fan'],
+    ['charging','Charging details','bolt'],['location','Location','pin']];
+  const navHTML=sections.map(([view,label,icon])=>`<button type="button" data-view="${view}">${xpIcon(icon,18)}<span>${xpEsc(label)}</span>${xpIcon('arrow',14)}</button>`).join('');
+  return `<div class="xd-home" aria-label="XPENG vehicle status dashboard">
+    <div class="xd-heading"><h2>Vehicle overview</h2><span class="xd-connection">${xpIcon('shield',16)} ${xpEsc(xpConnText(this.val('connection')))}</span></div>
+    <div class="xd-layout">
+      <div class="xd-main">
+        <section class="xd-car-stage" aria-label="Configured XPENG vehicle">
+          <img class="xd-car-image" src="${xpEsc(this.asset())}" alt="XPENG ${xpEsc(this.model())} exterior in ${xpEsc(this.paint())}" loading="eager">
+          <div class="xd-car-chip ${active?'xd-charge-on':''}">${xpIcon(isCharging?'bolt':'battery',17)} ${xpEsc(chargeStatus)}</div>
+        </section>
+        <section class="xd-charge-panel ${active?'xd-charge-active':''}" aria-label="Battery and charging status">
+          <div class="xd-charge-panel-top">
+            <div class="xd-charge-label">${xpIcon('bolt',20)}<span>${xpEsc(chargeStatus)}</span></div>
+            <button type="button" data-view="charging" aria-label="Open charging details">${xpIcon('arrow',20)}</button>
+          </div>
+          <div class="xd-main-battery">
+            <strong>${soc===null?'—':xpNum(soc)+'%'}</strong>
+            <div class="xd-range"><span>Estimated range</span><b>${xpEsc(this.value('range','km'))}</b></div>
+          </div>
+          <div class="xd-charge-progress" role="progressbar" aria-label="Battery level" aria-valuemin="0" aria-valuemax="100" ${soc===null?'':'aria-valuenow="'+soc+'"'}>
+            <div style="width:${soc===null?0:soc}%"></div>
+            ${target===null?'':`<i class="xd-charge-target" style="left:${target}%"></i>`}
+          </div>
+          <div class="xd-charge-foot"><span>${target===null?'Target unavailable':'Target '+xpNum(target)+'%'}</span><span>Port: ${connectedPort}</span></div>
+          ${isCharging?`<div class="xd-live-charge-data">${statsHTML}</div>`:''}
+        </section>
       </div>
-      ${graph}
-      <span class="xs-hero-photo-note">Illustrative vehicle artwork · statuses from Home Assistant only</span>
-   </section>`;
+      <aside class="xd-status" aria-label="Vehicle at a glance">
+        <div class="xd-status-title">Vehicle status <span>${xpIcon('car',17)}</span></div>
+        ${statusHTML}
+        <div class="xd-status-extra"><span>Last vehicle update</span><strong>${xpEsc(last===null?'Unavailable':String(last))}</strong></div>
+      </aside>
+    </div>
+    <nav class="xd-details-nav" aria-label="Open detailed vehicle screens">${navHTML}</nav>
+  </div>`;
  }
- studioActions(){
-   const action=[['controls','Locks & doors','lock'],['climate','Climate','fan'],['charging','Charging','bolt'],['comfort','Seats & wheel','thermometer'],['tires','Tires','tire']];
-   return `<div class="xs-actions" aria-label="Vehicle section shortcuts">
-     ${action.map(([v,label,icon])=>`<button type="button" data-view="${v}" class="xs-action">${xpIcon(icon,24)}<strong>${label}</strong><small>View</small></button>`).join('')}
-   </div>`;
- }
- studioStatusRail(){
-   const loc=this.data('location')?.entity,lat=loc?.attributes?.latitude,lon=loc?.attributes?.longitude;
-   const gps=lat!==null&&lat!==undefined&&lon!==null&&lon!==undefined&&Number.isFinite(Number(lat))&&Number.isFinite(Number(lon));
-   return `<aside class="xs-rail" aria-label="Vehicle status details">
-     <section class="xs-rail-box">
-       <div class="xs-rail-title">${xpIcon('pin',19)}<h3>Location</h3></div>
-       <div class="xs-location"><div class="xs-location-grid"><span class="xs-location-marker">${xpIcon('pin',26)}</span></div><p>${gps?'Location data available':'Location unavailable'}</p><small>No external map requests</small></div>
-       <button type="button" data-view="location" class="xs-link">View location ${xpIcon('arrow',16)}</button>
-     </section>
-     <section class="xs-rail-box">
-       <div class="xs-rail-title">${xpIcon('car',19)}<h3>Vehicle status</h3></div>
-       ${this.field('Battery',this.value('soc','%'))}
-       ${this.field('Range',this.value('range','km'))}
-       ${this.field('Door locks',this.status('locked','Locked','Unlocked'))}
-       ${this.field('Odometer',this.value('odometer','km'))}
-       ${this.field('Front tire',this.value('tire_fl','kPa'))}
-     </section>
-     <section class="xs-rail-box xs-alert">
-       <div class="xs-rail-title">${xpIcon('shield',18)}<h3>Integration status</h3></div>
-       <p>${xpEsc(xpConnText(this.val('connection')))}</p>
-       <small>Remote commands are unavailable until a manufacturer-authorized API is verified.</small>
-     </section>
-   </aside>`;
- }
- studioModules(){
-   const soc=xpPercent(this.val('soc'));
-   const rawLoc=this.data('location')?.entity?.attributes||{};
-   const locPresent=rawLoc.latitude!=null&&rawLoc.longitude!=null&&Number.isFinite(Number(rawLoc.latitude))&&Number.isFinite(Number(rawLoc.longitude));
 
-   const panels=[
-      {v:'charging',icon:'bolt',title:'Charging',value:soc===null?'—':xpNum(soc)+'%',sub:this.bool('charging')===null?'Status unavailable':this.status('charging','Charging','Not charging'),bottom:'Charging power: '+this.value('power','kW',1)},
-      {v:'climate',icon:'fan',title:'Climate control',value:this.value('cabin','°C',1),sub:this.status('climate','Climate on','Climate off'),bottom:'Outside: '+this.value('outside','°C',1)},
-      {v:'comfort',icon:'thermometer',title:'Seats & wheel',value:'Unavailable',sub:'Steering wheel heating',bottom:'Seat heating, cooling & massage'},
-      {v:'location',icon:'pin',title:'Location',value:locPresent?'Available':'Unavailable',sub:'Vehicle position',bottom:'No location shared externally'}
+ vehicleMenuPanel(){
+  const view=this._view;
+  const labels={controls:'Controls',vehicle:'Controls',tires:'Tire Pressure',charging:'Charging',climate:'Climate',comfort:'Comfort',interior:'Interior',location:'Location',info:'Vehicle Information'};
+  const top=`<div class="xt-panel-head"><button type="button" data-back aria-label="Back to car">${xpIcon('back',23)}</button><h2>${xpEsc(labels[view]||'Vehicle')}</h2></div>`;
+  let content='';
+  if(view==='controls'||view==='vehicle'||view==='tires'){
+   const tires=view==='tires';
+   const prev=this._view;
+   // Labels on top-down vehicle follow current page, with no simulated remote states.
+   const body=this.topVisual();
+   content=`<div class="xt-control-stage"><div class="xt-diagram">${body}</div>
+     ${!tires?`<div class="xt-car-zones" aria-label="Remote control unavailable">
+       <button disabled title="No authorized XPENG remote control">Frunk</button>
+       <button disabled title="No authorized XPENG remote control">${xpIcon('lock',21)}</button>
+       <button disabled title="No authorized XPENG remote control">Trunk</button>
+     </div>`:''}
+   </div>
+   ${tires?`<div class="xt-segmented"><span>Read-only tire pressure</span><button type="button" data-tire-unit aria-label="Change pressure units">${this._tireUnit} ⟳</button></div><div class="xt-values">${[['Front left','tire_fl'],['Front right','tire_fr'],['Rear left','tire_rl'],['Rear right','tire_rr']].map(([name,k])=>`<div><span>${name}</span><b>${xpEsc(this.tireValue(k))}</b></div>`).join('')}</div>`:
+    `<div class="xt-segmented"><button type="button" data-view="tires">${xpIcon('tire',18)} View tire pressure</button>
+    <span>Locks: ${xpEsc(this.status('locked','Locked','Unlocked'))}</span></div>`}
+   <div class="xt-control-bar">${[['Flash lights','sun'],['Horn','gauge'],['Remote start','power'],['Windows','car']].map(([label,icon])=>`<button type="button" disabled aria-label="${xpEsc(label)} unavailable">${xpIcon(icon,23)}<small>${label}</small></button>`).join('')}</div>`;
+  }else if(view==='climate'||view==='comfort'||view==='interior'){
+   const cab=XP_INTERIORS.find(x=>x.id===this.interior())?.label||'—';
+   const modes=[
+    ['steering','Steering wheel heating'],
+    ['driver_heat','Driver seat heating'],
+    ['passenger_heat','Passenger seat heating'],
+    ['rear_heat','Rear seat heating'],
+    ['driver_cooling','Driver seat ventilation'],
+    ['passenger_cooling','Passenger seat ventilation'],
+    ['driver_massage','Driver seat massage'],
+    ['passenger_massage','Passenger seat massage']
    ];
-   return `<div class="xs-module-grid" aria-label="Quick vehicle information">
-      ${panels.map(x=>`<button data-view="${x.v}" type="button" class="xs-module">
-        <span class="xs-module-title">${xpIcon(x.icon,22)} ${x.title}</span><strong>${xpEsc(x.value)}</strong>
-        <span>${xpEsc(x.sub)}</span><small>${xpEsc(x.bottom)}</small>
-        <span class="xs-module-arrow">${xpIcon('arrow',17)}</span>
-      </button>`).join('')}
-    </div>`;
- }
- studioDetail(){
-   const view=this._view;
-   if(view==='overview')return this.studioModules();
-   const panelTitle={controls:'Access & doors',vehicle:'Vehicle access',tires:'Tire pressure',climate:'Climate control',charging:'Charging',comfort:'Comfort & seats',location:'Location',info:'Vehicle diagnostics',interior:'Interior & seats'}[view]||'Vehicle details';
-   let content='';
-   if(view==='controls'||view==='vehicle'){
-     content=`<div class="xs-data-grid">${[['Front left','door_fl'],['Front right','door_fr'],['Rear left','door_rl'],['Rear right','door_rr'],['Trunk','trunk'],['Front hood','hood']].map(([label,key])=>`<div class="xs-data-chip"><span>${xpEsc(label)}</span><strong>${xpEsc(this.status(key,'Open','Closed'))}</strong></div>`).join('')}</div>
-       <div class="xs-control-buttons">${[['Lock','lock'],['Unlock','unlock'],['Open trunk','car']].map(([label,icon])=>`<button type="button" disabled title="No verified XPENG command API">${xpIcon(icon,18)} ${label}</button>`).join('')}</div>
-       <div class="xs-control-notice">${xpIcon('lock',18)} Remote lock / unlock and trunk actions are disabled until verified by XPENG.</div>`;
-   }else if(view==='tires'){
-     content=`<div class="xs-data-grid">${[['Front left','tire_fl'],['Front right','tire_fr'],['Rear left','tire_rl'],['Rear right','tire_rr']].map(([label,key])=>`<div class="xs-data-chip"><span>${xpEsc(label)}</span><strong>${xpEsc(this.value(key,'kPa'))}</strong></div>`).join('')}</div>`;
-   }else if(view==='climate'){
-     content=`<div class="xs-climate-control"><div><span>Cabin temperature</span><strong>${xpEsc(this.value('cabin','°C',1))}</strong></div><span class="xs-climate-status">${xpEsc(this.status('climate','On','Off'))}</span></div>
-      <div class="xs-data-grid"><div class="xs-data-chip"><span>Outside temperature</span><strong>${xpEsc(this.value('outside','°C',1))}</strong></div><div class="xs-data-chip"><span>Air conditioning</span><strong>${xpEsc(this.status('climate','On','Off'))}</strong></div></div>
-      <button type="button" data-view="comfort" class="xs-panel-link">Steering wheel, heating, ventilation & massage ${xpIcon('arrow',17)}</button>`;
-   }else if(view==='comfort'){
-     const comfort=['Steering wheel heating','Driver seat heating','Passenger seat heating','Rear seat heating','Driver seat ventilation','Passenger seat ventilation','Driver seat massage','Passenger seat massage'];
-     content=`<div class="xs-comfort-grid">${comfort.map((label)=>`<div class="xs-comfort-item"><span>${xpIcon('thermometer',20)}${xpEsc(label)}</span><button type="button" disabled title="No verified XPENG remote API for this function">Unavailable</button></div>`).join('')}</div>`;
-   }else if(view==='charging'){
-     content=`<div class="xs-charge-meter"><span>Battery level</span><b>${xpEsc(this.value('soc','%'))}</b><div class="xs-charge-track"><div style="width:${xpPercent(this.val('soc'))??0}%"></div></div></div>
-       <div class="xs-data-grid">${[['Estimated range','range','km'],['Charging power','power','kW'],['Target','target','%'],['Energy added','energy','kWh'],['Voltage','voltage','V'],['Current','current','A']].map(([label,key,unit])=>`<div class="xs-data-chip"><span>${xpEsc(label)}</span><strong>${xpEsc(this.value(key,unit,key==='power'||key==='energy'?1:0))}</strong></div>`).join('')}</div>
-       <div class="xs-control-notice">Charge commands are disabled pending approved vehicle APIs.</div>`;
-   }else if(view==='interior'){
-     content=`<div class="xs-data-grid"><div class="xs-data-chip"><span>Upholstery & dashboard</span><strong>${xpEsc(XP_INTERIORS.find(v=>v.id===this.interior())?.label||'—')}</strong></div><div class="xs-data-chip"><span>Car paint</span><strong>${xpEsc(XP_PAINTS.find(v=>v.id===this.paint())?.label||'—')}</strong></div></div>
-       <div class="xs-control-notice">Paint and upholstery can only be changed from Home Assistant → Edit card.</div>`;
-   }else if(view==='location'){
-     const attrs=this.data('location')?.entity?.attributes||{},valid=attrs.latitude!=null&&attrs.longitude!=null&&Number.isFinite(Number(attrs.latitude))&&Number.isFinite(Number(attrs.longitude));
-     content=`<div class="xs-data-grid"><div class="xs-data-chip"><span>GPS</span><strong>${valid?'Position available':'Unavailable'}</strong></div><div class="xs-data-chip"><span>Last update</span><strong>${xpEsc(this.val('last_update')||'—')}</strong></div></div><div class="xs-control-notice">Location is read from Home Assistant only. No external map service is contacted.</div>`;
-   }else{content=`<div class="xs-data-grid">${[['Model',this.model()],['Year',this.year()],['Odometer',this.value('odometer','km')],['Battery health',this.value('health','%')],['API status',this.val('connection')||'Not configured'],['Powertrain',this.val('powertrain')||'—']].map(([label,value])=>`<div class="xs-data-chip"><span>${xpEsc(label)}</span><strong>${xpEsc(value)}</strong></div>`).join('')}</div>`;}
-   return `<section class="xs-detail" aria-label="${xpEsc(panelTitle)}"><div class="xs-detail-heading"><h3>${xpEsc(panelTitle)}</h3><button type="button" data-view="overview">${xpIcon('back',17)} Home</button></div>${content}</section>`;
+   content=`<div class="xt-climate-area">
+      <div class="xt-cabin-surface">${xpCabinSvg(this.interior())}</div>
+      <div class="xt-cabin-overlay">
+        <button disabled aria-label="Driver seat heater unavailable">${xpIcon('thermometer',21)}</button>
+        <button disabled aria-label="Passenger seat heater unavailable">${xpIcon('thermometer',21)}</button>
+        <button disabled aria-label="Steering wheel heater unavailable">${xpIcon('thermometer',21)}</button>
+      </div>
+    </div>
+    <div class="xt-temp-panel">
+       <div><small>Cabin</small><strong>${xpEsc(this.value('cabin','°C',1))}</strong></div>
+       <div class="xt-climate-stepper"><button disabled aria-label="Lower target temperature">−</button><b>— °C</b><button disabled aria-label="Raise target temperature">+</button></div>
+       <div><small>Climate status</small><strong>${xpEsc(this.status('climate','On','Off'))}</strong></div>
+    </div>
+    <div class="xt-comfort-quick"><button disabled aria-label="Air conditioning remote control unavailable">${xpIcon('fan',19)} A/C</button><button disabled aria-label="Defrost remote control unavailable">${xpIcon('sun',19)} Defrost</button><button disabled aria-label="Vent windows remote control unavailable">${xpIcon('car',19)} Vent windows</button></div>
+    <div class="xt-seat-functions">
+      ${modes.map(([key,label])=>`<div><span>${xpIcon('thermometer',20)} ${label}</span><button disabled title="No XPENG authorized cloud command">Unavailable</button></div>`).join('')}
+    </div><div class="xt-inline-foot">Interior: ${xpEsc(cab)} · Change exterior and upholstery only in Home Assistant Edit card.</div>`;
+  }else if(view==='charging'){
+   const soc=xpPercent(this.val('soc'));
+   content=`<div class="xt-charger-image"><img src="${xpEsc(this.asset())}" alt="XPENG ${xpEsc(this.model())} charging view"></div>
+     <div class="xt-battery">
+       <div><span>Battery state</span><strong>${soc===null?'—':xpNum(soc)+'%'}</strong></div>
+       <div class="xt-track"><div style="width:${soc??0}%"></div></div>
+       <span>Range ${xpEsc(this.value('range','km'))} · Power ${xpEsc(this.value('power','kW',1))}</span>
+     </div>
+     <div class="xt-charging-setting"><label>Charging limit <strong>${xpEsc(this.value('target','%'))}</strong></label><input type="range" min="0" max="100" value="${xpPercent(this.val('target'))??0}" disabled aria-label="Charging limit unavailable"/></div>
+     <div class="xt-charging-setting"><label>Charging current <strong>${xpEsc(this.value('current','A',1))}</strong></label><div class="xt-stepper"><button disabled aria-label="Decrease charging current">−</button><span>${xpEsc(this.value('current','A',1))}</span><button disabled aria-label="Increase charging current">+</button></div></div>
+     <button class="xt-port-button" disabled>Open charging port · Not connected</button>`;
+  }else if(view==='location'){
+   const loc=this.data('location')?.entity?.attributes||{};
+   const gps=loc.latitude!=null&&loc.longitude!=null&&Number.isFinite(Number(loc.latitude))&&Number.isFinite(Number(loc.longitude));
+   content=`<div class="xt-location-map">${xpIcon('pin',35)}<strong>${gps?'Location available':'Location unavailable'}</strong><small>Home Assistant coordinates only. No external map requests.</small></div>`;
+  }else{
+   content=`<div class="xt-values">${[['Model',this.model()],['Year',this.year()],['Edition',this.trim()],['Odometer',this.value('odometer','km')],['Powertrain',this.val('powertrain')||'—'],['Connection',xpConnText(this.val('connection'))]].map(([k,v])=>`<div><span>${xpEsc(k)}</span><b>${xpEsc(v)}</b></div>`).join('')}</div>`;
+  }
+  return top+`<section class="xt-panel" data-xpeng-menu-panel="${xpEsc(view)}">${content}</section>`;
  }
  cockpit(){
-   const isOffline=!['online','connected'].includes(String(this.val('connection')||'').toLowerCase());
-   return `<div class="xp-cockpit xp-studio">${this.cockpitSidebar()}<main class="xs-main">${this.studioHeader()}
-     ${isOffline?'<div class="xs-not-connected">XPENG Direct not connected — live data and remote commands are unavailable.</div>':''}
-     <div class="xs-workspace">
-       <div class="xs-left">${this.studioHero()}${this._view==='overview'?this.studioActions():''}${this.studioDetail()}</div>
-       ${this.studioStatusRail()}
-     </div>
-     <div class="xs-bottom-note">Independent Home Assistant vehicle dashboard · read-only until an authorized XPENG API is verified</div>
-   </main></div>`;
+   const active=this._view!=='overview';
+   return `<div class="xt-card">${!active?this.vehicleMenuHeader():''}
+       ${active?this.vehicleMenuPanel():this.vehicleMenuLanding()}
+       <div class="xt-footnote">XPENG Direct · ${xpEsc(xpConnText(this.val('connection')))} · Read only pending manufacturer-approved control API</div>
+   </div>`;
  }
 
  render(){
-  if(!this.shadowRoot)return;
-  this.setAttribute('data-theme',this._config.theme==='light'?'light':'dark');
-  this.toggleAttribute('data-expanded',this._expanded);
-  const cockpit=this._config.dashboard_layout==='cockpit';
-  this.toggleAttribute('data-cockpit',cockpit);
-  const conn=this.val('connection'),offline=conn===null||conn==='not_configured';
-  const classic=`${this.header()}${this.hero()+this.nav()}${offline?'<div class="disconnected-note">XPENG API not connected · All live vehicle data remains unavailable</div>':''}${this._view==='overview'?this.overview():this.detail()}<footer class="footer-brand">XPENG · COMMUNITY VEHICLE CARD</footer>`;
-  this.shadowRoot.innerHTML=`<style>${XP_CSS}</style><ha-card><div class="app">${cockpit?this.cockpit():classic}</div></ha-card>`;
- }
-
+   if(!this.shadowRoot)return;
+   this.setAttribute('data-theme',this._config.theme==='light'?'light':'dark');
+   this.toggleAttribute('data-expanded',this._expanded);
+   this.toggleAttribute('data-cockpit',true);
+   this.shadowRoot.innerHTML=`<style>${XP_CSS}</style><ha-card><div class="app">${this.cockpit()}</div></ha-card>`;
+  }
 }
 class XpengVehicleCardEditor extends HTMLElement{
  constructor(){super();this.attachShadow({mode:'open'});this._cfg=xpNormalizeAppearance({prefix:'my_xpeng',model:'G6',year:'2026',trim:'core_plus_rwd',color:'arctic_white',interior:'dark_gray',theme:'dark'});

@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.0.0-alpha.1 (2026-10-11)
+- Rebuild Home as an at-a-glance vehicle dashboard rather than an application menu.
+- Automatically prioritize active charging telemetry: SOC, power, ETA, energy, target, plug state.
+- Distinguish offline, idle plugged-in, active charging and stale charging states without fabricated data.
+- Fix mapping to 25 actual XPENG Direct sensor/binary entity fields; preserve legacy aliases/YAML overrides.
+- Include full browser tests and actual desktop/phone screenshots for offline and test charging states.
+- Keep editor-only paint/upholstery, existing navbar and safe read-only commands.
+
+
 ## v0.7.0-alpha.1 (2026-10-11)
 - Large actual G6 vehicle image across every Studio cockpit page; contextual cabin/doors/tires overlays and reorganized status cards.
 - Responsive composition with photo-led stage, side nav, right telemetry rail and bottom dashboard modules.
