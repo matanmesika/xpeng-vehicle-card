@@ -185,6 +185,11 @@ const XP_CSS = `
 .xt-diagram{position:relative;width:80%;height:330px}
 .xt-diagram .xp-top-car{position:absolute;inset:0;width:100%;height:100%}
 .xt-diagram .xp-pin-label{max-width:125px}
+.xp-pin-label{position:absolute;z-index:2;max-width:112px;min-width:84px;padding:6px 8px;background:#171e28e6;border:1px solid #556574;border-radius:10px;color:#dfe7ef;font-size:10px;line-height:1.3}
+.xp-pin-label b{display:block;margin-top:3px;font-size:11px}
+.xp-pin-fl{top:20%;left:4%}.xp-pin-fr{top:20%;right:4%}.xp-pin-rl{bottom:19%;left:4%}.xp-pin-rr{bottom:19%;right:4%}
+.xp-pin-label.is-open{border-color:#eab090}
+
 .xt-car-zones{position:absolute;inset:0;pointer-events:none}
 .xt-car-zones button{position:absolute;pointer-events:none;border:1px solid #4d5359;border-radius:7px;background:#23262ae0;padding:7px 10px;font-size:11px;color:#8a939c;opacity:.8}
 .xt-car-zones button:nth-child(1){top:8%;left:46%}
