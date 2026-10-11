@@ -125,7 +125,10 @@ ha-card{background:transparent!important;border:0!important;box-shadow:none!impo
 button{font:inherit;color:inherit;cursor:pointer}
 button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-scene{position:relative;width:100%;min-height:620px;aspect-ratio:16/9;overflow:hidden;background:radial-gradient(ellipse 57% 35% at 56% 42%,#25365b 0%,#0e2441 43%,transparent 100%),linear-gradient(180deg,#030f21 0%,#041629 51%,#071e34 69%,#020914 100%);isolation:isolate;direction:ltr}
-.xp-scene:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 65% 8% at 60% 69%,#147fbb75,transparent),radial-gradient(ellipse 63% 16% at 67% 81%,#173c7a95,transparent);z-index:1}
+.xp-scene:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,#00081726,transparent 28%,transparent 75%,#00081722);z-index:1}
+.xp-night-photo{position:absolute;inset:0;z-index:0;pointer-events:none;background-color:#020d1b;background-size:cover;background-position:center center;background-repeat:no-repeat}
+.xp-night-floor-glow{position:absolute;z-index:1;pointer-events:none;left:18%;right:0;bottom:8%;height:28%;background:radial-gradient(ellipse at 45% 45%,#178ada30,transparent 67%);filter:blur(29px)}
+.xp-charge .xp-night-floor-glow{background:radial-gradient(ellipse at 65% 47%,#00e5a72a,#178ada19 37%,transparent 72%)}
 .xp-sky{position:absolute;inset:0;width:100%;height:100%;z-index:0}
 .xp-ground{position:absolute;inset:68% 0 0;background:repeating-linear-gradient(173deg,#3565ab1a 0px,#3565ab1a 2px,transparent 3px,transparent 46px),linear-gradient(180deg,#0b2139,#04111e);transform:perspective(500px) rotateX(12deg);transform-origin:50% 0}
 .xp-ground:before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 48% 48% at 59% 24%,#137ace4a,transparent 70%)}
@@ -385,14 +388,13 @@ class XpengVehicleCard extends HTMLElement{
   return `<div class="xp-title"><h1>XPENG <em>${xpEsc(this.model())}</em></h1><div class="xp-subtitle">${this._view==='charging'?xpEsc(this.chargeStatus()):'Vehicle status'}</div></div>`;
  }
  sceneBackdrop(){
-  return `<svg class="xp-sky" viewBox="0 0 1500 850" preserveAspectRatio="none" aria-hidden="true">
-    <defs><linearGradient id="xp-ridge" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#152a49"/><stop offset="1" stop-color="#031425"/></linearGradient>
-      <linearGradient id="xp-haze" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#314778"/><stop offset="1" stop-color="#031b35"/></linearGradient></defs>
-    <path d="M0 337L45 331 98 308 140 334 188 303 248 315 298 279 351 308 407 293 456 315 525 291 590 315 634 278 683 302 733 273 785 302 830 269 880 300 935 273 983 297 1034 260 1093 288 1154 255 1207 281 1250 270 1319 303 1370 275 1430 303 1500 282V710H0Z" fill="url(#xp-haze)" opacity=".6"/>
-    <path d="M0 430L57 415 103 390 151 409 198 385 245 401 289 373 324 394 392 355 437 373 475 340 527 366 565 338 602 356 646 331 686 363 737 324 788 349 828 327 866 353 910 316 951 356 1004 331 1053 357 1098 320 1155 346 1222 311 1265 343 1310 309 1359 340 1408 314 1454 344 1500 323V690H0Z" fill="url(#xp-ridge)" opacity=".9"/>
-    <path d="M0 552L60 534 106 518 174 536 227 499 273 507 327 485 384 508 419 486 462 506 516 478 558 496 620 471 666 496 726 472 769 486 821 464 871 488 912 470 964 489 1015 472 1072 492 1109 478 1158 505 1227 485 1264 517 1330 496 1391 525 1450 512 1500 527V692H0Z" fill="#061326" opacity=".9"/>
-  </svg><div class="xp-ground"></div><div class="xp-stage-glow"></div>`;
- }
+    // Photo-like clean scene shared by Overview and Charging; never bake telemetry or the car into the background.
+    const base=(this._config.image_path||'/hacsfiles/xpeng-vehicle-card/assets').replace(/\/$/,'');
+    const source=base+'/night-mountain-scene.svg';
+    return `<div class="xp-night-photo" aria-hidden="true"
+      style="background-image:url(&quot;${xpEsc(source)}&quot;)"></div>
+      <div class="xp-night-floor-glow" aria-hidden="true"></div>`;
+  }
  header(){
    const now=new Date().toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});
    const conn=String(this.val('connection')||'').toLowerCase();
