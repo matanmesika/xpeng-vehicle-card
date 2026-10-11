@@ -44,7 +44,8 @@ const XP_ICONS = {
  carfront:'<path d="M5 17v3m14-3v3M3 13l3-8h12l3 8v4H3v-4Zm0 0h18m-14 2h1m8 0h1"/>',
  shield:'<path d="M12 2 3 6v6c0 5 4 8 9 10 5-2 9-5 9-10V6l-9-4Z"/>',
  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l2 2m10 10 2 2M19 5l-2 2M7 17l-2 2"/>',
- gauge:'<path d="M4 18a9 9 0 1 1 16 0M12 16l4-7"/>'
+ gauge:'<path d="M4 18a9 9 0 1 1 16 0M12 16l4-7"/>',
+ road:'<path d="M10 2 3 22M14 2l7 20M12 3v4m0 5v3m0 5v2"/>'
 };
 function xpIcon(name,size=22){return `<svg viewBox="0 0 24 24" width="${size}" height="${size}" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">${XP_ICONS[name]||XP_ICONS.info}</svg>`;}
 function xpEsc(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
@@ -133,7 +134,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-stage-glow:after{content:"";position:absolute;inset:58% 2% 27%;background:#28bbff;filter:blur(8px)}
 .xp-header{position:absolute;z-index:8;top:3.2%;left:2%;right:2%;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .xp-brand{display:flex;align-items:center;gap:14px;font-weight:600;letter-spacing:.31em;font-size:clamp(14px,1.4vw,23px);white-space:nowrap}
-.xp-x-mark{font-size:26px;letter-spacing:-.13em;transform:scaleX(1.4)}
+.xp-x-mark{display:block;width:46px;height:32px;flex:none;overflow:visible}
 .xp-header-right{display:flex;align-items:center;gap:18px;font-size:clamp(12px,1.2vw,20px)}
 .xp-head-button{display:grid;place-items:center;border:0;background:transparent;padding:6px;color:#fff;border-radius:9px}
 .xp-head-button:hover{background:#ffffff1c}
@@ -183,20 +184,24 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-charge-main .xp-soc{font-size:clamp(40px,5.4vw,86px)}
 .xp-charge-divider{height:65px;border-left:1px solid #56708a88}
 .xp-charge-range{flex:1;min-width:0}
-.xp-charge-range b{display:block;font-size:clamp(22px,2.1vw,36px);margin-top:8px;white-space:nowrap}
+.xp-charge-range b{display:flex;align-items:center;gap:11px;font-size:clamp(22px,2.1vw,36px);margin-top:8px;white-space:nowrap}.xp-charge-range b svg{flex:none}
 .xp-charge-meta{border-top:1px solid #4268878a;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:25px;padding-top:22px}
 .xp-charge-meta>div{min-width:0;display:flex;flex-direction:column;gap:8px;padding:0 13px;border-right:1px solid #52719066}
 .xp-charge-meta>div:first-child{padding-left:0}
 .xp-charge-meta>div:last-child{padding-right:0;border-right:0}
 .xp-charge-meta small{font-size:clamp(10px,1vw,16px);color:#9eb3d0;white-space:nowrap}
-.xp-charge-meta b{font-size:clamp(12px,1.5vw,25px);font-weight:560;white-space:nowrap}
+.xp-charge-meta b{font-size:clamp(12px,1.5vw,25px);font-weight:560;white-space:nowrap;display:flex;align-items:center;gap:8px}.xp-charge-meta b svg{flex:none}
 .xp-charge .xp-car{width:49%;left:39%;bottom:16%;height:auto;max-height:70%;z-index:7}
 .xp-charge .xp-title{left:5.3%;top:18.65%}
 .xp-charge .xp-brand{visibility:hidden}
 .xp-charge .xp-updated{right:19%;top:14%}
-.xp-station{position:absolute;z-index:2;right:3%;bottom:30%;width:5.3%;height:23%;min-width:45px;border:2px solid #55c8fb;border-radius:13px 13px 6px 6px;background:linear-gradient(90deg,#013861,#041b32 55%,#0b3150);box-shadow:0 0 18px #00c6ff85,inset 0 0 13px #08cafa74;display:grid;place-items:start center;padding-top:25px;font-size:26px;color:#e1f7ff}
+.xp-station{position:absolute;z-index:9;right:3%;bottom:30%;width:5.3%;height:23%;min-width:45px;border:2px solid #55c8fb;border-radius:13px 13px 6px 6px;background:linear-gradient(90deg,#013861,#041b32 55%,#0b3150);box-shadow:0 0 18px #00c6ff85,inset 0 0 13px #08cafa74;display:grid;place-items:start center;padding-top:25px;font-size:26px;color:#e1f7ff}
 .xp-station:before{content:"";position:absolute;bottom:-5px;width:110%;height:7px;background:#03d7cf;filter:blur(4px)}
-.xp-cable{position:absolute;z-index:2;inset:0;width:100%;height:100%;pointer-events:none}
+.xp-cable{position:absolute;z-index:8;inset:0;width:100%;height:100%;pointer-events:none}
+.xp-charge-port{position:absolute;z-index:10;left:83.25%;top:48.8%;width:31px;height:31px;transform:translate(-50%,-50%);border:3px solid #00eab4;border-radius:50%;background:radial-gradient(circle,#052e30 30%,#00e8ae55 70%,transparent 80%);box-shadow:0 0 8px #00f3bc,0 0 23px #00dfb9a8,inset 0 0 8px #00dfb9;pointer-events:none}
+.xp-charge-port:after{content:"";position:absolute;left:11px;top:8px;width:17px;height:15px;border:2px solid #d9fff5;border-radius:4px;background:#102c35;transform:rotate(-16deg);box-shadow:0 0 9px #00ffc9a8}
+.xp-station-logo{display:block;width:33px;height:24px;fill:#dff5ff;filter:drop-shadow(0 0 3px #5bd4ff)}
+.xp-charge .xp-ground:before{background:radial-gradient(ellipse 32% 26% at 81% 27%,#00ffd438,transparent 72%),radial-gradient(ellipse 48% 48% at 59% 24%,#137ace4a,transparent 70%)}
 .xp-subtle-link{position:absolute;z-index:8;left:5.4%;bottom:4%;border:1px solid #779cce77;background:#0a2139a1;color:#cfe6fa;border-radius:20px;padding:6px 13px;font-size:12px}
 .xp-subtle-link:hover{background:#1e4361}
 :host([data-expanded]){position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;z-index:2147483100!important;background:#020b15!important;overflow:auto!important}
@@ -420,7 +425,7 @@ class XpengVehicleCard extends HTMLElement{
    const now=new Date().toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});
    const conn=String(this.val('connection')||'').toLowerCase();
    const connected=['connected','online'].includes(conn);
-   return `<header class="xp-header"><div class="xp-brand"><span class="xp-x-mark">✕</span><span>XPENG</span></div>
+   return `<header class="xp-header"><div class="xp-brand"><svg class="xp-x-mark" viewBox="0 0 56 36" aria-hidden="true" fill="#fff"><path d="M1 3h14l13 10-8 6L1 3ZM55 3H41L28 13l8 6L55 3ZM1 33h14l13-10-8-6L1 33ZM55 33H41L28 23l8-6 19 16Z"/></svg><span>XPENG</span></div>
      <div class="xp-header-right"><span class="xp-wifi ${connected?'xp-connected':''}" aria-label="${xpEsc(xpConnText(this.val('connection')))}"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M2 8c5.7-5.6 14.3-5.6 20 0M5 12c4-3.6 10-3.6 14 0M9 16c1.8-1.4 4.2-1.4 6 0"/><circle cx="12" cy="20" r="1.3" fill="currentColor" stroke="none"/></svg></span>
      <button class="xp-head-button" type="button" data-view="overview" aria-label="Vehicle overview">${xpIcon('home',23)}</button>
      <button class="xp-head-button" type="button" data-expand aria-label="${this._expanded?'Exit full screen':'Full screen'}">${this._expanded?'✕':'⛶'}</button>
@@ -446,7 +451,7 @@ class XpengVehicleCard extends HTMLElement{
         <div><small>Connection</small><strong>${conn}</strong></div>
         <div><small>Interior finish</small><strong>${finish}</strong></div>
         ${this.interiorPreview()}
-        <p>Cabin illustration is colour guidance, not a photograph.</p>
+        <p>Cabin illustration is colour guidance, not a photograph. Vehicle art may be illustrative.</p>
       </div>`:''}</div>`;
   }
   interiorPreview(){
@@ -471,7 +476,7 @@ class XpengVehicleCard extends HTMLElement{
       src="${xpEsc(spec.src)}"
       title="${xpEsc(spec.description)}"
       alt="${xpEsc('XPENG '+a.model+' '+a.year+', '+a.color.replaceAll('_',' ')+(spec.illustrative?' (illustrative artwork)':''))}" loading="eager">
-      ${spec.illustrative?`<span class="xp-art-identity" title="${xpEsc(spec.description)}">Illustrative vehicle art · ${xpEsc(a.model+' '+a.year)}</span>`:''}`;
+      `;
   }
   overview(){
   const rows=[['gauge','Odometer',this.num('odometer','km')],['tire','Tire pressure',this.tireSummary()],['pin','Location',this.locationText()]];
@@ -479,7 +484,7 @@ class XpengVehicleCard extends HTMLElement{
     <section class="xp-overview-stat" aria-label="Battery and estimated range">
      <div class="xp-batt-line"><div class="xp-batt-glyph"><div class="xp-batt-fill" style="height:${xpPercent(this.val('soc'))??0}%"></div></div>
        <div><div class="xp-stat-label">Battery</div><div class="xp-soc">${this.socHtml()}</div></div></div>
-     ${this.progress()}<div class="xp-overview-range"><div class="xp-stat-label">Estimated range</div><div class="xp-range-num">${xpIcon('gauge',36)}<span>${xpEsc(this.num('range','km'))}</span></div></div>
+     ${this.progress()}<div class="xp-overview-range"><div class="xp-stat-label">Estimated range</div><div class="xp-range-num">${xpIcon('road',36)}<span>${xpEsc(this.num('range','km'))}</span></div></div>
     </section>
     <aside class="xp-status-panel" aria-label="Vehicle information">
       ${rows.map(([icon,label,val])=>`<div class="xp-info-row"><div class="xp-info-icon">${xpIcon(icon,31)}</div>
@@ -488,17 +493,17 @@ class XpengVehicleCard extends HTMLElement{
  }
  charging(){
   return `${this.title()}${this.updated()}
-    <svg class="xp-cable" viewBox="0 0 1500 850" preserveAspectRatio="none" aria-hidden="true"><path d="M1282 444 Q1329 474 1366 569T1453 566" fill="none" stroke="#00e8b9" stroke-width="13" stroke-linecap="round" opacity=".29"/>
-    <path d="M1282 444 Q1329 474 1366 569T1453 566" fill="none" stroke="#2efad2" stroke-width="5" stroke-linecap="round"/></svg>
-    <div class="xp-station" aria-hidden="true">✕</div>${this.carArt()}
+    <svg class="xp-cable" viewBox="0 0 1500 850" preserveAspectRatio="none" aria-hidden="true"><path d="M1254 415 C1299 421 1321 475 1344 550 S1410 610 1453 566" fill="none" stroke="#00e8b9" stroke-width="13" stroke-linecap="round" opacity=".29"/>
+    <path d="M1254 415 C1299 421 1321 475 1344 550 S1410 610 1453 566" fill="none" stroke="#2efad2" stroke-width="5" stroke-linecap="round"/></svg>
+    <div class="xp-station" aria-hidden="true"><svg class="xp-station-logo" viewBox="0 0 56 36"><path d="M1 3h14l13 10-8 6L1 3ZM55 3H41L28 13l8 6L55 3ZM1 33h14l13-10-8-6L1 33ZM55 33H41L28 23l8-6 19 16Z"/></svg></div>${this.carArt()}<span class="xp-charge-port" aria-hidden="true"></span>
     <section class="xp-charge-card" aria-label="Charging information">
        <div class="xp-charge-heading">${xpIcon('bolt',42)}<span>${xpEsc(this.chargeStatus())}</span></div>
        ${this.progress()}
        <div class="xp-charge-main"><div class="xp-soc">${this.socHtml()}</div><div class="xp-charge-divider"></div>
-          <div class="xp-charge-range"><div class="xp-stat-label">Estimated range</div><b>${xpEsc(this.num('range','km'))}</b></div></div>
-       <div class="xp-charge-meta"><div><small>Charging power</small><b>${xpEsc(this.num('power','kW',1))}</b></div>
-       <div><small>Time remaining</small><b>${xpEsc(this.remainingText())}</b></div>
-       <div><small>Charge limit</small><b>${xpEsc(this.num('target','%'))}</b></div></div>
+          <div class="xp-charge-range"><div class="xp-stat-label">Estimated range</div><b>${xpIcon('road',32)}${xpEsc(this.num('range','km'))}</b></div></div>
+       <div class="xp-charge-meta"><div><small>Charging power</small><b>${xpIcon('bolt',23)}${xpEsc(this.num('power','kW',1))}</b></div>
+       <div><small>Time remaining</small><b>${xpIcon('clock',23)}${xpEsc(this.remainingText())}</b></div>
+       <div><small>Charge limit</small><b>${xpIcon('info',23)}${xpEsc(this.num('target','%'))}</b></div></div>
     </section>`;
  }
  render(){
