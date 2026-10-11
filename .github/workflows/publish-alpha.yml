@@ -1,0 +1,50 @@
+name: Publish XPENG alpha pre-release
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  prerelease:
+    name: Validate and publish experimental pre-release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify JS, catalog and HACS files
+        run: |
+          node --check dist/xpeng-vehicle-card.js
+          python -m json.tool hacs.json > /dev/null
+          python -m json.tool model-catalog.json > /dev/null
+          python tests/test_hacs_package.py
+      - name: Run frontend browser regression checks
+        run: |
+          python -m pip install playwright
+          python -m playwright install --with-deps chromium
+          python tests/test_year_model_color.py
+          python tests/test_g6_2026_ui.py
+          python tests/test_interior_palette.py
+      - name: Verify current version has not already been released
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view v0.5.0-alpha.3 >/dev/null 2>&1; then
+            echo 'v0.5.0-alpha.3 already exists; no changes were made.'
+            exit 1
+          fi
+      - name: Create explicitly experimental pre-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create v0.5.0-alpha.3 \
+            --repo "${GITHUB_REPOSITORY}" \
+            --target "${GITHUB_SHA}" \
+            --title "XPENG Vehicle Card v0.5.0-alpha.3 (Alpha)" \
+            --notes-file RELEASE_NOTES_v0.5.0-alpha.3.md \
+            --prerelease
