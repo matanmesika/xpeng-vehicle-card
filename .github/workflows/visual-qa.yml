@@ -33,6 +33,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: xpeng-v010-visual-qa-all-models
-          path: previews/visual-qa-v010/
+          path: |
+            previews/visual-qa-v010/
+            assets/g6-2026-arctic_white.webp
           if-no-files-found: warn
           retention-days: 30
