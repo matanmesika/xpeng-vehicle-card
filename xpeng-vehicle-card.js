@@ -131,7 +131,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-ground:before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 48% 48% at 59% 24%,#137ace4a,transparent 70%)}
 .xp-stage-glow{position:absolute;left:22%;right:6%;bottom:18%;height:12%;background:#168de7;border-radius:100%;filter:blur(34px);opacity:.25}
 .xp-stage-glow:after{content:"";position:absolute;inset:58% 2% 27%;background:#28bbff;filter:blur(8px)}
-.xp-header{position:absolute;z-index:8;top:3.2%;left:4.5%;right:3%;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.xp-header{position:absolute;z-index:8;top:3.2%;left:2%;right:2%;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .xp-brand{display:flex;align-items:center;gap:14px;font-weight:600;letter-spacing:.31em;font-size:clamp(14px,1.4vw,23px);white-space:nowrap}
 .xp-x-mark{font-size:26px;letter-spacing:-.13em;transform:scaleX(1.4)}
 .xp-header-right{display:flex;align-items:center;gap:18px;font-size:clamp(12px,1.2vw,20px)}
@@ -145,7 +145,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-version{position:absolute;bottom:10px;right:12px;font-size:10px;color:#8399b6;opacity:.52;z-index:8}
 .xp-updated{position:absolute;z-index:4;right:5%;top:15%;text-align:right;color:#9cacca;font-size:clamp(11px,1vw,16px);line-height:1.45}
 .xp-updated strong{display:block;font-weight:400;color:#b4c5e1}
-.xp-title{position:absolute;z-index:5;left:5.4%;top:17%;display:flex;flex-direction:column;gap:3px}
+.xp-title{position:absolute;z-index:5;left:4.35%;top:17.35%;display:flex;flex-direction:column;gap:3px}
 .xp-title h1{font-size:clamp(32px,3.7vw,62px);line-height:1.02;letter-spacing:.035em;font-weight:730;margin:0;white-space:nowrap}
 .xp-title h1 em{font-style:normal;color:#7eaeff}
 .xp-subtitle{font-size:clamp(15px,2vw,30px);color:#8192b6;font-weight:400}
@@ -154,7 +154,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-car.xp-paint-space_grey{filter:drop-shadow(0 20px 20px #000b) brightness(.78) hue-rotate(4deg)}
 .xp-car.xp-paint-jet_black{filter:drop-shadow(0 20px 20px #000b) brightness(.45)}
 .xp-car.xp-paint-stellar_purple{filter:drop-shadow(0 20px 20px #000b) brightness(.84) sepia(.13) hue-rotate(190deg)}
-.xp-overview-stat{position:absolute;left:5.3%;top:42%;z-index:5;width:18%;max-width:290px;display:flex;flex-direction:column;gap:4px}
+.xp-overview-stat{position:absolute;left:4.35%;top:44.2%;z-index:5;width:18%;max-width:290px;display:flex;flex-direction:column;gap:4px}
 .xp-batt-line{display:flex;align-items:center;gap:18px}
 .xp-batt-glyph{width:62px;height:90px;border:3px solid #cad7e7;border-radius:11px;position:relative;padding:7px;flex:none;display:flex;align-items:flex-end}
 .xp-batt-glyph:before{content:"";position:absolute;width:22px;height:8px;border:3px solid #cad7e7;border-bottom:0;top:-10px;left:calc(50% - 11px);border-radius:4px 4px 0 0}
@@ -167,7 +167,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-overview-range{margin-top:28px}
 .xp-range-num{display:flex;gap:12px;align-items:center;font-size:clamp(27px,3vw,49px);white-space:nowrap;font-weight:700;line-height:1.2;margin-top:8px}
 .xp-range-num small{font-size:.54em}
-.xp-status-panel{position:absolute;z-index:6;right:2.7%;bottom:11%;width:22%;min-width:264px;background:linear-gradient(125deg,#091a2bda,#051020eb);border:1px solid #6782a058;backdrop-filter:blur(17px);border-radius:24px;padding:0 17px}
+.xp-status-panel{position:absolute;z-index:6;right:1.45%;bottom:11.2%;width:21.8%;min-height:244px;min-width:264px;background:linear-gradient(125deg,#091a2bda,#051020eb);border:1px solid #6782a058;backdrop-filter:blur(17px);border-radius:24px;padding:0 17px}
 .xp-info-row{display:flex;align-items:center;gap:16px;min-height:77px;border-bottom:1px solid #56708a43}
 .xp-info-row:last-child{border-bottom:0}
 .xp-info-icon{width:38px;flex:none;color:#f0f8ff}
@@ -175,7 +175,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-info-copy small{font-size:clamp(10px,.99vw,15px);color:#c8d5e7}
 .xp-info-copy b{font-size:clamp(12px,1.1vw,18px);font-weight:450;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .xp-status-panel .xp-chevron{color:#dceeff;opacity:.75}
-.xp-charge-card{position:absolute;z-index:6;left:2.8%;top:33.5%;width:40.8%;border:1px solid #2089ce88;border-radius:22px;background:linear-gradient(130deg,#041422e8,#06162acb);backdrop-filter:blur(14px);box-shadow:0 10px 55px #0007;padding:clamp(16px,2.4vw,36px) clamp(17px,2.7vw,43px)}
+.xp-charge-card{position:absolute;z-index:6;left:2.75%;top:33.45%;width:40.6%;min-height:415px;border:1px solid #2089ce88;border-radius:22px;background:linear-gradient(130deg,#041422e8,#06162acb);backdrop-filter:blur(14px);box-shadow:0 10px 55px #0007;padding:clamp(16px,2.4vw,36px) clamp(17px,2.7vw,43px)}
 .xp-charge-heading{display:flex;align-items:center;gap:17px;color:var(--xp-mint);font-weight:630;font-size:clamp(17px,2.6vw,40px);margin:0 0 22px}
 .xp-charge-heading svg{flex:none;width:clamp(26px,3.6vw,56px);height:clamp(26px,3.6vw,56px)}
 .xp-charge-card .xp-progress{height:20px}
@@ -190,8 +190,8 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-charge-meta>div:last-child{padding-right:0;border-right:0}
 .xp-charge-meta small{font-size:clamp(10px,1vw,16px);color:#9eb3d0;white-space:nowrap}
 .xp-charge-meta b{font-size:clamp(12px,1.5vw,25px);font-weight:560;white-space:nowrap}
-.xp-charge .xp-car{width:52%;left:41%;bottom:12%;height:auto;max-height:70%;z-index:7}
-.xp-charge .xp-title{left:5.3%;top:17%}
+.xp-charge .xp-car{width:49%;left:40.6%;bottom:14.0%;height:auto;max-height:70%;z-index:7}
+.xp-charge .xp-title{left:5.3%;top:18.65%}
 .xp-charge .xp-brand{visibility:hidden}
 .xp-charge .xp-updated{right:19%;top:14%}
 .xp-station{position:absolute;z-index:2;right:3%;bottom:30%;width:5.3%;height:23%;min-width:45px;border:2px solid #55c8fb;border-radius:13px 13px 6px 6px;background:linear-gradient(90deg,#013861,#041b32 55%,#0b3150);box-shadow:0 0 18px #00c6ff85,inset 0 0 13px #08cafa74;display:grid;place-items:start center;padding-top:25px;font-size:26px;color:#e1f7ff}
@@ -201,6 +201,16 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-subtle-link:hover{background:#1e4361}
 :host([data-expanded]){position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;z-index:2147483100!important;background:#020b15!important;overflow:auto!important}
 :host([data-expanded]) ha-card,:host([data-expanded]) .xp-scene{width:100%!important;height:100dvh!important;min-height:550px!important;aspect-ratio:auto!important}
+/* Design-parity coordinates for the supplied 1536×864 references.
+   The user-approved placement wins; all appearance controls remain editor-only. */
+@media(min-width:851px){
+ .xp-overview .xp-title{left:4.35%;top:17.35%}
+ .xp-overview .xp-car{left:21.75%;bottom:18.3%;width:55%}
+ .xp-overview .xp-status-panel{padding-top:7px;padding-bottom:7px}
+ .xp-charge-card{padding-bottom:60px}
+ .xp-charge .xp-meta-tools{top:13%;right:6%}
+ .xp-overview .xp-meta-tools{top:13%;right:4%}
+}
 @media(max-width:850px){
 .xp-scene{min-height:800px;aspect-ratio:auto}
 .xp-header{top:16px;left:4%;right:4%}
