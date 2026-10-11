@@ -202,3 +202,20 @@ test('card editor rejects invalid manual entity IDs',()=>{
   assert.equal(rejected,true);
   assert.equal(editor._cfg.entities?.soc,undefined);
 });
+
+test('both dashboard views share one clean atmospheric backdrop without embedded telemetry',()=>{
+  const card=setup(data());
+  let html=card.shadowRoot.innerHTML;
+  assert.match(html,/class="xp-night-photo"/);
+  assert.match(html,/night-mountain-scene\.svg/);
+  assert.doesNotMatch(html,/<svg class="xp-sky"/);
+  assert.equal((html.match(/xp-night-photo/g)||[]).length>=1,true);
+  const state=data();
+  state['binary_sensor.my_xpeng_is_charging'].state='on';
+  card.hass={states:state};
+  html=card.shadowRoot.innerHTML;
+  assert.match(html,/class="xp-night-photo"/);
+  assert.match(html,/night-mountain-scene\.svg/);
+  assert.match(html,/Charging now/);
+  assert.doesNotMatch(html,/class="xp-ground"/);
+});
