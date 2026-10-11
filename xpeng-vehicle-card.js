@@ -1,5 +1,5 @@
 /**
- * XPENG Vehicle Card v0.5.0-alpha.5 — XPENG vehicle monitoring dashboard (read-only).
+ * XPENG Vehicle Card v0.6.0-alpha.1 — XPENG vehicle monitoring dashboard (read-only).
  * Independent implementation. Uses no external vehicle-control APIs.
  * Reads only Home Assistant state. Does not send vehicle commands.
  */
@@ -227,7 +227,8 @@ class XpengVehicleCard extends HTMLElement{
    document.addEventListener('fullscreenchange',this._fsListener);
  }
  disconnectedCallback(){if(this._fsListener)document.removeEventListener('fullscreenchange',this._fsListener);}
- setConfig(config){if(config.prefix&&!/^[a-z0-9_]+$/.test(config.prefix))throw Error('XPENG prefix must be a slug');
+ setConfig(config){if(config.dashboard_layout && !['classic','cockpit'].includes(config.dashboard_layout))throw Error('dashboard_layout must be classic or cockpit');
+  if(config.prefix&&!/^[a-z0-9_]+$/.test(config.prefix))throw Error('XPENG prefix must be a slug');
  if(config.image_path&&!/^\/(?:local|hacsfiles)\/[a-zA-Z0-9/_-]+\/?$/.test(config.image_path))throw Error('image_path must be a local Home Assistant directory');
  const original={prefix:'my_xpeng',theme:'dark',model:'G6',year:'2026',trim:'core_plus_rwd',color:'arctic_white',interior:'dark_gray',...config};
  // For older configs, coerce only values that are no longer valid in the selected model year.
@@ -297,8 +298,8 @@ class XpengVehicleCard extends HTMLElement{
  }
  hero(){
    const view=this._view,model=this.model();
-   if(view==='climate'||view==='interior')
-     return `<div class="hero xp-hero-cabin" data-hero-view="${xpEsc(view)}"><div class="xp-view-caption">${view==='climate'?'Climate & cabin':'Interior & seats'}</div>${xpCabinSvg(this.interior())}</div>`;
+   if(view==='climate'||view==='interior'||view==='comfort')
+     return `<div class="hero xp-hero-cabin" data-hero-view="${xpEsc(view)}"><div class="xp-view-caption">${view==='climate'?'Climate & cabin':view==='comfort'?'Comfort & seats':'Interior & seats'}</div>${xpCabinSvg(this.interior())}</div>`;
    if(view==='controls'||view==='vehicle'||view==='tires')
      return `<div class="hero xp-hero-plan" data-hero-view="${xpEsc(view)}"><div class="xp-view-caption">${view==='tires'?'Tire monitoring':'Vehicle access'}</div>${this.topVisual()}</div>`;
    const charging=this.charging(),soc=xpPercent(this.val('soc'));
@@ -318,7 +319,11 @@ class XpengVehicleCard extends HTMLElement{
  chargingView(){const soc=xpPercent(this.val('soc')), target=xpPercent(this.val('target'));return `<div class="hint">${this.charging()?'⚡ Charging now':this.plugged()?'Charging cable connected':'Charging is not active'}</div><div class="metric-hero"><strong>${soc===null?'—':xpNum(soc)+'%'}</strong><span>${this.n('range')} km estimated</span></div><div class="track"><div class="fill" style="width:${soc??0}%"></div>${target!==null?`<div class="target" style="--target:${target}%"></div>`:''}</div><div class="progressfoot"><span>Battery</span><span>Charge limit: ${target===null?'—':xpNum(target)+'%'}</span></div><div class="metrics">${this.metric('Charging power','power','kW',1)}${this.metric('Time remaining','remaining','min')}${this.metric('Energy added','energy','kWh',2)}${this.metric('Voltage','voltage','V',1)}${this.metric('Current','current','A',1)}${this.metric('Range','range','km')}</div><p class="notice">Monitoring only. Charging controls will appear after XPENG remote commands are validated. Charging power (kW) and energy (kWh) are separate measurements.</p>`;}
  controlsView(){const b=(k,a)=>this.status(k,a,'Closed');return `<div class="door-grid"><div class="door-col"><div class="door-pill ${this.bool('door_fl')?'open':''}">Front left<b>${b('door_fl','Open')}</b></div><div class="door-pill ${this.bool('door_rl')?'open':''}">Rear left<b>${b('door_rl','Open')}</b></div></div><div class="door-mid" aria-label="Top-down car silhouette"></div><div class="door-col"><div class="door-pill ${this.bool('door_fr')?'open':''}">Front right<b>${b('door_fr','Open')}</b></div><div class="door-pill ${this.bool('door_rr')?'open':''}">Rear right<b>${b('door_rr','Open')}</b></div></div></div>${this.field('Door locks',this.status('locked','Locked','Unlocked'))}${this.field('Trunk',b('trunk','Open'))}${this.field('Front hood',b('hood','Open'))}<p class="notice">Door indicators are read-only. No unlock or open commands are sent.</p>`;}
  vehicleView(){return this.controlsView();}
- climateView(){return `<div class="metric-hero"><strong>${xpEsc(this.value('cabin','°C',1))}</strong><span>Cabin temperature</span></div>${this.field('Air conditioning',this.status('climate','On','Off'))}${this.field('Outside temperature',this.value('outside','°C',1))}<button class="trim-option" type="button" data-view="interior">Interior & seat finish ${xpIcon('arrow',16)}</button><p class="notice">Steering wheel heating, front seat heat, ventilation and massage are not currently mapped to any VERIFIED direct XPENG cloud control entities. No buttons are activated or hidden API sensors invented.</p>`;}
+ climateView(){return `<div class="metric-hero"><strong>${xpEsc(this.value('cabin','°C',1))}</strong><span>Cabin temperature</span></div>${this.field('Air conditioning',this.status('climate','On','Off'))}${this.field('Outside temperature',this.value('outside','°C',1))}<button class="trim-option" type="button" data-view="comfort">Seat & steering-wheel comfort</button><button class="trim-option" type="button" data-view="interior">Interior & seat finish ${xpIcon('arrow',16)}</button><p class="notice">Steering wheel heating, front seat heat, ventilation and massage are not currently mapped to any VERIFIED direct XPENG cloud control entities. No buttons are activated or hidden API sensors invented.</p>`;}
+ comfortView(){
+   const functions=['Steering wheel heating','Driver seat heating','Passenger seat heating','Rear seat heating','Driver seat ventilation','Passenger seat ventilation','Driver seat massage','Passenger seat massage'];
+   return `<p class="notice">Comfort controls will be enabled only when an authorized XPENG command API and matching vehicle features have been verified.</p><div class="xp-comfort-grid">${functions.map(label=>`<div class="xp-comfort-item"><span>${xpIcon('thermometer',22)}<strong>${xpEsc(label)}</strong></span><button type="button" disabled aria-label="${xpEsc(label)} unavailable">Unavailable</button></div>`).join('')}</div>`;
+ }
  interiorView(){const v=this.interior();const choices=xpAllowedInteriors(this.model(),this.year(),this.trim());const buttons=choices.map(c=>`<button type="button" class="xp-interior-choice" data-interior="${c.id}" aria-pressed="${v===c.id}"><span class="xp-interior-chip" style="background:linear-gradient(130deg,${c.hex} 60%,${c.secondary} 61%)"></span>${xpEsc(c.label)}</button>`).join('');return `<div class="xp-cabin-note">Conceptual top-down cabin illustration • Trim colour applies to steering wheel, dashboard, console, door inserts, front seats and rear seats together.</div><div class="settings-label">Interior finish · ${xpEsc(this.model())} ${xpEsc(this.year())}</div><div class="xp-interior-grid">${buttons}</div><div class="xp-interior-list">${['Steering wheel','Dashboard','Door panels','Centre console','Driver & passenger seats','Rear seating'].map(x=>`<div>${xpEsc(x)}</div>`).join('')}</div><p class="notice">Interior selection is visual-only and does not change the real vehicle. Official Dark Gray and Light Gray themes are published for the refreshed G6; availability and upholstery materials vary by market and variant. Controls require verified XPENG API entities.</p>`;}
 
  tiresView(){return `<div class="metrics">${this.metric('Front left','tire_fl','kPa')}${this.metric('Front right','tire_fr','kPa')}${this.metric('Rear left','tire_rl','kPa')}${this.metric('Rear right','tire_rr','kPa')}</div><p class="notice">Readings depend on actual cloud telemetry. G6 OBD mappings are not treated as verified cloud API fields.</p>`;}
@@ -336,8 +341,42 @@ class XpengVehicleCard extends HTMLElement{
  <div class="settings-label">5. Interior trim / upholstery theme</div><div class="xp-interior-grid">${xpAllowedInteriors(m,y,t).map(x=>`<button type="button" class="xp-interior-choice" data-interior="${x.id}" aria-pressed="${this.interior()===x.id}"><span class="xp-interior-chip" style="background:linear-gradient(130deg,${x.hex} 60%,${x.secondary} 61%)"></span>${xpEsc(x.label)}</button>`).join('')}</div>
  <p class="notice">Appearance changes are stored in this browser. To apply to all devices, select the same values in the card's Home Assistant editor. Model-year availability is a catalog approximation: variants and paint offerings differ by region. Except for the specially illustrated G6 2026 facelift, the vehicle images are stylized concept art and not manufacturer-accurate photos for each year.</p>`;
  }
- detail(){const names={interior:'Interior & seats',appearance:'Appearance',controls:'Controls',vehicle:'Vehicle',charging:'Charging',climate:'Climate',location:'Location',tires:'Tire pressure',info:'Vehicle information'};const fn={interior:'interiorView',appearance:'appearanceView',controls:'controlsView',vehicle:'vehicleView',charging:'chargingView',climate:'climateView',location:'locationView',tires:'tiresView',info:'infoView'}[this._view]||'infoView';return `<div class="detail-head"><button class="back" data-back aria-label="Back to overview">${xpIcon('back',24)}</button><h2>${names[this._view]||'Details'}</h2></div><div class="content">${this[fn]()}</div>`;}
- render(){if(!this.shadowRoot)return;this.setAttribute('data-theme',this._config.theme==='light'?'light':'dark');this.toggleAttribute('data-expanded',this._expanded);const conn=this.val('connection');const unconfigured=conn===null||conn==='not_configured';this.shadowRoot.innerHTML=`<style>${XP_CSS}</style><ha-card><div class="app">${this.header()}${this.hero()+this.nav()}${unconfigured?'<div class="disconnected-note">XPENG API not connected · All live vehicle data remains unavailable</div>':''}${this._view==='overview'?this.overview():this.detail()}<footer class="footer-brand">XPENG · COMMUNITY VEHICLE CARD</footer></div></ha-card>`;}
+ detail(){const names={comfort:'Comfort',interior:'Interior & seats',appearance:'Appearance',controls:'Controls',vehicle:'Vehicle',charging:'Charging',climate:'Climate',location:'Location',tires:'Tire pressure',info:'Vehicle information'};const fn={comfort:'comfortView',interior:'interiorView',appearance:'appearanceView',controls:'controlsView',vehicle:'vehicleView',charging:'chargingView',climate:'climateView',location:'locationView',tires:'tiresView',info:'infoView'}[this._view]||'infoView';return `<div class="detail-head"><button class="back" data-back aria-label="Back to overview">${xpIcon('back',24)}</button><h2>${names[this._view]||'Details'}</h2></div><div class="content">${this[fn]()}</div>`;}
+
+ cockpitSidebar(){
+  const base=(this._config.image_path||'/hacsfiles/xpeng-vehicle-card/assets').replace(/\/$/,'');
+  const entries=[['overview','Home','car'],['controls','Controls','lock'],['climate','Climate','fan'],['charging','Charging','bolt'],['comfort','Comfort','thermometer'],['location','Location','pin'],['tires','Tire pressure','tire'],['info','Vehicle','info'],['interior','Interior','carfront'],['appearance','Settings','settings']];
+  return `<aside class="xp-side"><div class="xp-side-brand"><img alt="XPENG" src="${xpEsc(base+'/xpeng-logo.png')}"><b>XPENG</b></div><nav aria-label="Vehicle views" class="xp-side-menu">${entries.map(([view,label,icon])=>`<button type="button" data-view="${view}" class="${view===this._view?'active':''}" aria-current="${view===this._view?'page':'false'}">${xpIcon(icon,19)}<span>${label}</span></button>`).join('')}</nav><div class="xp-side-foot">XPENG · Community interface</div></aside>`;
+ }
+ cockpitQuick(){
+  const actions=[['controls','Doors & locks','lock'],['climate','Climate','fan'],['charging','Charging','bolt'],['comfort','Comfort','thermometer'],['tires','Tires','tire']];
+  return `<div class="xp-actions">${actions.map(([id,label,icon])=>`<button data-view="${id}" type="button" class="xp-action">${xpIcon(icon,24)}<strong>${label}</strong><small>Open panel</small></button>`).join('')}</div>`;
+ }
+ cockpitRail(){
+  const attrs=this.data('location')?.entity?.attributes||{};
+  const gps=Number.isFinite(Number(attrs.latitude))&&Number.isFinite(Number(attrs.longitude))&&attrs.latitude!=null&&attrs.longitude!=null;
+  return `<aside class="xp-rail"><section class="xp-rail-box"><h3>${xpIcon('pin',18)} Location</h3><div class="xp-map-stub">${xpIcon('pin',30)}<span>${gps?'GPS position available':'Location unavailable'}</span></div><button type="button" data-view="location" class="xp-rail-link">Open location ${xpIcon('arrow',16)}</button></section><section class="xp-rail-box"><h3>${xpIcon('car',18)} Vehicle status</h3>${this.field('Battery',this.val('soc')===null?'—':xpNum(this.val('soc'))+'%')}${this.field('Range',this.value('range','km'))}${this.field('Lock',this.status('locked','Locked','Unlocked'))}${this.field('Odometer',this.value('odometer','km'))}${this.field('Tire pressure',this.value('tire_fl','kPa'))}</section><section class="xp-rail-box"><h3>${xpIcon('shield',18)} Connection</h3><p>${xpEsc(this.val('connection')||'Not configured')}</p><small>Remote actions require an authorized and verified vehicle API.</small></section></aside>`;
+ }
+ cockpitTiles(){
+  const b=this.charging()?'Charging':this.plugged()?'Plugged in':'Unavailable';
+  const items=[['charging','Charging','bolt',b,this.value('power','kW',1)],['climate','Climate','fan',this.status('climate','On','Off'),this.value('cabin','°C',1)],['comfort','Seats & wheel','thermometer','Unavailable','No verified controls'],['location','Location','pin','Unavailable','Read-only location']];
+  return `<div class="xp-tiles">${items.map(([view,title,icon,value,small])=>`<button type="button" data-view="${view}" class="xp-tile"><span>${xpIcon(icon,21)} ${title}</span><strong>${xpEsc(value)}</strong><small>${xpEsc(small)}</small></button>`).join('')}</div>`;
+ }
+ cockpit(){
+  const conn=this.val('connection'),offline=conn===null||conn==='not_configured';
+  return `<div class="xp-cockpit">${this.cockpitSidebar()}<div class="xp-main">${this.header()}${offline?'<div class="disconnected-note">XPENG API not connected · All live vehicle data remains unavailable</div>':''}<div class="xp-workspace"><section class="xp-primary">${this.hero()}${this._view==='overview'?this.cockpitQuick()+this.overview():this.detail()}</section>${this.cockpitRail()}</div>${this._view==='overview'?this.cockpitTiles():''}<footer class="footer-brand">XPENG G6 · VEHICLE CENTER · READ ONLY</footer></div></div>`;
+ }
+ render(){
+  if(!this.shadowRoot)return;
+  this.setAttribute('data-theme',this._config.theme==='light'?'light':'dark');
+  this.toggleAttribute('data-expanded',this._expanded);
+  const cockpit=this._config.dashboard_layout==='cockpit';
+  this.toggleAttribute('data-cockpit',cockpit);
+  const conn=this.val('connection'),offline=conn===null||conn==='not_configured';
+  const classic=`${this.header()}${this.hero()+this.nav()}${offline?'<div class="disconnected-note">XPENG API not connected · All live vehicle data remains unavailable</div>':''}${this._view==='overview'?this.overview():this.detail()}<footer class="footer-brand">XPENG · COMMUNITY VEHICLE CARD</footer>`;
+  this.shadowRoot.innerHTML=`<style>${XP_CSS}</style><ha-card><div class="app">${cockpit?this.cockpit():classic}</div></ha-card>`;
+ }
+
 }
 class XpengVehicleCardEditor extends HTMLElement{
  constructor(){super();this.attachShadow({mode:'open'});this._cfg=xpNormalizeAppearance({prefix:'my_xpeng',model:'G6',year:'2026',trim:'core_plus_rwd',color:'arctic_white',interior:'dark_gray',theme:'dark'});
