@@ -30,7 +30,7 @@ jobs:
           python tests/test_hacs_package.py
       - name: Test dashboard and charging behavior with real browser
         run: |
-          python -m pip install playwright
+          python -m pip install playwright pytest
           python -m playwright install --with-deps chromium
           python tests/test_rewrite_v1.py
           python -m pytest -q tests/test_brand_independence.py
