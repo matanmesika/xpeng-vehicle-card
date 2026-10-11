@@ -25,7 +25,7 @@
 
 | Vehicle | Charging & appearance | Interior finish |
 |---|---|---|
-| ![G6 overview](previews/g6-2026-white-home.png) | ![Appearance picker](previews/g6-2026-purple-color-picker.png) | ![Light Gray interior](previews/interior-2026-light-gray.png) |
+| ![G6 overview](previews/g6-2026-white-home.png) | Editor-only appearance configuration | ![Light Gray interior](previews/interior-2026-light-gray.png) |
 
 Preview screenshots contain **demonstration data** and do not establish any live manufacturer API support.
 
@@ -68,7 +68,7 @@ theme: dark
 All five studio paints and both cabin finishes are offered through the visual appearance catalogue, with trim-specific options where relevant. This is a worldwide display feature, not a claim of official factory availability.
 
 
-The built-in card editor allows choosing model year, XPENG model, trim, exterior paint, and interior finish. The in-card appearance page stores selection in the current browser; use the Home Assistant card editor to save a shared configuration across devices. Available paint and trim options are approximations and **must not be mistaken for a verified local sales catalogue**.
+The built-in card editor allows choosing model year, XPENG model, trim, exterior paint, and interior finish. Appearance is configured **only through Home Assistant dashboard Edit → Edit card** or the saved card YAML, never inside the dashboard. Interior settings affect dashboard, wheel, door inserts, console, and all seats together. Old per-browser appearance overrides are now ignored. Available paint and trim options are approximations and **must not be mistaken for a verified local sales catalogue**.
 
 ## Live data and limitations
 
@@ -76,7 +76,7 @@ The card is a **frontend component**. It cannot generate new sensors or discover
 
 ## Release status
 
-- Version: `v0.6.0-alpha.1` — preview-quality release candidate, **not stable**.
+- Version: `v0.6.0-alpha.2` — preview-quality release candidate, **not stable**.
 - Checks: JS/JSON validation, asset verification, and browser regression tests defined in GitHub Actions.
 - Remaining gate: green CI, real Home Assistant installation test, HACS custom-repository installation test, and future XPENG API verification for controls.
 - Files: [Hebrew documentation](README_HE.md), [release checklist](RELEASE_CHECKLIST.md), [changes](CHANGELOG.md), [contributing](CONTRIBUTING.md), [security](SECURITY.md), [trademark statement](TRADEMARK.md).
@@ -87,8 +87,12 @@ MIT for original project code (see `LICENSE`). XPENG brand names and marks remai
 
 ## Cockpit for 2026 XPENG G6
 
-Version `v0.6.0-alpha.1` introduces an **opt-in**, vehicle-centered `dashboard_layout: cockpit` with large model-aware car art, navigation, charging, climate, vehicle status, tires, fullscreen and Comfort (steering wheel heating, seat heating, ventilation and massage). Existing configurations keep the `classic` layout.
+Version `v0.6.0-alpha.2` introduces an **opt-in**, vehicle-centered `dashboard_layout: cockpit` with large model-aware car art, navigation, charging, climate, vehicle status, tires, fullscreen and Comfort (steering wheel heating, seat heating, ventilation and massage). Existing configurations keep the `classic` layout.
 
 The owner's full sections-view YAML retaining the `main_nav` navbar and the `core_performance_awd` trim is available at [`dashboards/xpeng-g6-cockpit.yaml`](dashboards/xpeng-g6-cockpit.yaml).
 
 **Safety:** all comfort remote controls are disabled. There is no validated consumer-account XPENG direct API; disconnected readings remain unavailable. The visual interface is not proof of feature support or actual connected status.
+
+## Appearance editing policy
+
+Version `v0.6.0-alpha.2` removes the in-card Settings/Appearance page and paint/upholstery buttons. Select `color` and `interior` using the Home Assistant card editor or YAML only. The read-only Interior page shows the chosen whole-cabin finish, including upholstery and dashboard trim. No localStorage preferences can override the shared configuration on iPhone, desktop, or other clients.

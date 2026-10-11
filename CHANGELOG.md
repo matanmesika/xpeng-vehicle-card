@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.6.0-alpha.2 (2026-10-11)
+- Move exterior paint and interior upholstery/dashboard finish exclusively into Home Assistant card editor/YAML.
+- Remove in-card Settings/Appearance page and customization button; Interior page becomes read-only.
+- Remove localStorage overrides so device appearance is consistent across phone and desktop.
+- Update browser regressions and publication workflow for new pre-release.
+
+
 ## v0.6.0-alpha.1 (2026-10-11)
 - Released opt-in Cockpit layout and owner G6 2026 dashboard YAML; previous classic layout remains default.
 - New responsive desktop/mobile vehicle navigation, central artwork, current status rail and fullscreen.

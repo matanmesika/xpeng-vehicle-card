@@ -41,17 +41,17 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if gh release view v0.6.0-alpha.1 >/dev/null 2>&1; then
-            echo 'v0.6.0-alpha.1 already exists; no changes were made.'
+          if gh release view v0.6.0-alpha.2 >/dev/null 2>&1; then
+            echo 'v0.6.0-alpha.2 already exists; no changes were made.'
             exit 1
           fi
       - name: Create explicitly experimental pre-release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create v0.6.0-alpha.1 \
+          gh release create v0.6.0-alpha.2 \
             --repo "${GITHUB_REPOSITORY}" \
             --target "${GITHUB_SHA}" \
-            --title "XPENG Vehicle Card v0.6.0-alpha.1 (Alpha)" \
-            --notes-file RELEASE_NOTES_v0.6.0-alpha.1.md \
+            --title "XPENG Vehicle Card v0.6.0-alpha.2 (Alpha)" \
+            --notes-file RELEASE_NOTES_v0.6.0-alpha.2.md \
             --prerelease
