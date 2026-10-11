@@ -1,0 +1,49 @@
+title: XPENG G6
+path: xpeng-g6
+icon: mdi:car-electric
+type: sections
+max_columns: 4
+dense_section_placement: false
+badges: []
+cards: []
+header:
+  card:
+    type: markdown
+    text_only: true
+    content: |
+      # 🚘 EV Control Center
+
+      ### Vehicle • Battery & Range • Charging Station • Live Location • Energy Monitoring
+    card_mod:
+      style: |
+        ha-card, h1, h2, h3 {
+          text-align: center !important;
+          margin-left: auto !important;
+          margin-right: auto !important;
+        }
+sections:
+  - type: grid
+    column_span: 4
+    cards:
+      - type: custom:xpeng-vehicle-card
+        prefix: my_xpeng
+        model: G6
+        year: '2026'
+        trim: core_performance_awd
+        color: arctic_white
+        interior: dark_gray
+        theme: dark
+        dashboard_layout: cockpit
+        grid_options:
+          columns: full
+          rows: auto
+      - type: custom:navbar-card
+        template: main_nav
+        grid_options:
+          columns: full
+          rows: auto
+card_mod:
+  style: |
+    :host {
+      padding-bottom: max(120px, calc(90px + env(safe-area-inset-bottom)));
+    }
