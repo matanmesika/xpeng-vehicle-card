@@ -379,30 +379,78 @@ class XpengVehicleCard extends HTMLElement{
     </div>
   </header>`;
  }
+
  vehicleMenuLanding(){
-  const charging=this.bool('charging');
-  const locked=this.bool('locked');
-  const menu=[
-    ['controls','Controls',xpIcon('car',20),this.status('locked','Locked','Unlocked')],
-    ['climate','Climate',xpIcon('fan',20),this.status('climate','On','Off')+' · '+this.value('cabin','°C',1)],
-    ['location','Location',xpIcon('pin',20),this.val('location')===null?'Not available':'Open location details'],
-    ['charging','Charging',xpIcon('bolt',20),charging===null?'Not available':charging?'Charging':'Not charging']
+  const soc=xpPercent(this.val('soc')),target=xpPercent(this.val('target'));
+  const charging=this.bool('charging'),plugged=this.bool('plugged');
+  const conn=String(this.val('connection')||'').toLowerCase();
+  const stale=['stale_vehicle_data','connection_error'].includes(conn);
+  const isCharging=charging===true,active=isCharging&&!stale;
+  const chargeStatus=isCharging?(stale?'Charging reported · data stale':'Charging'):
+   plugged===true?'Plugged in · not charging':
+   charging===false?'Not charging':'Charging status unavailable';
+  const chargeTime=this.number('remaining');
+  const remaining=chargeTime===null||chargeTime<0?'—':
+   (Math.floor(chargeTime/60)>0?Math.floor(chargeTime/60)+'h ':'')+Math.round(chargeTime%60)+'m';
+  const connectedPort=plugged===true?'Connected':plugged===false?'Disconnected':'Unavailable';
+  const locks=this.bool('locked');
+  const doorStates=['door_fl','door_fr','door_rl','door_rr'].map(k=>this.bool(k));
+  const doors=doorStates.some(v=>v===true)?'Door open':doorStates.every(v=>v===false)?'All doors closed':'Unavailable';
+  const climate=this.bool('climate'),cabin=this.value('cabin','°C',1);
+  const location=this.data('location')?.entity;
+  const lat=location?.attributes?.latitude,lon=location?.attributes?.longitude;
+  const hasLocation=lat!=null&&lon!=null&&Number.isFinite(Number(lat))&&Number.isFinite(Number(lon));
+  const last=this.val('last_update');
+  const statusRows=[
+    ['controls','Vehicle security','lock',locks===null?'Unavailable':locks?'Locked':'Unlocked',doors],
+    ['climate','Cabin climate','fan',cabin,climate===null?'Climate status unavailable':climate?'Climate on':'Climate off'],
+    ['location','Vehicle location','pin',hasLocation?'Location available':'Unavailable',
+      hasLocation&&String(location?.state||'').toLowerCase()==='home'?'At Home':'Open location details']
   ];
-  return `<div class="xt-landing"><div class="xt-left">
-    <div class="xt-car-stage"><img src="${xpEsc(this.asset())}" alt="XPENG ${xpEsc(this.model())} in ${xpEsc(this.paint())}" loading="eager">
-      ${charging===true?'<div class="xt-charge-tag">⚡ Charging</div>':''}
+  const chargingStats=isCharging?[['Charging power',this.value('power','kW',1)],['Time remaining',remaining],['Energy added',this.value('energy','kWh',1)]]:[];
+  const statsHTML=chargingStats.map(([label,value])=>`<div><small>${xpEsc(label)}</small><strong>${xpEsc(value)}</strong></div>`).join('');
+  const statusHTML=statusRows.map(([view,label,icon,value,foot])=>`<button type="button" class="xd-state-row" data-view="${view}">
+    <span class="xd-state-icon">${xpIcon(icon,20)}</span><span class="xd-state-copy">
+    <small>${xpEsc(label)}</small><strong>${xpEsc(value)}</strong><em>${xpEsc(foot)}</em></span>${xpIcon('arrow',16)}
+  </button>`).join('');
+  const sections=[['controls','Doors & controls','car'],['climate','Climate & comfort','fan'],
+    ['charging','Charging details','bolt'],['location','Location','pin']];
+  const navHTML=sections.map(([view,label,icon])=>`<button type="button" data-view="${view}">${xpIcon(icon,18)}<span>${xpEsc(label)}</span>${xpIcon('arrow',14)}</button>`).join('');
+  return `<div class="xd-home" aria-label="XPENG vehicle status dashboard">
+    <div class="xd-heading"><h2>Vehicle overview</h2><span class="xd-connection">${xpIcon('shield',16)} ${xpEsc(xpConnText(this.val('connection')))}</span></div>
+    <div class="xd-layout">
+      <div class="xd-main">
+        <section class="xd-car-stage" aria-label="Configured XPENG vehicle">
+          <img class="xd-car-image" src="${xpEsc(this.asset())}" alt="XPENG ${xpEsc(this.model())} exterior in ${xpEsc(this.paint())}" loading="eager">
+          <div class="xd-car-chip ${active?'xd-charge-on':''}">${xpIcon(isCharging?'bolt':'battery',17)} ${xpEsc(chargeStatus)}</div>
+        </section>
+        <section class="xd-charge-panel ${active?'xd-charge-active':''}" aria-label="Battery and charging status">
+          <div class="xd-charge-panel-top">
+            <div class="xd-charge-label">${xpIcon('bolt',20)}<span>${xpEsc(chargeStatus)}</span></div>
+            <button type="button" data-view="charging" aria-label="Open charging details">${xpIcon('arrow',20)}</button>
+          </div>
+          <div class="xd-main-battery">
+            <strong>${soc===null?'—':xpNum(soc)+'%'}</strong>
+            <div class="xd-range"><span>Estimated range</span><b>${xpEsc(this.value('range','km'))}</b></div>
+          </div>
+          <div class="xd-charge-progress" role="progressbar" aria-label="Battery level" aria-valuemin="0" aria-valuemax="100" ${soc===null?'':'aria-valuenow="'+soc+'"'}>
+            <div style="width:${soc===null?0:soc}%"></div>
+            ${target===null?'':`<i class="xd-charge-target" style="left:${target}%"></i>`}
+          </div>
+          <div class="xd-charge-foot"><span>${target===null?'Target unavailable':'Target '+xpNum(target)+'%'}</span><span>Port: ${connectedPort}</span></div>
+          ${isCharging?`<div class="xd-live-charge-data">${statsHTML}</div>`:''}
+        </section>
+      </div>
+      <aside class="xd-status" aria-label="Vehicle at a glance">
+        <div class="xd-status-title">Vehicle status <span>${xpIcon('car',17)}</span></div>
+        ${statusHTML}
+        <div class="xd-status-extra"><span>Last vehicle update</span><strong>${xpEsc(last===null?'Unavailable':String(last))}</strong></div>
+      </aside>
     </div>
-    <div class="xt-shortcuts" aria-label="Vehicle quick functions">
-      <button type="button" disabled aria-label="Lock or unlock unavailable without approved XPENG API" title="Remote locks unavailable">${xpIcon(locked?'lock':'unlock',23)}</button>
-      <button type="button" data-view="controls" aria-label="Controls">${xpIcon('car',23)}</button>
-      <button type="button" data-view="charging" aria-label="Charging">${xpIcon('bolt',23)}</button>
-      <button type="button" data-view="climate" aria-label="Climate">${xpIcon('fan',23)}</button>
-    </div>
-    </div>
-    <nav class="xt-navigation" aria-label="Vehicle menus">
-      ${menu.map(([view,label,icon,subtitle])=>`<button type="button" class="xt-nav-row" data-view="${view}"><span class="xt-nav-icon">${icon}</span><span class="xt-nav-copy"><b>${label}</b><small>${xpEsc(subtitle)}</small></span>${xpIcon('arrow',17)}</button>`).join('')}
-    </nav></div>`;
+    <nav class="xd-details-nav" aria-label="Open detailed vehicle screens">${navHTML}</nav>
+  </div>`;
  }
+
  vehicleMenuPanel(){
   const view=this._view;
   const labels={controls:'Controls',vehicle:'Controls',tires:'Tire Pressure',charging:'Charging',climate:'Climate',comfort:'Comfort',interior:'Interior',location:'Location',info:'Vehicle Information'};
