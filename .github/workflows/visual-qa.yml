@@ -1,0 +1,38 @@
+name: XPENG Visual QA Agent
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  visual-qa:
+    name: Browser visual QA — all models and both states
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify compiled JavaScript
+        run: |
+          node --check xpeng-vehicle-card.js
+          node --check dist/xpeng-vehicle-card.js
+      - name: Install Chromium and visual QA dependencies
+        run: |
+          python -m pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: Render actual Home Assistant custom card in Chromium
+        run: python tests/visual_qa_agent.py
+      - name: Publish QA captures and report for design review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xpeng-v010-visual-qa-all-models
+          path: previews/visual-qa-v010/
+          if-no-files-found: warn
+          retention-days: 30

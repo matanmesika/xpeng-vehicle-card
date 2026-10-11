@@ -1,0 +1,41 @@
+{
+  "version": "0.1.0",
+  "approved_design": "Two cinematic pages appear as ONE automatic display depending solely on live charging status.",
+  "screen": "16:9 cinematic status board",
+  "states": {
+    "vehicle": {
+      "left": "battery percentage and remaining kilometers",
+      "center": "configured XPENG model/year/paint",
+      "right": [
+        "odometer",
+        "tire pressure",
+        "location"
+      ],
+      "forbidden": [
+        "sidebar",
+        "weather",
+        "climate",
+        "doors",
+        "bottom controls"
+      ],
+      "last_update": "tiny and subdued top right"
+    },
+    "charging": {
+      "left": "active charge, progress, battery %, estimated range, charge power, time remaining, charge limit",
+      "center": "configured XPENG car with charging animation",
+      "right": "no panels",
+      "forbidden": [
+        "sidebar",
+        "weather",
+        "bottom cards"
+      ]
+    }
+  },
+  "behavior": [
+    "no buttons or manual state changes",
+    "active charging only when HA reports charging=true and connection online",
+    "SOC and range always visible if available",
+    "unknown readings remain placeholders"
+  ],
+  "visual_review": "Chrome screenshots reviewed against approved concept; authored illustrations must be checked per model, not inferred from filename."
+}
