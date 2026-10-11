@@ -2,7 +2,27 @@
 
 **Dashboard v0.1.1** — a standalone, read-only Home Assistant frontend card for XPENG vehicles.
 
-> **Image status:** current bundled G6 art and old preview screenshots are **not** an approved match for the owner's 2026 design reference. The new vehicle-year/trim/paint-specific art set and new actual screenshots must be delivered before a stable release. We do not promote the old images as the current dashboard.
+## Actual dashboard screenshots (demo HA readings)
+
+These are **real Chromium screenshots of the working Lovelace dashboard**, not mockups. All values are **demo Home Assistant sensor states**, not live XPENG data.
+
+| Vehicle status | Charging |
+| --- | --- |
+| ![XPENG G6 status view with illustrative artwork and demo telemetry](previews/dashboard-v011/desktop-overview-DEMO.png) | ![XPENG G6 charging view with illustrative artwork and demo telemetry](previews/dashboard-v011/desktop-charging-DEMO.png) |
+
+[Phone status](previews/dashboard-v011/phone-overview-DEMO.png) · [Phone charging](previews/dashboard-v011/phone-charging-DEMO.png)
+
+The 2026 G6 image is now supplied with a transparent background to blend into the existing mountain scene. It remains **illustrative**, rather than a manufacturer-certified render for every paint or trim.
+
+## All-model/year visual profiles
+
+The configuration editor covers **16 catalogue entries and 53 model-year profiles** from 2018 through 2026, including a research/fleet profile and an Other/Future fallback. See [the machine-readable model/year catalogue](profiles/year-profiles.json).
+
+- Each profile includes manually chosen model, year, trim, exterior colour and interior finish; options appear **only in the card editor**.
+- Remaining measurements update automatically from Home Assistant entities and have **15 manual override fields**, independent of the experimental integration.
+- For G6 2026, bundled studio illustrations now use transparent backgrounds in the 2026 paths. For the remaining models and years, generic model-family artwork or a clearly labelled colour-silhouette preview is used when exact imagery is unavailable. **Do not interpret preview art as the exact factory bodywork for that year.**
+- Market-specific paint and interior availability is not fully verified for all model-year combinations.
+
 
 This repository contains the **dashboard**, not the XPENG integration. The integration is responsible for connecting to the vehicle and exposing Home Assistant entities. The dashboard only reads those entities and displays them. Updating this repository never updates the integration.
 
@@ -88,7 +108,7 @@ The editor supports manual model, year, trim, exterior paint and cabin finish co
 
 ## Scope and version policy
 
-- **Dashboard version:** 0.1.1 (new baseline defined by the two reference screenshots).
+- **Dashboard version:** 0.1.1 — initial version with 53 selectable model-year visual profiles. Exact manufacturer imagery is a separately tracked enhancement.
 - **XPENG integration version:** entirely separate; no changes to it in this release.
 - The existing Git history is retained to permit rollback, but the old dashboard pages are removed from the active card.
 - Card verification: JavaScript syntax, automated data/transition tests and a real Home Assistant/HACS visual check are separate release gates. See [release checklist](RELEASE_CHECKLIST.md).
@@ -97,14 +117,14 @@ The editor supports manual model, year, trim, exterior paint and cabin finish co
 
 _Not an official XPENG product. XPENG trademarks belong to their respective owners._
 
-## v0.1.1 developer preview — not release-ready
+## v0.1.1 initial release scope and limitations
 
-- Manual vehicle model/year/trim/exterior/interior choices are kept entirely in the card editor or YAML; there are **no selectors in the dashboard**.
-- Auto-detect telemetry from the HA entity prefix, or manually assign 15 individual Home Assistant entities using autocomplete in the card editor.
-- Auto-switch between Vehicle status and Charging via the mapped charging binary sensor; no remote vehicle commands.
-- The large Last update display is hidden behind the small information icon.
-- Candidate per-model/year paint palettes exist, but factory options must be verified market-by-market.
-- Year/trim/colour art paths are now separate. Production car renders and interiors for all combinations are **not yet provided**; missing art shows a labelled placeholder instead of a false model-year image.
-- Previous PNG previews in `previews/` are legacy design explorations. They are not current screenshots of v0.1.1, and will be replaced only after real browser captures pass visual review.
+This version is installable as a standalone dashboard frontend via HACS and reads existing Home Assistant entities, even if no XPENG backend is connected. The two view screenshots above are recorded in a real browser using **demo** data.
 
-For contribution and release gates see [AGENTS.md](AGENTS.md) and [artwork blocker #14](https://github.com/matanmesika/xpeng-vehicle-card/issues/14). **The project is a separate dashboard repository and makes no changes to the XPENG integration.**
+- All appearance selections remain manually configured in the Home Assistant card editor. There is no on-screen vehicle appearance selector.
+- All 53 model-year profiles are selectable. Bodywork, paint and interior illustrations outside verified asset coverage are intentionally labelled as previews.
+- Manual mappings are supported for 15 Home Assistant sensors, with automatic prefix matching when unset.
+- No direct XPENG login, cloud API or vehicle controls are provided.
+- **Pixel-identical visual fidelity and correct manufacturer photography for every model, year, colour and trim are not claimed by this initial release.** Track future imagery in [issue #14](https://github.com/matanmesika/xpeng-vehicle-card/issues/14).
+
+See [AGENTS.md](AGENTS.md) for the higher-fidelity visual release gates.
