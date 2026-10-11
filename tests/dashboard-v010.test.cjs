@@ -102,7 +102,7 @@ test('entity override and safe HTML escaping',()=>{
 test('editor exists; no vehicle-control API calls or old page renderers',()=>{
  assert.ok(tags.get('xpeng-vehicle-card-editor'));
  assert.doesNotMatch(source,/hass\.callService|vehicleMenuPanel\(|xpCabinSvg\(/);
- assert.match(source,/Dashboard v0\.1\.0/);
+ assert.match(source,/Dashboard v0\.1\.1/);
 });
 
 test('vehicle appearance follows HA profile selections when those entities exist',()=>{
@@ -127,7 +127,7 @@ test('when backend has no appearance entities, editor configuration is used',()=
 });
 
 test('official 2026 paints and cabin colours depend on model',()=>{
-  const x=vm.runInNewContext(source+'\n({xpAllowedPaints,xpAllowedInteriors,xpIsVerifiedPalette})',context);
+  const x=vm.runInNewContext('({xpAllowedPaints,xpAllowedInteriors,xpIsVerifiedPalette})',context);
   assert.equal(x.xpIsVerifiedPalette('G6','2026'),true);
   assert.equal(x.xpIsVerifiedPalette('G6','2024'),false);
   assert.equal(x.xpAllowedPaints('G6','2026','core_plus_rwd').some(v=>v.id==='kaitoke_green_matte'),false);
