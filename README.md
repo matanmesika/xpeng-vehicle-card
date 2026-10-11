@@ -1,8 +1,10 @@
 # XPENG Vehicle Card
 
+[![Open in HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=matanmesika&repository=xpeng-vehicle-card&category=plugin)
+
 **Custom Home Assistant Lovelace card for XPENG electric vehicles.** A dedicated dark vehicle interface with model-aware visuals, dedicated status pages, and a configurable exterior and full-cabin interior appearance.
 
-> **Alpha • Community project • Read-only.** This card is **not an official XPENG product** and is not affiliated with XPENG Motors. It does not log in to the vehicle or implement remote commands. The companion `XPENG Direct` backend is a separate experimental project; a production-ready, authorized XPENG cloud connection has **not yet been verified**.
+> **Alpha • Community project • Read-only.** This card is **not an official XPENG product** and is not affiliated with XPENG Motors. It does not log in to the vehicle or implement remote commands. The companion `Xpeng` backend is a separate experimental project; a production-ready, authorized XPENG cloud connection has **not yet been verified**.
 
 ![XPENG G6 2026 dashboard preview](previews/g6-2026-default.png)
 
@@ -27,7 +29,7 @@ Preview screenshots contain **demonstration data** and do not establish any live
 
 ## Installation
 
-### HACS (custom repository; after first GitHub pre-release)
+### HACS (custom repository — early-access alpha)
 
 1. Open **HACS → ⋮ → Custom repositories** and enter this repository URL.
 2. Select **Dashboard** category, download the card, then confirm the `xpeng-vehicle-card.js` resource is registered as a JavaScript module. HACS may register the resource automatically depending on the installed version.
