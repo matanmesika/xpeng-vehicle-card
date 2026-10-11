@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "reviewed_as_of": "2026-10-10",
   "years": [
     2026,
@@ -181,19 +181,19 @@
     "G6:2026": [
       {
         "id": "core_rwd",
-        "label": "Core RWD (Israel)"
+        "label": "Core RWD"
       },
       {
         "id": "core_plus_rwd",
-        "label": "Core+ RWD (Israel)"
+        "label": "Core+ RWD"
       },
       {
         "id": "core_performance_awd",
-        "label": "Core Performance AWD (Israel)"
+        "label": "Core Performance AWD"
       },
       {
         "id": "black_edition",
-        "label": "Core Performance AWD Black Edition (Israel)"
+        "label": "Core Performance AWD Black Edition"
       },
       {
         "id": "unspecified",
@@ -243,17 +243,15 @@
       },
       {
         "id": "fwd_long_range",
-        "label": "FWD Long Range (Israel)"
+        "label": "FWD Long Range"
       }
     ]
   },
   "sources": [
     "https://www.sec.gov/Archives/edgar/data/1810997/000119312526157849/d36361d20f.htm",
-    "https://ir.xiaopeng.com/static-files/10e70f1b-cbed-4fb1-9f2f-f6be521d72a2",
-    "https://heyxpeng.co.il/pricing/",
-    "https://heyxpeng.co.il/g6/configurator/"
+    "https://ir.xiaopeng.com/static-files/10e70f1b-cbed-4fb1-9f2f-f6be521d72a2"
   ],
-  "disclaimer": "Year availability denotes a documented model family window, not exact regional model-year homologation. Other models use conceptual studio art (not official exact vehicle renderings), and the generic paint palette is for visualization, not confirmed factory ordering. G6 Israel 2026 options based on earlier configurator research; confirm options with seller.",
+  "disclaimer": "Visual appearance presets are available across the supported XPENG model catalog. Model-year, market, trim and factory colour combinations require independent verification. Generic artwork is illustrative and does not represent exact manufacturer photography.",
   "interiors": [
     {
       "id": "dark_gray",
