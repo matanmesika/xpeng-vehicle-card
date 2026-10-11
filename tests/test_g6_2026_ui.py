@@ -37,7 +37,7 @@ with sync_playwright() as p:
    const c = document.querySelector('xpeng-vehicle-card');
    const im = c?.shadowRoot?.querySelector('.hero img');
    return !!im && im.getAttribute('src')?.endsWith(file) && im.complete && im.naturalWidth > 0;
-  }""", filename, timeout=15000)
+  }""", arg=filename, timeout=15000)
  wait_for_art('g6-2026-arctic_white.webp')
  assert current_image()['loaded'],current_image()
  assert 'XPENG API not connected' in scope.locator('.disconnected-note').inner_text()
