@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.6.0-alpha.1 (2026-10-11)
+- Released opt-in Cockpit layout and owner G6 2026 dashboard YAML; previous classic layout remains default.
+- New responsive desktop/mobile vehicle navigation, central artwork, current status rail and fullscreen.
+- New Comfort panel includes steering-wheel heating, seat heat, ventilation and massage as disabled, unverified functions.
+- Fixed HACS distribution source parity; added browser tests and a version-correct release workflow.
+
+
 ## v0.5.0-alpha.5 (2026-10-11)
 - Central category-specific visual, fully wired fullscreen button and browser regression.
 - HACS release automation updated to publish current alpha, not older alpha.3.
