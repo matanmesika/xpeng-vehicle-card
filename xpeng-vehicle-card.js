@@ -201,8 +201,8 @@ const XP_CSS = `
 .xt-control-bar button{display:flex;align-items:center;flex-direction:column;gap:7px;background:transparent;border:0;padding:6px;color:#7c858f;opacity:.65;cursor:not-allowed}
 .xt-control-bar small{font-size:11px}
 .xt-climate-area{height:330px;position:relative;display:grid;place-items:center;background:linear-gradient(180deg,#232528,#141618);border-radius:11px;overflow:hidden}
-.xt-cabin-surface{height:100%;width:100%;display:flex;align-items:center;justify-content:center}
-.xt-cabin-surface svg{height:100%;width:auto;max-width:100%}
+.xt-cabin-surface{position:absolute;inset:0;height:100%;width:100%;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.xt-cabin-surface svg{display:block;flex:none;height:96%;max-height:100%;width:auto;max-width:100%;object-fit:contain}
 .xt-cabin-overlay{position:absolute;left:calc(50% - 80px);top:31%;width:160px;height:105px;pointer-events:none;display:flex;justify-content:space-between;align-items:center}
 .xt-cabin-overlay button{border:1px solid #5b6670;border-radius:50%;width:36px;height:36px;background:#161d25bb;opacity:.5;cursor:not-allowed;display:grid;place-items:center}
 .xt-temp-panel{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:20px 9px}

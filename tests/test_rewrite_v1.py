@@ -57,6 +57,9 @@ with sync_playwright() as p:
   card.locator('[data-back]').click()
   navigate('climate')
   assert card.locator('.xt-climate-area .xp-cabin-svg').count()==1
+  dims=card.locator('.xt-climate-area').evaluate("""el=>{const a=el.getBoundingClientRect();const b=el.querySelector('svg.xp-cabin-svg').getBoundingClientRect();return {parentHeight:a.height,svgHeight:b.height,parentWidth:a.width,svgWidth:b.width}}""")
+  assert dims['svgHeight']<=dims['parentHeight']+2,dims
+  assert dims['svgWidth']<=dims['parentWidth']+2,dims
   assert 'Steering wheel heating' in card.locator('.xt-seat-functions').inner_text()
   assert card.locator('.xt-seat-functions button:not([disabled])').count()==0
   page.screenshot(path=str(OUT/f'{tag}-climate.png'),full_page=True)
