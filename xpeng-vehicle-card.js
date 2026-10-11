@@ -80,8 +80,12 @@ const XP_VERIFIED_INTERIORS=Object.freeze({
 const XP_ALIASES={space_grey:'graphite_gray',space_gray:'graphite_gray',
  graphite_grey:'graphite_gray',jet_black:'midnight_black',
  black:'dark_gray',dark:'dark_gray',light_grey:'light_gray',white:'light_gray'};
-function xpAppearanceId(v){
+function xpAppearanceId(v,kind='color'){
  const k=String(v??'').trim().toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');
+ if(kind==='interior'&&k==='black')return 'dark_gray';
+ if(kind==='interior'&&k==='white')return 'light_gray';
+ if(kind==='color'&&k==='black')return 'midnight_black';
+ if(kind==='color'&&k==='white')return 'arctic_white';
  return XP_ALIASES[k]||k;
 }
 function xpAllowedInteriors(model,year,trim){
@@ -109,7 +113,7 @@ function xpNormalizeAppearance(value){const v=value||{};const yr=XP_YEARS.includ
  const opts=xpAllowedTrims(mdl,yr);const tr=opts.some(x=>x.id===v.trim)?v.trim:opts[0].id;
  const colors=xpAllowedPaints(mdl,yr,tr);const inputColor=xpAppearanceId(v.color);const col=colors.some(x=>x.id===inputColor)?inputColor:colors[0].id;
  const interiors=xpAllowedInteriors(mdl,yr,tr);
- const inputInterior=xpAppearanceId(v.interior);const interior=interiors.some(x=>x.id===inputInterior)?inputInterior:interiors[0].id;
+ const inputInterior=xpAppearanceId(v.interior,'interior');const interior=interiors.some(x=>x.id===inputInterior)?inputInterior:interiors[0].id;
  return {...v,year:yr,model:mdl,trim:tr,color:col,interior};
 }
 
