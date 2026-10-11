@@ -1,5 +1,5 @@
 /**
- * XPENG Vehicle Card v0.7.0-alpha.1 — XPENG vehicle monitoring dashboard (read-only).
+ * XPENG Vehicle Card v0.8.0-alpha.1 — XPENG vehicle monitoring dashboard (read-only).
  * Independent implementation. Uses no external vehicle-control APIs.
  * Reads only Home Assistant state. Does not send vehicle commands.
  */
@@ -390,6 +390,110 @@ const XP_CSS = `
  .xs-control-buttons{grid-template-columns:1fr}
 }
 
+/* v0.8 experimental Tesla-like structure, independently implemented for XPENG. */
+:host([data-cockpit]) ha-card{background:transparent!important;border:0!important;box-shadow:none!important;overflow:visible!important}
+:host([data-cockpit]) .app{padding:0!important;background:transparent!important;max-width:none!important;margin:0 auto!important}
+.xt-card{width:100%;max-width:900px;box-sizing:border-box;margin:0 auto;background:#17181a;border:1px solid #303235;color:#f4f5f6;border-radius:22px;padding:24px 25px 14px;box-shadow:0 18px 55px #0003;font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+.xt-card button{font:inherit;color:inherit}
+.xt-card button:focus-visible{outline:2px solid #7cbbff;outline-offset:2px}
+.xt-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:0 2px 13px}
+.xt-car-name{display:flex;align-items:center;gap:6px;font-size:24px;font-weight:700;letter-spacing:-.5px}
+.xt-car-name button{border:0;background:transparent;color:#aab0b5;cursor:pointer}
+.xt-head-details{display:flex;align-items:center;gap:14px;color:#e1e3e6;margin-top:8px;font-size:14px;font-weight:580}
+.xt-mini-battery{display:flex;align-items:center;gap:6px}
+.xt-muted{font-size:11px;color:#8a919a;margin-top:8px;line-height:1.5}
+.xt-head-buttons button,.xt-panel-head button{border:0;background:transparent;padding:5px 9px;color:#cacfd5;font-size:24px;cursor:pointer}
+.xt-landing{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(255px,1fr);gap:24px;align-items:center}
+.xt-left{min-width:0}
+.xt-car-stage{position:relative;aspect-ratio:1.7;display:flex;justify-content:center;align-items:center;overflow:hidden;border-radius:10px;background:#1e2023}
+.xt-car-stage img{display:block;width:100%;height:100%;object-fit:contain}
+.xt-charge-tag{position:absolute;right:8px;bottom:8px;background:#15382a;color:#8bffbb;border-radius:12px;padding:6px 10px;font-size:11px}
+.xt-shortcuts{display:flex;justify-content:space-evenly;gap:12px;margin-top:15px}
+.xt-shortcuts button{display:grid;place-items:center;min-height:49px;min-width:49px;border-radius:50%;border:0;background:#25272a;cursor:pointer;color:#f2f3f5}
+.xt-shortcuts button:hover:not(:disabled){background:#303b4a}
+.xt-shortcuts button[disabled]{opacity:.45;cursor:not-allowed}
+.xt-navigation{min-width:0;align-self:stretch;display:flex;flex-direction:column;justify-content:center}
+.xt-nav-row{display:flex;align-items:center;gap:14px;border:0;background:transparent;border-bottom:1px solid #33363a;padding:15px 5px;min-height:66px;cursor:pointer;text-align:left;width:100%}
+.xt-nav-row:last-child{border-bottom:0}
+.xt-nav-row:hover{background:#202225}
+.xt-nav-icon{display:grid;place-items:center;width:36px;color:#d9e0e6}
+.xt-nav-copy{display:flex;flex-direction:column;flex:1;gap:3px}
+.xt-nav-copy b{font-weight:600;font-size:15px}
+.xt-nav-copy small{font-size:11px;color:#8f969c}
+.xt-nav-row>svg{color:#858b93}
+.xt-footnote{text-align:center;margin-top:17px;font-size:10px;color:#858c97}
+.xt-panel-head{height:43px;display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.xt-panel-head h2{font-size:22px;margin:0;font-weight:600}
+.xt-panel{min-height:300px}
+.xt-control-stage{position:relative;background:#181a1d;border-radius:11px;min-height:350px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.xt-diagram{position:relative;width:80%;height:330px}
+.xt-diagram .xp-top-car{position:absolute;inset:0;width:100%;height:100%}
+.xt-diagram .xp-pin-label{max-width:125px}
+.xt-car-zones{position:absolute;inset:0;pointer-events:none}
+.xt-car-zones button{position:absolute;pointer-events:none;border:1px solid #4d5359;border-radius:7px;background:#23262ae0;padding:7px 10px;font-size:11px;color:#8a939c;opacity:.8}
+.xt-car-zones button:nth-child(1){top:8%;left:46%}
+.xt-car-zones button:nth-child(2){top:43%;left:47%}
+.xt-car-zones button:nth-child(3){bottom:10%;left:46%}
+.xt-segmented{display:flex;justify-content:space-between;align-items:center;padding:12px 4px;gap:16px;color:#acb7c4;font-size:12px}
+.xt-segmented button{display:flex;align-items:center;gap:7px;background:#292d31;border:0;border-radius:7px;padding:8px 12px;font-size:12px;cursor:pointer}
+.xt-control-bar{display:flex;justify-content:space-around;gap:8px;padding:16px 0}
+.xt-control-bar button{display:flex;align-items:center;flex-direction:column;gap:7px;background:transparent;border:0;padding:6px;color:#7c858f;opacity:.65;cursor:not-allowed}
+.xt-control-bar small{font-size:11px}
+.xt-climate-area{height:330px;position:relative;display:grid;place-items:center;background:linear-gradient(180deg,#232528,#141618);border-radius:11px;overflow:hidden}
+.xt-cabin-surface{height:100%;width:100%;display:flex;align-items:center;justify-content:center}
+.xt-cabin-surface svg{height:100%;width:auto;max-width:100%}
+.xt-cabin-overlay{position:absolute;left:calc(50% - 80px);top:31%;width:160px;height:105px;pointer-events:none;display:flex;justify-content:space-between;align-items:center}
+.xt-cabin-overlay button{border:1px solid #5b6670;border-radius:50%;width:36px;height:36px;background:#161d25bb;opacity:.5;cursor:not-allowed;display:grid;place-items:center}
+.xt-temp-panel{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:20px 9px}
+.xt-temp-panel>div{display:flex;flex-direction:column;align-items:center;gap:5px}
+.xt-temp-panel small{font-size:11px;color:#989fa8}
+.xt-temp-panel strong{font-size:21px}
+.xt-climate-stepper{display:flex!important;flex-direction:row!important;align-items:center;gap:9px}
+.xt-climate-stepper button,.xt-stepper button{background:#2b2d30;border:0;border-radius:7px;width:38px;height:38px;font-size:22px;opacity:.5}
+.xt-seat-functions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.xt-seat-functions>div{display:flex;justify-content:space-between;gap:9px;align-items:center;padding:12px;border:1px solid #34383b;border-radius:11px;background:#222427}
+.xt-seat-functions span{display:flex;align-items:center;gap:7px;font-size:12px}
+.xt-seat-functions button{font-size:11px;background:#303236;border:0;border-radius:7px;padding:8px;color:#a2abb4;cursor:not-allowed}
+.xt-inline-foot{font-size:10px;color:#858c95;padding-top:12px}
+.xt-charger-image{height:230px;display:grid;place-items:center;background:#202225;border-radius:11px;overflow:hidden}
+.xt-charger-image img{width:100%;height:100%;object-fit:contain}
+.xt-battery,.xt-charging-setting{padding:18px 6px;border-bottom:1px solid #363a3f}
+.xt-battery>div:first-child,.xt-charging-setting label{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.xt-battery span,.xt-charging-setting label{font-size:13px}
+.xt-battery strong{font-size:23px}
+.xt-battery>span{display:block;font-size:11px;color:#a5adb5;margin-top:10px}
+.xt-track{background:#32383a;border-radius:90px;height:12px;margin-top:13px;overflow:hidden}
+.xt-track div{height:100%;background:#4abb88;border-radius:90px}
+.xt-charging-setting input{width:100%;accent-color:#4abb88;margin-top:14px;opacity:.5}
+.xt-stepper{display:flex;justify-content:center;align-items:center;gap:18px;padding:10px 0}
+.xt-port-button{display:block;border:0;background:transparent;color:#9eabb4!important;margin:22px auto 7px;opacity:.55;cursor:not-allowed}
+.xt-location-map{min-height:300px;display:flex;align-items:center;flex-direction:column;justify-content:center;background:#20252a;border-radius:10px;gap:13px;color:#c6cdd6}
+.xt-location-map small{color:#929ca6;font-size:11px}
+.xt-values{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.xt-values>div{background:#232528;border-radius:9px;padding:14px;display:flex;justify-content:space-between;gap:8px}
+.xt-values span{font-size:12px;color:#a2adb7}
+.xt-values b{font-size:12px;color:#e9edef}
+:host([data-cockpit][data-expanded]) .xt-card{max-width:1150px;min-height:98vh}
+:host([data-cockpit][data-expanded]) .xt-car-stage{min-height:48vh}
+@media(max-width:680px){
+ .xt-card{border-radius:14px;padding:17px 12px 12px}
+ .xt-car-name{font-size:22px}
+ .xt-landing{display:block}
+ .xt-car-stage{aspect-ratio:1.55}
+ .xt-navigation{margin-top:15px}
+ .xt-nav-row{min-height:56px;padding:11px}
+ .xt-shortcuts{margin-top:12px}
+ .xt-climate-area{height:300px}
+ .xt-control-stage{min-height:310px}
+ .xt-diagram{width:100%;height:290px}
+ .xt-car-zones button:nth-child(1){left:43%}
+ .xt-car-zones button:nth-child(2){left:44%}
+ .xt-car-zones button:nth-child(3){left:43%}
+ .xt-seat-functions{grid-template-columns:1fr}
+ .xt-temp-panel{padding:14px 0}
+ .xt-footnote{padding-bottom:92px}
+}
+
 `;
 class XpengVehicleCard extends HTMLElement{
  constructor(){super();this.attachShadow({mode:'open'});this._expanded=false;this._nativeFull=false;this._config={prefix:'my_xpeng',theme:'dark'};this._view='overview';this._hass=null;this._vehicleIndex=0;
@@ -647,16 +751,114 @@ class XpengVehicleCard extends HTMLElement{
    }else{content=`<div class="xs-data-grid">${[['Model',this.model()],['Year',this.year()],['Odometer',this.value('odometer','km')],['Battery health',this.value('health','%')],['API status',this.val('connection')||'Not configured'],['Powertrain',this.val('powertrain')||'—']].map(([label,value])=>`<div class="xs-data-chip"><span>${xpEsc(label)}</span><strong>${xpEsc(value)}</strong></div>`).join('')}</div>`;}
    return `<section class="xs-detail" aria-label="${xpEsc(panelTitle)}"><div class="xs-detail-heading"><h3>${xpEsc(panelTitle)}</h3><button type="button" data-view="overview">${xpIcon('back',17)} Home</button></div>${content}</section>`;
  }
- cockpit(){
-   const isOffline=!['online','connected'].includes(String(this.val('connection')||'').toLowerCase());
-   return `<div class="xp-cockpit xp-studio">${this.cockpitSidebar()}<main class="xs-main">${this.studioHeader()}
-     ${isOffline?'<div class="xs-not-connected">XPENG Direct not connected — live data and remote commands are unavailable.</div>':''}
-     <div class="xs-workspace">
-       <div class="xs-left">${this.studioHero()}${this._view==='overview'?this.studioActions():''}${this.studioDetail()}</div>
-       ${this.studioStatusRail()}
+ // Vehicle-first UX adapted independently from the Tesla-style menu flow.
+ // Original XPENG UI and car assets. No third-party app assets or commands.
+ teslaLikeHeader(){
+  const soc=xpPercent(this.val('soc')),range=this.value('range','km');
+  const trim=xpAllowedTrims(this.model(),this.year()).find(v=>v.id===this.trim())?.label||'';
+  return `<header class="xt-header">
+    <div><div class="xt-car-name">${xpEsc(this.name())}${this.vehicles().length>1?`<button type="button" data-cycle aria-label="Switch vehicle">⌄</button>`:''}</div>
+      <div class="xt-head-details"><span class="xt-mini-battery">${xpIcon('battery',19)} <span>${soc===null?'—':xpNum(soc)+'%'}</span></span><span>${xpEsc(range)}</span></div>
+      <div class="xt-muted">${xpEsc(this.year())} · ${xpEsc(trim)} · ${xpEsc(xpConnText(this.val('connection')))}</div>
+    </div>
+    <div class="xt-head-buttons">
+      <button type="button" data-expand aria-label="${this._expanded?'Exit full screen':'Full screen'}">${this._expanded?'✕':'⛶'}</button>
+    </div>
+  </header>`;
+ }
+ teslaLikeLanding(){
+  const charging=this.bool('charging');
+  const locked=this.bool('locked');
+  const menu=[
+    ['controls','Controls',xpIcon('car',20),this.status('locked','Locked','Unlocked')],
+    ['climate','Climate',xpIcon('fan',20),this.status('climate','On','Off')+' · '+this.value('cabin','°C',1)],
+    ['location','Location',xpIcon('pin',20),this.val('location')===null?'Not available':'Open location details'],
+    ['charging','Charging',xpIcon('bolt',20),charging===null?'Not available':charging?'Charging':'Not charging']
+  ];
+  return `<div class="xt-landing"><div class="xt-left">
+    <div class="xt-car-stage"><img src="${xpEsc(this.asset())}" alt="XPENG ${xpEsc(this.model())} in ${xpEsc(this.paint())}" loading="eager">
+      ${charging===true?'<div class="xt-charge-tag">⚡ Charging</div>':''}
+    </div>
+    <div class="xt-shortcuts" aria-label="Vehicle quick functions">
+      <button type="button" disabled aria-label="Lock or unlock unavailable without approved XPENG API" title="Remote locks unavailable">${xpIcon(locked?'lock':'unlock',23)}</button>
+      <button type="button" data-view="controls" aria-label="Controls">${xpIcon('car',23)}</button>
+      <button type="button" data-view="charging" aria-label="Charging">${xpIcon('bolt',23)}</button>
+      <button type="button" data-view="climate" aria-label="Climate">${xpIcon('fan',23)}</button>
+    </div>
+    </div>
+    <nav class="xt-navigation" aria-label="Vehicle menus">
+      ${menu.map(([view,label,icon,subtitle])=>`<button type="button" class="xt-nav-row" data-view="${view}"><span class="xt-nav-icon">${icon}</span><span class="xt-nav-copy"><b>${label}</b><small>${xpEsc(subtitle)}</small></span>${xpIcon('arrow',17)}</button>`).join('')}
+    </nav></div>`;
+ }
+ teslaLikePanel(){
+  const view=this._view;
+  const labels={controls:'Controls',vehicle:'Controls',tires:'Tire Pressure',charging:'Charging',climate:'Climate',comfort:'Comfort',interior:'Interior',location:'Location',info:'Vehicle Information'};
+  const top=`<div class="xt-panel-head"><button type="button" data-back aria-label="Back to car">${xpIcon('back',23)}</button><h2>${xpEsc(labels[view]||'Vehicle')}</h2></div>`;
+  let content='';
+  if(view==='controls'||view==='vehicle'||view==='tires'){
+   const tires=view==='tires';
+   const prev=this._view;
+   // Labels on top-down vehicle follow current page, with no simulated remote states.
+   const body=this.topVisual();
+   content=`<div class="xt-control-stage"><div class="xt-diagram">${body}</div>
+     ${!tires?`<div class="xt-car-zones" aria-label="Remote control unavailable">
+       <button disabled title="No authorized XPENG remote control">Frunk</button>
+       <button disabled title="No authorized XPENG remote control">${xpIcon('lock',21)}</button>
+       <button disabled title="No authorized XPENG remote control">Trunk</button>
+     </div>`:''}
+   </div>
+   ${tires?`<div class="xt-values">${[['Front left','tire_fl'],['Front right','tire_fr'],['Rear left','tire_rl'],['Rear right','tire_rr']].map(([name,k])=>`<div><span>${name}</span><b>${xpEsc(this.value(k,'kPa'))}</b></div>`).join('')}</div>`:
+    `<div class="xt-segmented"><button type="button" data-view="tires">${xpIcon('tire',18)} View tire pressure</button>
+    <span>Locks: ${xpEsc(this.status('locked','Locked','Unlocked'))}</span></div>`}
+   <div class="xt-control-bar">${[['Flash lights','sun'],['Horn','gauge'],['Remote start','power'],['Windows','car']].map(([label,icon])=>`<button type="button" disabled aria-label="${xpEsc(label)} unavailable">${xpIcon(icon,23)}<small>${label}</small></button>`).join('')}</div>`;
+  }else if(view==='climate'||view==='comfort'||view==='interior'){
+   const cab=XP_INTERIORS.find(x=>x.id===this.interior())?.label||'—';
+   const modes=[
+    ['steering wheel heat','Steering wheel heating'],['seat heat','Front seat heating'],
+    ['seat cooling','Seat ventilation'],['seat massage','Seat massage']
+   ];
+   content=`<div class="xt-climate-area">
+      <div class="xt-cabin-surface">${xpCabinSvg(this.interior())}</div>
+      <div class="xt-cabin-overlay">
+        <button disabled aria-label="Driver seat heater unavailable">${xpIcon('thermometer',21)}</button>
+        <button disabled aria-label="Passenger seat heater unavailable">${xpIcon('thermometer',21)}</button>
+        <button disabled aria-label="Steering wheel heater unavailable">${xpIcon('thermometer',21)}</button>
+      </div>
+    </div>
+    <div class="xt-temp-panel">
+       <div><small>Cabin</small><strong>${xpEsc(this.value('cabin','°C',1))}</strong></div>
+       <div class="xt-climate-stepper"><button disabled aria-label="Lower target temperature">−</button><b>— °C</b><button disabled aria-label="Raise target temperature">+</button></div>
+       <div><small>Climate status</small><strong>${xpEsc(this.status('climate','On','Off'))}</strong></div>
+    </div>
+    <div class="xt-seat-functions">
+      ${modes.map(([key,label])=>`<div><span>${xpIcon('thermometer',20)} ${label}</span><button disabled title="No XPENG authorized cloud command">Unavailable</button></div>`).join('')}
+    </div><div class="xt-inline-foot">Interior: ${xpEsc(cab)} · Change exterior and upholstery only in Home Assistant Edit card.</div>`;
+  }else if(view==='charging'){
+   const soc=xpPercent(this.val('soc'));
+   content=`<div class="xt-charger-image"><img src="${xpEsc(this.asset())}" alt="XPENG ${xpEsc(this.model())} charging view"></div>
+     <div class="xt-battery">
+       <div><span>Battery state</span><strong>${soc===null?'—':xpNum(soc)+'%'}</strong></div>
+       <div class="xt-track"><div style="width:${soc??0}%"></div></div>
+       <span>Range ${xpEsc(this.value('range','km'))} · Power ${xpEsc(this.value('power','kW',1))}</span>
      </div>
-     <div class="xs-bottom-note">Independent Home Assistant vehicle dashboard · read-only until an authorized XPENG API is verified</div>
-   </main></div>`;
+     <div class="xt-charging-setting"><label>Charging limit <strong>${xpEsc(this.value('target','%'))}</strong></label><input type="range" min="0" max="100" value="${xpPercent(this.val('target'))??0}" disabled aria-label="Charging limit unavailable"/></div>
+     <div class="xt-charging-setting"><label>Charging current <strong>${xpEsc(this.value('current','A',1))}</strong></label><div class="xt-stepper"><button disabled aria-label="Decrease charging current">−</button><span>${xpEsc(this.value('current','A',1))}</span><button disabled aria-label="Increase charging current">+</button></div></div>
+     <button class="xt-port-button" disabled>Open charging port · Not connected</button>`;
+  }else if(view==='location'){
+   const loc=this.data('location')?.entity?.attributes||{};
+   const gps=loc.latitude!=null&&loc.longitude!=null&&Number.isFinite(Number(loc.latitude))&&Number.isFinite(Number(loc.longitude));
+   content=`<div class="xt-location-map">${xpIcon('pin',35)}<strong>${gps?'Location available':'Location unavailable'}</strong><small>Home Assistant coordinates only. No external map requests.</small></div>`;
+  }else{
+   content=`<div class="xt-values">${[['Model',this.model()],['Year',this.year()],['Edition',this.trim()],['Odometer',this.value('odometer','km')],['Powertrain',this.val('powertrain')||'—'],['Connection',xpConnText(this.val('connection'))]].map(([k,v])=>`<div><span>${xpEsc(k)}</span><b>${xpEsc(v)}</b></div>`).join('')}</div>`;
+  }
+  return top+`<section class="xt-panel" data-tesla-style-panel="${xpEsc(view)}">${content}</section>`;
+ }
+ cockpit(){
+   const active=this._view!=='overview';
+   return `<div class="xt-card">${!active?this.teslaLikeHeader():''}
+       ${active?this.teslaLikePanel():this.teslaLikeLanding()}
+       <div class="xt-footnote">XPENG Direct · ${xpEsc(xpConnText(this.val('connection')))} · Read only pending manufacturer-approved control API</div>
+   </div>`;
  }
 
  render(){
