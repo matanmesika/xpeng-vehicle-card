@@ -54,6 +54,12 @@ with sync_playwright() as p:
   page.screenshot(path=str(OUT/f'{tag}-controls.png'),full_page=True)
   card.locator('[data-view="tires"]').click()
   assert '—' in card.locator('.xt-values').inner_text()
+  card.locator('[data-tire-unit]').click()
+  assert 'bar' in card.locator('[data-tire-unit]').inner_text()
+  card.locator('[data-tire-unit]').click()
+  assert 'psi' in card.locator('[data-tire-unit]').inner_text()
+  card.locator('[data-tire-unit]').click()
+  assert 'kPa' in card.locator('[data-tire-unit]').inner_text()
   card.locator('[data-back]').click()
   navigate('climate')
   assert card.locator('.xt-climate-area .xp-cabin-svg').count()==1

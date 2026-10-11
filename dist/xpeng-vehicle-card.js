@@ -257,8 +257,9 @@ const XP_CSS = `
 
 `;
 class XpengVehicleCard extends HTMLElement{
- constructor(){super();this.attachShadow({mode:'open'});this._expanded=false;this._nativeFull=false;this._config={prefix:'my_xpeng',theme:'dark'};this._view='overview';this._hass=null;this._vehicleIndex=0;
-   this.shadowRoot.addEventListener('click',e=>{const target=e.target.closest('button[data-view],button[data-back],button[data-cycle],button[data-expand]');if(!target)return;
+ constructor(){super();this.attachShadow({mode:'open'});this._expanded=false;this._nativeFull=false;this._config={prefix:'my_xpeng',theme:'dark'};this._view='overview';this._hass=null;this._vehicleIndex=0;this._tireUnit='kPa';
+   this.shadowRoot.addEventListener('click',e=>{const target=e.target.closest('button[data-view],button[data-back],button[data-cycle],button[data-expand],button[data-tire-unit]');if(!target)return;
+    if(target.hasAttribute('data-tire-unit')){this._tireUnit=this._tireUnit==='kPa'?'bar':this._tireUnit==='bar'?'psi':'kPa';this.render();return;}
     if(target.hasAttribute('data-expand')){
       this._expanded=!this._expanded;
       if(this._expanded&&typeof this.requestFullscreen==='function'){
@@ -304,6 +305,14 @@ class XpengVehicleCard extends HTMLElement{
  val(key){return this.data(key)?.value??null;}
  bool(key){return xpBool(this.val(key));}
  n(key,dec=0){return xpNum(this.val(key),dec);}
+ tireValue(key){
+   const kpa=this.val(key);
+   if(kpa===null||!Number.isFinite(Number(kpa)))return '—';
+   const k=Number(kpa);
+   if(this._tireUnit==='bar')return xpNum(k/100,2)+' bar';
+   if(this._tireUnit==='psi')return xpNum(k/6.894757293,1)+' psi';
+   return xpNum(k)+' kPa';
+ }
  value(key,unit='',digits=0){const raw=this.val(key);return raw===null||raw===''||!Number.isFinite(Number(raw))?'—':xpNum(raw,digits)+(unit?' '+unit:'');}
  model(){return this.selectedModel();}
  name(){const n=this.vehicle().name||this.val('name');return n&&n!=='My XPENG'&&n!=='XPENG'?n:'XPENG '+this.model();}
@@ -321,7 +330,7 @@ class XpengVehicleCard extends HTMLElement{
     ?[['tire_fl','Front left','xp-pin-fl'],['tire_fr','Front right','xp-pin-fr'],['tire_rl','Rear left','xp-pin-rl'],['tire_rr','Rear right','xp-pin-rr']]
     :[['door_fl','Front left','xp-pin-fl'],['door_fr','Front right','xp-pin-fr'],['door_rl','Rear left','xp-pin-rl'],['door_rr','Rear right','xp-pin-rr']];
    const labels=entries.map(([key,label,pos])=>{
-     const value=tires?this.value(key,'kPa'):this.status(key,'Open','Closed');
+     const value=tires?this.tireValue(key):this.status(key,'Open','Closed');
      return `<div class="xp-pin-label ${pos} ${!tires&&this.bool(key)===true?'is-open':''}">${xpEsc(label)}<b>${xpEsc(value)}</b></div>`;
    }).join('');
    return `<svg class="xp-top-car" viewBox="0 0 560 340" role="img" aria-label="Vehicle viewed from above" xmlns="http://www.w3.org/2000/svg">
@@ -403,7 +412,7 @@ class XpengVehicleCard extends HTMLElement{
        <button disabled title="No authorized XPENG remote control">Trunk</button>
      </div>`:''}
    </div>
-   ${tires?`<div class="xt-values">${[['Front left','tire_fl'],['Front right','tire_fr'],['Rear left','tire_rl'],['Rear right','tire_rr']].map(([name,k])=>`<div><span>${name}</span><b>${xpEsc(this.value(k,'kPa'))}</b></div>`).join('')}</div>`:
+   ${tires?`<div class="xt-segmented"><span>Read-only tire pressure</span><button type="button" data-tire-unit aria-label="Change pressure units">${this._tireUnit} ⟳</button></div><div class="xt-values">${[['Front left','tire_fl'],['Front right','tire_fr'],['Rear left','tire_rl'],['Rear right','tire_rr']].map(([name,k])=>`<div><span>${name}</span><b>${xpEsc(this.tireValue(k))}</b></div>`).join('')}</div>`:
     `<div class="xt-segmented"><button type="button" data-view="tires">${xpIcon('tire',18)} View tire pressure</button>
     <span>Locks: ${xpEsc(this.status('locked','Locked','Unlocked'))}</span></div>`}
    <div class="xt-control-bar">${[['Flash lights','sun'],['Horn','gauge'],['Remote start','power'],['Windows','car']].map(([label,icon])=>`<button type="button" disabled aria-label="${xpEsc(label)} unavailable">${xpIcon(icon,23)}<small>${label}</small></button>`).join('')}</div>`;
