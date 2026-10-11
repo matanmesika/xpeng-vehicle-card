@@ -7,7 +7,7 @@ This repository is the **Lovelace dashboard frontend**. Never change or publish 
 1. **Design parity reviewer**: compare real Chromium/HA screenshots with the two supplied 1536x864 reference images (status and charging). Block release if the car/year, background, lighting, layout or mobile rendering differs materially.
 2. **Vehicle catalogue reviewer**: use manufacturer model/year/market sources for each factory exterior/interior choice. Flag any unverified mapping as a preview, not a factory option.
 3. **Vehicle image reviewer**: verify exterior artwork represents the **exact** model year and exterior paint; interior art must match dashboard, steering wheel, door trims, console and seats as a group. Do not silently reuse another year/model.
-4. **Home Assistant state reviewer**: map profile metadata through HA entities or attributes when published by the integration; otherwise require explicit YAML/editor options. Never read integration private config entries from frontend JS.
+4. **Home Assistant state reviewer**: model, year, trim, exterior colour and interior finish are manual editor/YAML settings only. Telemetry is read from Home Assistant sensors; individual entity overrides live exclusively in the card editor/YAML. Never read XPENG integration private config or use its identity sensors to override visual settings.
 5. **QA reviewer**: run JS syntax/Node tests/Playwright desktop+mobile, image load checks, accessibility/info popover tests, full-window mode, and HACS package verification before approval.
 
 ## Approved views
