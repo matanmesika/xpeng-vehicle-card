@@ -12,13 +12,13 @@ SCRIPT = (ROOT / 'dist/xpeng-vehicle-card.js').read_text(encoding='utf-8')
 assert SCRIPT == (ROOT / 'xpeng-vehicle-card.js').read_text(encoding='utf-8')
 assert 'Dashboard v0.1.1' in SCRIPT
 assert 'localStorage' not in SCRIPT and 'callService(' not in SCRIPT and 'fetch(' not in SCRIPT
-OUT = ROOT / 'previews' / 'dashboard-v010'
+OUT = ROOT / 'previews' / 'dashboard-v011'
 OUT.mkdir(parents=True, exist_ok=True)
 # Release gate: do not silently validate a placeholder SVG or an outdated image.
 EXPECTED_ART = ROOT / 'dist/assets/vehicles/g6/2026/core_plus_rwd/arctic_white.webp'
 assert EXPECTED_ART.is_file(), (
-    f'Missing verified G6 2026 exterior artwork: {EXPECTED_ART}. '
-    'Add manufacturer-year-correct source artwork before publishing.'
+    f'Missing packaged G6 2026 preview artwork: {EXPECTED_ART}. '
+    'Add model-year imagery or mark unverified styling before publishing.'
 )
 
 
@@ -82,7 +82,7 @@ with sync_playwright() as p:
         assert host.locator('.xt-panel,.xt-nav-row,.xd-details-nav,.xt-climate-area').count() == 0
         page.wait_for_function("""() => {
             const image = document.querySelector('xpeng-vehicle-card').shadowRoot.querySelector('.xp-car');
-            return image && image.complete && image.naturalWidth > 800;
+            return image && image.complete && image.naturalWidth >= 350;
         }""")
         page.screenshot(path=str(OUT / f'{tag}-overview-UNAVAILABLE.png'), full_page=True)
 
@@ -94,7 +94,7 @@ with sync_playwright() as p:
         assert '12,548 km' in host.locator('.xp-status-panel').inner_text()
         assert '2.5 bar' in host.locator('.xp-status-panel').inner_text()
         assert 'Ramat Gan, Israel' in host.locator('.xp-status-panel').inner_text()
-        page.screenshot(path=str(OUT / f'{tag}-overview-TEST-DATA.png'), full_page=True)
+        page.screenshot(path=str(OUT / f'{tag}-overview-DEMO.png'), full_page=True)
 
         # The real charging binary entity switches the entire scene, not a secondary details page.
         page.evaluate("states => document.querySelector('xpeng-vehicle-card').hass = {states}", CHARGING)
@@ -106,7 +106,7 @@ with sync_playwright() as p:
         assert '11.2 kW' in host.locator('.xp-charge-card').inner_text()
         assert '2h 15m' in host.locator('.xp-charge-card').inner_text()
         assert '90 %' in host.locator('.xp-charge-card').inner_text()
-        page.screenshot(path=str(OUT / f'{tag}-charging-TEST-DATA.png'), full_page=True)
+        page.screenshot(path=str(OUT / f'{tag}-charging-DEMO.png'), full_page=True)
 
         # Home is a view switch, not a vehicle-control command.
         host.locator('[data-view="overview"]').click()
@@ -146,6 +146,10 @@ with sync_playwright() as p:
         editor = page.locator('xpeng-vehicle-card-editor')
         assert editor.locator('[data-key="color"]').count() == 1
         assert editor.locator('[data-key="interior"]').count() == 1
+        assert editor.locator('[data-entity="soc"]').count() == 1
+        assert editor.locator('[data-entity="charging"]').count() == 1
+        assert editor.locator('[data-entity="tire_fl"]').count() == 1
+        assert host.locator('[data-key="color"],[data-entity]').count() == 0
 
         assert not errors, errors
         # Release gate: all model/year/colour assets must exist before release.
