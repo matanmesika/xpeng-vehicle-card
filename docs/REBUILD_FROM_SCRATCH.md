@@ -39,7 +39,7 @@ flow. Only its current internal screen is rendered.
 
 This is independently written XPENG UI. The third-party vehicle card that
 inspired the requested navigation has no root license file, so we have **not**
-copied its source or its Tesla images. Matching navigation and broad screen
+copied its source or its other-brand images. Matching navigation and broad screen
 layout does not guarantee pixel-identical images. We do not yet have XPENG
 model-specific open-door/frunk/charge-port visual composites.
 
