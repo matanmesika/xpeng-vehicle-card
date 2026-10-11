@@ -1,10 +1,6 @@
 name: Publish XPENG alpha pre-release
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/publish-alpha.yml'
 
 permissions:
   contents: write
@@ -32,36 +28,36 @@ jobs:
         run: |
           python -m pip install playwright pytest
           python -m playwright install --with-deps chromium
-          python tests/test_rewrite_v1.py
+          python tests/visual_qa_agent.py
           python -m pytest -q tests/test_brand_independence.py
       - name: Keep real desktop and iPhone screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: xpeng-v1-dashboard-browser-screenshots
-          path: previews/rewrite-v1/*.png
+          name: xpeng-v010-browser-screenshots
+          path: previews/visual-qa-v010/*.png
           if-no-files-found: warn
       - name: Verify current version has not already been released
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if gh release view v1.0.0-alpha.1 >/dev/null 2>&1; then
-            echo 'v1.0.0-alpha.1 already exists; no changes were made.'
+          if gh release view v0.1.0 >/dev/null 2>&1; then
+            echo 'v0.1.0 already exists; no changes were made.'
             exit 1
           fi
       - name: Create explicitly experimental pre-release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create v1.0.0-alpha.1 \
+          gh release create v0.1.0 \
             --repo "${GITHUB_REPOSITORY}" \
             --target "${GITHUB_SHA}" \
-            --title "XPENG Vehicle Card v1.0.0-alpha.1 (Alpha)" \
-            --notes-file RELEASE_NOTES_v1.0.0-alpha.1.md \
+            --title "XPENG Vehicle Card v0.1.0 (Alpha)" \
+            --notes-file RELEASE_NOTES_v0.1.0.md \
             --prerelease
 
       - name: Attach real browser screenshots to pre-release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release upload v1.0.0-alpha.1 previews/rewrite-v1/*.png --repo "${GITHUB_REPOSITORY}"
+          gh release upload v0.1.0 previews/visual-qa-v010/*.png --repo "${GITHUB_REPOSITORY}"

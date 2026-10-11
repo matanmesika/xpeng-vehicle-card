@@ -125,3 +125,21 @@ The availability of an HA entity does not verify an official XPENG live API.
 
 **Actual browser screenshots with test-only charging values** are attached to
 the release. The previous mockup images were design proposals, not captures.
+
+## v0.1.0 automatic two-state vehicle monitor
+
+The approved baseline is one noninteractive Home Assistant card with two
+automatically selected visual states: vehicle status and active charging.
+Battery percentage and estimated range remain visible in both states.
+Vehicle state shows odometer, tyre summary and HA location in the right panel.
+Charging state shows charging power, remaining time and target with CSS animation.
+There is no sidebar, weather, doors/climate card or manual screen switching.
+Last update appears discreetly in the top-right corner.
+
+The dedicated XPENG Visual QA Agent Github workflow renders the actual
+bundled card in Chromium (1600x900 desktop and 390px mobile) across all
+16 catalog models and both states. It saves screenshots and reports identical
+generic artwork between model names, missing assets and layout errors.
+Browser checks alone are not photographic fidelity certification: several
+model assets remain illustrations rather than approved manufacturer renders.
+This software has no verified XPENG consumer remote-control API.

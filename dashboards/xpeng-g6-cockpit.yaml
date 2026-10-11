@@ -22,11 +22,3 @@ sections:
         grid_options:
           columns: full
           rows: auto
-      - type: custom:navbar-card
-        template: main_nav
-        grid_options:
-          columns: full
-          rows: auto
-card_mod:
-  style: |
-    :host { padding-bottom: max(128px, calc(100px + env(safe-area-inset-bottom))); }

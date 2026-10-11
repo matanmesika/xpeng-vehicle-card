@@ -28,13 +28,13 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Run fresh UI acceptance tests
         run: |
-          python tests/test_rewrite_v1.py
+          python tests/visual_qa_agent.py
       - name: Upload real rewritten XPENG screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: xpeng-clean-v1-browser-screenshots
-          path: previews/rewrite-v1/*.png
+          name: xpeng-v010-browser-visual-qa
+          path: previews/visual-qa-v010/
           if-no-files-found: warn
       - name: Verify branding independence
         run: |

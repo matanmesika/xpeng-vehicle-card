@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.1.0 — New baseline (2026-10-11)
+- One automatic monitor with vehicle and charging states; no manual page switching.
+- SOC/range persistent; charging power/ETA/target shown in charging state.
+- Remove sidebar, weather, doors/climate cards, bottom charging extras, large last-update label.
+- Lightweight CSS energy animation with reduced-motion support.
+- Full 16-model catalogue remains selectable in the existing Home Assistant card editor.
+- Browser visual QA agent captures both states for all models and audits generic duplicated artwork.
+
+
 ## v1.0.0-alpha.1 (2026-10-11)
 - Rebuild Home as an at-a-glance vehicle dashboard rather than an application menu.
 - Automatically prioritize active charging telemetry: SOC, power, ETA, energy, target, plug state.
