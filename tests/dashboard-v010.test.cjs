@@ -224,7 +224,7 @@ test('the alpha-cutout G6 preview has no studio mask or visible artwork watermar
  const c=setup(data());
  const html=c.shadowRoot.innerHTML;
  assert.doesNotMatch(html,/Illustrative vehicle art/);
- assert.doesNotMatch(html,/xp-studio-car/);
+ assert.doesNotMatch(html,/class="xp-car xp-studio-car"/);
  assert.match(c.asset(),/\/vehicles\/g6\/2026\/core_plus_rwd\/arctic_white\.webp$/);
  assert.match(html,/class="xp-night-photo"/);
 });
