@@ -6,7 +6,6 @@ max_columns: 4
 dense_section_placement: false
 badges: []
 cards: []
-# The card itself has the full vehicle heading. No duplicate Markdown header.
 sections:
   - type: grid
     column_span: 4
@@ -30,6 +29,4 @@ sections:
           rows: auto
 card_mod:
   style: |
-    :host {
-      padding-bottom: max(136px, calc(110px + env(safe-area-inset-bottom)));
-    }
+    :host { padding-bottom: max(128px, calc(100px + env(safe-area-inset-bottom))); }
