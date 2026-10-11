@@ -102,3 +102,26 @@ Version `v0.7.0-alpha.1` removes the in-card Settings/Appearance page and paint/
 The previous concept screenshots were **not browser captures of the implementation**; this release replaces the generic box layouts with a cohesive car-centered layout. The main `G6 2026` image stays prominent in each section, with per-page overlays, a contextual right rail and native Home Assistant telemetry. No fabricated SOC, location, climate or remote command success.
 
 Screenshots from the actual Chromium-rendered card are attached to the [v0.7 alpha release](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v0.7.0-alpha.1), covering desktop and mobile Overview, Controls, Climate, Comfort, Charging, Tires and Interior. The owner YAML with the existing `main_nav` is in `dashboards/xpeng-g6-cockpit.yaml`.
+
+## v1.0 Dashboard-first home (experimental)
+
+The current experimental home keeps the configured XPENG car central and
+shows real Home Assistant vehicle telemetry at a glance: SOC, range, charging
+power, charging target, plugged-in state, duration remaining and energy added
+**only when the matching entities have valid values**. The quick overview also
+shows locks/doors, climate, location availability and the last update.
+
+The home adapts automatically when `binary_sensor.<prefix>_is_charging` is
+`on`, and distinguishes plugged in but not charging, unavailable and known
+stale data. Controls/Climate/Charging/Location are secondary screens.
+No commands are triggered. Colors remain editor-only.
+
+Data mapping is aligned with XPENG Direct's real field names (e.g.
+`sensor.<prefix>_soc`, `sensor.<prefix>_charge_power_kw`,
+`sensor.<prefix>_charge_remaining_min`) with legacy aliases.
+Home Assistant-generated entity names may differ. For exact IDs, use
+`entities: {soc: sensor.your_exact_entity_id, ...}` on the card.
+The availability of an HA entity does not verify an official XPENG live API.
+
+**Actual browser screenshots with test-only charging values** are attached to
+the release. The previous mockup images were design proposals, not captures.

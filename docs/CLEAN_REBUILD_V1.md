@@ -1,5 +1,14 @@
 # XPENG Vehicle Card — clean rebuild v1 (preview / not released)
 
+This iteration is a **status-first Home Assistant vehicle dashboard**.
+The landing page prioritizes the car illustration, SOC, range, charging
+information, vehicle lock/door status, climate and location; secondary
+detail screens use navigation buttons at the bottom.
+
+Charging states are derived from matching Home Assistant entities:
+active charge, plugged in but idle, unknown and stale are never conflated.
+All numerical values are omitted when missing. The artwork remains illustrative.
+
 This implementation is a new self-contained vehicle user interface. It reuses
 only the existing XPENG vehicle data key mapping, authored G6/other-model
 illustrations, model selection catalogue and Home Assistant card editor.
