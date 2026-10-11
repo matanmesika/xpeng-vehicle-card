@@ -518,7 +518,9 @@ class XpengVehicleCardEditor extends HTMLElement{
     ${select('year','Model year',XP_YEARS.map(y=>({id:y,label:y})))}
     ${select('model','Model',xpAllowedModels(v.year).map(m=>({id:m.id,label:m.name})))}
     ${select('trim','Trim',xpAllowedTrims(v.model,v.year))}
-    ${select('color','Exterior paint',xpAllowedPaints(v.model,v.year,v.trim))}\n     ${select('interior','Interior finish',xpAllowedInteriors(v.model,v.year,v.trim))}\n     <p>${xpIsVerifiedPalette(v.model,v.year)?'Published colour palette; availability differs by market and trim.':'Illustrative colours for this model year; manufacturer availability is not verified.'}</p>
+    ${select('color','Exterior paint',xpAllowedPaints(v.model,v.year,v.trim))}
+     ${select('interior','Interior finish',xpAllowedInteriors(v.model,v.year,v.trim))}
+     <p>${xpIsVerifiedPalette(v.model,v.year)?'Published colour palette; availability differs by market and trim.':'Illustrative colours for this model year; manufacturer availability is not verified.'}</p>
     <label>Image assets directory<input data-key="image_path" value="${xpEsc(v.image_path||'/hacsfiles/xpeng-vehicle-card/assets')}"></label>
     <p>Dashboard v0.1.1 has two read-only screens: vehicle status and charging. Screens switch automatically when the charging binary sensor changes. Vehicle telemetry comes only from Home Assistant entities. Appearance options are visual only.</p>
   </section>`;
