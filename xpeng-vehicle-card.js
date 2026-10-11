@@ -304,6 +304,7 @@ class XpengVehicleCard extends HTMLElement{
  val(key){return this.data(key)?.value??null;}
  bool(key){return xpBool(this.val(key));}
  n(key,dec=0){return xpNum(this.val(key),dec);}
+ value(key,unit='',digits=0){const raw=this.val(key);return raw===null||raw===''||!Number.isFinite(Number(raw))?'—':xpNum(raw,digits)+(unit?' '+unit:'');}
  model(){return this.selectedModel();}
  name(){const n=this.vehicle().name||this.val('name');return n&&n!=='My XPENG'&&n!=='XPENG'?n:'XPENG '+this.model();}
  charging(){return this.bool('charging')===true;}
