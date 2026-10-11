@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.7.0-alpha.1 (2026-10-11)
+- Large actual G6 vehicle image across every Studio cockpit page; contextual cabin/doors/tires overlays and reorganized status cards.
+- Responsive composition with photo-led stage, side nav, right telemetry rail and bottom dashboard modules.
+- Eliminate broken logo dependency and duplicated Home Assistant markdown header; keep the existing navbar template with safe padding.
+- Real rendered screenshots of desktop/mobile seven-page flows attached as release assets.
+- No invented vehicle values or OEM command API.
+
+
 ## v0.6.0-alpha.2 (2026-10-11)
 - Move exterior paint and interior upholstery/dashboard finish exclusively into Home Assistant card editor/YAML.
 - Remove in-card Settings/Appearance page and customization button; Interior page becomes read-only.
