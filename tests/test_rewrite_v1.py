@@ -89,4 +89,4 @@ with sync_playwright() as p:
   assert not missing,missing
   page.close()
  browser.close()
-print('PASS: independent clean XPENG v1 UI, Tesla-like navigation flow, editor-only paint, responsive snapshots, API safety')
+print('PASS: independent clean XPENG v1 UI, vehicle-first navigation flow, editor-only paint, responsive snapshots, API safety')
