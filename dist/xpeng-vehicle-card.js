@@ -468,12 +468,27 @@ class XpengVehicleCard extends HTMLElement{
    </div></ha-card>`;
  }
 }
+const XP_MAPPABLE_FIELDS = Object.freeze([{"key":"charging","label":"Charging state"},{"key":"soc","label":"Battery level (%)"},{"key":"range","label":"Estimated range (km)"},{"key":"power","label":"Charging power (kW)"},{"key":"remaining","label":"Time remaining (minutes)"},{"key":"target","label":"Charging limit (%)"},{"key":"plugged","label":"Cable connected"},{"key":"odometer","label":"Odometer (km)"},{"key":"tire_fl","label":"Tire front left (kPa)"},{"key":"tire_fr","label":"Tire front right (kPa)"},{"key":"tire_rl","label":"Tire rear left (kPa)"},{"key":"tire_rr","label":"Tire rear right (kPa)"},{"key":"location","label":"Vehicle location"},{"key":"last_update","label":"Last update"},{"key":"connection","label":"Connection status"}]);
 class XpengVehicleCardEditor extends HTMLElement{
  constructor(){
   super();this.attachShadow({mode:'open'});
-  this._cfg=xpNormalizeAppearance({prefix:'my_xpeng',year:'2026',model:'G6',trim:'core_plus_rwd',color:'arctic_white'});
+  this._cfg=xpNormalizeAppearance({prefix:'my_xpeng',year:'2026',model:'G6',trim:'core_plus_rwd',color:'arctic_white',interior:'dark_gray'});this._hass=null;this._entitySignature='';
   this.shadowRoot.addEventListener('change',e=>{
-   const el=e.target.closest('[data-key]');if(!el)return;
+   const el=e.target.closest('[data-key],[data-entity]');if(!el)return;
+   if(el.hasAttribute('data-entity'))el.setCustomValidity('');
+   if(el.hasAttribute('data-entity')){
+     const field=el.dataset.entity,raw=String(el.value||'').trim();
+     if(!XP_MAPPABLE_FIELDS.some(x=>x.key===field))return;
+     if(raw&&!/^(sensor|binary_sensor|device_tracker|number|input_number|input_boolean|switch|text|input_text)\.[a-z0-9_]+$/.test(raw)){
+       el.setCustomValidity('Enter a valid Home Assistant entity ID');el.reportValidity();return;
+     }
+     const mapping={...(this._cfg.entities||{})};
+     if(raw)mapping[field]=raw;else delete mapping[field];
+     this._cfg={...this._cfg,entities:mapping};
+     this.render();
+     this.dispatchEvent(new CustomEvent('config-changed',{detail:{config:this._cfg},bubbles:true,composed:true}));
+     return;
+   }
    const key=el.dataset.key;
    let cfg={...this._cfg,[key]:el.value};
    if(cfg.prefix&&!/^[a-z0-9_]+$/.test(cfg.prefix))return;
@@ -485,20 +500,49 @@ class XpengVehicleCardEditor extends HTMLElement{
   });
  }
  setConfig(cfg){this._cfg=xpNormalizeAppearance({...cfg});this.render();}
- set hass(_value){}
+ set hass(value){
+   this._hass=value;
+   const signature=Object.keys(value?.states||{}).sort().join('|');
+   if(signature!==this._entitySignature){this._entitySignature=signature;this.render();}
+ }
+ get hass(){return this._hass;}
  render(){
   const v=xpNormalizeAppearance(this._cfg);
   const select=(key,label,values)=>`<label>${xpEsc(label)}<select data-key="${key}">${values.map(x=>`<option value="${xpEsc(x.id)}" ${v[key]===x.id?'selected':''}>${xpEsc(x.label)}</option>`).join('')}</select></label>`;
-  this.shadowRoot.innerHTML=`<style>section{display:grid;gap:13px;padding:14px;font:inherit}label{display:grid;gap:5px;font-size:13px}input,select{border:1px solid #8b959e;border-radius:7px;padding:10px;background:var(--card-background-color,#fff);color:var(--primary-text-color,#111)}p{font-size:12px;opacity:.8;line-height:1.5}</style><section>
-    <label>Entity prefix<input data-key="prefix" value="${xpEsc(v.prefix||'my_xpeng')}"></label>
+  const prefix=v.prefix||'my_xpeng';
+  const states=this._hass?.states||{};
+  const dataList=Object.keys(states).filter(id=>/^(sensor|binary_sensor|device_tracker|number|input_number|input_boolean|switch|text|input_text)\./.test(id)).sort().map(id=>'<option value="'+xpEsc(id)+'"></option>').join('');
+  const mappingRows=XP_MAPPABLE_FIELDS.map(field=>{
+   const spec=XP_KEYS[field.key];
+   const auto=spec[0]+'.'+prefix+'_'+spec[1];
+   return '<label class="xp-map-row"><span>'+xpEsc(field.label)+'</span><input data-entity="'+xpEsc(field.key)+'" list="xp-entity-choices" autocomplete="off" value="'+xpEsc(v.entities?.[field.key]||'')+'" placeholder="Auto: '+xpEsc(auto)+'" title="Leave blank for automatic sensor mapping"></label>';
+  }).join('');
+  const expanded=this.shadowRoot.querySelector('details[data-mappings]')?.open===true;
+  this.shadowRoot.innerHTML=`<style>section{display:grid;gap:13px;padding:14px;font:inherit}label{display:grid;gap:5px;font-size:13px}input,select{border:1px solid #8b959e;border-radius:7px;padding:10px;background:var(--card-background-color,#fff);color:var(--primary-text-color,#111)}p{font-size:12px;opacity:.8;line-height:1.5}
+   h3{margin:8px 0 0;font-size:15px}
+   details{border:1px solid var(--divider-color,#7d879a77);border-radius:9px;padding:11px}
+   summary{cursor:pointer;font-weight:600}
+   .xp-map-fields{display:grid;gap:9px;margin-top:12px}
+   .xp-map-row{display:grid;grid-template-columns:minmax(105px,1fr) minmax(145px,2fr);gap:9px;align-items:center}
+   .xp-map-row input{font-size:12px}
+   @media(max-width:460px){.xp-map-row{grid-template-columns:1fr}}
+   </style><section>
+    <h3>Vehicle appearance (manual settings)</h3><p>Model, model year, trim and both paint choices are set here only. The dashboard itself contains no settings.</p>
+     <label>Automatic sensor prefix<input data-key="prefix" value="${xpEsc(v.prefix||'my_xpeng')}"></label>
     ${select('year','Model year',XP_YEARS.map(y=>({id:y,label:y})))}
     ${select('model','Model',xpAllowedModels(v.year).map(m=>({id:m.id,label:m.name})))}
     ${select('trim','Trim',xpAllowedTrims(v.model,v.year))}
     ${select('color','Exterior paint',xpAllowedPaints(v.model,v.year,v.trim))}
      ${select('interior','Interior finish',xpAllowedInteriors(v.model,v.year,v.trim))}
      <p>${xpIsVerifiedPalette(v.model,v.year)?'Published colour palette; availability differs by market and trim.':'Illustrative colours for this model year; manufacturer availability is not verified.'}</p>
-    <label>Image assets directory<input data-key="image_path" value="${xpEsc(v.image_path||'/hacsfiles/xpeng-vehicle-card/assets')}"></label>
-    <p>Dashboard v0.1.1 has two read-only screens: vehicle status and charging. Screens switch automatically when the charging binary sensor changes. Vehicle telemetry comes only from Home Assistant entities. Appearance options are visual only.</p>
+    <h3>Data source</h3><p>Vehicle readings come from Home Assistant entities; they are automatically resolved by prefix unless manually mapped below.</p>
+     <label>Image assets directory<input data-key="image_path" value="${xpEsc(v.image_path||'/hacsfiles/xpeng-vehicle-card/assets')}"></label>
+    <details data-mappings ${expanded?'open':''}><summary>Manual sensor mapping · ${XP_MAPPABLE_FIELDS.length} fields</summary>
+       <p>Leave a field blank for automatic matching by prefix. Otherwise choose an existing Home Assistant entity or type its exact ID.</p>
+       <div class="xp-map-fields">${mappingRows}</div>
+       <datalist id="xp-entity-choices">${dataList}</datalist>
+     </details>
+     <p>The only screens are Vehicle status and Charging. Live readings update automatically; missing sensors stay unavailable. Vehicle appearance is edited here, never on the dashboard.</p>
   </section>`;
  }
 }
