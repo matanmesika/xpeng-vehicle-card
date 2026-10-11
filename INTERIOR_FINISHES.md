@@ -16,6 +16,6 @@ The card renders a single conceptual cabin illustration and applies the selected
 - center console and armrest
 - both front seats and rear seats
 
-Non-upholstered surfaces such as displays, glazing and trim outlines intentionally remain dark. The interior colour option is a **manual rendering preference**, NOT a Home Assistant entity or a cloud API characteristic. Actual upholstery materials, seat trims and allowable combinations in Israel are not confirmed. For models other than G6 2026, the illustration is generic and both palettes remain optional visual themes only.
+Non-upholstered surfaces such as displays, glazing and trim outlines intentionally remain dark. The interior colour option is a **manual rendering preference**, NOT a Home Assistant entity or a cloud API characteristic. Actual upholstery materials, seat trims and allowable combinations for every vehicle or market are not confirmed. For models other than G6 2026, the illustration is generic and both palettes remain optional visual themes only.
 
 No seat ventilation/heating/massage or heated steering wheel entity is claimed to exist in XPENG Direct. There are no active remote control buttons.

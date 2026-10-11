@@ -13,6 +13,7 @@
 - Dedicated **Overview**, **Charging**, **Climate**, **Interior & seats**, **Controls**, **Vehicle information**, **Location** and **Tire pressure** pages.
 - XPENG G6 2026 facelift visual with hood-mounted X mark, configurable trim and exterior paint.
 - Interior finish option **Dark Gray** / **Light Gray**. The choice changes the dashboard, wheel, door inserts, centre console and all seats *together* in a vector cabin illustration. Exterior and interior styles are independent.
+- Expandable full-window display with a dedicated Exit full screen button; this affects presentation only.
 - Multiple XPENG models, model years and configurable vehicles. **Non-G6 model art is illustrative**; not manufacturer-accurate for every model or region.
 - Reads configured Home Assistant states; `unknown`, `unavailable` and absent entities display as unavailable, **not as zero or fabricated vehicle values**.
 - Vehicle controls are deliberately disabled. Steering-wheel heat, seat heating/ventilation/massage and other advanced actions are not treated as remotely controllable without a validated integration.
@@ -62,6 +63,9 @@ theme: dark
 `prefix` should match entity IDs produced by your integration (for example, `sensor.my_xpeng_battery`). The default backend entity names are provisional: see [entity mapping and limitations](docs/ENTITY_MAPPING.md). You can also set individual entity mappings using `entities` in your card configuration.
 
 ## Personalisation
+
+All five studio paints and both cabin finishes are offered through the visual appearance catalogue, with trim-specific options where relevant. This is a worldwide display feature, not a claim of official factory availability.
+
 
 The built-in card editor allows choosing model year, XPENG model, trim, exterior paint, and interior finish. The in-card appearance page stores selection in the current browser; use the Home Assistant card editor to save a shared configuration across devices. Available paint and trim options are approximations and **must not be mistaken for a verified local sales catalogue**.
 
