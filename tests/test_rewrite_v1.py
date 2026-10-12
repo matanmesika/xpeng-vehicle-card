@@ -21,6 +21,20 @@ assert EXPECTED_ART.is_file(), (
     'Add model-year imagery or mark unverified styling before publishing.'
 )
 
+# User-approved background must be bundled, not loaded from /local manually.
+BACKGROUND_ART = ROOT / 'dist/assets/xpeng-dashboard-background.webp'
+assert BACKGROUND_ART.is_file(), (
+    'Missing user-approved XPENG background in HACS package. '
+    'Do not release until the original WebP is committed.'
+)
+assert (ROOT / 'assets/xpeng-dashboard-background.webp').is_file(), (
+    'Missing root HACS asset copy of the user-approved background.'
+)
+assert '/local/xpeng-dashboard-background.webp' not in SCRIPT, (
+    'Card must not require a manual /config/www installation.'
+)
+
+
 
 def sensor(value):
     return {'state': str(value), 'attributes': {}}
