@@ -2,24 +2,19 @@
   "schema_version": 2,
   "as_of": "2026-10-12",
   "selection": "fixed G6 + graphite_gray until additional approved artwork is installed",
-  "model_year": "not user-selectable; legacy 2026 representative asset remains temporarily",
+  "model_year": "not selectable",
   "selected_trim": "not user-selectable",
   "backdrop": "xpeng-approved-lakeside-background.webp",
-  "notice": "Three-view yearless artwork is not yet uploaded. Existing 2026 representative front preview is retained as fallback until migration is verified.",
+  "notice": "No approved vehicle artwork is currently packaged. G6 Graphite Gray three-view images are pending upload.",
   "models": [
     {
       "model": "G6",
       "display_name": "G6",
-      "visual_trim_source": "core_performance_awd",
       "visual_year_policy": "shared-across-all-years",
       "visual_trim_policy": "shared-across-all-selected-trims",
       "colors": {
         "graphite_gray": {
-          "front": {
-            "path": "vehicles/g6/2026/core_performance_awd/graphite_gray.webp",
-            "tier": "highest-trim-preview",
-            "manufacturer_verified": false
-          },
+          "front": null,
           "rear": null,
           "top": null
         }
