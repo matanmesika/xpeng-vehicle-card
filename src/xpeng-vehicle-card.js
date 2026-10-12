@@ -125,8 +125,8 @@ function xpAllowedTrims(model,year){const y=Number(year), x=String(model);
  return XP_DEFAULT_TRIM;
 }
 function xpAllowedPaints(model,year,trim){
- // Only model determines palette. Neither model-year nor trim may change the visible paint.
- const list=XP_VERIFIED_PAINTS[model+':2026']||['arctic_white','graphite_gray','midnight_black','silver_frost','stellar_purple'];
+ // Paint choices are scoped to model and year, never to the selected trim.
+ const list=XP_VERIFIED_PAINTS[model+':'+year]||XP_PAINTS.map(p=>p.id);
  return XP_PAINTS.filter(p=>list.includes(p.id));
 }
 function xpNormalizeAppearance(value){const v=value||{};
@@ -388,10 +388,10 @@ class XpengVehicleCard extends HTMLElement{
         description:'Owner-supplied artwork for '+a.model+' '+a.color};
     // Prefer separately packaged and verified three-view assets when present.
     // A view must never silently reuse a front render as a rear or overhead render.
-    const candidate='vehicles/'+model+'/'+a.year/'+'display'+'/'+a.color+'/+(view==='rear'?'charging':'front')+'.webp';
+    const candidate='vehicles/'+model+'/'+a.year+'/display/'+a.color+'/'+(view==='rear'?'charging':'front')+'.webp';
     if(XP_ARTWORK_INDEX.exact.has(candidate))
       return {src:bundled(candidate),illustrative:false,studio:false,tier:'exact-view',view,
-        view_status:'matching_view',description:'Matched '+a.model+' '+a.year+' '+a.trim+' '+a.color+' '+view};
+        view_status:'matching_view',description:'Matched '+a.model+' '+a.year+' '+a.color+' '+view};
     // Display uses one representative trim per model/year, regardless of selected trim.
     // Legacy 2026 previews are used only for 2026, never for other model years.
     const highest={G6:'core_performance_awd',G9:'performance_awd'}[a.model];
@@ -544,7 +544,7 @@ class XpengVehicleCard extends HTMLElement{
       ?this.vehicle()?.top_image:this.vehicle()?.top_image||this._config.top_image;
     if(xpLocalArtworkPath(photo))return `<img class="xp-top-cutout" data-top-art src="${xpEsc(photo)}" alt="${xpEsc('Top-down view of '+a.model)}" loading="eager">`;
     const model=xpAssetModel(a.model);
-    const candidate='vehicles/'+model+'/'+a.year+'/'+xpAssetModel(a.trim)+'/'+a.color+'/top.webp';
+    const candidate='vehicles/'+model+'/'+a.year+'/display/'+a.color+'/top.webp';
     if(XP_ARTWORK_INDEX.exact.has(candidate))
       return `<img class="xp-top-cutout" data-top-art src="${xpEsc(xpPackagedUrl(candidate))}" alt="${xpEsc('Top-down view of '+a.model)}" loading="eager">`;
     const paint=XP_PAINTS.find(p=>p.id===a.color)?.hex||'#f2f4f2';
