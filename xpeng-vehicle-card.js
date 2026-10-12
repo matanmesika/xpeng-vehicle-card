@@ -127,7 +127,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-scene{position:relative;width:100%;min-height:620px;aspect-ratio:16/9;overflow:hidden;background:radial-gradient(ellipse 43% 16% at 51% 39%,#4c477f88 0%,#243c6988 43%,transparent 100%),radial-gradient(ellipse 64% 28% at 52% 45%,#27497777,transparent 76%),linear-gradient(180deg,#010917 0%,#04142a 32%,#0b2243 59%,#071933 73%,#010815 100%);isolation:isolate;direction:ltr}
 .xp-scene:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 65% 8% at 60% 69%,#147fbb75,transparent),radial-gradient(ellipse 63% 16% at 67% 81%,#173c7a95,transparent);z-index:1}
-.xp-sky{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+.xp-backdrop-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none}.xp-sky{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:.28}
 .xp-ground{position:absolute;inset:64% 0 0;background:radial-gradient(ellipse 38% 5% at 58% 7%,#549cce6b,transparent 90%),radial-gradient(ellipse 16% 45% at 60% 62%,#196ec949,transparent 85%),radial-gradient(ellipse 42% 30% at 58% 74%,#204e9d33,transparent 88%),repeating-linear-gradient(177deg,#326caa17 0px,#3565ab17 1px,transparent 3px,transparent 22px),linear-gradient(180deg,#08192c,#020e1b 65%,#000713);transform:perspective(500px) rotateX(5deg);transform-origin:50% 0}
 .xp-ground:before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 48% 48% at 59% 24%,#137ace4a,transparent 70%)}
 .xp-stage-glow{position:absolute;left:22%;right:6%;bottom:18%;height:12%;background:#168de7;border-radius:100%;filter:blur(34px);opacity:.25}
@@ -406,7 +406,8 @@ class XpengVehicleCard extends HTMLElement{
   return `<div class="xp-title"><h1>XPENG <em>${xpEsc(this.model())}</em></h1><div class="xp-subtitle">${this._view==='charging'?xpEsc(this.chargeStatus()):'Vehicle status'}</div></div>`;
  }
  sceneBackdrop(){
-  return `<svg class="xp-sky" viewBox="0 0 1500 850" preserveAspectRatio="none" aria-hidden="true">
+  const base=String(this.vehicle()?.image_path||this._config.image_path||'/hacsfiles/xpeng-vehicle-card/assets').replace(/\\/$/,'');
+  return `<img class="xp-backdrop-image" src="${xpEsc(base+'/mountain-night-scene.svg')}" alt="" aria-hidden="true"><svg class="xp-sky" viewBox="0 0 1500 850" preserveAspectRatio="none" aria-hidden="true">
     <defs><filter id="xp-soft" x="-20%" y="-25%" width="140%" height="150%"><feGaussianBlur stdDeviation="3.1"/></filter>
     <filter id="xp-noise" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".009 .018" numOctaves="4" seed="13" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
     <linearGradient id="xp-ridge" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#152a49"/><stop offset="1" stop-color="#031425"/></linearGradient>
