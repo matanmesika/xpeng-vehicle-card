@@ -207,7 +207,7 @@ test('both dashboard views share one clean atmospheric backdrop without embedded
   const card=setup(data());
   let html=card.shadowRoot.innerHTML;
   assert.match(html,/class="xp-night-photo"/);
-  assert.match(html,/xpeng-reference-background\.webp/);
+  assert.match(html,/xpeng-approved-lakeside-background\.webp/);
   assert.doesNotMatch(html,/<svg class="xp-sky"/);
   assert.equal((html.match(/xp-night-photo/g)||[]).length>=1,true);
   const state=data();
@@ -215,7 +215,7 @@ test('both dashboard views share one clean atmospheric backdrop without embedded
   card.hass={states:state};
   html=card.shadowRoot.innerHTML;
   assert.match(html,/class="xp-night-photo"/);
-  assert.match(html,/xpeng-reference-background\.webp/);
+  assert.match(html,/xpeng-approved-lakeside-background\.webp/);
   assert.match(html,/Charging now/);
   assert.doesNotMatch(html,/class="xp-ground"|class="xp-night-floor-glow"/);
 });
@@ -307,8 +307,8 @@ test('overview and charging must render the exact same raster background and geo
     return match[0];
  };
  const b1=normalize(before);
- assert.match(b1,/xpeng-reference-background\.webp/);
- assert.match(b1,/\/hacsfiles\/xpeng-vehicle-card\/assets\/xpeng-reference-background\.webp/);
+ assert.match(b1,/xpeng-approved-lakeside-background\.webp/);
+ assert.match(b1,/\/hacsfiles\/xpeng-vehicle-card\/assets\/xpeng-approved-lakeside-background\.webp/);
  // Vehicle-specific custom art does not move or replace the dashboard background.
  card.setConfig({prefix:'my_xpeng',model:'G6',year:'2026',image_path:'/local/custom-vehicle-art'});
  card.hass={states};
@@ -360,7 +360,7 @@ test('approved lakeside background overrides the legacy bitmap without CSS drawi
  card.hass={states};
  const idle=card.sceneBackdrop();
  assert.ok(idle.includes(background),idle);
- assert.ok(!idle.includes('xpeng-approved-lakeside-background.webp'));
+ assert.ok(!idle.includes('/hacsfiles/xpeng-vehicle-card/assets/xpeng-approved-lakeside-background.webp'),'user-defined /local photo takes priority over built-in scene');
  assert.match(card.shadowRoot.innerHTML,/xp-reference-cutout/);
  assert.ok(!idle.includes('<svg'));
  states['binary_sensor.my_xpeng_is_charging'].state='on';
