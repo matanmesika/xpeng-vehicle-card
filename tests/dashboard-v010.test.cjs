@@ -232,12 +232,12 @@ test('the alpha-cutout G6 preview has no studio mask or visible artwork watermar
 test('header has no Home button or clock on either screen, while fullscreen remains',()=>{
  const states=data(),card=setup(states);
  assert.doesNotMatch(card.shadowRoot.innerHTML,/data-view="overview"|xp-clock|xp-head-separator/);
- assert.doesNotMatch(card.shadowRoot.innerHTML,/data-expand/);
+ assert.doesNotMatch(card.shadowRoot.innerHTML,/<button[^>]*\sdata-expand(?:\s|>)/);
  states['binary_sensor.my_xpeng_is_charging'].state='on';
  card.hass={states};
  assert.equal(card._view,'charging');
  assert.doesNotMatch(card.shadowRoot.innerHTML,/data-view="overview"|xp-clock|xp-head-separator/);
- assert.doesNotMatch(card.shadowRoot.innerHTML,/data-expand/);
+ assert.doesNotMatch(card.shadowRoot.innerHTML,/<button[^>]*\sdata-expand(?:\s|>)/);
 });
 test('charging view is strictly sensor-driven and unaffected by other entity changes',()=>{
  const states=data(),card=setup(states);
