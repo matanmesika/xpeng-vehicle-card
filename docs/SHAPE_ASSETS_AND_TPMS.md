@@ -19,7 +19,7 @@ Frontend card only. The XPENG Home Assistant backend integration is unchanged.
 - Exterior paint options are previews shared by all model years; availability for a particular historic vehicle is **not guaranteed**.
 
 ## Tire pressures
-- Click Tire pressure in the existing vehicle-status information panel to replace the main car hero with a larger overhead vehicle image on the same backdrop, with front-left, front-right, rear-left and rear-right live values next to their wheels.
+- Click Tire pressure in the existing vehicle-status information panel to replace the main car hero with a larger overhead vehicle image while preserving the original background, XPENG title, Wi-Fi header control and matching dark-glass sensor panel styling; front-left, front-right, rear-left and rear-right live values stay beside their corresponding wheels.
 - Tap Back to vehicle to return to Overview. Charging automatically takes priority if the real HA charging sensor reports charging.
 - Supports kPa/bar/psi/Pa to bar conversion; missing or invalid wheel data appears as `—`. No fabricated pressures, error limits or TPMS controls.
 - The default top view is explicitly illustrative and colour-matched to the model; a user can supply a genuine transparent overhead PNG/WebP via `top_image`.
@@ -32,7 +32,8 @@ Frontend card only. The XPENG Home Assistant backend integration is unchanged.
 
 ## Network / last-update header
 
-- The header's right-hand side shows the Wi-Fi icon and a real connection state label (`Connected`, `Not connected`, or `Connection error`); it never guesses online status from missing telemetry.
-- A small info icon sits directly beside the network status **on the same line**, on desktop and mobile, in Overview, Charging and tire detail.
-- Tapping that icon reveals exactly two sensor-derived fields: `Connection` (Connected, Not connected, or Connection error) and `Last vehicle update`. Connection is duplicated intentionally in the on-demand popup for full network information. No cabin imagery, model, trim, paint or artwork metadata is shown.
-- The old detached floating info control is removed. The approved background and integrations are unchanged.
+- A **single interactive Wi-Fi icon** in the upper-right is used in Vehicle status, Charging and tire-pressure detail; no separate status text or information icon is displayed.
+- The icon colour reflects **only** the mapped HA connection sensor: blue connected, amber error, grey not connected/unknown. A missing entity never silently implies connected.
+- Tapping the Wi-Fi icon toggles a small popup containing exactly two fields: `Connection` and `Last vehicle update`. These use the mapped connection and vehicle-update entities; no art/model/cabin metadata.
+- A valid ISO timestamp is formatted as an explicit date and time in the viewer's locale. A missing or unavailable vehicle-update sensor displays `Unavailable`; do not substitute HA's generic entity `last_updated` because it can indicate an HA state transition, not a vehicle refresh.
+- The popover is closed by default and remains in the header; dashboard background and XPENG backend are untouched.
