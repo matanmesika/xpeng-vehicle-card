@@ -384,3 +384,44 @@ test('card editor exposes the independent photographic background and preserves 
  assert.equal(editor._cfg.background_image,'/local/xpeng/bg.webp');
  assert.equal(editor._cfg.image,undefined,'G6 white cutout cannot transfer to another paint');
 });
+
+
+test('four tires open in an accessible popup and preserve independent sensor values',()=>{
+ const states=data(),card=setup(states);
+ assert.match(card.shadowRoot.innerHTML,/data-tire-toggle/);
+ assert.doesNotMatch(card.shadowRoot.innerHTML,/class="xp-tire-popover"/);
+ const toggle={hasAttribute:key=>key==='data-tire-toggle'};
+ card.shadowRoot.handlers.click({target:{closest:()=>toggle}});
+ let html=card.shadowRoot.innerHTML;
+ assert.match(html,/class="xp-tire-popover"/);
+ assert.match(html,/data-wheel="tire_fl"/);
+ assert.match(html,/data-wheel="tire_fr"/);
+ assert.match(html,/data-wheel="tire_rl"/);
+ assert.match(html,/data-wheel="tire_rr"/);
+ assert.equal((html.match(/2.5 bar/g)||[]).length>=4,true);
+ card.shadowRoot.handlers.click({target:{closest:()=>toggle}});
+ assert.doesNotMatch(card.shadowRoot.innerHTML,/class="xp-tire-popover"/);
+});
+test('tire pressures support bar, kPa, psi and individual unavailable readings without invented values',()=>{
+ const states=data(),card=setup(states);
+ states['sensor.my_xpeng_tire_pressure_front_left_kpa']={state:'2.4',attributes:{unit_of_measurement:'bar'}};
+ states['sensor.my_xpeng_tire_pressure_front_right_kpa']={state:'36.26',attributes:{unit_of_measurement:'psi'}};
+ states['sensor.my_xpeng_tire_pressure_rear_left_kpa']={state:'250',attributes:{unit_of_measurement:'kPa'}};
+ states['sensor.my_xpeng_tire_pressure_rear_right_kpa']={state:'260000',attributes:{unit_of_measurement:'Pa'}};
+ card.hass={states};
+ assert.equal(card.tirePressureBar('tire_fl'),2.4);
+ assert.ok(Math.abs(card.tirePressureBar('tire_fr')-2.5)<.01);
+ assert.equal(card.tirePressureBar('tire_rl'),2.5);
+ assert.equal(card.tirePressureBar('tire_rr'),2.6);
+ card._tireOpen=true;card.render();
+ assert.match(card.shadowRoot.innerHTML,/2.4 bar/);
+ assert.match(card.shadowRoot.innerHTML,/2.6 bar/);
+ states['sensor.my_xpeng_tire_pressure_front_right_kpa']={state:'unknown'};
+ card.hass={states};
+ assert.equal(card.tirePressureBar('tire_fr'),null);
+ assert.equal(card.tireSummary(),'—');
+ assert.match(card.tireDetails(),/data-wheel="tire_fr"[\\s\\S]*?<strong>—<\\/strong>/);
+ states['sensor.my_xpeng_tire_pressure_front_right_kpa']={state:'250',attributes:{unit_of_measurement:'mystery'}};
+ card.hass={states};
+ assert.equal(card.tirePressureBar('tire_fr'),null);
+});

@@ -82,6 +82,9 @@ function xpPercent(v){if(v===null||v===undefined||v===''||!Number.isFinite(Numbe
 function xpArt(model){let m=String(model).toUpperCase();if(/^G6(\W|$)/.test(m))return 'g6-studio.webp';if(/X9|MPV/.test(m))return 'mpv.svg';if(/P7|P5|M03|MONA|SEDAN/.test(m))return 'sedan.svg';return 'suv.svg';}
 const XP_CATALOG = Object.freeze({"models":[{"id":"G3","name":"G3","start":2018,"end":2021,"shape":"crossover","trim":"none"},{"id":"G3i","name":"G3i","start":2021,"end":2023,"shape":"crossover","trim":"none"},{"id":"P5","name":"P5","start":2021,"end":2024,"shape":"compact_sedan","trim":"none"},{"id":"P7","name":"P7 (Original)","start":2020,"end":2024,"shape":"fastback","trim":"none"},{"id":"P7i","name":"P7i","start":2023,"end":2025,"shape":"fastback","trim":"none"},{"id":"Next P7","name":"Next P7","start":2025,"end":2026,"shape":"fastback","trim":"none"},{"id":"P7+","name":"P7+","start":2024,"end":2026,"shape":"fastback","trim":"none"},{"id":"G6","name":"G6","start":2023,"end":2026,"shape":"g6","trim":"g6"},{"id":"G7","name":"G7","start":2025,"end":2026,"shape":"crossover","trim":"none"},{"id":"G9","name":"G9","start":2022,"end":2026,"shape":"suv","trim":"g9"},{"id":"G9L","name":"G9L","start":2026,"end":2026,"shape":"suv","trim":"none"},{"id":"X9","name":"X9","start":2024,"end":2026,"shape":"mpv","trim":"x9"},{"id":"MONA M03","name":"MONA M03","start":2024,"end":2026,"shape":"compact_sedan","trim":"none"},{"id":"L03","name":"L03","start":2026,"end":2026,"shape":"fastback","trim":"none"},{"id":"GX","name":"GX (fleet/research)","start":2026,"end":2026,"shape":"suv","trim":"none","research":true},{"id":"Other","name":"Other / Future XPENG","start":2018,"end":2026,"shape":"suv","trim":"none","other":true}],"paints":[{"id":"arctic_white","label":"Arctic White","hex":"#F2F4F2"},{"id":"graphite_gray","label":"Graphite Gray","hex":"#66717B"},{"id":"midnight_black","label":"Midnight Black","hex":"#15191F"},{"id":"silver_frost","label":"Silver Frost","hex":"#BCC4C9"},{"id":"stellar_purple","label":"Stellar Purple","hex":"#867592"},{"id":"kaitoke_green_matte","label":"Kaitoke Green Matte","hex":"#526F64"}],"trims":{"default":[{"id":"unspecified","label":"Trim not specified (market-dependent)"}],"G6:2026":[{"id":"core_rwd","label":"Core RWD"},{"id":"core_plus_rwd","label":"Core+ RWD"},{"id":"core_performance_awd","label":"Core Performance AWD"},{"id":"black_edition","label":"Core Performance AWD Black Edition"},{"id":"unspecified","label":"Other configuration / region"}],"G6:2023-2025":[{"id":"unspecified","label":"Trim not specified"},{"id":"standard_range_rwd","label":"Standard Range RWD"},{"id":"long_range_rwd","label":"Long Range RWD"},{"id":"performance_awd","label":"Performance AWD"}],"G9:2022-2026":[{"id":"unspecified","label":"Trim not specified"},{"id":"standard_range_rwd","label":"Standard Range RWD"},{"id":"long_range_rwd","label":"Long Range RWD"},{"id":"performance_awd","label":"Performance AWD"}],"X9:2024-2026":[{"id":"unspecified","label":"Trim not specified"},{"id":"fwd_long_range","label":"FWD Long Range"}]}});
 const XP_YEARS = Object.freeze(Array.from({length:9},(_,i)=>String(2026-i)));
+const XP_SHAPE_FAMILIES = Object.freeze({"G3":{"2018":[{"id":"g3-series","label":"G3 generation not verified","status":"unverified"}],"2019":[{"id":"g3-series","label":"G3 generation not verified","status":"unverified"}],"2020":[{"id":"g3-series","label":"G3 generation not verified","status":"unverified"}],"2021":[{"id":"g3-series","label":"G3 generation not verified","status":"unverified"}]},"G3i":{"2021":[{"id":"g3i-series","label":"G3i generation not verified","status":"unverified"}],"2022":[{"id":"g3i-series","label":"G3i generation not verified","status":"unverified"}],"2023":[{"id":"g3i-series","label":"G3i generation not verified","status":"unverified"}]},"P5":{"2021":[{"id":"p5-series","label":"P5 generation not verified","status":"unverified"}],"2022":[{"id":"p5-series","label":"P5 generation not verified","status":"unverified"}],"2023":[{"id":"p5-series","label":"P5 generation not verified","status":"unverified"}],"2024":[{"id":"p5-series","label":"P5 generation not verified","status":"unverified"}]},"P7":{"2020":[{"id":"p7-series","label":"P7 generation not verified","status":"unverified"}],"2021":[{"id":"p7-series","label":"P7 generation not verified","status":"unverified"}],"2022":[{"id":"p7-series","label":"P7 generation not verified","status":"unverified"}],"2023":[{"id":"p7-series","label":"P7 generation not verified","status":"unverified"}],"2024":[{"id":"p7-series","label":"P7 generation not verified","status":"unverified"}]},"P7i":{"2023":[{"id":"p7i-series","label":"P7i generation not verified","status":"unverified"}],"2024":[{"id":"p7i-series","label":"P7i generation not verified","status":"unverified"}],"2025":[{"id":"p7i-series","label":"P7i generation not verified","status":"unverified"}]},"Next P7":{"2025":[{"id":"next_p7-series","label":"Next P7 generation not verified","status":"unverified"}],"2026":[{"id":"next_p7-series","label":"Next P7 generation not verified","status":"unverified"}]},"P7+":{"2024":[{"id":"p7_plus-series","label":"P7+ generation not verified","status":"unverified"}],"2025":[{"id":"p7_plus-series","label":"P7+ generation not verified","status":"unverified"}],"2026":[{"id":"p7_plus-series","label":"P7+ generation not verified","status":"unverified"}]},"G6":{"2023":[{"id":"g6-original-2023","label":"G6 original","status":"manufacturer_documented"}],"2024":[{"id":"g6-original-2023","label":"G6 original","status":"manufacturer_documented"}],"2025":[{"id":"g6-refresh-2025","label":"G6 refreshed 2025+","status":"manufacturer_documented"},{"id":"g6-original-2023","label":"G6 original (regional carryover; verify)","status":"market_unverified"}],"2026":[{"id":"g6-refresh-2025","label":"G6 refreshed 2025+","status":"manufacturer_documented"}]},"G7":{"2025":[{"id":"g7-series","label":"G7 generation not verified","status":"unverified"}],"2026":[{"id":"g7-series","label":"G7 generation not verified","status":"unverified"}]},"G9":{"2022":[{"id":"g9-original-2022","label":"G9 original","status":"manufacturer_documented"}],"2023":[{"id":"g9-original-2022","label":"G9 original","status":"manufacturer_documented"}],"2024":[{"id":"g9-original-2022","label":"G9 original","status":"manufacturer_documented"}],"2025":[{"id":"g9-refresh-2025","label":"G9 refreshed 2025+","status":"manufacturer_documented"},{"id":"g9-original-2022","label":"G9 original (regional carryover; verify)","status":"market_unverified"}],"2026":[{"id":"g9-refresh-2025","label":"G9 refreshed 2025+","status":"manufacturer_documented"}]},"G9L":{"2026":[{"id":"g9l-series","label":"G9L generation not verified","status":"unverified"}]},"X9":{"2024":[{"id":"x9-series","label":"X9 generation not verified","status":"unverified"}],"2025":[{"id":"x9-series","label":"X9 generation not verified","status":"unverified"}],"2026":[{"id":"x9-series","label":"X9 generation not verified","status":"unverified"}]},"MONA M03":{"2024":[{"id":"mona_m03-series","label":"MONA M03 generation not verified","status":"unverified"}],"2025":[{"id":"mona_m03-series","label":"MONA M03 generation not verified","status":"unverified"}],"2026":[{"id":"mona_m03-series","label":"MONA M03 generation not verified","status":"unverified"}]},"L03":{"2026":[{"id":"l03-series","label":"L03 generation not verified","status":"unverified"}]},"GX":{"2026":[{"id":"gx-series","label":"GX generation not verified","status":"unverified"}]},"Other":{"2018":[{"id":"other-series","label":"Other generation not verified","status":"unverified"}],"2019":[{"id":"other-series","label":"Other generation not verified","status":"unverified"}],"2020":[{"id":"other-series","label":"Other generation not verified","status":"unverified"}],"2021":[{"id":"other-series","label":"Other generation not verified","status":"unverified"}],"2022":[{"id":"other-series","label":"Other generation not verified","status":"unverified"}],"2023":[{"id":"other-series","label":"Other generation not verified","status":"unverified"}],"2024":[{"id":"other-series","label":"Other generation not verified","status":"unverified"}],"2025":[{"id":"other-series","label":"Other generation not verified","status":"unverified"}],"2026":[{"id":"other-series","label":"Other generation not verified","status":"unverified"}]}});
+function xpShapeOptions(model,year){return XP_SHAPE_FAMILIES[model]?.[String(year)]||[];}
+function xpShapeChoice(model,year,requested){const opts=xpShapeOptions(model,year);return opts.find(x=>x.id===requested)||opts[0]||{id:'unknown',label:'Unverified generation',status:'unverified'};}
 const XP_MODELS = XP_CATALOG.models;
 const XP_PAINTS = XP_CATALOG.paints;
 const XP_DEFAULT_TRIM = XP_CATALOG.trims.default;
@@ -135,7 +138,7 @@ function xpNormalizeAppearance(value){const v=value||{};const yr=XP_YEARS.includ
  const colors=xpAllowedPaints(mdl,yr,tr);const inputColor=xpAppearanceId(v.color);const col=colors.some(x=>x.id===inputColor)?inputColor:colors[0].id;
  const interiors=xpAllowedInteriors(mdl,yr,tr);
  const inputInterior=xpAppearanceId(v.interior,'interior');const interior=interiors.some(x=>x.id===inputInterior)?inputInterior:interiors[0].id;
- return {...v,year:yr,model:mdl,trim:tr,color:col,interior};
+ return {...v,year:yr,model:mdl,trim:tr,color:col,interior,shape_family:xpShapeChoice(mdl,yr,v.shape_family).id};
 }
 
 function xpAssetModel(model){return String(model).toLowerCase().replace(/\s+/g,'_').replace(/\+/g,'_plus').replace(/[^a-z0-9_]/g,'');}
@@ -283,6 +286,22 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-car,.xp-car.xp-paint-silver_frost,.xp-car.xp-paint-space_grey,.xp-car.xp-paint-jet_black,.xp-car.xp-paint-stellar_purple{filter:drop-shadow(0 20px 20px #000b)}
 .xp-art-identity{position:absolute;z-index:8;left:45%;bottom:8%;font-size:11px;letter-spacing:.03em;color:#b5c4d5;opacity:.8;text-shadow:0 2px 4px #000a;pointer-events:none}
 .xp-studio-car{mask-image:none;-webkit-mask-image:none}
+
+.xp-tire-row{width:100%;color:inherit;border:0;border-bottom:1px solid #56708a43;background:transparent;text-align:left;font:inherit}
+.xp-tire-row:hover,.xp-tire-row:focus-visible{background:#2e54653b}
+.xp-tire-row .xp-info-copy{align-items:flex-start}
+.xp-tire-popover{position:absolute;z-index:26;right:2.7%;bottom:calc(11% + 246px);width:min(336px,35%);min-width:290px;padding:15px;border:1px solid #6c95afad;border-radius:18px;background:#061625f2;backdrop-filter:blur(20px);box-shadow:0 12px 44px #0009}
+.xp-tire-header{display:flex;justify-content:space-between;align-items:center;color:#eef7ff;font-size:15px;margin-bottom:10px}
+.xp-tire-header button{border:0;border-radius:7px;background:#19405b;color:#fff;font-size:19px;min-width:30px;min-height:30px}
+.xp-tire-diagram{display:grid;grid-template-columns:1fr 70px 1fr;grid-template-rows:65px 70px 65px;align-items:center;gap:5px}
+.xp-tire-body{grid-area:1/2/4/3;height:92%;border:2px solid #8ba4b9;border-radius:30% 30% 22% 22%;display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:15px 3px;color:#9ac4df;font-size:9px;letter-spacing:.1em;background:#19344b88}
+.xp-wheel{display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px;padding:7px 3px;border-radius:10px;background:#23415766;white-space:nowrap}
+.xp-wheel small{font-size:10px;color:#becddc}.xp-wheel strong{font-size:13px}
+.xp-wheel[data-wheel="tire_fl"]{grid-area:1/1}.xp-wheel[data-wheel="tire_fr"]{grid-area:1/3}
+.xp-wheel[data-wheel="tire_rl"]{grid-area:3/1}.xp-wheel[data-wheel="tire_rr"]{grid-area:3/3}
+.xp-tire-note{display:block;margin-top:9px;font-size:10px;color:#b3c9d9;line-height:1.3}
+@media(max-width:850px){.xp-tire-row{min-height:88px;padding:7px 10px;border:0;border-right:1px solid #56708a43}.xp-tire-popover{left:5%;right:5%;bottom:142px;width:90%;min-width:0}.xp-tire-diagram{grid-template-rows:48px 40px 48px}.xp-tire-body{height:100%;padding:3px}.xp-wheel{padding:4px}.xp-wheel strong{font-size:12px}}
+
 /* The approved 2026 white G6 cutout is already tightly cropped: frame its pixels to the reference shot. */
 .xp-overview .xp-car.xp-reference-cutout{left:25.5%;bottom:26.6%;width:51.4%;max-height:none;filter:drop-shadow(0 13px 13px #0005)}
 @media(max-width:850px){.xp-overview .xp-car.xp-reference-cutout{left:-3%;bottom:27%;width:108%;max-height:42%}}
@@ -291,7 +310,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 `;
 class XpengVehicleCard extends HTMLElement{
  constructor(){
-  super();this.attachShadow({mode:'open'});this._config={};this._hass=null;this._view='overview';this._expanded=false;this._vehicleIndex=0;this._infoOpen=false;
+  super();this.attachShadow({mode:'open'});this._config={};this._hass=null;this._view='overview';this._expanded=false;this._vehicleIndex=0;this._infoOpen=false;this._tireOpen=false;
   this.shadowRoot.addEventListener('error',ev=>{
       const img=ev.target;
       if(!img?.matches?.('img[data-car-art]')||img.dataset.fallbackUsed)return;
@@ -299,8 +318,9 @@ class XpengVehicleCard extends HTMLElement{
     },true);
    this.shadowRoot.addEventListener('click',ev=>{
     const b=ev.target.closest('button');if(!b)return;
-     if(b.hasAttribute('data-meta-toggle')){this._infoOpen=!this._infoOpen;this.render();return;}
-    if(b.hasAttribute('data-cycle')){this._vehicleIndex=(this._vehicleIndex+1)%this.vehicles().length;this.render();}
+     if(b.hasAttribute('data-meta-toggle')){this._infoOpen=!this._infoOpen;this._tireOpen=false;this.render();return;}
+     if(b.hasAttribute('data-tire-toggle')){this._tireOpen=!this._tireOpen;this._infoOpen=false;this.render();return;}
+    if(b.hasAttribute('data-cycle')){this._vehicleIndex=(this._vehicleIndex+1)%this.vehicles().length;this._tireOpen=false;this.render();}
   });
  }
  connectedCallback(){if(!this._fullscreenHandler){this._fullscreenHandler=()=>{if(!document.fullscreenElement&&this._expanded){this._expanded=false;this.render();}};}document.addEventListener('fullscreenchange',this._fullscreenHandler);}
@@ -312,11 +332,12 @@ class XpengVehicleCard extends HTMLElement{
   if(config.image_path&&!/^\/(?:local|hacsfiles)\/[a-zA-Z0-9/_-]+\/?$/.test(config.image_path))throw Error('Invalid local image_path');
   if(config.background_image&&!xpLocalArtworkPath(config.background_image))throw Error('Invalid local background_image');
   const v={prefix:'my_xpeng',year:'2026',model:'G6',trim:'core_plus_rwd',color:'arctic_white',interior:'dark_gray',theme:'dark',...config};
-  this._config=xpNormalizeAppearance(v);this._infoOpen=false;this.render();
+  this._config=xpNormalizeAppearance(v);this._infoOpen=false;this._tireOpen=false;this.render();
  }
  set hass(hass){
   this._hass=hass;
   this._view=xpChargingActive(this.val('charging'))===true?'charging':'overview';
+  if(this._view==='charging')this._tireOpen=false;
   this.render();
  }
  get hass(){return this._hass;}
@@ -358,24 +379,25 @@ class XpengVehicleCard extends HTMLElement{
       ?this.vehicle()?.[key]:this.vehicle()?.[key]||this._config[key];
     const chosen=(this._view==='charging'&&profileArt('charging_image'))||profileArt('image');
     const a=this.appearance(),model=xpAssetModel(a.model),trim=xpAssetModel(a.trim);
+    const shape=xpShapeChoice(a.model,a.year,a.shape_family),view=this._view==='charging'?'rear':'front';
     // A specific user artwork override applies only to the selected card profile.
     // Never select a different year/trim/colour because an exact file is absent.
     if(xpLocalArtworkPath(chosen))
-      return {src:chosen,illustrative:false,studio:false,tier:'manual',
-        description:'User-selected local artwork; model/year/paint suitability is the owner\'s choice'};
+      return {src:chosen,illustrative:false,studio:false,tier:'manual',shape_family:shape.id,view,view_status:'owner_supplied',
+        description:'Custom image supplied by owner; model/year/view must be reviewed'};
     const exact='vehicles/'+model+'/'+a.year+'/'+trim+'/'+a.color+'.webp';
-    if(XP_ARTWORK_INDEX.exact.has(exact))
-      return {src:bundled(exact),illustrative:true,studio:false,tier:'model-year-trim',
-        description:a.model+' '+a.year+' '+a.trim+' '+a.color+' — exact-path model-year preview (not manufacturer verified)'};
+    if(XP_ARTWORK_INDEX.exact.has(exact)&&shape.id.endsWith('refresh-2025'))
+      return {src:bundled(exact),illustrative:true,studio:false,tier:'model-year-trim',shape_family:shape.id,view,view_status:view==='rear'?'front_fallback_rear_pending':'illustrative_front',
+        description:a.model+' '+a.year+' '+a.trim+' '+a.color+' — unverified front studio cutout, rear view pending'};
     // The fallback is correctly named as model-family illustration, not year-exact art.
     // This preserves selection for every catalogued model/year, even without photography.
     const olderAlias={graphite_gray:'space_grey',midnight_black:'jet_black'}[a.color]||a.color;
     const family='models/'+model+'-'+olderAlias+'.webp';
-    if(XP_ARTWORK_INDEX.family.has(family))
-      return {src:bundled(family),illustrative:true,studio:false,tier:'model-family',
-        description:'Generic model-family illustration: '+a.model+' in '+a.color+'; exact '+a.year+' '+a.trim+' artwork unavailable'};
-    return {src:this.placeholderArt(),illustrative:true,studio:false,tier:'silhouette',
-      description:'Illustrative Coloured silhouette: '+a.model+' '+a.year+' '+a.color+'; exact artwork pending'};
+    if(XP_ARTWORK_INDEX.family.has(family)&&!['G6','G9'].includes(a.model))
+      return {src:bundled(family),illustrative:true,studio:false,tier:'model-family',shape_family:shape.id,view,view_status:view==='rear'?'front_fallback_rear_pending':'family_unverified',
+        description:'Generic model-family front illustration: generation/paint not manufacturer-verified for '+a.model+' '+a.year};
+    return {src:this.placeholderArt(),illustrative:true,studio:false,tier:'silhouette',shape_family:shape.id,view,view_status:'image_pending',
+      description:'Exact cutout not available for '+a.model+' '+a.year+' '+shape.id+' '+a.color};
   }
   asset(){return this.assetSpec().src;}
   placeholderArt(){
@@ -397,10 +419,32 @@ class XpengVehicleCard extends HTMLElement{
    const parsed=Date.parse(String(t));if(!Number.isFinite(parsed))return String(t);
    const age=Math.max(0,Math.floor((Date.now()-parsed)/60000));return age<1?'Just now':age<60?age+' min ago':age<1440?Math.floor(age/60)+'h ago':new Date(parsed).toLocaleDateString();
  }
+  tirePressureBar(key){
+    const d=this.data(key),n=this.number(key);
+    if(n===null||n<0)return null;
+    const unit=String(d?.entity?.attributes?.unit_of_measurement||'kPa').trim().toLowerCase();
+    let bar=null;
+    if(unit==='kpa')bar=n/100;
+    else if(unit==='bar')bar=n;
+    else if(unit==='psi')bar=n*0.0689475729;
+    else if(unit==='pa')bar=n/100000;
+    return bar!==null&&bar>=0.5&&bar<=6?bar:null;
+  }
+  tireDetails(){
+    const wheel=(key,label)=>{const v=this.tirePressureBar(key);return '<div class="xp-wheel" data-wheel="'+key+'"><small>'+label+'</small><strong>'+xpEsc(v===null?'—':xpNum(v,2)+' bar')+'</strong></div>';};
+    return `<section class="xp-tire-popover" role="region" aria-label="Individual tire pressures">
+      <div class="xp-tire-header"><strong>Tire pressures</strong><button type="button" data-tire-toggle aria-label="Close tire pressures">×</button></div>
+      <div class="xp-tire-diagram" aria-label="Top-down vehicle tire layout, front at top">
+      ${wheel('tire_fl','Front left')}${wheel('tire_fr','Front right')}
+      <div class="xp-tire-body" aria-hidden="true"><span>FRONT</span><span>REAR</span></div>
+      ${wheel('tire_rl','Rear left')}${wheel('tire_rr','Rear right')}</div>
+      <small class="xp-tire-note">Live mapped values only; no unverified tire-pressure thresholds.</small>
+    </section>`;
+  }
  tireSummary(){
-  const values=['tire_fl','tire_fr','tire_rl','tire_rr'].map(k=>this.number(k));
+  const values=['tire_fl','tire_fr','tire_rl','tire_rr'].map(k=>this.tirePressureBar(k));
   if(values.some(v=>v===null))return '—';
-  return xpNum(values.reduce((a,b)=>a+b,0)/400,2)+' bar';
+  return xpNum(values.reduce((a,b)=>a+b,0)/4,2)+' bar';
  }
  locationText(){
   const d=this.data('location');const raw=d?.value;
@@ -451,6 +495,7 @@ class XpengVehicleCard extends HTMLElement{
     const age=xpEsc(this.lastUpdate()),conn=xpEsc(xpConnText(this.val('connection')));
     const v=this.appearance();
     const finish=xpEsc(XP_INTERIORS.find(x=>x.id===v.interior)?.label||v.interior);
+     const artwork=this.assetSpec();
     return `<div class="xp-meta-tools">
       <button class="xp-meta-trigger" type="button" data-meta-toggle aria-label="Last vehicle update and information"
       aria-expanded="${this._infoOpen?'true':'false'}" title="Vehicle information">${xpIcon('info',22)}</button>
@@ -458,6 +503,8 @@ class XpengVehicleCard extends HTMLElement{
         <div><small>Last vehicle update</small><strong>${age}</strong></div>
         <div><small>Connection</small><strong>${conn}</strong></div>
         <div><small>Interior finish</small><strong>${finish}</strong></div>
+         <div><small>Design generation</small><strong>${xpEsc(artwork.shape_family)}</strong></div>
+         <div><small>Artwork</small><strong>${xpEsc(artwork.view_status)}</strong></div>
         ${this.interiorPreview()}
         <p>Cabin illustration is colour guidance, not a photograph.</p>
       </div>`:''}</div>`;
@@ -490,7 +537,7 @@ class XpengVehicleCard extends HTMLElement{
     const referenceCutout=a.model==='G6'&&a.year==='2026'&&a.trim==='core_plus_rwd'&&a.color==='arctic_white'&&(spec.tier==='model-year-trim'||/\/xpeng-g6-2026-white-cutout\.(?:png|webp)$/.test(spec.src));
     return `<img class="xp-car ${referenceCutout?'xp-reference-cutout':''} ${spec.studio?'xp-studio-car':''}" data-car-art
       src="${xpEsc(spec.src)}"
-      title="${xpEsc(spec.description)}"
+      title="${xpEsc(spec.description)}" data-shape-family="${xpEsc(spec.shape_family)}" data-view-status="${xpEsc(spec.view_status)}"
       data-art-tier="${xpEsc(spec.tier)}"
       alt="${xpEsc('XPENG '+a.model+' '+a.year+', '+a.color.replaceAll('_',' ')+(spec.illustrative?' (illustrative artwork)':''))}" loading="eager">
       `;
@@ -504,9 +551,11 @@ class XpengVehicleCard extends HTMLElement{
      ${this.progress()}<div class="xp-overview-range"><div class="xp-stat-label">Estimated range</div><div class="xp-range-num">${xpIcon('gauge',36)}<span>${xpEsc(this.num('range','km'))}</span></div></div>
     </section>
     <aside class="xp-status-panel" aria-label="Vehicle information">
-      ${rows.map(([icon,label,val])=>`<div class="xp-info-row"><div class="xp-info-icon">${xpIcon(icon,31)}</div>
+      ${rows.map(([icon,label,val])=>icon==='tire'
+      ?`<button class="xp-info-row xp-tire-row" type="button" data-tire-toggle aria-expanded="${this._tireOpen?'true':'false'}" aria-label="View all four tire pressures"><span class="xp-info-icon">${xpIcon(icon,31)}</span><span class="xp-info-copy"><small>${xpEsc(label)}</small><b>${xpEsc(val)}</b></span><span class="xp-chevron">${xpIcon('arrow',19)}</span></button>`
+      :`<div class="xp-info-row"><div class="xp-info-icon">${xpIcon(icon,31)}</div>
       <div class="xp-info-copy"><small>${xpEsc(label)}</small><b>${xpEsc(val)}</b></div><span class="xp-chevron">${xpIcon('arrow',19)}</span></div>`).join('')}
-    </aside>`;
+    </aside>${this._tireOpen?this.tireDetails():''}`;
  }
  charging(){
   return `${this.title()}${this.updated()}
@@ -564,7 +613,8 @@ class XpengVehicleCardEditor extends HTMLElement{
      el.reportValidity();return;
    }
    // A previous manual photo belongs to the old model/year/paint, not a new one.
-   if(['model','year','trim','color'].includes(key)){delete cfg.image;delete cfg.charging_image;}
+   if(['model','year','trim','color','shape_family'].includes(key)){delete cfg.image;delete cfg.charging_image;}
+    if(['model','year'].includes(key))delete cfg.shape_family;
    if(['model','year','trim','interior'].includes(key))delete cfg.interior_image;
    if(cfg.prefix&&!/^[a-z0-9_]+$/.test(cfg.prefix))return;
    if(key==='year'&&!xpAllowedModels(cfg.year).some(x=>x.id===cfg.model))cfg.model=xpAllowedModels(cfg.year)[0]?.id||'Other';
@@ -607,6 +657,7 @@ class XpengVehicleCardEditor extends HTMLElement{
     ${select('year','Model year',XP_YEARS.map(y=>({id:y,label:y})))}
     ${select('model','Model',xpAllowedModels(v.year).map(m=>({id:m.id,label:m.name})))}
     ${select('trim','Trim',xpAllowedTrims(v.model,v.year))}
+     ${select('shape_family','Design generation / facelift',xpShapeOptions(v.model,v.year))}
     ${select('color','Exterior paint',xpAllowedPaints(v.model,v.year,v.trim))}
      ${select('interior','Interior finish',xpAllowedInteriors(v.model,v.year,v.trim))}
      <p>${xpIsVerifiedPalette(v.model,v.year)?'Published colour palette; availability differs by market and trim.':'Illustrative colours for this model year; manufacturer availability is not verified.'}</p>

@@ -65,7 +65,7 @@ test('every offered exterior choice loads existing bundled art or a labelled sil
     card.setConfig({prefix:'my_xpeng',model:p.model,year:p.year,trim,color,interior:p.interior_options[0]});
     const spec=card.assetSpec();
     if(spec.src.startsWith('data:image/svg+xml')){
-      assert.match(spec.description,/Coloured silhouette/);
+      assert.match(spec.description,/Exact cutout not available/);
       assert.equal(spec.illustrative,true);
     }else{
       assert.ok(spec.src.startsWith(prefix),spec.src);
@@ -84,7 +84,7 @@ test('any unknown-year image is clearly labelled illustrative, no false official
  const card=new Card();
  card.setConfig({model:'G9',year:'2024',color:'arctic_white'});
  assert.equal(card.assetSpec().illustrative,true);
- assert.match(card.assetSpec().description,/Generic model-family/);
+ assert.equal(card.assetSpec().tier,'silhouette','G9 old shape must not use a possibly refreshed family image');
  assert.match(card.shadowRoot.innerHTML,/illustrative artwork/); // clearly disclosed via accessible image alt without visual watermark
  card.setConfig({model:'G9',year:'2026',color:'kaitoke_green_matte'});
  assert.match(card.asset(),/^data:image\/svg\+xml/);
@@ -125,7 +125,7 @@ test('new 2026 G9 uses the actual bundled year/trim/paint-specific preview',()=>
  // This colour is allowed by the catalogue but has no model-year verified art yet.
  card.setConfig({model:'G9',year:'2026',trim:'long_range_rwd',color:'kaitoke_green_matte'});
  assert.ok(card.assetSpec().src.startsWith('data:image/svg+xml'));
- assert.match(card.assetSpec().description,/artwork pending/);
+ assert.match(card.assetSpec().description,/Exact cutout not available/);
 });
 test('card editor remains appearance-only and dashboard does not add new screens',()=>{
  const card=new Card(),editor=new Editor();
@@ -182,7 +182,7 @@ test('every catalog model and supported year keeps its selection and emits an ho
    assert.equal(card.appearance().year,a.year);
    assert.ok(['model-year-trim','model-family','silhouette','manual'].includes(art.tier),p.display_name);
    if(art.tier==='model-family')assert.match(art.description,/illustration/);
-   if(art.tier==='silhouette')assert.match(art.description,/Illustrative/);
+   if(art.tier==='silhouette')assert.match(art.description,/Exact cutout not available/);
  }
 });
 test('model or paint changes never retain an unrelated manual vehicle/cabin image',()=>{
@@ -272,4 +272,36 @@ test('multi-vehicle profiles never inherit a different cars exterior or interior
  card._vehicleIndex=0;
  card.render();
  assert.equal(card.assetSpec().src,'/local/g6-rear.webp');
+});
+
+
+test('every model/year has a stable shape family and genuine year/trim color options',()=>{
+ const families=vm.runInNewContext('({xpShapeOptions,xpShapeChoice})',context);
+ for(const p of profiles.profiles){
+   const shapes=families.xpShapeOptions(p.model,p.year);
+   assert.ok(shapes.length>0,p.display_name);
+   const card=new Card();card.setConfig({model:p.model,year:p.year,trim:p.trims[0],color:p.paint_options[0]});
+   assert.equal(card.appearance().shape_family,shapes[0].id);
+   assert.equal(card.assetSpec().shape_family,shapes[0].id);
+ }
+ for(const model of ['G6','G9']){
+   assert.notEqual(families.xpShapeChoice(model,'2024').id,families.xpShapeChoice(model,'2026').id);
+   assert.equal(families.xpShapeOptions(model,'2025').length,2,'2025 can vary by market');
+   let card=new Card();
+   card.setConfig({model,year:'2024',color:'arctic_white'});
+   assert.equal(card.assetSpec().tier,'silhouette','Never use a generic modern vehicle for older documented shape');
+   card.setConfig({model,year:'2025',shape_family:families.xpShapeOptions(model,'2025')[1].id,color:'arctic_white'});
+   assert.equal(card.appearance().shape_family,families.xpShapeOptions(model,'2025')[1].id);
+ }
+ const ed=new Editor();ed.setConfig({model:'G6',year:'2025'});
+ assert.match(ed.shadowRoot.innerHTML,/data-key="shape_family"/);
+});
+test('charging view does not misrepresent a front-only asset as verified rear artwork',()=>{
+ const car=new Card();car.setConfig({model:'G6',year:'2026',trim:'core_plus_rwd',color:'arctic_white'});
+ const normal=car.assetSpec();assert.equal(normal.view_status,'illustrative_front');
+ car.hass={states:{'binary_sensor.my_xpeng_is_charging':{state:'on'}}};
+ const charging=car.assetSpec();
+ assert.equal(charging.view,'rear');
+ assert.equal(charging.view_status,'front_fallback_rear_pending');
+ assert.equal(charging.src,normal.src);
 });
