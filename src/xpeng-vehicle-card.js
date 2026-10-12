@@ -168,11 +168,12 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-brand{display:flex;align-items:center;gap:14px;font-weight:600;letter-spacing:.31em;font-size:clamp(14px,1.4vw,23px);white-space:nowrap}
 .xp-x-mark{font-size:26px;letter-spacing:-.13em;transform:scaleX(1.4)}
 .xp-header-right{display:flex;align-items:center;gap:12px;min-width:0;font-size:clamp(12px,1.2vw,20px)}
-.xp-wifi{color:#7088a0;display:flex;align-items:center;gap:7px;white-space:nowrap}
-.xp-wifi svg{flex:none}
-.xp-connection-label{font-size:clamp(11px,1vw,15px);font-weight:550;letter-spacing:0}
-.xp-wifi.xp-disconnected{color:#a8b3c4}
-.xp-wifi.xp-connected{color:#66a9ff}
+.xp-wifi{display:grid;place-items:center;width:42px;height:42px;flex:none;padding:8px;border-radius:13px;border:1px solid #7399c077;background:#03172bba;color:#a8b3c4;transition:background .15s,border-color .15s}
+.xp-wifi svg{display:block;flex:none}
+.xp-wifi.xp-connected{color:#66a9ff;border-color:#4e96d699}
+.xp-wifi.xp-error{color:#ffb16a;border-color:#d99b6388}
+.xp-wifi:hover,.xp-wifi:focus-visible{background:#194465;border-color:#8bc1fa}
+
 .xp-title{position:absolute;z-index:5;left:5.4%;top:17%;display:flex;flex-direction:column;gap:3px}
 .xp-title h1{font-size:clamp(32px,3.7vw,62px);line-height:1.02;letter-spacing:.035em;font-weight:730;margin:0;white-space:nowrap}
 .xp-title h1 em{font-style:normal;color:#7eaeff}
@@ -265,42 +266,35 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-station{right:5%;bottom:22%;height:13%;min-width:40px;font-size:16px}
 }
 .xp-meta-tools{position:relative;z-index:25;flex:none;display:flex;align-items:center}
-.xp-meta-trigger{display:grid;place-items:center;width:30px;height:30px;padding:3px;border-radius:50%;border:1px solid #7399c077;background:#03172bba;color:#d6e9ff}
-.xp-meta-trigger:hover,.xp-meta-trigger:focus-visible{background:#194465}
 .xp-meta-popover{position:absolute;right:0;top:calc(100% + 9px);width:min(275px,82vw);border:1px solid #6580a388;border-radius:12px;background:#061829f3;padding:12px 14px;box-shadow:0 12px 35px #000b;backdrop-filter:blur(12px);display:flex;flex-direction:column;gap:9px}
 .xp-meta-field{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .xp-meta-field+.xp-meta-field{padding-top:9px;border-top:1px solid #7399c044}
 .xp-meta-popover small{font-size:11px;color:#b1c0d3}
 .xp-meta-popover strong{font-size:13px;font-weight:600;color:#f0f7ff;text-align:right;white-space:nowrap}
 .xp-cabin-mini{width:100%;height:auto;max-height:140px;margin-top:10px;display:block}
-@media(max-width:850px){.xp-header-right{gap:8px}.xp-wifi{gap:4px}.xp-connection-label{font-size:11px}.xp-meta-trigger{width:28px;height:28px;padding:2px}.xp-meta-popover{top:calc(100% + 8px)}}
+@media(max-width:850px){.xp-header-right{gap:8px}.xp-wifi{width:38px;height:38px;padding:7px}.xp-meta-popover{top:calc(100% + 8px)}}
 .xp-car,.xp-car.xp-paint-silver_frost,.xp-car.xp-paint-space_grey,.xp-car.xp-paint-jet_black,.xp-car.xp-paint-stellar_purple{filter:drop-shadow(0 20px 20px #000b)}
 .xp-studio-car{mask-image:none;-webkit-mask-image:none}
 
-.xp-tire-screen{position:absolute;z-index:7;inset:12% 4% 3%;display:flex;flex-direction:column}
-.xp-tire-screen-head{display:flex;justify-content:space-between;align-items:start;gap:16px;padding:6px}
-.xp-tire-screen-head small{font-size:13px;color:#81bfff;letter-spacing:.12em;font-weight:600}
-.xp-tire-screen-head h2{font-size:clamp(26px,3vw,44px);margin:6px 0;color:#f2faff}
-.xp-tire-screen-head p{font-size:clamp(11px,1.2vw,17px);margin:0;color:#c7d6e8}
-.xp-tire-screen-head button{display:flex;align-items:center;gap:8px;border:1px solid #8bcee29c;background:#0a2339e9;border-radius:13px;padding:12px;color:#fff;white-space:nowrap}
-.xp-tire-stage{width:min(830px,100%);flex:1;min-height:0;align-self:center;display:grid;
-grid-template-columns:minmax(105px,1fr) minmax(145px,39%) minmax(105px,1fr);grid-template-rows:1fr 1fr;gap:12px;align-items:center}
+.xp-tire-screen{position:absolute;z-index:7;inset:26% 4% 4%;display:flex;flex-direction:column}
+.xp-tire-actions{position:absolute;right:0;top:-76px;z-index:2;display:flex;justify-content:flex-end}
+.xp-tire-actions button{display:flex;align-items:center;gap:8px;border:1px solid #6782a088;background:linear-gradient(125deg,#091a2bda,#051020eb);backdrop-filter:blur(17px);border-radius:13px;padding:11px 15px;color:#f2faff;white-space:nowrap}
+.xp-tire-actions button:hover,.xp-tire-actions button:focus-visible{background:#194465}
+.xp-tire-stage{width:min(900px,100%);flex:1;min-height:0;align-self:center;display:grid;grid-template-columns:minmax(92px,1fr) minmax(170px,43%) minmax(92px,1fr);grid-template-rows:1fr 1fr;gap:10px;align-items:center}
 .xp-tire-center{grid-area:1/2/3/3;min-height:0;height:100%;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 16px 20px #0009)}
-.xp-top-car,.xp-top-cutout{width:100%;max-width:290px;height:100%;max-height:100%;object-fit:contain}
-.xp-tire-reading{background:linear-gradient(130deg,#09243be9,#071526f0);border:1px solid #75adc58a;
-backdrop-filter:blur(14px);border-radius:17px;padding:15px 8px;text-align:center;display:flex;flex-direction:column;gap:4px}
-.xp-tire-reading small{color:#c4d4e6;font-size:clamp(10px,1.25vw,16px)}
-.xp-tire-reading strong{font-size:clamp(25px,3vw,47px);color:#fff;line-height:1.1}
-.xp-tire-reading span{color:#75f4c5;font-size:clamp(11px,1.2vw,18px)}
+.xp-top-car,.xp-top-cutout{width:100%;max-width:325px;height:100%;max-height:100%;object-fit:contain}
+.xp-tire-reading{background:linear-gradient(125deg,#091a2bda,#051020eb);border:1px solid #6782a058;backdrop-filter:blur(17px);border-radius:20px;padding:14px 9px;text-align:center;display:flex;flex-direction:column;gap:4px;min-width:0}
+.xp-tire-reading small{color:#c8d5e7;font-size:clamp(10px,1.15vw,15px)}
+.xp-tire-reading strong{font-size:clamp(24px,3vw,45px);color:#fff;line-height:1.1}
+.xp-tire-reading span{color:#75f4c5;font-size:clamp(11px,1.2vw,17px)}
 .xp-tire-reading[data-wheel="tire_fl"]{grid-area:1/1}.xp-tire-reading[data-wheel="tire_fr"]{grid-area:1/3}
 .xp-tire-reading[data-wheel="tire_rl"]{grid-area:2/1}.xp-tire-reading[data-wheel="tire_rr"]{grid-area:2/3}
 .xp-tire-disclaimer{text-align:center;font-size:10px;color:#b9c9d8;padding-bottom:5px}
-@media(max-width:850px){.xp-tire-screen{inset:9% 3% 2%}.xp-tire-screen-head{padding-top:28px}
-.xp-tire-screen-head h2{font-size:27px}.xp-tire-screen-head p{font-size:12px}
-.xp-tire-screen-head button{font-size:12px;padding:10px 8px}
-.xp-tire-stage{grid-template-columns:minmax(90px,1fr) minmax(118px,39%) minmax(90px,1fr);gap:4px}
-.xp-tire-reading{padding:13px 3px}.xp-tire-reading strong{font-size:25px}.xp-tire-reading small{font-size:11px}.xp-tire-reading span{font-size:12px}}
-
+@media(max-width:850px){.xp-tire-screen{inset:23% 3% 4%}.xp-tire-actions{top:-52px;right:3px}
+.xp-tire-actions button{font-size:12px;padding:8px 10px}
+.xp-tire-stage{grid-template-columns:minmax(80px,1fr) minmax(116px,40%) minmax(80px,1fr);gap:5px}
+.xp-tire-reading{padding:12px 4px;border-radius:13px}.xp-tire-reading strong{font-size:24px}.xp-tire-reading small{font-size:11px}.xp-tire-reading span{font-size:12px}}
+@media(max-width:400px){.xp-tire-stage{grid-template-columns:minmax(70px,1fr) minmax(107px,40%) minmax(70px,1fr)}.xp-tire-reading strong{font-size:21px}}
 
 .xp-tire-row{width:100%;color:inherit;border:0;border-bottom:1px solid #56708a43;background:transparent;text-align:left;font:inherit}
 .xp-tire-row:hover,.xp-tire-row:focus-visible{background:#2e54653b}
@@ -328,7 +322,7 @@ class XpengVehicleCard extends HTMLElement{
     },true);
    this.shadowRoot.addEventListener('click',ev=>{
     const b=ev.target.closest('button');if(!b)return;
-     if(b.hasAttribute('data-meta-toggle')){this._infoOpen=!this._infoOpen;this._tireOpen=false;this.render();return;}
+     if(b.hasAttribute('data-meta-toggle')){this._infoOpen=!this._infoOpen;this.render();return;}
      if(b.hasAttribute('data-tire-toggle')){this._tireOpen=!this._tireOpen;this._infoOpen=false;this.render();return;}
     if(b.hasAttribute('data-cycle')){this._vehicleIndex=(this._vehicleIndex+1)%this.vehicles().length;this._tireOpen=false;this.render();}
   });
@@ -426,10 +420,10 @@ class XpengVehicleCard extends HTMLElement{
     return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
   }
   lastUpdate(){
-   const raw=this.val('last_update'),stamp=this.data('last_update')?.entity?.last_updated;
-   const t=raw||stamp;if(!t)return 'Unavailable';
+   // Home Assistant's last_updated is not necessarily a vehicle refresh.
+   const t=this.val('last_update');if(!t)return 'Unavailable';
    const parsed=Date.parse(String(t));if(!Number.isFinite(parsed))return String(t);
-   const age=Math.max(0,Math.floor((Date.now()-parsed)/60000));return age<1?'Just now':age<60?age+' min ago':age<1440?Math.floor(age/60)+'h ago':new Date(parsed).toLocaleDateString();
+   return new Date(parsed).toLocaleString(this._hass?.locale?.language||undefined,{dateStyle:'medium',timeStyle:'short'});
  }
   tirePressureBar(key){
     const d=this.data(key),n=this.number(key);
@@ -467,7 +461,7 @@ class XpengVehicleCard extends HTMLElement{
   return 'Charging unavailable';
  }
  title(){
-  return `<div class="xp-title"><h1>XPENG <em>${xpEsc(this.model())}</em></h1><div class="xp-subtitle">${this._view==='charging'?xpEsc(this.chargeStatus()):'Vehicle status'}</div></div>`;
+  return `<div class="xp-title"><h1>XPENG <em>${xpEsc(this.model())}</em></h1><div class="xp-subtitle">${this._view==='charging'?xpEsc(this.chargeStatus()):this._tireOpen?'Tire pressure':'Vehicle status'}</div></div>`;
  }
  sceneBackdrop(){
     // The scenic background belongs to the DASHBOARD, not to a model image folder.
@@ -479,30 +473,24 @@ class XpengVehicleCard extends HTMLElement{
       style="background-image:url(&quot;${xpEsc(source)}&quot;)"></div>`;
   }
  header(){
-    const connection=this.val('connection'),status=xpConnText(connection);
-    const connected=status==='Connected';
-    return `<header class="xp-header"><div class="xp-brand"><span class="xp-x-mark">✕</span><span>XPENG</span></div>
-      <div class="xp-header-right">
-        <span class="xp-wifi ${connected?'xp-connected':'xp-disconnected'}" role="status"
-          aria-label="${xpEsc('Vehicle network: '+status)}" title="${xpEsc(status)}">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor"
-            stroke-width="2.3" stroke-linecap="round" aria-hidden="true">
-            <path d="M2 8c5.7-5.6 14.3-5.6 20 0M5 12c4-3.6 10-3.6 14 0M9 16c1.8-1.4 4.2-1.4 6 0"/>
-            <circle cx="12" cy="20" r="1.3" fill="currentColor" stroke="none"/></svg>
-          <span class="xp-connection-label">${xpEsc(status)}</span>
-        </span>
-        <div class="xp-meta-tools">
-          <button class="xp-meta-trigger" type="button" data-meta-toggle
-            aria-label="Show vehicle connection and last update" aria-expanded="${this._infoOpen?'true':'false'}"
-            aria-controls="xp-last-update-details" title="Connection and last update">${xpIcon('info',20)}</button>
-          ${this._infoOpen?`<div id="xp-last-update-details" class="xp-meta-popover" role="region"
-            aria-label="Vehicle connection and last update">
-              <div class="xp-meta-field"><small>Connection</small><strong>${xpEsc(status)}</strong></div>
-              <div class="xp-meta-field"><small>Last vehicle update</small><strong>${xpEsc(this.lastUpdate())}</strong></div>
-            </div>`:''}
-        </div>
-      </div></header>`;
-  }
+   const connection=this.val('connection'),status=xpConnText(connection);
+   const stateClass=status==='Connected'?'xp-connected':status==='Connection error'?'xp-error':'xp-disconnected';
+   return `<header class="xp-header"><div class="xp-brand"><span class="xp-x-mark">✕</span><span>XPENG</span></div>
+     <div class="xp-header-right"><div class="xp-meta-tools">
+       <button class="xp-wifi ${stateClass}" type="button" data-meta-toggle
+         aria-label="Vehicle communication details" aria-expanded="${this._infoOpen?'true':'false'}"
+         aria-controls="xp-last-update-details" title="Vehicle communication details">
+         <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor"
+           stroke-width="2.3" stroke-linecap="round" aria-hidden="true">
+           <path d="M2 8c5.7-5.6 14.3-5.6 20 0M5 12c4-3.6 10-3.6 14 0M9 16c1.8-1.4 4.2-1.4 6 0"/>
+           <circle cx="12" cy="20" r="1.3" fill="currentColor" stroke="none"/></svg></button>
+       ${this._infoOpen?`<div id="xp-last-update-details" class="xp-meta-popover" role="region"
+         aria-label="Vehicle connection and last update">
+           <div class="xp-meta-field"><small>Connection</small><strong>${xpEsc(status)}</strong></div>
+           <div class="xp-meta-field"><small>Last vehicle update</small><strong>${xpEsc(this.lastUpdate())}</strong></div>
+         </div>`:''}
+     </div></div></header>`;
+ }
  progress(){
    const soc=xpPercent(this.val('soc'));
    return `<div class="xp-progress" role="progressbar" aria-label="Battery state of charge" aria-valuemin="0" aria-valuemax="100" ${soc===null?'':'aria-valuenow="'+soc+'"'}>
@@ -572,9 +560,7 @@ class XpengVehicleCard extends HTMLElement{
       return `<div class="xp-tire-reading" data-wheel="${key}"><small>${label}</small>
         <strong>${bar===null?'—':xpEsc(xpNum(bar,2))}</strong><span>${bar===null?'Unavailable':'bar'}</span></div>`;};
     return `<section class="xp-tire-screen" role="region" aria-label="Tire pressure from above">
-       <div class="xp-tire-screen-head"><div><small>XPENG ${xpEsc(a.model)}</small>
-         <h2>Tire pressures</h2><p>Four wheels · live Home Assistant readings</p></div>
-         <button type="button" data-tire-toggle aria-label="Back to vehicle status">${xpIcon('back',20)} Back to vehicle</button></div>
+       <div class="xp-tire-actions"><button type="button" data-tire-toggle aria-label="Back to vehicle status">${xpIcon('back',20)} Back to vehicle</button></div>
        <div class="xp-tire-stage"><div class="xp-tire-center">${this.topCarArt()}</div>
          ${wheel('tire_fl','Front left')}${wheel('tire_fr','Front right')}
          ${wheel('tire_rl','Rear left')}${wheel('tire_rr','Rear right')}</div>
@@ -620,7 +606,7 @@ class XpengVehicleCard extends HTMLElement{
   this._view=isCharging?'charging':'overview';
   if(isCharging)this._tireOpen=false;
   this.shadowRoot.innerHTML=`<style>${XP_CSS}</style><ha-card><div class="xp-scene ${isCharging?'xp-charge':this._tireOpen?'xp-overview xp-tire-mode':'xp-overview'}">
-   ${this.sceneBackdrop()}${this.header()}${isCharging?this.charging():this._tireOpen?this.tireScreen():this.overview()}
+   ${this.sceneBackdrop()}${this.header()}${isCharging?this.charging():this._tireOpen?this.title()+this.tireScreen():this.overview()}
    
    </div></ha-card>`;
  }

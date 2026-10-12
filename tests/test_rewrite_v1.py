@@ -30,6 +30,7 @@ def sensor(value):
 OFFLINE = {'sensor.my_xpeng_api_connection_status': sensor('not_configured')}
 BASE = {
     'sensor.my_xpeng_api_connection_status': sensor('connected'),
+    'sensor.my_xpeng_last_update': sensor('2026-10-12T06:00:00Z'),
     'sensor.my_xpeng_soc': sensor(62),
     'sensor.my_xpeng_range_km': sensor(391),
     'sensor.my_xpeng_odometer_km': sensor(12548),
@@ -148,20 +149,24 @@ with sync_playwright() as p:
         assert '12,548 km' in host.locator('.xp-status-panel').inner_text()
         assert '2.5 bar' in host.locator('.xp-status-panel').inner_text()
         assert 'Ramat Gan, Israel' in host.locator('.xp-status-panel').inner_text()
-        # Info stays inline with network status; both live connection and last update are shown.
-        wifi=host.locator('.xp-header-right .xp-wifi')
-        info=host.locator('.xp-header-right [data-meta-toggle]')
-        assert wifi.count()==1 and info.count()==1
-        assert 'Connected' in wifi.inner_text()
-        w=wifi.bounding_box()
-        b=info.bounding_box()
-        assert abs((w['y']+w['height']/2)-(b['y']+b['height']/2))<=5
+        # One accessible Wi-Fi control; connection and refresh time appear only after click.
+        wifi=host.locator('.xp-header-right button.xp-wifi[data-meta-toggle]')
+        info=wifi
+        assert wifi.count()==1
+        assert wifi.get_attribute('aria-expanded')=='false'
+        assert not wifi.inner_text().strip()
+        assert host.locator('.xp-header-right .xp-meta-trigger,.xp-connection-label').count()==0
+        assert 'xp-connected' in wifi.get_attribute('class')
+        box=wifi.bounding_box()
+        assert box and box['x'] >= 0 and box['x']+box['width'] <= width+2
         info.click()
         popup=host.locator('.xp-header-right .xp-meta-popover')
         assert popup.is_visible()
         assert 'Connection' in popup.inner_text()
         assert 'Connected' in popup.inner_text()
         assert 'Last vehicle update' in popup.inner_text()
+        assert '2026' in popup.inner_text()
+        assert 'ago' not in popup.inner_text()
         assert popup.locator('.xp-meta-field').count()==2
         assert popup.locator('small').count()==2
         assert popup.locator('strong').count()==2
@@ -239,6 +244,10 @@ with sync_playwright() as p:
         host.locator('.xp-info-row[data-tire-toggle]').click()
         tires=host.locator('.xp-tire-screen')
         assert tires.is_visible()
+        assert host.locator('.xp-title .xp-subtitle').inner_text() == 'Tire pressure'
+        assert host.locator('.xp-tire-screen-head').count()==0
+        assert host.locator('.xp-tire-actions').count()==1
+        assert host.locator('.xp-wifi[data-meta-toggle]').count()==1
         assert host.locator('img[data-car-art]').count()==0
         assert tires.locator('.xp-top-car').count()==1
         for k in ('tire_fl','tire_fr','tire_rl','tire_rr'):
