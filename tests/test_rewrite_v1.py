@@ -60,6 +60,8 @@ with sync_playwright() as p:
             route.fulfill(status=200, body=file.read_bytes(), content_type=mime)
 
         page.route('**/local/xpeng/**', serve_asset)
+        assert (ROOT / 'dist/assets/xpeng-reference-background.webp').is_file()
+
         page.set_content(
             '<!doctype html><html><head><base href="https://ha.local/"><meta charset="utf-8">'
             '<style>body{margin:0;background:#030e1b;padding:0}xpeng-vehicle-card{display:block;width:100%}</style>'
@@ -76,6 +78,8 @@ with sync_playwright() as p:
 
         host = page.locator('xpeng-vehicle-card')
         assert host.locator('.xp-overview').count() == 1
+        assert 'xpeng-reference-background.webp' in host.locator('.xp-night-photo').get_attribute('style')
+
         assert host.locator('.xp-charge').count() == 0
         assert '—' in host.locator('.xp-soc').inner_text()
         assert host.locator('.xp-status-panel').count() == 1
