@@ -145,7 +145,7 @@ function xpNormalizeAppearance(value){const v=value||{};
 function xpAssetModel(model){return String(model).toLowerCase().replace(/\s+/g,'_').replace(/\+/g,'_plus').replace(/[^a-z0-9_]/g,'');}
 // Build-time inventory: each entry corresponds to an existing packaged file.
 const XP_ARTWORK_INDEX = Object.freeze({
-  exact:new Set(["vehicles/g6/graphite_gray/front.webp","vehicles/g6/graphite_gray/charging.webp","vehicles/g6/graphite_gray/top.webp"]),
+  exact:new Set(), // Three-view assets are not packaged yet; do not advertise missing files.
   family:new Set()
 });
 const XP_SCENE_BACKGROUND = 'xpeng-approved-lakeside-background.webp';
