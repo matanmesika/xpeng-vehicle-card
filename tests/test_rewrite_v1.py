@@ -161,9 +161,10 @@ with sync_playwright() as p:
             assert geometry['chargeCard']['height']>=405
         page.screenshot(path=str(OUT / f'{tag}-charging-DEMO.png'), full_page=True)
 
-        # Home is a view switch, not a vehicle-control command.
-        host.locator('[data-view="overview"]').click()
-        assert host.locator('.xp-overview').count() == 1
+        # No manual navigation: the charging sensor exclusively selects the screen.
+        assert host.locator('[data-view]').count() == 0
+        assert host.locator('.xp-charge').count() == 1
+        assert host.locator('.xp-clock').count() == 0
 
         # A transition back to idle always restores Vehicle status.
         page.evaluate("states => document.querySelector('xpeng-vehicle-card').hass = {states}", BASE)
