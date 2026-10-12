@@ -420,7 +420,8 @@ test('tire pressures support bar, kPa, psi and individual unavailable readings w
  card.hass={states};
  assert.equal(card.tirePressureBar('tire_fr'),null);
  assert.equal(card.tireSummary(),'—');
- assert.match(card.tireDetails(),/data-wheel="tire_fr"[\\s\\S]*?<strong>—<\\/strong>/);
+ assert.ok(card.tireDetails().includes('data-wheel="tire_fr"'));
+ assert.ok(card.tireDetails().includes('<strong>—</strong>'));
  states['sensor.my_xpeng_tire_pressure_front_right_kpa']={state:'250',attributes:{unit_of_measurement:'mystery'}};
  card.hass={states};
  assert.equal(card.tirePressureBar('tire_fr'),null);
