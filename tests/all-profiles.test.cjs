@@ -95,7 +95,7 @@ test('the approved background stays byte-for-byte frozen and shared between stat
  const file=path.join(ROOT,'dist/assets/xpeng-reference-background.webp');
  const raw=fs.readFileSync(file);
  const blob=crypto.createHash('sha1')
-   .update(Buffer.from('blob '+raw.length+'\\0'))
+    .update(Buffer.from('blob '+raw.length)).update(Buffer.from([0]))
    .update(raw).digest('hex');
  assert.equal(blob,expectedGitBlob,
    'Backdrop was changed without explicit owner approval; restore approved pixels');
@@ -106,9 +106,9 @@ test('the approved background stays byte-for-byte frozen and shared between stat
  card.hass={states:{'binary_sensor.my_xpeng_is_charging':{state:'on'}}};
  const active=card.sceneBackdrop();
  assert.equal(idle,active);
- assert.match(idle,/xpeng-reference-background\\.webp/);
+ assert.ok(idle.includes('xpeng-reference-background.webp'));
  assert.equal((idle.match(/xp-night-photo/g)||[]).length,1);
- assert.doesNotMatch(source,/night-mountain-scene\\.svg/);
+ assert.ok(!source.includes('night-mountain-scene.svg'));
 });
 test('new 2026 G9 uses the actual bundled year/trim/paint-specific preview',()=>{
  const card=new Card();
@@ -116,7 +116,7 @@ test('new 2026 G9 uses the actual bundled year/trim/paint-specific preview',()=>
    for(const paint of ['arctic_white','graphite_gray','midnight_black','silver_frost']){
      card.setConfig({model:'G9',year:'2026',trim,color:paint});
      const art=card.assetSpec();
-     assert.match(art.src,new RegExp('/vehicles/g9/2026/'+trim+'/'+paint+'\\\\.webp$'));
+     assert.ok(art.src.endsWith('/vehicles/g9/2026/'+trim+'/'+paint+'.webp'),art.src);
      assert.equal(art.illustrative,true);
      const rel=art.src.replace('/hacsfiles/xpeng-vehicle-card/assets/','');
      assert.ok(fs.existsSync(path.join(ROOT,'dist/assets',rel)),art.src);
@@ -124,7 +124,7 @@ test('new 2026 G9 uses the actual bundled year/trim/paint-specific preview',()=>
  }
  // This colour is allowed by the catalogue but has no model-year verified art yet.
  card.setConfig({model:'G9',year:'2026',trim:'long_range_rwd',color:'kaitoke_green_matte'});
- assert.match(card.assetSpec().src,/^data:image\\/svg\\+xml/);
+ assert.ok(card.assetSpec().src.startsWith('data:image/svg+xml'));
  assert.match(card.assetSpec().description,/artwork pending/);
 });
 test('card editor remains appearance-only and dashboard does not add new screens',()=>{
