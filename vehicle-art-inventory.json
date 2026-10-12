@@ -1,17 +1,54 @@
 {
-  "schema_version": 2,
-  "description": "Runtime artwork follows vehicle-catalog.json and the model/year-group/color folder convention.",
-  "path_pattern": "vehicles/{model}/{year-group}/{color}/{front,charging,top}.webp",
+  "schema_version": 3,
+  "as_of": "2026-10-12",
+  "catalog": "vehicle-catalog.json",
+  "artwork_map": "vehicle-art-map.json",
+  "path_pattern": "vehicles/{model}/{year_group}/{exterior_color}/{front,charging,top}.webp",
   "backdrop": "xpeng-approved-lakeside-background.webp",
   "backdrop_is_common": true,
   "trim_affects_artwork": false,
-  "known_uploaded_now": [
-    "vehicles/g6/2026/graphite_gray/front.webp",
+  "exact": [
+    "vehicles/g6/2026/arctic_white/charging.webp",
+    "vehicles/g6/2026/arctic_white/front.webp",
+    "vehicles/g6/2026/arctic_white/top.webp",
     "vehicles/g6/2026/graphite_gray/charging.webp",
-    "vehicles/g6/2026/graphite_gray/top.webp"
+    "vehicles/g6/2026/graphite_gray/front.webp",
+    "vehicles/g6/2026/graphite_gray/top.webp",
+    "vehicles/g6/2026/midnight_black/charging.webp",
+    "vehicles/g6/2026/midnight_black/front.webp",
+    "vehicles/g6/2026/midnight_black/top.webp",
+    "vehicles/g6/2026/silver_frost/charging.webp",
+    "vehicles/g6/2026/silver_frost/front.webp",
+    "vehicles/g6/2026/silver_frost/top.webp",
+    "vehicles/g6/2026/stellar_purple/charging.webp",
+    "vehicles/g6/2026/stellar_purple/front.webp",
+    "vehicles/g6/2026/stellar_purple/top.webp"
   ],
+  "model_family": [],
+  "known_uploaded_now": [
+    "vehicles/g6/2026/arctic_white/charging.webp",
+    "vehicles/g6/2026/arctic_white/front.webp",
+    "vehicles/g6/2026/arctic_white/top.webp",
+    "vehicles/g6/2026/graphite_gray/charging.webp",
+    "vehicles/g6/2026/graphite_gray/front.webp",
+    "vehicles/g6/2026/graphite_gray/top.webp",
+    "vehicles/g6/2026/midnight_black/charging.webp",
+    "vehicles/g6/2026/midnight_black/front.webp",
+    "vehicles/g6/2026/midnight_black/top.webp",
+    "vehicles/g6/2026/silver_frost/charging.webp",
+    "vehicles/g6/2026/silver_frost/front.webp",
+    "vehicles/g6/2026/silver_frost/top.webp",
+    "vehicles/g6/2026/stellar_purple/charging.webp",
+    "vehicles/g6/2026/stellar_purple/front.webp",
+    "vehicles/g6/2026/stellar_purple/top.webp"
+  ],
+  "model_count": 15,
+  "year_group_count": 18,
+  "paint_combination_count": 83,
+  "pending_combination_count": 78,
   "caveats": [
-    "The card tries the canonical GitHub asset path and falls back to a generated silhouette if a car image fails to load.",
-    "The complete upload bundle prepared in this chat contains generated G6 2026 color assets plus marked placeholders for combinations that will be replaced later."
+    "Available means a WebP file exists, not that it has manufacturer-verified provenance or accuracy.",
+    "Pending combinations show a labelled colour-matched illustration; they must not borrow another model, group, or paint.",
+    "Existing artwork continues to load through the official project GitHub raw asset URL; online access is required."
   ]
 }

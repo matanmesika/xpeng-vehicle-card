@@ -1,29 +1,20 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "as_of": "2026-10-12",
   "catalog": "vehicle-catalog.json",
+  "asset_index": "vehicle-art-map.json",
   "selection_key": [
     "model",
     "year_group",
     "exterior_color"
   ],
   "trim_affects_artwork": false,
-  "trim_policy": "display-only title; trim never changes image selection",
+  "trim_policy": "Trim is display-only, year_group filters offered trim labels. Trim never affects artwork, colors, cabin, telemetry or sensor mappings.",
   "backdrop": "xpeng-approved-lakeside-background.webp",
-  "target_asset_layout": "assets/vehicles/{model}/{year-group}/{color}/{front,charging,top}.webp",
-  "current_generated_assets": {
-    "model": "G6",
-    "year_group": "2026",
-    "colors": [
-      "graphite_gray",
-      "arctic_white",
-      "midnight_black",
-      "silver_frost",
-      "stellar_purple"
-    ],
-    "pending": [
-      "black_edition"
-    ]
-  },
-  "note": "The upload bundle contains placeholders for catalog combinations not yet replaced by approved/generated vehicle artwork."
+  "target_asset_layout": "assets/vehicles/{model}/{year_group}/{exterior_color}/{front,charging,top}.webp",
+  "available_image_count": 15,
+  "available_combinations": 5,
+  "pending_combinations": 78,
+  "missing_asset_policy": "Labelled colour-matched silhouette only; never substitute wrong model/year-group/color or silently reuse front for charging/top.",
+  "provenance_policy": "Do not label existing illustrations as verified manufacturer photos."
 }

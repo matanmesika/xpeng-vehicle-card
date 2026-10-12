@@ -36,6 +36,11 @@ jobs:
             python -m json.tool profiles/year-profiles.json >/dev/null
           fi
 
+      - name: Verify full model/year/colour artwork map and trim invariance
+        run: |
+          python tools/sync_vehicle_artwork.py --check
+          node --test tests/vehicle-artwork-mapping.test.cjs
+
       - name: Validate current G6 WebP assets
         shell: bash
         run: |

@@ -21,10 +21,10 @@ A standalone, **read-only Home Assistant dashboard card** for XPENG vehicles. Th
 - **Model** changes vehicle artwork and its available selections.
 - **Exterior colour** changes the vehicle artwork (and any colour-matched preview).
 - **Model year** is part of the artwork storage key. The current approved G6 artwork is mapped under year `2026`.
-- **Trim** is informational only, with no visual or sensor effect. Older years deliberately display the same current model picture.
+- **Trim** is informational only. Each year group always selects its own geometry; no substitution of newer or older generations.
 - **Interior finish** is an editor-only future-facing visual setting; it does not appear in the information popup.
 
-The mapping is recorded in [model-artwork.json](model-artwork.json). The current approved G6 set is stored at `assets/vehicles/g6/2026/graphite_gray/` with `front.webp`, `charging.webp`, and `top.webp`. Trim names are not part of the filesystem path.
+The mapping is recorded in [model-artwork.json](model-artwork.json). The current G6 set covers five 2026 colours in separate `front.webp`, `charging.webp`, and `top.webp` files. Other model/year/paint folders are prepared but currently pending real artwork. Trim names are not part of the filesystem path. See [complete artwork mapping](docs/ARTWORK_MAPPING.md).
 
 See [artwork and tire view policy](docs/SHAPE_ASSETS_AND_TPMS.md) and [design lock](docs/DESIGN_LOCK.md).
 
@@ -90,3 +90,8 @@ The charging sensor determines the view; an available charging cable alone does 
 The tested UI improvements originated in [PR #21](https://github.com/matanmesika/xpeng-vehicle-card/pull/21); image research continues separately. See [release checklist](docs/RELEASE_CHECKLIST.md) and [changelog](CHANGELOG.md). Final real-vehicle photography, licence checks, owner visual sign-off, and installation testing in an actual Home Assistant instance remain separate release gates.
 
 *Independent community dashboard; not an official XPENG product.*
+
+
+## Full model/year-group/paint image inventory
+
+The [artwork map](vehicle-art-map.json) covers all current catalog combinations and explicitly marks missing image views. Run `python tools/sync_vehicle_artwork.py` after adding correctly licensed WebP images to the corresponding folder; see [mapping instructions](docs/ARTWORK_MAPPING.md). Until the file is available, the dashboard displays a labelled illustration. No trim-specific photos or guessed vehicle/paint substitutions are used.

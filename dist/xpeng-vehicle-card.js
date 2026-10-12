@@ -127,7 +127,12 @@ function xpNormalizeAppearance(value){
  return {...v,year:yr,model:mdl,trim,color,interior};
 }
 function xpAssetModel(model){return String(model).toLowerCase().replace(/\s+/g,'_').replace(/\+/g,'_plus').replace(/[^a-z0-9_]/g,'');}
-const XP_ARTWORK_INDEX = Object.freeze({exact:{has:(relative)=>/^vehicles\/[a-z0-9_]+\/[0-9]{4}(?:-[0-9]{4})?\/[a-z0-9_]+\/(?:front|charging|top)\.webp$/.test(relative)}});
+const XP_ARTWORK_INDEX = new Set(["vehicles/g6/2026/arctic_white/charging.webp","vehicles/g6/2026/arctic_white/front.webp","vehicles/g6/2026/arctic_white/top.webp","vehicles/g6/2026/graphite_gray/charging.webp","vehicles/g6/2026/graphite_gray/front.webp","vehicles/g6/2026/graphite_gray/top.webp","vehicles/g6/2026/midnight_black/charging.webp","vehicles/g6/2026/midnight_black/front.webp","vehicles/g6/2026/midnight_black/top.webp","vehicles/g6/2026/silver_frost/charging.webp","vehicles/g6/2026/silver_frost/front.webp","vehicles/g6/2026/silver_frost/top.webp","vehicles/g6/2026/stellar_purple/charging.webp","vehicles/g6/2026/stellar_purple/front.webp","vehicles/g6/2026/stellar_purple/top.webp"]);
+function xpVehicleAssetPath(a,view){
+ if(!['front','charging','top'].includes(view))return null;
+ const group=xpYearGroupFor(a.model,a.year);
+ return group?'vehicles/'+xpAssetModel(a.model)+'/'+group.id+'/'+a.color+'/'+view+'.webp':null;
+}
 const XP_SCENE_BACKGROUND = 'https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/assets/xpeng-approved-lakeside-background.webp';
 const XP_HACS_BASE='/hacsfiles/xpeng-vehicle-card/';
 function xpPackagedUrl(relative){return 'https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/assets/'+relative;}
@@ -291,11 +296,14 @@ function xpSensorMappingMode(cfg,profile){
 }
 class XpengVehicleCard extends HTMLElement{
  constructor(){
-  super();this.attachShadow({mode:'open'});this._config={};this._hass=null;this._view='overview';this._expanded=false;this._vehicleIndex=0;this._infoOpen=false;this._tireOpen=false;
+  super();this.attachShadow({mode:'open'});this._config={};this._hass=null;this._view='overview';this._expanded=false;this._vehicleIndex=0;this._infoOpen=false;this._tireOpen=false;this._failedArtwork=new Set();
   this.shadowRoot.addEventListener('error',ev=>{
       const img=ev.target;
-      if(!img?.matches?.('img[data-car-art]')||img.dataset.fallbackUsed)return;
-      img.dataset.fallbackUsed='true';img.src=this.placeholderArt();
+      if(!img?.matches?.('img[data-car-art],img[data-top-art]'))return;
+      const failed=img.getAttribute('src');
+      if(!failed||this._failedArtwork.has(failed))return;
+      this._failedArtwork.add(failed);
+      this.render();
     },true);
    this.shadowRoot.addEventListener('click',ev=>{
     const b=ev.target.closest('button');if(!b)return;
@@ -352,21 +360,24 @@ class XpengVehicleCard extends HTMLElement{
  number(key){const v=this.val(key);return v===null||v===''||!Number.isFinite(Number(v))?null:Number(v);}
  bool(key){return xpBool(this.val(key));}
  num(key,unit='',dec=0){const v=this.number(key);return v===null?'—':xpNum(v,dec)+(unit?' '+unit:'');}
- assetSpec(){
+ artworkUrl(relative){
     const configuredBase=this._config.image_path;
     const base=(!configuredBase||configuredBase==='/hacsfiles/xpeng-vehicle-card/assets')?null:configuredBase.replace(/\/$/,'');
-    const bundled=relative=>base?base+'/'+relative:xpPackagedUrl(relative);
+    return base?base+'/'+relative:xpPackagedUrl(relative);
+  }
+  assetSpec(){
+    const bundled=relative=>this.artworkUrl(relative);
     const profileArt=key=>Array.isArray(this._config.vehicles)&&this._config.vehicles.length
       ?this.vehicle()?.[key]:this.vehicle()?.[key]||this._config[key];
     const chosen=(this._view==='charging'&&profileArt('charging_image'))||profileArt('image');
     const a=this.appearance(),model=xpAssetModel(a.model),view=this._view==='charging'?'rear':'front';
-    if(xpLocalArtworkPath(chosen))
+    if(xpLocalArtworkPath(chosen)&&!this._failedArtwork.has(chosen))
       return {src:chosen,illustrative:false,studio:false,tier:'manual',view,view_status:'owner_supplied',
         description:'Owner-supplied artwork for '+a.model+' '+a.color};
     // Prefer separately packaged and verified three-view assets when present.
     // A view must never silently reuse a front render as a rear or overhead render.
-    const candidate='vehicles/'+model+'/'+a.year+'/'+a.color+'/'+(view==='rear'?'charging':'front')+'.webp';
-    if(XP_ARTWORK_INDEX.exact.has(candidate))
+    const candidate=xpVehicleAssetPath(a,view==='rear'?'charging':'front');
+    if(candidate&&XP_ARTWORK_INDEX.has(candidate)&&!this._failedArtwork.has(bundled(candidate)))
       return {src:bundled(candidate),illustrative:false,studio:false,tier:'exact-view',view,
         view_status:'matching_view',description:'Matched '+a.model+' '+a.year+' '+a.color+' '+view};
     return {src:this.placeholderArt(),illustrative:true,studio:false,tier:'silhouette',view,
@@ -503,11 +514,10 @@ class XpengVehicleCard extends HTMLElement{
   topCarArt(){
     const a=this.appearance(),photo=Array.isArray(this._config.vehicles)&&this._config.vehicles.length
       ?this.vehicle()?.top_image:this.vehicle()?.top_image||this._config.top_image;
-    if(xpLocalArtworkPath(photo))return `<img class="xp-top-cutout" data-top-art src="${xpEsc(photo)}" alt="${xpEsc('Top-down view of '+a.model)}" loading="eager">`;
-    const model=xpAssetModel(a.model);
-    const candidate='vehicles/'+model+'/'+a.year+'/'+a.color+'/top.webp';
-    if(XP_ARTWORK_INDEX.exact.has(candidate))
-      return `<img class="xp-top-cutout" data-top-art src="${xpEsc((this._config.image_path&&this._config.image_path!=="/hacsfiles/xpeng-vehicle-card/assets"?this._config.image_path.replace(/\/$/,"")+"/"+candidate:xpPackagedUrl(candidate)))}" alt="${xpEsc('Top-down view of '+a.model)}" loading="eager">`;
+    if(xpLocalArtworkPath(photo)&&!this._failedArtwork.has(photo))return `<img class="xp-top-cutout" data-top-art src="${xpEsc(photo)}" alt="${xpEsc('Top-down view of '+a.model)}" loading="eager">`;
+    const candidate=xpVehicleAssetPath(a,'top');
+    if(candidate&&XP_ARTWORK_INDEX.has(candidate)&&!this._failedArtwork.has(this.artworkUrl(candidate)))
+      return `<img class="xp-top-cutout" data-top-art src="${xpEsc(this.artworkUrl(candidate))}" alt="${xpEsc('Top-down view of '+a.model)}" loading="eager">`;
     const paint=XP_PAINTS.find(p=>p.id===a.color)?.hex||'#f2f4f2';
     return `<svg class="xp-top-car" viewBox="0 0 300 600" role="img" aria-label="${xpEsc('Illustrative overhead view of '+a.model)}">
     <defs><linearGradient id="xp-top-body"><stop offset="0" stop-color="#647381"/><stop offset=".2" stop-color="${xpEsc(paint)}"/><stop offset=".8" stop-color="${xpEsc(paint)}"/><stop offset="1" stop-color="#546576"/></linearGradient>
