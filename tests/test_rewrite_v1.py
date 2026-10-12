@@ -53,7 +53,10 @@ with sync_playwright() as p:
         page.on('pageerror', lambda e: errors.append(str(e)))
 
         def serve_asset(route):
-            file = ROOT / 'dist' / 'assets' / route.request.url.split('/local/xpeng/', 1)[-1]
+            url = route.request.url
+            relative = (url.split('/local/xpeng/',1)[-1] if '/local/xpeng/' in url
+                        else url.split('/hacsfiles/xpeng-vehicle-card/assets/',1)[-1])
+            file = ROOT / 'dist' / 'assets' / relative
             if not file.is_file():
                 missing.append(str(file))
                 return route.fulfill(status=404, body='Missing artwork')
@@ -61,6 +64,7 @@ with sync_playwright() as p:
             route.fulfill(status=200, body=file.read_bytes(), content_type=mime)
 
         page.route('**/local/xpeng/**', serve_asset)
+        page.route('**/hacsfiles/xpeng-vehicle-card/assets/**', serve_asset)
         assert (ROOT / 'dist/assets/xpeng-reference-background.webp').is_file()
 
         page.set_content(
@@ -80,7 +84,7 @@ with sync_playwright() as p:
         host = page.locator('xpeng-vehicle-card')
         assert host.locator('.xp-overview').count() == 1
         assert host.locator('.xp-brand').is_visible()
-        assert 'xpeng-reference-background.webp' in host.locator('.xp-night-photo').get_attribute('style')
+        assert '/hacsfiles/xpeng-vehicle-card/assets/xpeng-reference-background.webp' in host.locator('.xp-night-photo').get_attribute('style')
 
         assert host.locator('.xp-charge').count() == 0
         assert '—' in host.locator('.xp-soc').inner_text()
