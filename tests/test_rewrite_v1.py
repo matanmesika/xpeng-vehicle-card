@@ -79,6 +79,7 @@ with sync_playwright() as p:
 
         host = page.locator('xpeng-vehicle-card')
         assert host.locator('.xp-overview').count() == 1
+        assert host.locator('.xp-brand').is_visible()
         assert 'xpeng-reference-background.webp' in host.locator('.xp-night-photo').get_attribute('style')
 
         assert host.locator('.xp-charge').count() == 0
@@ -142,6 +143,7 @@ with sync_playwright() as p:
         page.evaluate("states => document.querySelector('xpeng-vehicle-card').hass = {states}", CHARGING)
         assert host.locator('.xp-charge').count() == 1
         assert host.locator('.xp-overview').count() == 0
+        assert host.locator('.xp-brand').is_visible()
         assert host.locator('.xp-charge-card').count() == 1
         assert 'Charging now' in host.locator('.xp-charge-heading').inner_text()
         assert '62%' in host.locator('.xp-charge-card').inner_text()
