@@ -611,7 +611,7 @@ class XpengVehicleCardEditor extends HTMLElement{
    if(['model','interior'].includes(key))delete cfg.interior_image;
    if(cfg.prefix&&!/^[a-z0-9_]+$/.test(cfg.prefix))return;
    if(key==='model'){
-     cfg.year=xpAllowedYearGroups(cfg.model)[0]?.id||cfg.year;
+     const groups=xpAllowedYearGroups(cfg.model);cfg.year=groups[groups.length-1]?.id||cfg.year;
      cfg.trim=xpAllowedTrims(cfg.model,cfg.year)[0]?.id||cfg.trim;
      cfg.color=xpAllowedPaints(cfg.model,cfg.year)[0]?.id||cfg.color;
      cfg.interior=xpAllowedInteriors(cfg.model,cfg.year)[0]?.id||cfg.interior;
