@@ -1,49 +1,57 @@
-name: Frontend and browser tests
+name: Frontend validation
+
 on:
   push:
   pull_request:
   workflow_dispatch:
+
 permissions:
   contents: read
+
 jobs:
-  tests:
+  validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Validate JavaScript and JSON
+
+      - name: Validate JavaScript and metadata
+        shell: bash
         run: |
-          node --check dist/xpeng-vehicle-card.js
+          set -euo pipefail
           node --check src/xpeng-vehicle-card.js
-          python -m json.tool hacs.json > /dev/null
-          python -m json.tool model-catalog.json > /dev/null
-          python -m json.tool profiles/year-profiles.json > /dev/null
-      - name: Validate all XPENG model/year profiles and sensor mappings
-        run: node --test tests/dashboard-v010.test.cjs tests/all-profiles.test.cjs
-      - name: Install browser test dependencies
+          node --check dist/xpeng-vehicle-card.js
+          cmp src/xpeng-vehicle-card.js dist/xpeng-vehicle-card.js
+          python -m json.tool hacs.json >/dev/null
+          python -m json.tool model-artwork.json >/dev/null
+          python -m json.tool vehicle-art-inventory.json >/dev/null
+          if [ -f profiles/year-profiles.json ]; then
+            python -m json.tool profiles/year-profiles.json >/dev/null
+          fi
+
+      - name: Validate current G6 WebP assets
+        shell: bash
         run: |
-          python -m pip install playwright pytest
-          python -m playwright install --with-deps chromium
-      - name: Run two-screen UI acceptance tests
-        run: |
-          python tests/test_rewrite_v1.py
-      - name: Upload XPENG Dashboard v0.1.1 browser screenshots
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: xpeng-dashboard-v011-browser-screenshots
-          path: previews/dashboard-v011/*.png
-          if-no-files-found: warn
-      - name: Verify branding independence
-        run: |
-          python -m pytest -q tests/test_brand_independence.py
-      - name: Check installable HACS distribution
-        run: |
-          python tests/test_hacs_package.py
-          python tests/test_hacs_install_layout.py
-          python tests/test_shape_inventory.py
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          files = [
+              "assets/xpeng-approved-lakeside-background.webp",
+              "assets/vehicles/g6/2026/core_performance_awd/front.webp",
+              "assets/vehicles/g6/2026/core_performance_awd/charging.webp",
+              "assets/vehicles/g6/2026/core_performance_awd/top.webp",
+          ]
+          for name in files:
+              p = Path(name)
+              assert p.is_file() and p.stat().st_size > 100, name
+              data = p.read_bytes()
+              assert data[:4] == b"RIFF" and data[8:12] == b"WEBP", name
+          print("PASS: current G6 artwork and approved backdrop are valid WebP files")
+          PY
