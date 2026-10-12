@@ -262,7 +262,7 @@ test('multi-vehicle profiles never inherit a different cars exterior or interior
  card.render();
  const g9=card.assetSpec();
  assert.equal(g9.tier,'model-year-trim');
- assert.ok(g9.src.endsWith('/vehicles/g9/2026/long_range_rwd/graphite_gray.webp'),g9.src);
+ assert.ok(g9.src.endsWith('/xpeng-asset-vehicles-g9-2026-long_range_rwd-graphite_gray.webp'),g9.src);
  assert.doesNotMatch(card.interiorPreview(),/g6-cabin|root-cabin/);
  assert.match(card.interiorPreview(),/coffee/i);
  card.hass={states:{'binary_sensor.my_xpeng_is_charging':{state:'on'}}};
