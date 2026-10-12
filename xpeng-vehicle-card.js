@@ -341,10 +341,35 @@ class XpengVehicleCard extends HTMLElement{
     const a=this.appearance(),model=xpAssetModel(a.model);
     if(custom&&/^\/(?:local|hacsfiles)\/[a-zA-Z0-9/_\-.]+$/.test(custom))
       return {src:custom,illustrative:false,studio:false,description:'User-supplied vehicle artwork'};
-    // Explicit 2026 G6 preview art is bundled per paint / trim, unlike older model artwork.
-    if(a.model==='G6'&&a.year==='2026')
-      return {src:base+'/vehicles/g6/2026/'+xpAssetModel(a.trim)+'/'+a.color+'.webp',
-        illustrative:true,studio:false,description:'G6 2026 transparent preview artwork; exact manufacturer imagery under review'};
+    // Strict 2026 asset inventory: prefer year/trim/paint previews only when the
+    // exact packaged variant exists. Do NOT substitute a different colour or year.
+    // These are illustrative renderings, not manufacturer-certified photographs.
+    const supportedYearArt={
+      G6:{
+        core_rwd:['arctic_white','graphite_gray','midnight_black','silver_frost','stellar_purple'],
+        core_plus_rwd:['arctic_white','graphite_gray','midnight_black','silver_frost','stellar_purple'],
+        core_performance_awd:['arctic_white','graphite_gray','midnight_black','silver_frost','stellar_purple'],
+        black_edition:['midnight_black'],
+        unspecified:['arctic_white','graphite_gray','midnight_black','silver_frost','stellar_purple']
+      },
+      G9:{
+        standard_range_rwd:['arctic_white','graphite_gray','midnight_black','silver_frost'],
+        long_range_rwd:['arctic_white','graphite_gray','midnight_black','silver_frost'],
+        performance_awd:['arctic_white','graphite_gray','midnight_black','silver_frost'],
+        unspecified:['arctic_white','graphite_gray','midnight_black','silver_frost']
+      }
+    };
+    const paints=a.year==='2026'?supportedYearArt[a.model]?.[a.trim]:null;
+    if(paints?.includes(a.color)){
+      return {src:base+'/vehicles/'+model+'/'+a.year+'/'+xpAssetModel(a.trim)+'/'+a.color+'.webp',
+        illustrative:true,studio:false,
+        description:a.model+' '+a.year+' '+a.trim+' '+a.color+' illustrative year-specific preview; manufacturer verification pending'};
+    }
+    // When the colour is not in the exact model/year bundle, explicitly display a
+    // labelled silhouette rather than implying that another year's car is correct.
+    if(a.year==='2026'&&['G6','G9'].includes(a.model))
+      return {src:this.placeholderArt(),illustrative:true,studio:false,
+        description:'Coloured silhouette; exact '+a.model+' '+a.year+' '+a.color+' artwork pending'};
     // Existing model-family images are explicitly illustrative for other model years.
     // They are NEVER represented as manufacturer-approved exact model/year photography.
     const legacy={graphite_gray:'space_grey',midnight_black:'jet_black'}[a.color]||a.color;
