@@ -1,27 +1,26 @@
-# XPENG Dashboard — alpha.6 UI-only release checklist
+# XPENG Dashboard — v1.0.0-beta.1 release checklist
 
-**Scope:** XPENG Lovelace frontend only. Nothing in the separate integration/backend is changed. This user-authorized release publishes the tested UI/editor fixes **without new car image files**, as an experimental alpha.6. Confirm actual publication on [Releases](https://github.com/matanmesika/xpeng-vehicle-card/releases).
+**Scope:** XPENG Lovelace frontend only. The separate XPENG Home Assistant integration/backend is not changed by this repository.
 
 ## Engineering gates
 
-- [x] Fixed approved landscape background in Vehicle status / Charging.
-- [x] Single hero artwork per **model + paint**; highest-available-trim preview reused for all model years and selected trims.
-- [x] Year only changes trim list; trim selection is informational.
-- [x] Network and info icon on one header row; popup closed by default and toggles by click only.
-- [x] Info popup has exactly Connection and Last vehicle update. No legacy cabin/artwork details.
-- [x] Sensor-driven Charging and live TPMS overhead detail with four corner readings.
-- [x] Editor Data source image/path controls removed; only auto/manual sensor mapping selection remains. Manual exposes exactly 15 entity fields, auto hides all and ignores stored manual overrides; legacy YAML mapping remains compatible.
-- [x] Source/dist JavaScript synced; flat HACS distribution prepared.
-- [ ] Confirm all **current** GitHub CI checks green for the proposed merge SHA. Results may change as commits are added.
-- [ ] Verify actual Lovelace/HACS installation, resource refresh and icon/popover interaction against a real HA instance.
+- [x] `src/xpeng-vehicle-card.js` and `dist/xpeng-vehicle-card.js` are synchronized.
+- [x] JavaScript syntax validation passes for source and distribution bundles.
+- [x] `hacs.json`, `model-artwork.json` and `vehicle-art-inventory.json` are the current metadata sources.
+- [x] The approved lakeside background remains the common dashboard backdrop.
+- [x] Current G6 2026 Core Performance AWD front, charging and overhead WebP assets are present.
+- [x] The temporary `mix-blend-mode: multiply` workaround has been removed.
+- [x] Obsolete per-release note files were removed; `CHANGELOG.md` is the canonical release history.
+- [x] Legacy alpha publishing workflows were removed and replaced by one beta prerelease workflow.
+- [ ] Confirm the current GitHub Actions validation run is green for the release commit.
+- [ ] Verify installation/update through HACS on a real Home Assistant instance.
+- [ ] Verify phone and desktop rendering against the approved visual design.
 
-## Image, visual and licensing gates
+## Beta limitations
 
-- [ ] Licensed transparent high-trim vehicle packshots for all supported models and selected exterior colours. Current previews are illustrative, not authenticated manufacturer images.
-- [ ] Accurate rear/charging and overhead TPMS image assets; distinguish fallback previews from photos.
-- [ ] Compare Chromium desktop and phone screenshots with owner-approved status/charging concepts and obtain owner visual approval.
-- [ ] Keep the approved background unmodified byte-for-byte.
-- [ ] Confirm real XPENG-connected HA sensor names/unit conversions if representative user data is available and permission is given.
-- [ ] After UI checks, publish only the **alpha.6 UI prerelease**, then verify its GitHub release and zip artifact. Genuine G6 replacement photos remain blocked by asset provenance/licensing and separate visual owner approval.
+- Artwork for all XPENG models and exterior colours is not yet mapped.
+- Current G6 artwork is the baseline for the next colour-mapping phase.
+- Runtime artwork currently depends on GitHub-hosted assets, so network access is required.
+- A documented beta candidate is not the same as a published GitHub Release; confirm publication under [GitHub Releases](https://github.com/matanmesika/xpeng-vehicle-card/releases).
 
-See [DESIGN_LOCK.md](DESIGN_LOCK.md), [model artwork mapping](model-artwork.json), and [PR #21](https://github.com/matanmesika/xpeng-vehicle-card/pull/21).
+See [DESIGN_LOCK.md](DESIGN_LOCK.md), [model artwork mapping](../model-artwork.json), and [CHANGELOG.md](../CHANGELOG.md).
