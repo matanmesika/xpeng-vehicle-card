@@ -1,4 +1,4 @@
-# XPENG Dashboard — v1.0.0-beta.1 release checklist
+# XPENG Dashboard — v1.0.0-beta.2 release checklist
 
 **Scope:** XPENG Lovelace frontend only. The separate XPENG Home Assistant integration/backend is not changed by this repository.
 
@@ -19,7 +19,7 @@
 ## Beta limitations
 
 - Artwork for all XPENG models and exterior colours is not yet mapped.
-- Current G6 artwork is the baseline for the next colour-mapping phase.
+- Current G6 2026 Graphite Gray artwork is the baseline for the next colour-mapping phase, using the model/year/color hierarchy.
 - Runtime artwork currently depends on GitHub-hosted assets, so network access is required.
 - A documented beta candidate is not the same as a published GitHub Release; confirm publication under [GitHub Releases](https://github.com/matanmesika/xpeng-vehicle-card/releases).
 
