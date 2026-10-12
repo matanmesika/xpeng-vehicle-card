@@ -91,22 +91,22 @@ test('any unknown-year image is clearly labelled illustrative, no false official
 });
 
 test('the approved background stays byte-for-byte frozen and shared between status and charging',()=>{
- const expectedGitBlob='cc33b657c1785d1dbad0cb943a38ea4275a8435d';
- const file=path.join(ROOT,'dist/assets/xpeng-reference-background.webp');
+ const expectedGitBlob='a28766ffcb8607f096077e67fdc3fbb04b79c883';
+ const file=path.join(ROOT,'dist/assets/xpeng-approved-lakeside-background.webp');
  const raw=fs.readFileSync(file);
  const blob=crypto.createHash('sha1')
     .update(Buffer.from('blob '+raw.length)).update(Buffer.from([0]))
    .update(raw).digest('hex');
  assert.equal(blob,expectedGitBlob,
    'Backdrop was changed without explicit owner approval; restore approved pixels');
- const root=fs.readFileSync(path.join(ROOT,'assets/xpeng-reference-background.webp'));
+ const root=fs.readFileSync(path.join(ROOT,'assets/xpeng-approved-lakeside-background.webp'));
  assert.ok(root.equals(raw),'Root and HACS background must be byte-identical');
  const card=new Card();card.setConfig({model:'G6',year:'2026',color:'arctic_white'});
  const idle=card.sceneBackdrop();
  card.hass={states:{'binary_sensor.my_xpeng_is_charging':{state:'on'}}};
  const active=card.sceneBackdrop();
  assert.equal(idle,active);
- assert.ok(idle.includes('xpeng-reference-background.webp'));
+ assert.ok(idle.includes('xpeng-approved-lakeside-background.webp'));
  assert.equal((idle.match(/xp-night-photo/g)||[]).length,1);
  assert.ok(!source.includes('night-mountain-scene.svg'));
 });
@@ -144,7 +144,7 @@ test('data-driven asset index matches actual repo files for every model and year
  const index=JSON.parse(fs.readFileSync(path.join(ROOT,'vehicle-art-inventory.json'),'utf8'));
  const packaged=JSON.parse(fs.readFileSync(path.join(ROOT,'dist/vehicle-art-inventory.json'),'utf8'));
  assert.deepEqual(index,packaged);
- assert.equal(index.backdrop,'xpeng-reference-background.webp');
+ assert.equal(index.backdrop,'xpeng-approved-lakeside-background.webp');
  assert.equal(index.backdrop_is_common,true);
  const c=vm.runInNewContext('({exact:Array.from(XP_ARTWORK_INDEX.exact),family:Array.from(XP_ARTWORK_INDEX.family)})',context);
  assert.deepEqual(Array.from(c.exact).sort(),index.exact.slice().sort());

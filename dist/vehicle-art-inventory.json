@@ -122,7 +122,7 @@
     "models/x9-space_grey.webp",
     "models/x9-stellar_purple.webp"
   ],
-  "backdrop": "xpeng-reference-background.webp",
+  "backdrop": "xpeng-approved-lakeside-background.webp",
   "backdrop_is_common": true,
   "caveats": [
     "Model-family artwork must not be presented as exact model-year imagery.",

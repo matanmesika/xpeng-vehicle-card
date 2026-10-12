@@ -65,11 +65,11 @@ with sync_playwright() as p:
 
         page.route('**/local/xpeng/**', serve_asset)
         page.route('**/hacsfiles/xpeng-vehicle-card/assets/**', serve_asset)
-        assert (ROOT / 'dist/assets/xpeng-reference-background.webp').is_file()
+        assert (ROOT / 'dist/assets/xpeng-approved-lakeside-background.webp').is_file()
         from hashlib import sha256
-        original_bg=ROOT/'dist/assets/xpeng-reference-background.webp'
-        assert original_bg.stat().st_size == 50018
-        assert sha256(original_bg.read_bytes()).hexdigest() == '5f6ea56528b84b7e25bb94cf1395a27e1338dccbe3e3e9dde537e7ce634af9de'
+        original_bg=ROOT/'dist/assets/xpeng-approved-lakeside-background.webp'
+        assert original_bg.stat().st_size == 255854
+        assert sha256(original_bg.read_bytes()).hexdigest() == 'c0db38e9cd1c1827c53005c874af420563034258eb25444c1698d978277cf1ef'
 
         page.set_content(
             '<!doctype html><html><head><base href="https://ha.local/"><meta charset="utf-8">'
@@ -88,7 +88,7 @@ with sync_playwright() as p:
         host = page.locator('xpeng-vehicle-card')
         assert host.locator('.xp-overview').count() == 1
         assert host.locator('.xp-brand').is_visible()
-        assert '/hacsfiles/xpeng-vehicle-card/assets/xpeng-reference-background.webp' in host.locator('.xp-night-photo').get_attribute('style')
+        assert '/hacsfiles/xpeng-vehicle-card/assets/xpeng-approved-lakeside-background.webp' in host.locator('.xp-night-photo').get_attribute('style')
 
         assert host.locator('.xp-charge').count() == 0
         assert '—' in host.locator('.xp-soc').inner_text()
@@ -121,7 +121,7 @@ with sync_playwright() as p:
                   bounds: [rect.x, rect.y, rect.width, rect.height]
                 };
             }""")
-            assert 'xpeng-reference-background.webp' in layout['url'], layout
+            assert 'xpeng-approved-lakeside-background.webp' in layout['url'], layout
             assert layout['size'] == 'cover', layout
             assert layout['position'] == '50% 50%', layout
             page.evaluate("""() => {
@@ -262,7 +262,7 @@ with sync_playwright() as p:
             image=host.locator('img[data-car-art]')
             assert image.get_attribute('data-art-tier')==tier,(model,year,tier)
             assert image.get_attribute('data-fallback-used') is None
-            assert 'xpeng-reference-background.webp' in host.locator('.xp-night-photo').get_attribute('style')
+            assert 'xpeng-approved-lakeside-background.webp' in host.locator('.xp-night-photo').get_attribute('style')
             assert host.locator('.xp-overview').count()==1
             if tag=='desktop':
                 safe='-'.join((model,year,paint)).lower().replace(' ','_')

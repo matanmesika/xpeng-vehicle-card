@@ -1,19 +1,20 @@
-# Approved XPENG G6 lakeside assets — integration instructions
+# Approved XPENG lakeside scene — bundled dashboard assets
 
-This document describes **frontend-only** manual asset deployment. It does not alter the XPENG backend.
+**Bundled starting with v1.0.0-alpha.4. No manual image uploads or YAML paths required.**
 
-## Files
+This is a frontend-only XPENG dashboard. The separate Home Assistant XPENG integration/backend is untouched.
 
-The owner-approved reference is a night mountain/lake scene with a house on the left, wet pavement and reflections, plus a separately transparent 2026 white G6 foreground.
+## Actual GitHub/HACS image files
 
-- `xpeng-approved-lakeside-background.webp`: clean, photoreal 1536×864 background (no car, text, UI or logo).
-- `xpeng-g6-2026-white-cutout.webp`: RGBA foreground with the white G6 only.
-- `xpeng-g6-2026-white-cutout.png`: PNG equivalent.
-- `xpeng-background-car-preview.jpg`: preview of the proposed scene composition.
+- `dist/assets/xpeng-approved-lakeside-background.webp`: 1536×864 clean house/lake/mountains/wet-pavement background. The root `assets/` copy is byte-identical. This is the **default** scenery in both screens.
+- `dist/assets/vehicles/g6/2026/core_plus_rwd/arctic_white.webp`: independently transparent white G6 2026 artwork, auto selected with G6 / 2026 / Core+ RWD / Arctic White. Root copy also byte-identical.
+- All other model/year/trim/paint variants keep their existing catalogued images and illustrative fallback.
 
-**Deployment caveat:** these generated binary files are delivered separately and **are not yet bundled in this draft GitHub branch**. Do not advertise the branch as having the new background installed or release it as final. Place the first two WebP files in Home Assistant `/config/www/xpeng/`, making them available as `/local/xpeng/…`, before enabling the configuration below.
+No CSS mountain, sky or fake pavement backgrounds are generated. CSS positions the one real raster landscape and the independently selected alpha cutout. Charging station/cable elements are still decorative frontend SVG/CSS and should be visually reviewed.
 
-## Card configuration
+## HACS card setup
+
+Install the repository `matanmesika/xpeng-vehicle-card` in HACS as a custom **Dashboard** repository. Select tag `v1.0.0-alpha.4` and reload the frontend.
 
 ```yaml
 type: custom:xpeng-vehicle-card
@@ -23,15 +24,16 @@ year: "2026"
 trim: core_plus_rwd
 color: arctic_white
 interior: light_gray
-background_image: /local/xpeng/xpeng-approved-lakeside-background.webp
-image: /local/xpeng/xpeng-g6-2026-white-cutout.webp
 grid_options:
   columns: full
   rows: auto
 ```
 
-The scenic background is a **global card property**: it does not change between Vehicle status and Charging or across vehicle model/year/colour selections. The transparent vehicle remains a separate live image layer. Individual car photos must not be copied across a different model or paint.
+No `background_image`, `image`, local folders or separate ZIP are needed. The owner can still configure optional `background_image` (one global card image) or `image` (specific car) from the editor if desired. Existing explicit overrides take priority until cleared.
 
-There are no CSS-drawn mountains, scenery layers, or simulated photographic floor; CSS only positions a single raster background and the foreground widgets. The charging station/cable are still decorative CSS/SVG elements in the Charging view. Data continues to come solely from Home Assistant.
+## Source checks
 
-If `background_image` is omitted, the currently bundled legacy `xpeng-reference-background.webp` is still used. The final release should package the approved image and update the default **only after binary assets are actually present and the real browser screenshot is approved**.
+- Bundled background SHA-256: `c0db38e9cd1c1827c53005c874af420563034258eb25444c1698d978277cf1ef`.
+- White G6 transparent WebP SHA-256: `6372377d3a04469a6c12a76942de253d96b27b1ef7619907a13d46de816a52e7`.
+
+The two dashboard views and responsive mobile layout must be tested with real browser screenshots before claiming final 1:1 design parity. The images are owner-selected illustrative assets, not manufacturer-verified model photos.

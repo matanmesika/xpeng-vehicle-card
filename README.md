@@ -1,12 +1,15 @@
 # XPENG Dashboard
 
-**Dashboard v0.1.1** — a standalone, read-only Home Assistant frontend card for XPENG vehicles.
+**Dashboard v1.0.0-alpha.4** — a standalone, read-only Home Assistant frontend card for XPENG vehicles.
 
-> **Image status:** current bundled G6 art and old preview screenshots are **not** an approved match for the owner's 2026 design reference. The new vehicle-year/trim/paint-specific art set and new actual screenshots must be delivered before a stable release. We do not promote the old images as the current dashboard.
+> **Image status:** the supplied approved backdrop and white G6 2026 transparent asset are included; exact full-scene visual parity still needs acceptance. The new vehicle-year/trim/paint-specific art set and new actual screenshots must be delivered before a stable release. We do not promote the old images as the current dashboard.
 
-**Design lock:** The current dark mountain and reflective-ground background is now frozen as the visual baseline. Changes must preserve its pixels, framing, two screens, card layout, and the original vehicle/charging presentation. Do not generate a fresh design or replace the background during development. See [DESIGN_LOCK.md](DESIGN_LOCK.md).
+**Design lock:** Preserve the current bundled house/lake/mountain night photograph and keep the vehicle on an independent foreground layer. No synthetic CSS mountain background. See [DESIGN_LOCK.md](DESIGN_LOCK.md).
 
 **Newer model previews:** The editor supports current catalogue models/years. For **G6 and G9 2026**, the card selects bundled model-year + trim + paint assets where available. These are *illustrative previews*, not independently authenticated manufacturer imagery. Unsupported exact variants show a clearly labeled placeholder rather than disguising older artwork as a current-year vehicle. The shared background is independent of model selection.
+
+
+> **Bundled approved-scene preview:** The approved lakeside night photograph is now packaged in both `assets/` and `dist/assets/` and selected as the default shared backdrop. The white 2026 G6 Core+ RWD transparent cutout is packaged at its exact model/year/trim/paint artwork path and selected automatically. No manual `background_image` or `image` configuration is required with HACS. Optional user overrides remain supported. This is still a visual preview, not proof of pixel-perfect matching of all vehicle/charging mockups.
 
 This repository contains the **dashboard**, not the XPENG integration. The integration is responsible for connecting to the vehicle and exposing Home Assistant entities. The dashboard only reads those entities and displays them. Updating this repository never updates the integration.
 
@@ -115,11 +118,11 @@ For contribution and release gates see [AGENTS.md](AGENTS.md) and [artwork block
 
 ### Background implementation
 
-Both screens use **the exact original 1536×864 WebP uploaded by the owner**, `dist/assets/xpeng-reference-background.webp` (SHA-256 `5f6ea56528b84b7e25bb94cf1395a27e1338dccbe3e3e9dde537e7ce634af9de`), packaged in HACS and kept separate from the vehicle image and live HA data. The background is fixed to the HACS asset path and does not change when someone configures a custom vehicle-image folder. It replaces the prior CSS/SVG-generated mountain skyline. The source is a clean landscape supplied during design review; it contains **no** baked-in vehicle, SOC, charging figures or user location. Other model images and lighting still need visual-review approval against the owner's composite screenshots.
+Both screens use **the exact original 1536×864 WebP uploaded by the owner**, `dist/assets/xpeng-approved-lakeside-background.webp` (SHA-256 `5f6ea56528b84b7e25bb94cf1395a27e1338dccbe3e3e9dde537e7ce634af9de`), packaged in HACS and kept separate from the vehicle image and live HA data. The background is fixed to the HACS asset path and does not change when someone configures a custom vehicle-image folder. It replaces the prior CSS/SVG-generated mountain skyline. The source is a clean landscape supplied during design review; it contains **no** baked-in vehicle, SOC, charging figures or user location. Other model images and lighting still need visual-review approval against the owner's composite screenshots.
 
 ## Vehicle / background layer separation and artwork by year
 
-The scenic bitmap `assets/xpeng-reference-background.webp` (HACS: `dist/assets/xpeng-reference-background.webp`) is the **one fixed background layer** for both Vehicle status and Charging. The model, year, trim, paint and interior settings do not modify that background. Car art, text, telemetry and charger/cable elements are rendered as separate foreground layers.
+The scenic bitmap `assets/xpeng-approved-lakeside-background.webp` (HACS: `dist/assets/xpeng-approved-lakeside-background.webp`) is the **one fixed background layer** for both Vehicle status and Charging. The model, year, trim, paint and interior settings do not modify that background. Car art, text, telemetry and charger/cable elements are rendered as separate foreground layers.
 
 Supported catalog coverage is kept in `model-catalog.json` and `profiles/year-profiles.json`. The **real packaged image inventory** is `vehicle-art-inventory.json` (mirrored in `dist/vehicle-art-inventory.json`). At present, it registers 37 exact-path year/trim/paint *preview* files for G6 and G9 2026 and 80 generic model-family previews. Unavailable exact artwork falls back to clearly described model-family illustration or an illustrative silhouette; it is **not** passed off as a factory-accurate photo. This distinction also applies to 2026+ facelift vehicles that have not been photo-verified.
 

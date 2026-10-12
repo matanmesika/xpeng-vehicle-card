@@ -337,10 +337,10 @@ test('XPENG wordmark remains visible in both screen modes',()=>{
 
 test('bundled scenic background is the exact approved 1536x864 WebP upload',()=>{
  const crypto=require('node:crypto');
- const file=path.resolve(__dirname,'../dist/assets/xpeng-reference-background.webp');
+ const file=path.resolve(__dirname,'../dist/assets/xpeng-approved-lakeside-background.webp');
  const background=fs.readFileSync(file);
- assert.equal(background.byteLength,50018);
- assert.equal(crypto.createHash('sha256').update(background).digest('hex'),'5f6ea56528b84b7e25bb94cf1395a27e1338dccbe3e3e9dde537e7ce634af9de');
+ assert.equal(background.byteLength,255854);
+ assert.equal(crypto.createHash('sha256').update(background).digest('hex'),'c0db38e9cd1c1827c53005c874af420563034258eb25444c1698d978277cf1ef');
  const {width,height}=(()=> {
     // WebP VP8 lossy frame stores 14-bit dimensions in the frame header.
     const off=background.indexOf(Buffer.from([0x9d,0x01,0x2a]));
@@ -360,7 +360,7 @@ test('approved lakeside background overrides the legacy bitmap without CSS drawi
  card.hass={states};
  const idle=card.sceneBackdrop();
  assert.ok(idle.includes(background),idle);
- assert.ok(!idle.includes('xpeng-reference-background.webp'));
+ assert.ok(!idle.includes('xpeng-approved-lakeside-background.webp'));
  assert.match(card.shadowRoot.innerHTML,/xp-reference-cutout/);
  assert.ok(!idle.includes('<svg'));
  states['binary_sensor.my_xpeng_is_charging'].state='on';
