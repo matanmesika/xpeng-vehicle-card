@@ -56,7 +56,28 @@ function xpConnText(v){
   if(['error','connection_error','auth_error'].includes(raw))return 'Connection error';
   return String(v).replace(/_/g,' ');
 }
-function xpBool(v){return v==='on'?true:v==='off'?false:null;}
+function xpBool(v){
+  const state=String(v??'').trim().toLowerCase();
+  if(['on','true','1'].includes(state))return true;
+  if(['off','false','0'].includes(state))return false;
+  return null;
+}
+// Accept status sensors from other integrations without confusing 'plugged in' with charging.
+function xpChargingActive(v){
+  const state=String(v??'').trim().toLowerCase().replace(/[ -]+/g,'_');
+  if(['on','true','1','charging','charging_now','charging_active','in_progress','active'].includes(state))return true;
+  if(['off','false','0','idle','paused','ready','stopped','not_charging','disconnected','plugged_in','connected','complete','finished'].includes(state))return false;
+  return null;
+}
+// Explicit mappings can read an entity state or one of its HA attributes.
+// Examples: sensor.vehicle_soc  or  sensor.ev_status|charging_state.
+function xpParseEntityMapping(value){
+  const text=String(value??'').trim();
+  const match=/^([a-z][a-z0-9_]*\.[a-z0-9_]+)(?:\|([A-Za-z_][A-Za-z0-9_]*))?$/.exec(text);
+  if(!match)return null;
+  if(match[2]&&['__proto__','prototype','constructor'].includes(match[2]))return null;
+  return {id:match[1],attribute:match[2]||null};
+}
 function xpPercent(v){if(v===null||v===undefined||v===''||!Number.isFinite(Number(v)))return null;return Math.max(0,Math.min(100,Number(v)));}
 function xpArt(model){let m=String(model).toUpperCase();if(/^G6(\W|$)/.test(m))return 'g6-studio.webp';if(/X9|MPV/.test(m))return 'mpv.svg';if(/P7|P5|M03|MONA|SEDAN/.test(m))return 'sedan.svg';return 'suv.svg';}
 const XP_CATALOG = Object.freeze({"models":[{"id":"G3","name":"G3","start":2018,"end":2021,"shape":"crossover","trim":"none"},{"id":"G3i","name":"G3i","start":2021,"end":2023,"shape":"crossover","trim":"none"},{"id":"P5","name":"P5","start":2021,"end":2024,"shape":"compact_sedan","trim":"none"},{"id":"P7","name":"P7 (Original)","start":2020,"end":2024,"shape":"fastback","trim":"none"},{"id":"P7i","name":"P7i","start":2023,"end":2025,"shape":"fastback","trim":"none"},{"id":"Next P7","name":"Next P7","start":2025,"end":2026,"shape":"fastback","trim":"none"},{"id":"P7+","name":"P7+","start":2024,"end":2026,"shape":"fastback","trim":"none"},{"id":"G6","name":"G6","start":2023,"end":2026,"shape":"g6","trim":"g6"},{"id":"G7","name":"G7","start":2025,"end":2026,"shape":"crossover","trim":"none"},{"id":"G9","name":"G9","start":2022,"end":2026,"shape":"suv","trim":"g9"},{"id":"G9L","name":"G9L","start":2026,"end":2026,"shape":"suv","trim":"none"},{"id":"X9","name":"X9","start":2024,"end":2026,"shape":"mpv","trim":"x9"},{"id":"MONA M03","name":"MONA M03","start":2024,"end":2026,"shape":"compact_sedan","trim":"none"},{"id":"L03","name":"L03","start":2026,"end":2026,"shape":"fastback","trim":"none"},{"id":"GX","name":"GX (fleet/research)","start":2026,"end":2026,"shape":"suv","trim":"none","research":true},{"id":"Other","name":"Other / Future XPENG","start":2018,"end":2026,"shape":"suv","trim":"none","other":true}],"paints":[{"id":"arctic_white","label":"Arctic White","hex":"#F2F4F2"},{"id":"graphite_gray","label":"Graphite Gray","hex":"#66717B"},{"id":"midnight_black","label":"Midnight Black","hex":"#15191F"},{"id":"silver_frost","label":"Silver Frost","hex":"#BCC4C9"},{"id":"stellar_purple","label":"Stellar Purple","hex":"#867592"},{"id":"kaitoke_green_matte","label":"Kaitoke Green Matte","hex":"#526F64"}],"trims":{"default":[{"id":"unspecified","label":"Trim not specified (market-dependent)"}],"G6:2026":[{"id":"core_rwd","label":"Core RWD"},{"id":"core_plus_rwd","label":"Core+ RWD"},{"id":"core_performance_awd","label":"Core Performance AWD"},{"id":"black_edition","label":"Core Performance AWD Black Edition"},{"id":"unspecified","label":"Other configuration / region"}],"G6:2023-2025":[{"id":"unspecified","label":"Trim not specified"},{"id":"standard_range_rwd","label":"Standard Range RWD"},{"id":"long_range_rwd","label":"Long Range RWD"},{"id":"performance_awd","label":"Performance AWD"}],"G9:2022-2026":[{"id":"unspecified","label":"Trim not specified"},{"id":"standard_range_rwd","label":"Standard Range RWD"},{"id":"long_range_rwd","label":"Long Range RWD"},{"id":"performance_awd","label":"Performance AWD"}],"X9:2024-2026":[{"id":"unspecified","label":"Trim not specified"},{"id":"fwd_long_range","label":"FWD Long Range"}]}});
@@ -289,7 +310,7 @@ class XpengVehicleCard extends HTMLElement{
  }
  set hass(hass){
   this._hass=hass;
-  this._view=this.bool('charging')===true?'charging':'overview';
+  this._view=xpChargingActive(this.val('charging'))===true?'charging':'overview';
   this.render();
  }
  get hass(){return this._hass;}
@@ -306,12 +327,18 @@ class XpengVehicleCard extends HTMLElement{
  paint(){return this.appearance().color;}
  data(key){
    const spec=XP_KEYS[key];if(!spec)return null;
-   const override=this.vehicle()?.entities?.[key]||this._config.entities?.[key];
-   const ids=override?[override]:spec.slice(1).map(s=>spec[0]+'.'+this.prefix()+'_'+s);
+   const override=this.vehicle()?.entities?.[key]??this._config.entities?.[key];
+   const custom=override?xpParseEntityMapping(override):null;
+   const ids=custom?[custom.id]:spec.slice(1).map(s=>spec[0]+'.'+this.prefix()+'_'+s);
    const id=ids.find(x=>this._hass?.states?.[x])||ids[0];
-   const entity=this._hass?.states?.[id];const raw=entity?.state??null;
-   const valid=raw!==null&&!(typeof raw==='string'&&XP_INVALID.has(raw.toLowerCase()));
-   return {id,entity,value:valid?raw:null};
+   const entity=this._hass?.states?.[id];
+   const attribute=custom?.attribute;
+   const attrs=entity?.attributes;
+   const raw=attribute
+     ?(attrs&&Object.prototype.hasOwnProperty.call(attrs,attribute)?attrs[attribute]:null)
+     :(entity?.state??null);
+   const valid=raw!==null&&raw!==undefined&&!(typeof raw==='string'&&XP_INVALID.has(raw.trim().toLowerCase()));
+   return {id,entity,attribute,value:valid?raw:null};
  }
  val(key){return this.data(key)?.value??null;}
  number(key){const v=this.val(key);return v===null||v===''||!Number.isFinite(Number(v))?null:Number(v);}
@@ -374,7 +401,7 @@ class XpengVehicleCard extends HTMLElement{
    return Math.floor(min/60)+'h '+Math.round(min%60)+'m';
  }
  chargeStatus(){
-  const v=this.bool('charging'),plug=this.bool('plugged');
+  const v=xpChargingActive(this.val('charging')),plug=this.bool('plugged');
   if(v===true)return 'Charging now';
   if(plug===true)return 'Plugged in';
   if(v===false)return 'Not charging';
@@ -479,7 +506,7 @@ class XpengVehicleCard extends HTMLElement{
   this.toggleAttribute('data-expanded',this._expanded);
   // The charging entity is the single source of truth for choosing the screen.
   // Only an explicit 'on' shows Charging. 'off', unknown and unavailable show Overview.
-  const isCharging=this.bool('charging')===true;
+  const isCharging=xpChargingActive(this.val('charging'))===true;
   this._view=isCharging?'charging':'overview';
   this.shadowRoot.innerHTML=`<style>${XP_CSS}</style><ha-card><div class="xp-scene ${isCharging?'xp-charge':'xp-overview'}">
    ${this.sceneBackdrop()}${this.header()}${isCharging?this.charging():this.overview()}
@@ -498,7 +525,7 @@ class XpengVehicleCardEditor extends HTMLElement{
    if(el.hasAttribute('data-entity')){
      const field=el.dataset.entity,raw=String(el.value||'').trim();
      if(!XP_MAPPABLE_FIELDS.some(x=>x.key===field))return;
-     if(raw&&!/^(sensor|binary_sensor|device_tracker|number|input_number|input_boolean|switch|text|input_text)\.[a-z0-9_]+$/.test(raw)){
+     if(raw&&!xpParseEntityMapping(raw)){
        el.setCustomValidity('Enter a valid Home Assistant entity ID');el.reportValidity();return;
      }
      const mapping={...(this._cfg.entities||{})};
@@ -530,11 +557,11 @@ class XpengVehicleCardEditor extends HTMLElement{
   const select=(key,label,values)=>`<label>${xpEsc(label)}<select data-key="${key}">${values.map(x=>`<option value="${xpEsc(x.id)}" ${v[key]===x.id?'selected':''}>${xpEsc(x.label)}</option>`).join('')}</select></label>`;
   const prefix=v.prefix||'my_xpeng';
   const states=this._hass?.states||{};
-  const dataList=Object.keys(states).filter(id=>/^(sensor|binary_sensor|device_tracker|number|input_number|input_boolean|switch|text|input_text)\./.test(id)).sort().map(id=>'<option value="'+xpEsc(id)+'"></option>').join('');
+  const dataList=Object.keys(states).filter(id=>xpParseEntityMapping(id)).sort().map(id=>'<option value="'+xpEsc(id)+'"></option>').join('');
   const mappingRows=XP_MAPPABLE_FIELDS.map(field=>{
    const spec=XP_KEYS[field.key];
    const auto=spec[0]+'.'+prefix+'_'+spec[1];
-   return '<label class="xp-map-row"><span>'+xpEsc(field.label)+'</span><input data-entity="'+xpEsc(field.key)+'" list="xp-entity-choices" autocomplete="off" value="'+xpEsc(v.entities?.[field.key]||'')+'" placeholder="Auto: '+xpEsc(auto)+'" title="Leave blank for automatic sensor mapping"></label>';
+   return '<label class="xp-map-row"><span>'+xpEsc(field.label)+'</span><input data-entity="'+xpEsc(field.key)+'" list="xp-entity-choices" autocomplete="off" value="'+xpEsc(v.entities?.[field.key]||'')+'" placeholder="Auto: '+xpEsc(auto)+'" title="Leave blank for automatic mapping. Supports entity_id or entity_id|attribute_name"></label>';
   }).join('');
   const expanded=this.shadowRoot.querySelector?.('details[data-mappings]')?.open===true;
   this.shadowRoot.innerHTML=`<style>section{display:grid;gap:13px;padding:14px;font:inherit}label{display:grid;gap:5px;font-size:13px}input,select{border:1px solid #8b959e;border-radius:7px;padding:10px;background:var(--card-background-color,#fff);color:var(--primary-text-color,#111)}p{font-size:12px;opacity:.8;line-height:1.5}
@@ -554,10 +581,10 @@ class XpengVehicleCardEditor extends HTMLElement{
     ${select('color','Exterior paint',xpAllowedPaints(v.model,v.year,v.trim))}
      ${select('interior','Interior finish',xpAllowedInteriors(v.model,v.year,v.trim))}
      <p>${xpIsVerifiedPalette(v.model,v.year)?'Published colour palette; availability differs by market and trim.':'Illustrative colours for this model year; manufacturer availability is not verified.'}</p>
-    <h3>Data source</h3><p>Vehicle readings come from Home Assistant entities; they are automatically resolved by prefix unless manually mapped below.</p>
+    <h3>Data source</h3><p>Every measurement supports automatic matching by prefix or optional manual entity assignment, including from any Home Assistant integration. Charging activates the charging screen only while charging is reported as active.</p>
      <label>Image assets directory<input data-key="image_path" value="${xpEsc(v.image_path||'/hacsfiles/xpeng-vehicle-card/assets')}"></label>
     <details data-mappings ${expanded?'open':''}><summary>Manual sensor mapping · ${XP_MAPPABLE_FIELDS.length} fields</summary>
-       <p>Leave a field blank for automatic matching by prefix. Otherwise choose an existing Home Assistant entity or type its exact ID.</p>
+       <p>Auto mode: leave an item empty and it uses the prefix. Manual mode: pick any Home Assistant entity (including those from another integration), or use entity_id|attribute_name to read an attribute. Each field is configured independently.</p>
        <div class="xp-map-fields">${mappingRows}</div>
        <datalist id="xp-entity-choices">${dataList}</datalist>
      </details>
