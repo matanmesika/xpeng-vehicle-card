@@ -40,16 +40,16 @@ jobs:
           python -m json.tool model-artwork.json >/dev/null
           python -m json.tool vehicle-art-inventory.json >/dev/null
           test -s assets/xpeng-approved-lakeside-background.webp
-          test -s assets/vehicles/g6/2026/core_performance_awd/front.webp
-          test -s assets/vehicles/g6/2026/core_performance_awd/charging.webp
-          test -s assets/vehicles/g6/2026/core_performance_awd/top.webp
+          test -s assets/vehicles/g6/2026/graphite_gray/front.webp
+          test -s assets/vehicles/g6/2026/graphite_gray/charging.webp
+          test -s assets/vehicles/g6/2026/graphite_gray/top.webp
           python - <<'PY'
           from pathlib import Path
           for name in [
               "assets/xpeng-approved-lakeside-background.webp",
-              "assets/vehicles/g6/2026/core_performance_awd/front.webp",
-              "assets/vehicles/g6/2026/core_performance_awd/charging.webp",
-              "assets/vehicles/g6/2026/core_performance_awd/top.webp",
+              "assets/vehicles/g6/2026/graphite_gray/front.webp",
+              "assets/vehicles/g6/2026/graphite_gray/charging.webp",
+              "assets/vehicles/g6/2026/graphite_gray/top.webp",
           ]:
               data = Path(name).read_bytes()
               assert data[:4] == b"RIFF" and data[8:12] == b"WEBP", name
