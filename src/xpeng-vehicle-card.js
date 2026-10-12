@@ -1,5 +1,5 @@
 /**
- * XPENG Dashboard v0.1.1 — two-screen vehicle status and charging dashboard (read-only).
+ * XPENG Dashboard v1.0.0-beta.2 — two-screen vehicle status and charging dashboard (read-only).
  * Independent implementation. Uses no external vehicle-control APIs.
  * Reads only Home Assistant state. Does not send vehicle commands.
  */
