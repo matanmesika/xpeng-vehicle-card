@@ -132,7 +132,7 @@ function xpNormalizeAppearance(value){const v=value||{};
  const incoming=String(v.model??'').replace(/^XPENG\s+/i,'').trim();
  const mdl='G6'; // Single supported artwork model; legacy model selections are ignored.
  const years=xpAllowedYears(mdl);
- const yr=years.includes(String(v.year))?String(v.year):years[0]||'2026';
+ const yr='2026'; // Fixed internal artwork reference; no year selector in the UI.
  const options=xpAllowedTrims(mdl,yr);
  const trim=options.some(x=>x.id===v.trim)?v.trim:options[0].id;
  const paints=xpAllowedPaints(mdl,yr,trim),requestedPaint=xpAppearanceId(v.color);
