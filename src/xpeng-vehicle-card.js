@@ -145,7 +145,7 @@ function xpNormalizeAppearance(value){const v=value||{};
 function xpAssetModel(model){return String(model).toLowerCase().replace(/\s+/g,'_').replace(/\+/g,'_plus').replace(/[^a-z0-9_]/g,'');}
 // Build-time inventory: each entry corresponds to an existing packaged file.
 const XP_ARTWORK_INDEX = Object.freeze({
-  exact:new Set(["vehicles/g6/2026/core_performance_awd/graphite_gray.webp"]),
+  exact:new Set(["vehicles/g6/graphite_gray/front.webp","vehicles/g6/graphite_gray/charging.webp","vehicles/g6/graphite_gray/top.webp"]),
   family:new Set()
 });
 const XP_SCENE_BACKGROUND = 'xpeng-approved-lakeside-background.webp';
@@ -387,7 +387,7 @@ class XpengVehicleCard extends HTMLElement{
         description:'Owner-supplied artwork for '+a.model+' '+a.color};
     // Prefer separately packaged and verified three-view assets when present.
     // A view must never silently reuse a front render as a rear or overhead render.
-    const candidate='vehicles/'+model+'/'+a.year+'/display/'+a.color+'/'+(view==='rear'?'charging':'front')+'.webp';
+    const candidate='vehicles/'+model+'/'+a.color+'/'+(view==='rear'?'charging':'front')+'.webp';
     if(XP_ARTWORK_INDEX.exact.has(candidate))
       return {src:bundled(candidate),illustrative:false,studio:false,tier:'exact-view',view,
         view_status:'matching_view',description:'Matched '+a.model+' '+a.year+' '+a.color+' '+view};
@@ -543,7 +543,7 @@ class XpengVehicleCard extends HTMLElement{
       ?this.vehicle()?.top_image:this.vehicle()?.top_image||this._config.top_image;
     if(xpLocalArtworkPath(photo))return `<img class="xp-top-cutout" data-top-art src="${xpEsc(photo)}" alt="${xpEsc('Top-down view of '+a.model)}" loading="eager">`;
     const model=xpAssetModel(a.model);
-    const candidate='vehicles/'+model+'/'+a.year+'/display/'+a.color+'/top.webp';
+    const candidate='vehicles/'+model+'/'+a.color+'/top.webp';
     if(XP_ARTWORK_INDEX.exact.has(candidate))
       return `<img class="xp-top-cutout" data-top-art src="${xpEsc((this._config.image_path&&this._config.image_path!=="/hacsfiles/xpeng-vehicle-card/assets"?this._config.image_path.replace(/\/$/,"")+"/"+candidate:xpPackagedUrl(candidate)))}" alt="${xpEsc('Top-down view of '+a.model)}" loading="eager">`;
     const paint=XP_PAINTS.find(p=>p.id===a.color)?.hex||'#f2f4f2';
