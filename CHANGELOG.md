@@ -2,6 +2,7 @@
 
 ## v1.0.0-beta.1 — initial beta candidate (2026-10-12)
 
+- Artwork hierarchy corrected to `assets/vehicles/{model}/{year}/{color}/...`; removed trim from vehicle-image paths and moved the G6 Graphite Gray set to `assets/vehicles/g6/2026/graphite_gray/`.
 - Repository cleanup: removed obsolete `RELEASE_NOTES_*.md` files, moved project/reference documents under `docs/`, removed obsolete alpha-specific workflows, and consolidated publishing around a single beta prerelease workflow.
 - Removed the temporary `mix-blend-mode: multiply` vehicle-layer workaround so the new transparent/front artwork renders normally over the approved background; `src` and `dist` remain synchronized.
 - First beta candidate of the standalone XPENG Home Assistant dashboard card (frontend only).
