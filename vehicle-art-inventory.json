@@ -1,16 +1,17 @@
 {
-  "schema_version": 1,
-  "description": "Approved G6 2026 Graphite Gray three-view artwork using model/year/color hierarchy.",
-  "exact": [
+  "schema_version": 2,
+  "description": "Runtime artwork follows vehicle-catalog.json and the model/year-group/color folder convention.",
+  "path_pattern": "vehicles/{model}/{year-group}/{color}/{front,charging,top}.webp",
+  "backdrop": "xpeng-approved-lakeside-background.webp",
+  "backdrop_is_common": true,
+  "trim_affects_artwork": false,
+  "known_uploaded_now": [
     "vehicles/g6/2026/graphite_gray/front.webp",
     "vehicles/g6/2026/graphite_gray/charging.webp",
     "vehicles/g6/2026/graphite_gray/top.webp"
   ],
-  "model_family": [],
-  "backdrop": "xpeng-approved-lakeside-background.webp",
-  "backdrop_is_common": true,
   "caveats": [
-    "Images are fetched from GitHub at runtime, not bundled in HACS; internet is required.",
-    "Artwork selection uses model, year and exterior color only; trim does not affect the artwork path."
+    "The card tries the canonical GitHub asset path and falls back to a generated silhouette if a car image fails to load.",
+    "The complete upload bundle prepared in this chat contains generated G6 2026 color assets plus marked placeholders for combinations that will be replaced later."
   ]
 }
