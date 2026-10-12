@@ -89,6 +89,7 @@ with sync_playwright() as p:
         # Only the overview: no buttons to enter old detailed control pages.
         page.evaluate("states => document.querySelector('xpeng-vehicle-card').hass = {states}", BASE)
         assert host.locator('.xp-overview').count() == 1
+        assert host.locator('[data-view],.xp-clock').count() == 0
         assert '62%' in host.locator('.xp-overview-stat').inner_text()
         assert '391 km' in host.locator('.xp-overview-stat').inner_text()
         assert '12,548 km' in host.locator('.xp-status-panel').inner_text()
@@ -108,13 +109,49 @@ with sync_playwright() as p:
         assert '90 %' in host.locator('.xp-charge-card').inner_text()
         page.screenshot(path=str(OUT / f'{tag}-charging-DEMO.png'), full_page=True)
 
-        # Home is a view switch, not a vehicle-control command.
-        host.locator('[data-view="overview"]').click()
-        assert host.locator('.xp-overview').count() == 1
+        # Home and clock are removed from the header. Only charging telemetry changes the view.
+        assert host.locator('[data-view],.xp-clock,.xp-head-separator').count() == 0
+        assert host.locator('[data-expand]').count() == 1
+        page.evaluate("""() => {
+            const card=document.querySelector('xpeng-vehicle-card');
+            const data={...card.hass.states};
+            data['sensor.my_xpeng_soc']={state:'68'};
+            card.hass={states:data};
+        }""")
+        assert host.locator('.xp-charge').count() == 1
 
-        # A transition back to idle always restores Vehicle status.
-        page.evaluate("states => document.querySelector('xpeng-vehicle-card').hass = {states}", BASE)
+        # Idle, paused, plugged-only and unavailable charging status always show Vehicle status.
+        for state in ('off','paused','plugged_in','unavailable'):
+            page.evaluate("""state => {
+                const card=document.querySelector('xpeng-vehicle-card');
+                card.hass={states:{...card.hass.states,
+                  'binary_sensor.my_xpeng_is_charging':{state}}};
+            }""",state)
+            assert host.locator('.xp-overview').count() == 1
+            assert host.locator('.xp-charge').count() == 0
+        # Strict sensor mapping permits other integrations, with charge-state in an attribute.
+        page.evaluate("""() => {
+            const card=document.querySelector('xpeng-vehicle-card');
+            card.setConfig({prefix:'my_xpeng',model:'G6',year:'2026',trim:'core_plus_rwd',
+               color:'arctic_white',image_path:'/local/xpeng',
+               entities:{charging:'select.external_ev|charging_state'}});
+            card.hass={states:{...card.hass.states,
+               'select.external_ev':{state:'ready',attributes:{charging_state:'charging'}}}};
+        }""")
+        assert host.locator('.xp-charge').count() == 1
+        page.evaluate("""() => {
+            const card=document.querySelector('xpeng-vehicle-card');
+            card.hass={states:{...card.hass.states,
+               'select.external_ev':{state:'ready',attributes:{charging_state:'idle'}}}};
+        }""")
         assert host.locator('.xp-overview').count() == 1
+        # Restore default sensor mapping before testing unavailable values.
+        page.evaluate("""states => {
+            const card=document.querySelector('xpeng-vehicle-card');
+            card.setConfig({prefix:'my_xpeng',model:'G6',year:'2026',trim:'core_plus_rwd',
+               color:'arctic_white',image_path:'/local/xpeng'});
+            card.hass={states};
+        }""",BASE)
 
         # Missing data stays unavailable: zero and screenshot demo values are never substituted.
         page.evaluate("states => document.querySelector('xpeng-vehicle-card').hass = {states}", {
