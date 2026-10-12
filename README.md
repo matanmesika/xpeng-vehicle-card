@@ -11,7 +11,7 @@ This repository contains the **dashboard**, not the XPENG integration. The integ
 - **Vehicle status** — XPENG vehicle artwork, battery percentage, estimated range, odometer, combined tire-pressure display and vehicle location.
 - **Charging** — the same vehicle artwork in a charging scene, live battery percentage, estimated range, charging power, estimated time remaining and charge limit.
 
-The card switches automatically from Vehicle status to Charging when `binary_sensor.<prefix>_is_charging` becomes `on`, and returns when it becomes `off`. **The charging-state entity is the only screen-switch trigger.** There is no Home button or clock in the header. Full Screen remains available (with an iOS-compatible CSS fallback).
+The card switches automatically from Vehicle status to Charging when `binary_sensor.<prefix>_is_charging` becomes `on`, and returns when it becomes `off`. **The charging-state entity is the only screen-switch trigger.** There is no Home button, clock or Full Screen icon in the header. The card continues to fill its configured Lovelace grid width and adapts to mobile screens.
 
 There are **no** separate climate, controls, doors, seats, weather, settings or other dashboard pages. **All appearance choices** (model, year, trim, exterior and interior finish) are **manual and exist ONLY in Home Assistant’s card editor or YAML**, never as controls on either dashboard screen. Home Assistant telemetry can be mapped automatically or overridden individually in the card editor.
 
