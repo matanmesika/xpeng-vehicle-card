@@ -145,13 +145,13 @@ function xpNormalizeAppearance(value){const v=value||{};
 function xpAssetModel(model){return String(model).toLowerCase().replace(/\s+/g,'_').replace(/\+/g,'_plus').replace(/[^a-z0-9_]/g,'');}
 // Build-time inventory: each entry corresponds to an existing packaged file.
 const XP_ARTWORK_INDEX = Object.freeze({
-  exact:new Set() // Approved images are pending; no unverified paths are advertised.
+  exact:new Set(['vehicles/g6/graphite_gray/front.webp','vehicles/g6/graphite_gray/charging.webp','vehicles/g6/graphite_gray/top.webp']) // Approved G6 2026 artwork from PR #27.
 });
 const XP_SCENE_BACKGROUND = 'xpeng-approved-lakeside-background.webp';
 // HACS installs files directly under dist/; nested folders are not reliably copied.
 // Keep every runtime file as a *direct child* of dist/ with a collision-free name.
 const XP_HACS_BASE='/hacsfiles/xpeng-vehicle-card/';
-function xpPackagedUrl(relative){return XP_HACS_BASE+'xpeng-asset-'+relative.replaceAll('/','-');}
+function xpPackagedUrl(relative){if(XP_ARTWORK_INDEX.exact.has(relative))return 'https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/4ae63ea765a5c1c2290a3d9368ba3f25636019c3/assets/vehicles/g6/2026/core_performance_awd/'+relative.split('/').pop();return XP_HACS_BASE+'xpeng-asset-'+relative.replaceAll('/','-');}
 function xpLocalArtworkPath(value){return typeof value==='string'&&/^\/(?:local|hacsfiles)\/[a-zA-Z0-9/_\-.]+$/.test(value);}
 const XP_CSS = `
 :host{display:block;color:#fff;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;--xp-mint:#00efbe;--xp-sky:#6aaaff}
