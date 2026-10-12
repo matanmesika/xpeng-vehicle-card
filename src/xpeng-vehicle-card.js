@@ -386,6 +386,12 @@ class XpengVehicleCard extends HTMLElement{
     if(xpLocalArtworkPath(chosen))
       return {src:chosen,illustrative:false,studio:false,tier:'manual',view,view_status:'owner_supplied',
         description:'Owner-supplied artwork for '+a.model+' '+a.color};
+    // Prefer separately packaged and verified three-view assets when present.
+    // A view must never silently reuse a front render as a rear or overhead render.
+    const candidate='vehicles/'+model+'/'+a.year+'/'+xpAssetModel(a.trim)+'/'+a.color+'/'+(view==='rear'?'charging':'front')+'.webp';
+    if(XP_ARTWORK_INDEX.exact.has(candidate))
+      return {src:bundled(candidate),illustrative:false,studio:false,tier:'exact-view',view,
+        view_status:'matching_view',description:'Matched '+a.model+' '+a.year+' '+a.trim+' '+a.color+' '+view};
     // Visual policy: model+paint only. One top available trim for every year and selected trim.
     // Paths happen to contain "2026"; that is source asset metadata, not a year filter.
     const highest={G6:'core_performance_awd',G9:'performance_awd'}[a.model];
@@ -537,6 +543,10 @@ class XpengVehicleCard extends HTMLElement{
     const a=this.appearance(),photo=Array.isArray(this._config.vehicles)&&this._config.vehicles.length
       ?this.vehicle()?.top_image:this.vehicle()?.top_image||this._config.top_image;
     if(xpLocalArtworkPath(photo))return `<img class="xp-top-cutout" data-top-art src="${xpEsc(photo)}" alt="${xpEsc('Top-down view of '+a.model)}" loading="eager">`;
+    const model=xpAssetModel(a.model);
+    const candidate='vehicles/'+model+'/'+a.year+'/'+xpAssetModel(a.trim)+'/'+a.color+'/top.webp';
+    if(XP_ARTWORK_INDEX.exact.has(candidate))
+      return `<img class="xp-top-cutout" data-top-art src="${xpEsc(xpPackagedUrl(candidate))}" alt="${xpEsc('Top-down view of '+a.model)}" loading="eager">`;
     const paint=XP_PAINTS.find(p=>p.id===a.color)?.hex||'#f2f4f2';
     return `<svg class="xp-top-car" viewBox="0 0 300 600" role="img" aria-label="${xpEsc('Illustrative overhead view of '+a.model)}">
     <defs><linearGradient id="xp-top-body"><stop offset="0" stop-color="#647381"/><stop offset=".2" stop-color="${xpEsc(paint)}"/><stop offset=".8" stop-color="${xpEsc(paint)}"/><stop offset="1" stop-color="#546576"/></linearGradient>
