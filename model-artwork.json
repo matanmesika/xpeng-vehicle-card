@@ -1,25 +1,85 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "as_of": "2026-10-12",
-  "selection": "G6 2026 Graphite Gray three-view artwork available; other colors use placeholder",
-  "model_year": "year-specific artwork path",
+  "selection": "model + year group + exterior paint; trim never selects artwork",
+  "model_year": "year-group selectable",
   "selected_trim": "not user-selectable",
   "backdrop": "xpeng-approved-lakeside-background.webp",
-  "notice": "Artwork is organized by model/year/exterior color. Trim does not select artwork.",
+  "notice": "G6 uses 2026 and 2023-2025 visual generations. Artwork paths are assets/vehicles/{model}/{year-group}/{color}/{front,charging,top}.webp.",
   "models": [
     {
       "model": "G6",
       "display_name": "G6",
-      "visual_year_policy": "year-specific",
-      "visual_trim_policy": "shared-across-all-selected-trims",
+      "visual_year_policy": "grouped-by-visual-generation",
+      "visual_trim_policy": "trim-does-not-select-artwork",
       "colors": {
+        "arctic_white": {
+          "front": "assets/vehicles/g6/2026/arctic_white/front.webp",
+          "rear": "assets/vehicles/g6/2026/arctic_white/charging.webp",
+          "top": "assets/vehicles/g6/2026/arctic_white/top.webp"
+        },
         "graphite_gray": {
           "front": "assets/vehicles/g6/2026/graphite_gray/front.webp",
           "rear": "assets/vehicles/g6/2026/graphite_gray/charging.webp",
           "top": "assets/vehicles/g6/2026/graphite_gray/top.webp"
+        },
+        "midnight_black": {
+          "front": "assets/vehicles/g6/2026/midnight_black/front.webp",
+          "rear": "assets/vehicles/g6/2026/midnight_black/charging.webp",
+          "top": "assets/vehicles/g6/2026/midnight_black/top.webp"
+        },
+        "silver_frost": {
+          "front": "assets/vehicles/g6/2026/silver_frost/front.webp",
+          "rear": "assets/vehicles/g6/2026/silver_frost/charging.webp",
+          "top": "assets/vehicles/g6/2026/silver_frost/top.webp"
+        },
+        "stellar_purple": {
+          "front": "assets/vehicles/g6/2026/stellar_purple/front.webp",
+          "rear": "assets/vehicles/g6/2026/stellar_purple/charging.webp",
+          "top": "assets/vehicles/g6/2026/stellar_purple/top.webp"
+        }
+      },
+      "year_groups": {
+        "2026": {
+          "colors": {
+            "arctic_white": {
+              "front": "assets/vehicles/g6/2026/arctic_white/front.webp",
+              "rear": "assets/vehicles/g6/2026/arctic_white/charging.webp",
+              "top": "assets/vehicles/g6/2026/arctic_white/top.webp"
+            },
+            "graphite_gray": {
+              "front": "assets/vehicles/g6/2026/graphite_gray/front.webp",
+              "rear": "assets/vehicles/g6/2026/graphite_gray/charging.webp",
+              "top": "assets/vehicles/g6/2026/graphite_gray/top.webp"
+            },
+            "midnight_black": {
+              "front": "assets/vehicles/g6/2026/midnight_black/front.webp",
+              "rear": "assets/vehicles/g6/2026/midnight_black/charging.webp",
+              "top": "assets/vehicles/g6/2026/midnight_black/top.webp"
+            },
+            "silver_frost": {
+              "front": "assets/vehicles/g6/2026/silver_frost/front.webp",
+              "rear": "assets/vehicles/g6/2026/silver_frost/charging.webp",
+              "top": "assets/vehicles/g6/2026/silver_frost/top.webp"
+            },
+            "stellar_purple": {
+              "front": "assets/vehicles/g6/2026/stellar_purple/front.webp",
+              "rear": "assets/vehicles/g6/2026/stellar_purple/charging.webp",
+              "top": "assets/vehicles/g6/2026/stellar_purple/top.webp"
+            }
+          }
+        },
+        "2023-2025": {
+          "colors": {
+            "arctic_white": null,
+            "graphite_gray": null,
+            "midnight_black": null,
+            "silver_frost": null,
+            "fiery_orange": null
+          }
         }
       }
     }
   ],
-  "target_asset_layout": "assets/vehicles/{model}/{year}/{color}/{front,charging,top}.webp"
+  "target_asset_layout": "assets/vehicles/{model}/{year-group}/{color}/{front,charging,top}.webp"
 }
