@@ -1,6 +1,6 @@
 # XPENG Dashboard changelog
 
-## Unreleased — draft PR #21 (2026-10-12)
+## v1.0.0-alpha.6 — UI-only prerelease planned (2026-10-12)
 
 - Simplify all vehicle illustrations to **one highest-available-trim image per model+exterior colour**, shared across every year and selected trim. Trim selections carry no visual effect; year affects only trim names.
 - Replace the old model/year/trim/shape image chooser with the model+paint mapping in `model-artwork.json`; keep available year ranges in the editor.
@@ -9,7 +9,7 @@
 - Put live connection indicator and info icon on one responsive header row. Popup **closed by default**, opens only on info click, displays **Connection and Last vehicle update only**, closes on second click.
 - Remove unused legacy info/tire-popup CSS and update contributor/user documentation to the current product rules.
 - Preserve all sensor readings as read-only and keep XPENG integration backend unchanged.
-- **Unreleased:** artwork is illustrative/unverified; real licensed highest-trim photos, rear/top assets, in-HA end-to-end validation and visual sign-off are pending.
+- **Car files not changed:** No new/replaced vehicle or backdrop image binaries. The existing images may be illustrative/unverified. Real licensed highest-trim G6 images, rear/top assets, real-HA testing and owner visual sign-off remain a separate follow-up.
 
 ## Published prerelease — v1.0.0-alpha.5 (2026-10-12)
 

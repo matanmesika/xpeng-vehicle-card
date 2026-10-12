@@ -2,7 +2,7 @@
 
 כרטיס תצוגה עצמאי של רכבי XPENG ל־Home Assistant. **המאגר הזה כולל רק את הדשבורד (Frontend)**. הוא לא משנה את אינטגרציית XPENG ולא שולח פקודות לרכב.
 
-**מצב הגרסאות:** הגרסה האחרונה שפורסמה ב־HACS היא [v1.0.0-alpha.5](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.0-alpha.5). השינויים החדשים נשמרים ב־[PR #21](https://github.com/matanmesika/xpeng-vehicle-card/pull/21) ונמצאים בבדיקת פיתוח; הם **עדיין לא פורסמו ל־HACS**.
+**גרסת התיקונים:** מתוכננת גרסת **v1.0.0-alpha.6** שתכלול את תיקוני הדשבורד, החיישנים וחלונית המידע, **ללא הוספת תמונות רכב או שינוי תמונת הרקע**. יש לוודא את פרסומה בדף [GitHub Releases](https://github.com/matanmesika/xpeng-vehicle-card/releases); הגרסה הקודמת הייתה alpha.5. הכנת תמונות G6 אמיתיות תבוצע בנפרד.
 
 ## המראה שהוגדר
 

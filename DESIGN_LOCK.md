@@ -25,6 +25,6 @@
 
 ## Release policy
 
-- Latest published HACS preview remains **v1.0.0-alpha.5**; current changes are in [draft PR #21](https://github.com/matanmesika/xpeng-vehicle-card/pull/21). Do not silently merge or tag the draft.
+- Owner explicitly approved shipping the UI/sensor fixes **without new car photos** as experimental v1.0.0-alpha.6. The image files and approved background must remain byte-identical to alpha.5. A separate later update will address verified genuine G6 photos. Confirm publication under [GitHub Releases](https://github.com/matanmesika/xpeng-vehicle-card/releases).
 - Before release: all Node/browser/HACS tests pass; source and dist JavaScript match; approved backdrop remains unchanged; actual Home Assistant desktop/mobile views receive owner approval; image licensing/provenance and advertised photo accuracy are confirmed.
 - Automated tests alone do not establish visual equivalence to the owner-approved reference. Historical design explorations are not active UI specifications.

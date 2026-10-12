@@ -1,6 +1,6 @@
-# XPENG Dashboard — unreleased PR #21 release checklist
+# XPENG Dashboard — alpha.6 UI-only release checklist
 
-**Scope:** XPENG Lovelace frontend only. Nothing in the separate integration/backend is changed. **Current published HACS preview: v1.0.0-alpha.5**. Draft PR #21 is newer and unmerged.
+**Scope:** XPENG Lovelace frontend only. Nothing in the separate integration/backend is changed. This user-authorized release publishes the tested UI/editor fixes **without new car image files**, as an experimental alpha.6. Confirm actual publication on [Releases](https://github.com/matanmesika/xpeng-vehicle-card/releases).
 
 ## Engineering gates
 
@@ -22,6 +22,6 @@
 - [ ] Compare Chromium desktop and phone screenshots with owner-approved status/charging concepts and obtain owner visual approval.
 - [ ] Keep the approved background unmodified byte-for-byte.
 - [ ] Confirm real XPENG-connected HA sensor names/unit conversions if representative user data is available and permission is given.
-- [ ] After approvals, merge PR #21 and publish a **new** HACS prerelease with release notes and tag; never claim a release before it exists.
+- [ ] After UI checks, publish only the **alpha.6 UI prerelease**, then verify its GitHub release and zip artifact. Genuine G6 replacement photos remain blocked by asset provenance/licensing and separate visual owner approval.
 
 See [DESIGN_LOCK.md](DESIGN_LOCK.md), [model artwork mapping](model-artwork.json), and [PR #21](https://github.com/matanmesika/xpeng-vehicle-card/pull/21).

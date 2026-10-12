@@ -2,7 +2,7 @@
 
 A standalone, **read-only Home Assistant dashboard card** for XPENG vehicles. This repository contains **frontend/UI only**; the XPENG Home Assistant integration is a separate project and is not modified here.
 
-**Release status (2026-10-12):** Latest published HACS preview: [v1.0.0-alpha.5](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.0-alpha.5). The newer user-approved layout changes are in **[draft PR #21](https://github.com/matanmesika/xpeng-vehicle-card/pull/21)**, not yet merged or released. Passing tests are not a substitute for owner approval of production vehicle photos.
+**Release plan (2026-10-12):** The already-tested dashboard and sensor-mapping fixes are being shipped independently of missing photos as **v1.0.0-alpha.6**. Check [GitHub Releases](https://github.com/matanmesika/xpeng-vehicle-card/releases) to confirm publication. The previously published v1.0.0-alpha.5 was the baseline. **No replacement car images or approved background changes are included in alpha.6.**
 
 ## User-approved design
 
@@ -28,7 +28,7 @@ See [artwork and tire view policy](docs/SHAPE_ASSETS_AND_TPMS.md) and [design lo
 
 ## Installation through HACS
 
-Add `https://github.com/matanmesika/xpeng-vehicle-card` to **HACS → Custom repositories**, category **Dashboard**. Install the most recent published preview and reload Home Assistant. **The draft PR features are not in the released HACS version yet.**
+Add `https://github.com/matanmesika/xpeng-vehicle-card` to **HACS → Custom repositories**, category **Dashboard**. Install the most recent published preview and reload Home Assistant. For the new UI and sensor editor, install alpha.6 once it appears on GitHub Releases. **Image improvements will be a separate later update.**
 
 Example configuration:
 
@@ -85,6 +85,6 @@ The charging sensor determines the view; an available charging cable alone does 
 - `model-artwork.json` is the simplified model+paint mapping; `vehicle-art-inventory.json` lists the actual packaged files, including historical source paths (which **do not** control runtime year/trim selection).
 - `tests/` covers appearance invariants, real sensor mapping, network info popup, charging and tire modes, responsive desktop/phone browser rendering, image inventory and HACS packaging.
 
-Current developer changes remain in [PR #21](https://github.com/matanmesika/xpeng-vehicle-card/pull/21). See [release checklist](RELEASE_CHECKLIST.md) and [changelog](CHANGELOG.md). Final real-vehicle photography, licence checks, owner visual sign-off, and installation testing in an actual Home Assistant instance remain separate release gates.
+The tested UI improvements originated in [PR #21](https://github.com/matanmesika/xpeng-vehicle-card/pull/21); image research continues separately. See [release checklist](RELEASE_CHECKLIST.md) and [changelog](CHANGELOG.md). Final real-vehicle photography, licence checks, owner visual sign-off, and installation testing in an actual Home Assistant instance remain separate release gates.
 
 *Independent community dashboard; not an official XPENG product.*
