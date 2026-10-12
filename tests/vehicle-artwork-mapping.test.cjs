@@ -77,6 +77,10 @@ test('missing artwork is a labelled colour-matched silhouette, never another mod
    }
  }
 });
+test('year editor changes must invalidate old manual hero images, unlike trim changes', () => {
+ assert.match(js, /\['model','year','color'\]\.includes\(key\)/);
+ assert.doesNotMatch(js, /\['model','year','color','trim'\]\.includes\(key\)/);
+});
 test('front and charging require their own actual view; missing or broken URLs fall back', () => {
  const cfg={model:'G6',year:'2026',color:'graphite_gray'};
  const car=instance(cfg);

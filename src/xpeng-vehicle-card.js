@@ -616,8 +616,9 @@ class XpengVehicleCardEditor extends HTMLElement{
    }
    const key=el.dataset.key;
    let cfg={...this._cfg,[key]:el.value};
-   // Year changes ONLY the informational trim list; neither selection changes photos or colours.
-   if(['model','color'].includes(key)){delete cfg.image;delete cfg.charging_image;delete cfg.top_image;}
+   // Model, year group and exterior colour select the image; trim never does.
+   // A generation change must not keep a previous generation's manual photo override.
+   if(['model','year','color'].includes(key)){delete cfg.image;delete cfg.charging_image;delete cfg.top_image;}
    if(['model','interior'].includes(key))delete cfg.interior_image;
    if(cfg.prefix&&!/^[a-z0-9_]+$/.test(cfg.prefix))return;
    if(key==='model'){
