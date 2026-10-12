@@ -402,12 +402,11 @@ class XpengVehicleCard extends HTMLElement{
   return `<div class="xp-title"><h1>XPENG <em>${xpEsc(this.model())}</em></h1><div class="xp-subtitle">${this._view==='charging'?xpEsc(this.chargeStatus()):'Vehicle status'}</div></div>`;
  }
  sceneBackdrop(){
-    // The owner's CLEAN raster background is used unchanged on both views.
-    // Car artwork and sensor readings stay separate DOM layers.
-    const base=(this._config.image_path||'/hacsfiles/xpeng-vehicle-card/assets').replace(/\/$/,'');
-    const source=base+'/xpeng-reference-background.webp';
+    // The scenic background belongs to the DASHBOARD, not to a model image folder.
+    // Identical pixel source and placement in both vehicle status and charging.
+    const source='/hacsfiles/xpeng-vehicle-card/assets/xpeng-reference-background.webp';
     return `<div class="xp-night-photo" aria-hidden="true"
-      style="background-image:url(&quot;${xpEsc(source)}&quot;)"></div>`;
+      style="background-image:url(&quot;${source}&quot;)"></div>`;
   }
  header(){
    const conn=String(this.val('connection')||'').toLowerCase();
