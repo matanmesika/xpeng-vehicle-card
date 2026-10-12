@@ -1,14 +1,11 @@
 {
   "schema_version": 1,
-  "description": "Installed artwork inventory: one G6 Graphite Gray representative preview and shared dashboard background. Three-view set is not yet uploaded.",
-  "exact": [
-    "vehicles/g6/2026/core_performance_awd/graphite_gray.webp"
-  ],
+  "description": "Approved G6 Graphite Gray artwork is pending upload; no vehicle artwork is advertised as installed.",
+  "exact": [],
   "model_family": [],
   "backdrop": "xpeng-approved-lakeside-background.webp",
   "backdrop_is_common": true,
   "caveats": [
-    "Front, charging, and top yearless assets are not packaged; do not advertise them as installed.",
-    "Representative preview is not an OEM-verified exact view."
+    "G6 front, charging, and top assets must be uploaded to assets and packaged for HACS before enabling artwork."
   ]
 }
