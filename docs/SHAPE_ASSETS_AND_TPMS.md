@@ -34,5 +34,5 @@ Frontend card only. The XPENG Home Assistant backend integration is unchanged.
 
 - The header's right-hand side shows the Wi-Fi icon and a real connection state label (`Connected`, `Not connected`, or `Connection error`); it never guesses online status from missing telemetry.
 - A small info icon sits directly beside the network status **on the same line**, on desktop and mobile, in Overview, Charging and tire detail.
-- Tapping that icon reveals just `Last vehicle update` and its sensor-derived value. No cabin imagery, model, trim, paint, connection duplicate or artwork metadata appears in the info popover.
+- Tapping that icon reveals exactly two sensor-derived fields: `Connection` (Connected, Not connected, or Connection error) and `Last vehicle update`. Connection is duplicated intentionally in the on-demand popup for full network information. No cabin imagery, model, trim, paint or artwork metadata is shown.
 - The old detached floating info control is removed. The approved background and integrations are unchanged.

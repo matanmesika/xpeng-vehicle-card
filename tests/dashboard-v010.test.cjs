@@ -136,7 +136,7 @@ test('official 2026 paints and cabin colours depend on model',()=>{
   assert.deepEqual(x.xpAllowedPaints('G6','2023','performance_awd').map(v=>v.id),x.xpAllowedPaints('G6','2026','black_edition').map(v=>v.id));
 });
 
-test('information icon is directly beside network status and shows ONLY last update',()=>{
+test('information icon is directly beside network status and shows connection plus last update only',()=>{
   const states=data();
   states['sensor.my_xpeng_api_connection_status']={state:'connected'};
   states['sensor.my_xpeng_last_update']={state:'2026-10-12T06:00:00Z'};
@@ -151,11 +151,13 @@ test('information icon is directly beside network status and shows ONLY last upd
   html=card.shadowRoot.innerHTML;
   const pop=html.match(/<div id="xp-last-update-details"[\s\S]*?<\/div>/)?.[0];
   assert.ok(pop,'info popup must be anchored to the header');
-  assert.match(pop,/Last vehicle update/);
-  assert.match(pop,/<strong>[\s\S]+<\/strong>/);
-  assert.doesNotMatch(pop,/Connection|Interior finish|Artwork|Displayed vehicle|xp-cabin-mini|Cabin illustration/);
-  assert.equal((pop.match(/<small>/g)||[]).length,1);
-  assert.equal((pop.match(/<strong>/g)||[]).length,1);
+  assert.match(pop,/Vehicle connection and last update/);
+  assert.match(pop,/<small>Connection<\/small><strong>Connected<\/strong>/);
+  assert.match(pop,/<small>Last vehicle update<\/small><strong>[^<]+<\/strong>/);
+  assert.doesNotMatch(pop,/Interior finish|Artwork|Displayed vehicle|xp-cabin-mini|Cabin illustration/);
+  assert.equal((pop.match(/class="xp-meta-field"/g)||[]).length,2);
+  assert.equal((pop.match(/<small>/g)||[]).length,2);
+  assert.equal((pop.match(/<strong>/g)||[]).length,2);
   card.shadowRoot.handlers.click({target:{closest:()=>info}});
   assert.doesNotMatch(card.shadowRoot.innerHTML,/class="xp-meta-popover"/);
 });
@@ -169,8 +171,13 @@ test('offline and error network labels stay visible and the same header info rem
   assert.match(card.shadowRoot.innerHTML,/class="xp-connection-label">Connection error<\/span>/);
   assert.equal((card.shadowRoot.innerHTML.match(/data-meta-toggle/g)||[]).length,1);
   card.shadowRoot.handlers.click({target:{closest:()=>({hasAttribute:key=>key==='data-meta-toggle'})}});
-  assert.match(card.shadowRoot.innerHTML,/class="xp-meta-popover"/);
-  assert.doesNotMatch(card.shadowRoot.innerHTML,/<(?:img|svg)[^>]*class="xp-cabin-mini"/);
+  const chargingHtml=card.shadowRoot.innerHTML;
+  const pop=chargingHtml.match(/<div id="xp-last-update-details"[\s\S]*?<\/div>\s*<\/div>\s*<\/div>/)?.[0];
+  assert.ok(pop,'info popup available in charging mode');
+  assert.match(pop,/<small>Connection<\/small><strong>Connection error<\/strong>/);
+  assert.match(pop,/<small>Last vehicle update<\/small><strong>[^<]+<\/strong>/);
+  assert.doesNotMatch(pop,/Interior finish|Artwork|Displayed vehicle|xp-cabin-mini/);
+  assert.equal((pop.match(/class="xp-meta-field"/g)||[]).length,2);
 });
 test('rendering missing exact art uses safe shape fallback, not previous-year imagery',()=>{
  const card=setup(data());

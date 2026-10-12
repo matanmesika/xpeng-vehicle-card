@@ -148,7 +148,7 @@ with sync_playwright() as p:
         assert '12,548 km' in host.locator('.xp-status-panel').inner_text()
         assert '2.5 bar' in host.locator('.xp-status-panel').inner_text()
         assert 'Ramat Gan, Israel' in host.locator('.xp-status-panel').inner_text()
-        # Info stays inline with network status; only the last update is revealed.
+        # Info stays inline with network status; both live connection and last update are shown.
         wifi=host.locator('.xp-header-right .xp-wifi')
         info=host.locator('.xp-header-right [data-meta-toggle]')
         assert wifi.count()==1 and info.count()==1
@@ -159,13 +159,18 @@ with sync_playwright() as p:
         info.click()
         popup=host.locator('.xp-header-right .xp-meta-popover')
         assert popup.is_visible()
+        assert 'Connection' in popup.inner_text()
+        assert 'Connected' in popup.inner_text()
         assert 'Last vehicle update' in popup.inner_text()
-        assert popup.locator('small').count()==1
-        assert popup.locator('strong').count()==1
+        assert popup.locator('.xp-meta-field').count()==2
+        assert popup.locator('small').count()==2
+        assert popup.locator('strong').count()==2
         assert popup.locator('.xp-cabin-mini').count()==0
+        for forbidden in ['Interior finish','Artwork','Displayed vehicle','Cabin illustration']:
+            assert forbidden not in popup.inner_text()
         p=popup.bounding_box()
         assert p['x']>=0 and p['x']+p['width']<=width+2
-        host.screenshot(path=str(OUT / f'{tag}-header-info-LAST-UPDATE.png'))
+        host.screenshot(path=str(OUT / f'{tag}-header-info-CONNECTION-UPDATE.png'))
         info.click()
         assert host.locator('.xp-meta-popover').count()==0
 

@@ -280,9 +280,11 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-meta-tools{position:relative;z-index:25;flex:none;display:flex;align-items:center}
 .xp-meta-trigger{display:grid;place-items:center;width:30px;height:30px;padding:3px;border-radius:50%;border:1px solid #7399c077;background:#03172bba;color:#d6e9ff}
 .xp-meta-trigger:hover,.xp-meta-trigger:focus-visible{background:#194465}
-.xp-meta-popover{position:absolute;right:0;top:calc(100% + 9px);width:max-content;max-width:min(240px,82vw);border:1px solid #6580a388;border-radius:12px;background:#061829f3;padding:11px 13px;box-shadow:0 12px 35px #000b;backdrop-filter:blur(12px);display:flex;flex-direction:column;gap:5px;white-space:nowrap}
+.xp-meta-popover{position:absolute;right:0;top:calc(100% + 9px);width:min(275px,82vw);border:1px solid #6580a388;border-radius:12px;background:#061829f3;padding:12px 14px;box-shadow:0 12px 35px #000b;backdrop-filter:blur(12px);display:flex;flex-direction:column;gap:9px}
+.xp-meta-field{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.xp-meta-field+.xp-meta-field{padding-top:9px;border-top:1px solid #7399c044}
 .xp-meta-popover small{font-size:11px;color:#b1c0d3}
-.xp-meta-popover strong{font-size:14px;font-weight:600;color:#f0f7ff}
+.xp-meta-popover strong{font-size:13px;font-weight:600;color:#f0f7ff;text-align:right;white-space:nowrap}
 .xp-cabin-mini{width:100%;height:auto;max-height:140px;margin-top:10px;display:block}
 .xp-updated{display:none!important}
 @media(max-width:850px){.xp-header-right{gap:8px}.xp-wifi{gap:4px}.xp-connection-label{font-size:11px}.xp-meta-trigger{width:28px;height:28px;padding:2px}.xp-meta-popover{top:calc(100% + 8px)}}
@@ -511,10 +513,13 @@ class XpengVehicleCard extends HTMLElement{
         </span>
         <div class="xp-meta-tools">
           <button class="xp-meta-trigger" type="button" data-meta-toggle
-            aria-label="Show last vehicle update" aria-expanded="${this._infoOpen?'true':'false'}"
-            aria-controls="xp-last-update-details" title="Last vehicle update">${xpIcon('info',20)}</button>
+            aria-label="Show vehicle connection and last update" aria-expanded="${this._infoOpen?'true':'false'}"
+            aria-controls="xp-last-update-details" title="Connection and last update">${xpIcon('info',20)}</button>
           ${this._infoOpen?`<div id="xp-last-update-details" class="xp-meta-popover" role="region"
-            aria-label="Last vehicle update"><small>Last vehicle update</small><strong>${xpEsc(this.lastUpdate())}</strong></div>`:''}
+            aria-label="Vehicle connection and last update">
+              <div class="xp-meta-field"><small>Connection</small><strong>${xpEsc(status)}</strong></div>
+              <div class="xp-meta-field"><small>Last vehicle update</small><strong>${xpEsc(this.lastUpdate())}</strong></div>
+            </div>`:''}
         </div>
       </div></header>`;
   }
