@@ -6,7 +6,11 @@ on:
       tag:
         description: Beta tag to publish
         required: true
-        default: v1.0.0-beta.1
+        default: v1.0.0-beta.2
+  push:
+    branches: [main]
+    paths:
+      - '.release/v1.0.0-beta.2'
 
 permissions:
   contents: write
@@ -16,6 +20,8 @@ jobs:
     name: Validate and publish beta
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    env:
+      TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || 'v1.0.0-beta.2' }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -59,7 +65,6 @@ jobs:
       - name: Refuse to overwrite an existing release
         env:
           GH_TOKEN: ${{ github.token }}
-          TAG: ${{ inputs.tag }}
         run: |
           if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             echo "::error::Release $TAG already exists"
@@ -69,11 +74,10 @@ jobs:
       - name: Publish beta pre-release
         env:
           GH_TOKEN: ${{ github.token }}
-          TAG: ${{ inputs.tag }}
         run: |
           gh release create "$TAG" \
             --repo "$GITHUB_REPOSITORY" \
             --target "$GITHUB_SHA" \
             --title "XPENG Vehicle Card $TAG" \
-            --generate-notes \
+            --notes-file CHANGELOG.md \
             --prerelease
