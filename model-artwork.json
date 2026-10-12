@@ -1,25 +1,29 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "as_of": "2026-10-12",
-  "selection": "G6 2026 Graphite Gray three-view artwork available; other colors use placeholder",
-  "model_year": "year-specific artwork path",
-  "selected_trim": "not user-selectable",
-  "backdrop": "xpeng-approved-lakeside-background.webp",
-  "notice": "Artwork is organized by model/year/exterior color. Trim does not select artwork.",
-  "models": [
-    {
-      "model": "G6",
-      "display_name": "G6",
-      "visual_year_policy": "year-specific",
-      "visual_trim_policy": "shared-across-all-selected-trims",
-      "colors": {
-        "graphite_gray": {
-          "front": "assets/vehicles/g6/2026/graphite_gray/front.webp",
-          "rear": "assets/vehicles/g6/2026/graphite_gray/charging.webp",
-          "top": "assets/vehicles/g6/2026/graphite_gray/top.webp"
-        }
-      }
-    }
+  "catalog": "vehicle-catalog.json",
+  "selection_key": [
+    "model",
+    "year_group",
+    "exterior_color"
   ],
-  "target_asset_layout": "assets/vehicles/{model}/{year}/{color}/{front,charging,top}.webp"
+  "trim_affects_artwork": false,
+  "trim_policy": "display-only title; trim never changes image selection",
+  "backdrop": "xpeng-approved-lakeside-background.webp",
+  "target_asset_layout": "assets/vehicles/{model}/{year-group}/{color}/{front,charging,top}.webp",
+  "current_generated_assets": {
+    "model": "G6",
+    "year_group": "2026",
+    "colors": [
+      "graphite_gray",
+      "arctic_white",
+      "midnight_black",
+      "silver_frost",
+      "stellar_purple"
+    ],
+    "pending": [
+      "black_edition"
+    ]
+  },
+  "note": "The upload bundle contains placeholders for catalog combinations not yet replaced by approved/generated vehicle artwork."
 }
