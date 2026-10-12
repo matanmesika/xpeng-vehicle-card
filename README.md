@@ -11,7 +11,7 @@ This repository contains the **dashboard**, not the XPENG integration. The integ
 - **Vehicle status** — XPENG vehicle artwork, battery percentage, estimated range, odometer, combined tire-pressure display and vehicle location.
 - **Charging** — the same vehicle artwork in a charging scene, live battery percentage, estimated range, charging power, estimated time remaining and charge limit.
 
-The card switches automatically from Vehicle status to Charging when `binary_sensor.<prefix>_is_charging` becomes `on`, and returns when it becomes `off`. A Home button allows viewing the status screen manually. The Full Screen button expands the card to the available browser viewport, with an iOS-compatible CSS fallback.
+The card switches automatically from Vehicle status to Charging when `binary_sensor.<prefix>_is_charging` becomes `on`, and returns when it becomes `off`. **The charging-state entity is the only screen-switch trigger.** There is no Home button or clock in the header. Full Screen remains available (with an iOS-compatible CSS fallback).
 
 There are **no** separate climate, controls, doors, seats, weather, settings or other dashboard pages. **All appearance choices** (model, year, trim, exterior and interior finish) are **manual and exist ONLY in Home Assistant’s card editor or YAML**, never as controls on either dashboard screen. Home Assistant telemetry can be mapped automatically or overridden individually in the card editor.
 
@@ -40,7 +40,7 @@ grid_options:
 
 In Home Assistant open **Edit dashboard → Edit XPENG Dashboard card**. The **Vehicle appearance** section lets you manually select model, model year, trim, exterior paint and interior finish. No XPENG account login is needed. These settings will not be replaced by sensor data.
 
-Open **Manual sensor mapping** in the *same card editor* to search your Home Assistant entities and assign each field. The editor currently provides **15 assignments**: charging state, battery, range, charging power, time remaining, charge target, cable connection, odometer, four tire pressures, location, last update and connection status. Leave an assignment **empty** to use auto-mapping based on the configured prefix. A manually selected entity always takes priority.
+Open **Manual sensor mapping** in the *same card editor* to search your Home Assistant entities and assign each field. The editor currently provides **15 assignments**: charging state, battery, range, charging power, time remaining, charge target, cable connection, odometer, four tire pressures, location, last update and connection status. Leave an assignment **empty** to use auto-mapping based on the configured prefix. A manually selected entity from **any HA integration/domain** takes priority; you can optionally read an entity attribute with `entity_id|attribute_name` (for example `select.my_car_charge|charging_state`). Manual and automatic mappings can be mixed independently across the 15 fields.
 
 Example YAML for direct assignment (the visual editor provides the same option):
 
@@ -60,7 +60,7 @@ entities:
   target: number.your_charge_limit
 ```
 
-All readings (including changes of charging state and screen switching) update automatically from their mapped Home Assistant entities. A missing or unavailable sensor displays **—**, never a fake live value. This card is presentation-only: it does not require or alter the experimental XPENG backend.
+Readings update automatically from the mapped Home Assistant entities. **Only an active charging state** (`on`, `true`, `1`, `charging`, `in_progress` or `active`) displays the charging screen. An idle, paused, connected-only or unavailable charging state displays Vehicle status. A missing or unavailable sensor displays **—**, never a fake live value. This card is presentation-only: it does not require or alter the experimental XPENG backend.
 
 The optional `image_path` may point to the installed local directory if installed manually. HACS defaults to `/hacsfiles/xpeng-vehicle-card/assets`. For manual installation copy `dist/xpeng-vehicle-card.js` and `dist/assets/` into your local Home Assistant `www` directory and register the JavaScript module.
 
