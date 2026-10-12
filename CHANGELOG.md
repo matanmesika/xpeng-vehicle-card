@@ -1,5 +1,14 @@
 # XPENG Dashboard changelog
 
+## v1.0.0-beta.1 — initial beta candidate (2026-10-12)
+
+- First beta candidate of the standalone XPENG Home Assistant dashboard card (frontend only).
+- Vehicle status and sensor-driven charging view; owner-approved lakeside background and G6 artwork for front, charging and overhead views.
+- Includes merged [PR #28](https://github.com/matanmesika/xpeng-vehicle-card/pull/28) updating the G6 front three-quarter WebP image.
+- HACS entry point: `dist/xpeng-vehicle-card.js` as declared by `hacs.json`.
+- **Beta limitations:** actual Home Assistant/HACS installation and responsive visual acceptance are not yet verified; remote GitHub artwork requires network access; not every XPENG model/color has verified artwork.
+- **Publication status:** candidate documented in `main`; GitHub tag/Release must be published separately. Do not treat this heading as evidence of a published release.
+
 ## Unreleased — G6 front artwork refresh (2026-10-12)
 
 - Merged [PR #28](https://github.com/matanmesika/xpeng-vehicle-card/pull/28) into `main` (commit `17fd199`), replacing `assets/vehicles/g6/2026/core_performance_awd/front.webp` with the user-uploaded front three-quarter view.
