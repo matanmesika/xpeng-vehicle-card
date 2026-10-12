@@ -1,16 +1,16 @@
 {
   "schema_version": 1,
-  "description": "Approved G6 2026 Core Performance AWD three-view artwork available via remote GitHub URLs.",
+  "description": "Approved G6 2026 Graphite Gray three-view artwork using model/year/color hierarchy.",
   "exact": [
-    "vehicles/g6/graphite_gray/front.webp",
-    "vehicles/g6/graphite_gray/charging.webp",
-    "vehicles/g6/graphite_gray/top.webp"
+    "vehicles/g6/2026/graphite_gray/front.webp",
+    "vehicles/g6/2026/graphite_gray/charging.webp",
+    "vehicles/g6/2026/graphite_gray/top.webp"
   ],
   "model_family": [],
   "backdrop": "xpeng-approved-lakeside-background.webp",
   "backdrop_is_common": true,
   "caveats": [
-    "Images are fetched from GitHub at runtime, not bundled with HACS; internet is required.",
-    "White-backed source images use CSS multiply blend, not true transparency."
+    "Images are fetched from GitHub at runtime, not bundled in HACS; internet is required.",
+    "Artwork selection uses model, year and exterior color only; trim does not affect the artwork path."
   ]
 }
