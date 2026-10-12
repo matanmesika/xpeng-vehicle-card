@@ -116,3 +116,33 @@ For contribution and release gates see [AGENTS.md](AGENTS.md) and [artwork block
 ### Background implementation
 
 Both screens use **the exact original 1536×864 WebP uploaded by the owner**, `dist/assets/xpeng-reference-background.webp` (SHA-256 `5f6ea56528b84b7e25bb94cf1395a27e1338dccbe3e3e9dde537e7ce634af9de`), packaged in HACS and kept separate from the vehicle image and live HA data. The background is fixed to the HACS asset path and does not change when someone configures a custom vehicle-image folder. It replaces the prior CSS/SVG-generated mountain skyline. The source is a clean landscape supplied during design review; it contains **no** baked-in vehicle, SOC, charging figures or user location. Other model images and lighting still need visual-review approval against the owner's composite screenshots.
+
+## Vehicle / background layer separation and artwork by year
+
+The scenic bitmap `assets/xpeng-reference-background.webp` (HACS: `dist/assets/xpeng-reference-background.webp`) is the **one fixed background layer** for both Vehicle status and Charging. The model, year, trim, paint and interior settings do not modify that background. Car art, text, telemetry and charger/cable elements are rendered as separate foreground layers.
+
+Supported catalog coverage is kept in `model-catalog.json` and `profiles/year-profiles.json`. The **real packaged image inventory** is `vehicle-art-inventory.json` (mirrored in `dist/vehicle-art-inventory.json`). At present, it registers 37 exact-path year/trim/paint *preview* files for G6 and G9 2026 and 80 generic model-family previews. Unavailable exact artwork falls back to clearly described model-family illustration or an illustrative silhouette; it is **not** passed off as a factory-accurate photo. This distinction also applies to 2026+ facelift vehicles that have not been photo-verified.
+
+In the card editor, select **model → year → trim → exterior paint → interior finish**. If the precise art for that model/year/trim/paint is not packaged, the user can provide an optional `image` path to a local `/local/...` or `/hacsfiles/...` vehicle cutout. For model-specific interior imagery, the optional `interior_image` path can be supplied. If it is omitted, the info icon shows a colour-matched cabin schematic instead. Changing model/year/trim or paint clears a previous exact vehicle image so that an old model is not accidentally displayed. Changing the interior finish clears the cabin override. Neither override changes the scene background.
+
+Example editor-equivalent YAML:
+
+```yaml
+type: custom:xpeng-vehicle-card
+prefix: my_xpeng
+model: G6
+year: "2026"
+trim: core_plus_rwd
+color: arctic_white
+interior: light_gray
+# Optional exact imagery where no vetted year/trim artwork exists:
+# image: /local/xpeng/cars/g6-2026-coreplus-white.webp
+# interior_image: /local/xpeng/cabins/g6-2026-lightgray.webp
+entities:
+  soc: sensor.vehicle_soc
+  charging: binary_sensor.vehicle_actually_charging
+```
+
+The artwork and interior options are **visual selections**, not sensor data or confirmation of factory orderability by market. Live telemetry remains independently mapped through Home Assistant and is never embedded into artwork.
+
+**Release status:** this work remains an open draft until the latest owner-approved layout has been implemented as truly separate *high-quality* production assets and verified in actual browser screenshots. A successful unit test or an AI-generated mockup is not a visual-parity sign-off.
