@@ -511,3 +511,18 @@ test('header information only opens on user click and contains two live values',
  click();
  assert.doesNotMatch(card.shadowRoot.innerHTML,/<div id="xp-last-update-details"/);
 });
+
+test('the year and selected trim never alter car, top-down artwork, or visual labels',()=>{
+ const card=new Card();
+ card.setConfig({model:'G6',year:'2023',trim:'standard_range_rwd',
+   color:'arctic_white',interior:'light_gray'});
+ const appearance={car:card.carArt(),top:card.topCarArt(),tire:card.tireScreen(),
+   asset:card.assetSpec().src};
+ card.setConfig({model:'G6',year:'2026',trim:'black_edition',
+   color:'arctic_white',interior:'light_gray'});
+ assert.equal(card.assetSpec().src,appearance.asset);
+ assert.equal(card.carArt(),appearance.car);
+ assert.equal(card.topCarArt(),appearance.top);
+ assert.equal(card.tireScreen(),appearance.tire);
+ assert.doesNotMatch(card.tireScreen(),/\b20(?:2[0-9]|3[0-9])\b/,'model year must never decorate the image');
+});

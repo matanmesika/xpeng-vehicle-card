@@ -507,16 +507,16 @@ class XpengVehicleCard extends HTMLElement{
  }
  interiorPreview(){
     const a=this.appearance(),finish=XP_INTERIORS.find(x=>x.id===a.interior)||XP_INTERIORS[0];
-    // Model/year/trim/cabin custom imagery stays independent of the background.
+    // The cabin preview is editor-controlled; changing year or trim does not select a different design.
     // If no matching art is provided, the colour-accurate schematic remains honest.
     const interiorImg=Array.isArray(this._config.vehicles)&&this._config.vehicles.length
       ?this.vehicle()?.interior_image:this.vehicle()?.interior_image||this._config.interior_image;
     if(xpLocalArtworkPath(interiorImg))
       return `<img class="xp-cabin-mini" src="${xpEsc(interiorImg)}"
-        alt="${xpEsc(a.model+' '+a.year+' '+finish.label+' interior (user-supplied artwork)')}" loading="lazy">`;
+        alt="${xpEsc(a.model+' '+finish.label+' interior (user-supplied artwork)')}" loading="lazy">`;
     const colour=xpEsc(finish.hex),shade=xpEsc(finish.secondary);
     return `<svg class="xp-cabin-mini" viewBox="0 0 350 155" role="img"
-      aria-label="${xpEsc(a.model+' '+a.year+' cabin, '+finish.label)}">
+      aria-label="${xpEsc(a.model+' cabin, '+finish.label)}">
       <rect x="0" y="0" width="350" height="155" rx="14" fill="#091a2c"/>
       <path d="M16 36Q175 -4 334 36L322 91H28Z" fill="${shade}" stroke="#687c93" stroke-width="2"/>
       <path d="M20 90l43-12 34 65H5Z M330 90l-43-12-34 65h92Z" fill="${colour}" stroke="#475d71"/>
@@ -535,16 +535,16 @@ class XpengVehicleCard extends HTMLElement{
       src="${xpEsc(spec.src)}"
       title="${xpEsc(spec.description)}" data-view-status="${xpEsc(spec.view_status)}"
       data-art-tier="${xpEsc(spec.tier)}"
-      alt="${xpEsc('XPENG '+a.model+' '+a.year+', '+a.color.replaceAll('_',' ')+(spec.illustrative?' (illustrative artwork)':''))}" loading="eager">
+      alt="${xpEsc('XPENG '+a.model+', '+a.color.replaceAll('_',' ')+(spec.illustrative?' (illustrative artwork)':''))}" loading="eager">
       `;
   }
  
   topCarArt(){
     const a=this.appearance(),photo=Array.isArray(this._config.vehicles)&&this._config.vehicles.length
       ?this.vehicle()?.top_image:this.vehicle()?.top_image||this._config.top_image;
-    if(xpLocalArtworkPath(photo))return `<img class="xp-top-cutout" data-top-art src="${xpEsc(photo)}" alt="${xpEsc('Top-down view of '+a.model+' '+a.year)}" loading="eager">`;
+    if(xpLocalArtworkPath(photo))return `<img class="xp-top-cutout" data-top-art src="${xpEsc(photo)}" alt="${xpEsc('Top-down view of '+a.model)}" loading="eager">`;
     const paint=XP_PAINTS.find(p=>p.id===a.color)?.hex||'#f2f4f2';
-    return `<svg class="xp-top-car" viewBox="0 0 300 600" role="img" aria-label="${xpEsc('Illustrative overhead view of '+a.model+' '+a.year)}">
+    return `<svg class="xp-top-car" viewBox="0 0 300 600" role="img" aria-label="${xpEsc('Illustrative overhead view of '+a.model)}">
     <defs><linearGradient id="xp-top-body"><stop offset="0" stop-color="#647381"/><stop offset=".2" stop-color="${xpEsc(paint)}"/><stop offset=".8" stop-color="${xpEsc(paint)}"/><stop offset="1" stop-color="#546576"/></linearGradient>
     <linearGradient id="xp-top-window" x2="1" y2="1"><stop stop-color="#2e4b64"/><stop offset="1" stop-color="#0b1728"/></linearGradient></defs>
     <ellipse cx="150" cy="301" rx="119" ry="270" fill="#000" opacity=".35"/>
@@ -566,7 +566,7 @@ class XpengVehicleCard extends HTMLElement{
       return `<div class="xp-tire-reading" data-wheel="${key}"><small>${label}</small>
         <strong>${bar===null?'—':xpEsc(xpNum(bar,2))}</strong><span>${bar===null?'Unavailable':'bar'}</span></div>`;};
     return `<section class="xp-tire-screen" role="region" aria-label="Tire pressure from above">
-       <div class="xp-tire-screen-head"><div><small>XPENG ${xpEsc(a.model)} · ${xpEsc(a.year)}</small>
+       <div class="xp-tire-screen-head"><div><small>XPENG ${xpEsc(a.model)}</small>
          <h2>Tire pressures</h2><p>Four wheels · live Home Assistant readings</p></div>
          <button type="button" data-tire-toggle aria-label="Back to vehicle status">${xpIcon('back',20)} Back to vehicle</button></div>
        <div class="xp-tire-stage"><div class="xp-tire-center">${this.topCarArt()}</div>
