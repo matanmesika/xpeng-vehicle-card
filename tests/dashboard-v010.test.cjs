@@ -442,6 +442,13 @@ test('tire selection transforms central vehicle into overhead four-wheel view an
  assert.equal((html.match(/<strong>2.5<\/strong>/g)||[]).length,4);
  assert.equal(card.sceneBackdrop(),background,'tire view cannot change approved scenery');
  assert.equal(card._view,'overview','tire detail is not a third vehicle status page');
+ const wifi={hasAttribute:key=>key==='data-meta-toggle'};
+ card.shadowRoot.handlers.click({target:{closest:()=>wifi}});
+ assert.match(card.shadowRoot.innerHTML,/class="xp-tire-screen"/,'Wi-Fi details must not close TPMS');
+ assert.match(card.shadowRoot.innerHTML,/id="xp-last-update-details"/,'Wi-Fi popover also works on tire view');
+ card.shadowRoot.handlers.click({target:{closest:()=>wifi}});
+ assert.doesNotMatch(card.shadowRoot.innerHTML,/id="xp-last-update-details"/);
+ assert.match(card.shadowRoot.innerHTML,/class="xp-tire-screen"/);
  card.shadowRoot.handlers.click({target:{closest:()=>toggle}});
  assert.match(card.shadowRoot.innerHTML,/data-car-art/);
  assert.doesNotMatch(card.shadowRoot.innerHTML,/class="xp-tire-screen"/);
