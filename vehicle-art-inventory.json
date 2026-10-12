@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "Only installed G6 2026 Graphite Gray representative artwork. Other model/color assets removed. Front/rear/top exact-view set pending.",
+  "description": "Installed artwork inventory: one G6 Graphite Gray representative preview and shared dashboard background. Three-view set is not yet uploaded.",
   "exact": [
     "vehicles/g6/2026/core_performance_awd/graphite_gray.webp"
   ],
@@ -8,8 +8,7 @@
   "backdrop": "xpeng-approved-lakeside-background.webp",
   "backdrop_is_common": true,
   "caveats": [
-    "Model-family artwork must not be presented as exact model-year imagery.",
-    "Do not synthesize a different paint or year without visual review.",
-    "Cabin finish choices are visual previews; no factory availability guarantee."
+    "Front, charging, and top yearless assets are not packaged; do not advertise them as installed.",
+    "Representative preview is not an OEM-verified exact view."
   ]
 }
