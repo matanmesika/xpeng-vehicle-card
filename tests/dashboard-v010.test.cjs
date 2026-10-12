@@ -149,7 +149,7 @@ test('information icon is directly beside network status and shows connection pl
   const info={hasAttribute:key=>key==='data-meta-toggle',dataset:{}};
   card.shadowRoot.handlers.click({target:{closest:()=>info}});
   html=card.shadowRoot.innerHTML;
-  const pop=html.match(/<div id="xp-last-update-details"[\s\S]*?<\/div>/)?.[0];
+  const pop=html.slice(html.indexOf('<div id="xp-last-update-details"'),html.indexOf('</header>'));
   assert.ok(pop,'info popup must be anchored to the header');
   assert.match(pop,/Vehicle connection and last update/);
   assert.match(pop,/<small>Connection<\/small><strong>Connected<\/strong>/);
@@ -172,7 +172,7 @@ test('offline and error network labels stay visible and the same header info rem
   assert.equal((card.shadowRoot.innerHTML.match(/data-meta-toggle/g)||[]).length,1);
   card.shadowRoot.handlers.click({target:{closest:()=>({hasAttribute:key=>key==='data-meta-toggle'})}});
   const chargingHtml=card.shadowRoot.innerHTML;
-  const pop=chargingHtml.match(/<div id="xp-last-update-details"[\s\S]*?<\/div>\s*<\/div>\s*<\/div>/)?.[0];
+  const pop=chargingHtml.slice(chargingHtml.indexOf('<div id="xp-last-update-details"'),chargingHtml.indexOf('</header>'));
   assert.ok(pop,'info popup available in charging mode');
   assert.match(pop,/<small>Connection<\/small><strong>Connection error<\/strong>/);
   assert.match(pop,/<small>Last vehicle update<\/small><strong>[^<]+<\/strong>/);
