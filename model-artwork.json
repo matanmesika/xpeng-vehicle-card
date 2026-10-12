@@ -2,7 +2,7 @@
   "schema_version": 2,
   "as_of": "2026-10-12",
   "selection": "G6 2026 Graphite Gray three-view artwork available; other colors use placeholder",
-  "model_year": "not selectable",
+  "model_year": "year-specific artwork path",
   "selected_trim": "not user-selectable",
   "backdrop": "xpeng-approved-lakeside-background.webp",
   "notice": "Artwork is organized by model/year/exterior color. Trim does not select artwork.",
@@ -10,7 +10,7 @@
     {
       "model": "G6",
       "display_name": "G6",
-      "visual_year_policy": "shared-across-all-years",
+      "visual_year_policy": "year-specific",
       "visual_trim_policy": "shared-across-all-selected-trims",
       "colors": {
         "graphite_gray": {
