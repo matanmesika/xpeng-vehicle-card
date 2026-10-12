@@ -4,6 +4,7 @@ The injected values below are *test fixtures* and must never be hardcoded in
 the actual card. The vehicle integration is outside the scope of this test.
 """
 from pathlib import Path
+import hashlib
 import shutil
 from playwright.sync_api import sync_playwright
 
@@ -94,6 +95,42 @@ with sync_playwright() as p:
         page.evaluate("states => document.querySelector('xpeng-vehicle-card').hass = {states}", BASE)
         assert host.locator('.xp-overview').count() == 1
         assert host.locator('[data-view],.xp-clock').count() == 0
+
+        # The background is a single packaged raster file, with no rendering differences
+        # across views. Check the *actual Chrome pixels*, not just matching CSS strings.
+        # Hide all interactive/vehicle overlays before comparing the same background area.
+        def backdrop_snapshot(states, mode):
+            page.evaluate("states => document.querySelector('xpeng-vehicle-card').hass = {states}", states)
+            layout = page.evaluate("""() => {
+                const root = document.querySelector('xpeng-vehicle-card').shadowRoot;
+                const photo = root.querySelector('.xp-night-photo');
+                const style = getComputedStyle(photo);
+                const rect = photo.getBoundingClientRect();
+                return {
+                  url: style.backgroundImage, size: style.backgroundSize,
+                  position: style.backgroundPosition, repeat: style.backgroundRepeat,
+                  bounds: [rect.x, rect.y, rect.width, rect.height]
+                };
+            }""")
+            assert 'xpeng-reference-background.webp' in layout['url'], layout
+            assert layout['size'] == 'cover', layout
+            assert layout['position'] == '50% 50%', layout
+            page.evaluate("""() => {
+                const root = document.querySelector('xpeng-vehicle-card').shadowRoot;
+                const layer = document.createElement('style');
+                layer.textContent = '.xp-scene > :not(.xp-night-photo){visibility:hidden!important;}';
+                root.append(layer);
+            }""")
+            photo_png = host.screenshot(path=str(OUT / f'{tag}-background-{mode}-ISOLATED.png'))
+            return (layout, hashlib.sha256(photo_png).hexdigest())
+
+        overview_layout, overview_pixels = backdrop_snapshot(BASE, 'overview')
+        charging_layout, charging_pixels = backdrop_snapshot(CHARGING, 'charging')
+        assert overview_layout == charging_layout, (overview_layout, charging_layout)
+        assert overview_pixels == charging_pixels, (
+            f'Dashboard background changed with charging state: {overview_pixels} != {charging_pixels}')
+        # Restore the normal overview scene before the remaining assertions.
+        page.evaluate("states => document.querySelector('xpeng-vehicle-card').hass = {states}", BASE)
         assert '62%' in host.locator('.xp-overview-stat').inner_text()
         assert '391 km' in host.locator('.xp-overview-stat').inner_text()
         assert '12,548 km' in host.locator('.xp-status-panel').inner_text()
