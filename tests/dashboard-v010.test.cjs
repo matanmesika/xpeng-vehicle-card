@@ -320,3 +320,12 @@ test('overview and charging must render the exact same raster background and geo
  card.hass={states};
  assert.equal(b1,normalize(card.shadowRoot.innerHTML));
 });
+
+test('XPENG wordmark remains visible in both screen modes',()=>{
+ const states=data(),card=setup(states);
+ assert.match(card.shadowRoot.innerHTML,/class="xp-brand"/);
+ assert.doesNotMatch(source,/\.xp-charge \.xp-brand\s*\{\s*visibility:\s*hidden/);
+ states['binary_sensor.my_xpeng_is_charging'].state='on';
+ card.hass={states};
+ assert.match(card.shadowRoot.innerHTML,/class="xp-brand"/);
+});
