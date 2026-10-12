@@ -133,5 +133,127 @@
     "matching composition across front/rear/top views",
     "unmodified approved scene background",
     "readable license/provenance notes and required attribution for any CC BY-SA derivative"
-  ]
+  ],
+  "new_findings_2026_10_12": {
+    "official_side_color_pngs": [
+      {
+        "paint": "arctic_white",
+        "url": "https://s-cdn.xpeng.com/commoncms/prod/2025-07-10/b3ba3f1c56884076aae0e020be843b0f.png",
+        "shape": "2025 facelift model",
+        "camera": "left side orthographic",
+        "format": "png",
+        "visual_isolation": "isolated car over black in image viewer, transparency strongly indicated; actual PNG alpha uninspected",
+        "car_generation_verified_by_official_page": true,
+        "trim": "Black Edition only for black_edition; trim otherwise not certified",
+        "owner": "XPENG",
+        "redistribution_license": "not granted or established",
+        "public_HACS_safe": false,
+        "source_page": "https://www.xpeng.com/lu/model/g6"
+      },
+      {
+        "paint": "graphite_gray",
+        "url": "https://s-cdn.xpeng.com/commoncms/prod/2025-07-10/127bde799d2e4d338d47d7d28ac1a42a.png",
+        "shape": "2025 facelift model",
+        "camera": "left side orthographic",
+        "format": "png",
+        "visual_isolation": "isolated car over black in image viewer, transparency strongly indicated; actual PNG alpha uninspected",
+        "car_generation_verified_by_official_page": true,
+        "trim": "Black Edition only for black_edition; trim otherwise not certified",
+        "owner": "XPENG",
+        "redistribution_license": "not granted or established",
+        "public_HACS_safe": false,
+        "source_page": "https://www.xpeng.com/lu/model/g6"
+      },
+      {
+        "paint": "midnight_black",
+        "url": "https://s-cdn.xpeng.com/commoncms/prod/2025-07-10/294a086e7a7a494b92aa88745aa55ba5.png",
+        "shape": "2025 facelift model",
+        "camera": "left side orthographic",
+        "format": "png",
+        "visual_isolation": "isolated car over black in image viewer, transparency strongly indicated; actual PNG alpha uninspected",
+        "car_generation_verified_by_official_page": true,
+        "trim": "Black Edition only for black_edition; trim otherwise not certified",
+        "owner": "XPENG",
+        "redistribution_license": "not granted or established",
+        "public_HACS_safe": false,
+        "source_page": "https://www.xpeng.com/lu/model/g6"
+      },
+      {
+        "paint": "silver_frost",
+        "url": "https://s-cdn.xpeng.com/commoncms/prod/2025-07-10/696791d488ce4b25900a04492e02de78.png",
+        "shape": "2025 facelift model",
+        "camera": "left side orthographic",
+        "format": "png",
+        "visual_isolation": "isolated car over black in image viewer, transparency strongly indicated; actual PNG alpha uninspected",
+        "car_generation_verified_by_official_page": true,
+        "trim": "Black Edition only for black_edition; trim otherwise not certified",
+        "owner": "XPENG",
+        "redistribution_license": "not granted or established",
+        "public_HACS_safe": false,
+        "source_page": "https://www.xpeng.com/lu/model/g6"
+      },
+      {
+        "paint": "stellar_purple",
+        "url": "https://s-cdn.xpeng.com/commoncms/prod/2025-07-10/01b64c33a42c4873be425252ac21006b.png",
+        "shape": "2025 facelift model",
+        "camera": "left side orthographic",
+        "format": "png",
+        "visual_isolation": "isolated car over black in image viewer, transparency strongly indicated; actual PNG alpha uninspected",
+        "car_generation_verified_by_official_page": true,
+        "trim": "Black Edition only for black_edition; trim otherwise not certified",
+        "owner": "XPENG",
+        "redistribution_license": "not granted or established",
+        "public_HACS_safe": false,
+        "source_page": "https://www.xpeng.com/lu/model/g6"
+      },
+      {
+        "paint": "black_edition",
+        "url": "https://s-cdn.xpeng.com/commoncms/prod/2025-07-10/37d6e2e9b811457d9a2b299b97afdc86.png",
+        "shape": "2025 facelift model",
+        "camera": "left side orthographic",
+        "format": "png",
+        "visual_isolation": "isolated car over black in image viewer, transparency strongly indicated; actual PNG alpha uninspected",
+        "car_generation_verified_by_official_page": true,
+        "trim": "Black Edition only for black_edition; trim otherwise not certified",
+        "owner": "XPENG",
+        "redistribution_license": "not granted or established",
+        "public_HACS_safe": false,
+        "source_page": "https://www.xpeng.com/lu/model/g6"
+      }
+    ],
+    "official_front_three_quarter_pngs": [
+      {
+        "paint": "stellar_purple",
+        "trim": "G6 Core Performance AWD",
+        "url": "https://heyxpeng.co.il/wp-content/uploads/2025/11/xpeng-g6-specs-core-awd-img.png",
+        "source_page": "https://heyxpeng.co.il/g6/",
+        "source_image": "original official PNG; isolated car render; no confirmed open redistribution license"
+      },
+      {
+        "paint": "arctic_white",
+        "trim": "G6 Core RWD 18 wheels",
+        "url": "https://heyxpeng.co.il/wp-content/uploads/2025/11/g6-core-rwd-18-white.png",
+        "source_page": "https://heyxpeng.co.il/g6/configurator/",
+        "source_image": "original official PNG; isolated car render; not highest trim; license not verified"
+      }
+    ],
+    "licensed_top_down_alternative": {
+      "provider": "IMAGIN.studio",
+      "public_demo_url": "https://cdn.imagin.studio/getImage?angle=33&billingTag=&bodySize=5&customer=gbxlcr-vehicle-management-ltd&fileType=webp&make=XPENG&modelFamily=G6&modelRange=G6+ESTATE&modelVariant=SUV&modelYear=2026&powerTrain=Electric&trim=Standard+Range&zoomLevel=30",
+      "view": "direct overhead",
+      "model_match": "2026 G6 standard range according to referring site, not conclusively 2025 refresh highest trim",
+      "suitability": "not a free licensed/redistributable asset",
+      "rights": "https://licensing.imaginstudio.com/",
+      "license_terms": "paid use license; normally no downloading, distributing, or modification; do not reuse customer key"
+    },
+    "open_use_results": {
+      "official_png_file_count": 8,
+      "angles": {
+        "front_three_quarter": "official real PNG examples two colors and different trim",
+        "rear_three_quarter": "no verified transparent actual highest-trim same-colour asset",
+        "top_overhead": "commercial licensed demo only; no free-to-redistribute verified genuine orthographic G6 top image"
+      },
+      "current_decision": "do not ship website PNG binaries to public GitHub without redistribution permission"
+    }
+  }
 }

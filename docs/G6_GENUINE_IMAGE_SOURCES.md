@@ -32,3 +32,39 @@ Selection remains **model+exterior paint only** (each model always displays its 
 ## Immediate practical gap
 
 The best verified free, redistributable candidates are actual G6 photographs licensed through Wikimedia Commons, but **there is still no verified transparent genuine G6 overhead photograph, and no validated matching white front/rear/highest-trim transparent pack**. Do not merge a claim of photo-completeness until these exist.
+
+
+## BREAKTHROUGH: direct original official G6 facelift isolated PNGs (2026-10-12)
+
+The [official XPENG G6 product page (Luxembourg)](https://www.xpeng.com/lu/model/g6) links to **six separate real manufacturer-provided PNG cutouts of the updated G6**. Unlike invented generative images, these are **the actual manufacturer's vehicle renders**. They use a consistent **SIDE view**, *not front/rear/top*, across five exterior paints and Black Edition.
+
+| Exterior | Official original PNG URL | View | Licensing |
+|---|---|---|---|
+| arctic_white | [Original PNG](https://s-cdn.xpeng.com/commoncms/prod/2025-07-10/b3ba3f1c56884076aae0e020be843b0f.png) | Side, isolated render | Manufacturer copyright; redistribution unverified |
+| graphite_gray | [Original PNG](https://s-cdn.xpeng.com/commoncms/prod/2025-07-10/127bde799d2e4d338d47d7d28ac1a42a.png) | Side, isolated render | Manufacturer copyright; redistribution unverified |
+| midnight_black | [Original PNG](https://s-cdn.xpeng.com/commoncms/prod/2025-07-10/294a086e7a7a494b92aa88745aa55ba5.png) | Side, isolated render | Manufacturer copyright; redistribution unverified |
+| silver_frost | [Original PNG](https://s-cdn.xpeng.com/commoncms/prod/2025-07-10/696791d488ce4b25900a04492e02de78.png) | Side, isolated render | Manufacturer copyright; redistribution unverified |
+| stellar_purple | [Original PNG](https://s-cdn.xpeng.com/commoncms/prod/2025-07-10/01b64c33a42c4873be425252ac21006b.png) | Side, isolated render | Manufacturer copyright; redistribution unverified |
+| black_edition | [Original PNG](https://s-cdn.xpeng.com/commoncms/prod/2025-07-10/37d6e2e9b811457d9a2b299b97afdc86.png) | Side, isolated render | Manufacturer copyright; redistribution unverified |
+
+These links were opened as original PNG images; the image viewer shows the surrounding area black, consistent with alpha transparency, but **pixel alpha bytes were not available to inspect** in the constrained network environment. Before packaging, use Pillow to verify image mode RGBA and whether alpha min/max includes both transparent and opaque pixels.
+
+### More relevant original front-angle G6 PNGs
+
+- **G6 Core Performance AWD — purple front 3/4**: [official isolated PNG](https://heyxpeng.co.il/wp-content/uploads/2025/11/xpeng-g6-specs-core-awd-img.png) from [XPENG Israel G6 overview](https://heyxpeng.co.il/g6/). This is the most promising **high-trim front** source; its shape and wheels match the *Core Performance* preview. Manufacturer copyright — not yet authorized for HACS redistribution.
+- **G6 Core RWD — white front 3/4 with 18-inch wheels**: [official isolated PNG](https://heyxpeng.co.il/wp-content/uploads/2025/11/g6-core-rwd-18-white.png) from [Israel configurator](https://heyxpeng.co.il/g6/configurator/). It is **not** a Core Performance/highest-trim image.
+- [Official XPENG G6 newsroom](https://xpeng-newsroom.pr.co/de-DE/assets/236408/) has original front/rear photographic assets, usually JPEG with backgrounds. Model/trim/license requires verification.
+
+### Why a perfect free 3-view set is NOT yet found
+
+An [IMAGIN.studio 2026 G6 overhead model render](https://cdn.imagin.studio/getImage?angle=33&billingTag=&bodySize=5&customer=gbxlcr-vehicle-management-ltd&fileType=webp&make=XPENG&modelFamily=G6&modelRange=G6+ESTATE&modelVariant=SUV&modelYear=2026&powerTrain=Electric&trim=Standard+Range&zoomLevel=30) demonstrates that accurate overhead assets can exist. [Angle 33 is orthographic overhead](https://docs.imagin.studio/guides/getting-images/ii.-image-customization-and-styling/selecting-angles). But [IMAGIN.studio explicitly requires a purchased license, and prohibits standalone redistribution/modified image download without permission](https://licensing.imaginstudio.com/), so **it fails the user's no-cost requirement**; do not copy/hotlink using another website's customer key.
+
+The official XPENG cutouts are free to view and may be saved for personal inspection, but free public viewing is **not a license to bundle** their PNG bytes in an open source HACS release. The photo replacement remains separate from released UI alpha.6.
+
+### Status to pursue next
+
+1. Find a genuine manufacturer-supplied **white and other-paint Core Performance front 3/4**, preferably same perspective across all paints.
+2. Find a matched manufacturer **rear 3/4** separated image.
+3. Find a genuine **directly overhead** version suitable for the four TPMS readings. A true overhead image is a must; don't pretend a side image or AI-made model is original.
+4. Secure reproduction and redistribution rights, or find suitably free CC-licensed real photos and professionally remove backgrounds (with author credit and CC BY-SA compliant asset license).
+5. Keep approved scene and all UI unchanged.
