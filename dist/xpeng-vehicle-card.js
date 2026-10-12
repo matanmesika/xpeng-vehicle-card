@@ -285,7 +285,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 `;
 class XpengVehicleCard extends HTMLElement{
  constructor(){
-  super();this.attachShadow({mode:'open'});this._config={};this._hass=null;this._view='overview';this._vehicleIndex=0;this._infoOpen=false;
+  super();this.attachShadow({mode:'open'});this._config={};this._hass=null;this._view='overview';this._expanded=false;this._vehicleIndex=0;this._infoOpen=false;
   this.shadowRoot.addEventListener('error',ev=>{
       const img=ev.target;
       if(!img?.matches?.('img[data-car-art]')||img.dataset.fallbackUsed)return;
