@@ -4,6 +4,10 @@
 
 > **Image status:** current bundled G6 art and old preview screenshots are **not** an approved match for the owner's 2026 design reference. The new vehicle-year/trim/paint-specific art set and new actual screenshots must be delivered before a stable release. We do not promote the old images as the current dashboard.
 
+**Design lock:** The current dark mountain and reflective-ground background is now frozen as the visual baseline. Changes must preserve its pixels, framing, two screens, card layout, and the original vehicle/charging presentation. Do not generate a fresh design or replace the background during development. See [DESIGN_LOCK.md](DESIGN_LOCK.md).
+
+**Newer model previews:** The editor supports current catalogue models/years. For **G6 and G9 2026**, the card selects bundled model-year + trim + paint assets where available. These are *illustrative previews*, not independently authenticated manufacturer imagery. Unsupported exact variants show a clearly labeled placeholder rather than disguising older artwork as a current-year vehicle. The shared background is independent of model selection.
+
 This repository contains the **dashboard**, not the XPENG integration. The integration is responsible for connecting to the vehicle and exposing Home Assistant entities. The dashboard only reads those entities and displays them. Updating this repository never updates the integration.
 
 ## Two screens only
