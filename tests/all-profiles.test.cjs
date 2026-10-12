@@ -139,3 +139,79 @@ test('card editor remains appearance-only and dashboard does not add new screens
  assert.doesNotMatch(card.shadowRoot.innerHTML,/data-key="year"|Manual sensor mapping/);
  assert.equal((card.shadowRoot.innerHTML.match(/class="xp-night-photo"/g)||[]).length,1);
 });
+
+test('data-driven asset index matches actual repo files for every model and year',()=>{
+ const index=JSON.parse(fs.readFileSync(path.join(ROOT,'vehicle-art-inventory.json'),'utf8'));
+ const packaged=JSON.parse(fs.readFileSync(path.join(ROOT,'dist/vehicle-art-inventory.json'),'utf8'));
+ assert.deepEqual(index,packaged);
+ assert.equal(index.backdrop,'xpeng-reference-background.webp');
+ assert.equal(index.backdrop_is_common,true);
+ const c=vm.runInNewContext('({exact:Array.from(XP_ARTWORK_INDEX.exact),family:Array.from(XP_ARTWORK_INDEX.family)})',context);
+ assert.deepEqual(Array.from(c.exact).sort(),index.exact.slice().sort());
+ assert.deepEqual(Array.from(c.family).sort(),index.model_family.slice().sort());
+ assert.equal(new Set(index.exact).size,index.exact.length);
+ assert.equal(new Set(index.model_family).size,index.model_family.length);
+ for(const rel of [...index.exact,...index.model_family]){
+   assert.ok(fs.existsSync(path.join(ROOT,'dist/assets',rel)),rel);
+   assert.ok(fs.existsSync(path.join(ROOT,'assets',rel)),rel);
+ }
+});
+test('all 2026 exact model/year/trim/paint choices are selected without changing the shared background',()=>{
+ const c=new Card();
+ const manifest=JSON.parse(fs.readFileSync(path.join(ROOT,'vehicle-art-inventory.json'),'utf8'));
+ const scene=c.sceneBackdrop();
+ for(const rel of manifest.exact){
+   const parts=rel.split('/');
+   const model=parts[1].toUpperCase(),year=parts[2],trim=parts[3],colour=parts[4].replace('.webp','');
+   const matched=profiles.profiles.find(p=>p.model.toUpperCase()===model&&p.year===year);
+   assert.ok(matched,'unknown exact asset profile '+rel);
+   c.setConfig({model,year,trim,color:colour,interior:matched.interior_options[0]});
+   const art=c.assetSpec();
+   assert.equal(art.tier,'model-year-trim',rel);
+   assert.ok(art.src.endsWith('/'+rel),art.src);
+   assert.equal(c.sceneBackdrop(),scene,'model selection must not change the background');
+ }
+});
+test('every catalog model and supported year keeps its selection and emits an honest artwork tier',()=>{
+ const card=new Card();
+ for(const p of profiles.profiles){
+   const a={model:p.model,year:p.year,trim:p.trims[0],color:p.paint_options[0],interior:p.interior_options[0]};
+   card.setConfig(a);
+   const art=card.assetSpec();
+   assert.equal(card.appearance().model,a.model);
+   assert.equal(card.appearance().year,a.year);
+   assert.ok(['model-year-trim','model-family','silhouette','manual'].includes(art.tier),p.display_name);
+   if(art.tier==='model-family')assert.match(art.description,/illustration/);
+   if(art.tier==='silhouette')assert.match(art.description,/Illustrative/);
+ }
+});
+test('model or paint changes never retain an unrelated manual vehicle/cabin image',()=>{
+ const editor=new Editor();
+ editor.setConfig({model:'G6',year:'2026',trim:'core_plus_rwd',color:'arctic_white',
+  interior:'light_gray',image:'/local/car-exact.webp',interior_image:'/local/cabin-exact.webp'});
+ assert.match(editor.shadowRoot.innerHTML,/data-key="image"/);
+ assert.match(editor.shadowRoot.innerHTML,/data-key="interior_image"/);
+ const simulate=(key,value)=>{
+  const ctrl={dataset:{key},value,hasAttribute:()=>false,setCustomValidity(){},reportValidity(){}};
+  editor.shadowRoot.handlers.change({target:{closest:()=>ctrl}});
+ };
+ simulate('color','graphite_gray');
+ assert.equal(editor._cfg.image,undefined,'old paint must not keep white car');
+ assert.equal(editor._cfg.interior_image,'/local/cabin-exact.webp','cabin choice independent of paint');
+ simulate('interior','dark_gray');
+ assert.equal(editor._cfg.interior_image,undefined,'changing upholstery invalidates manual cabin photo');
+});
+test('cabin preview changes with selected interior colour without changing the background',()=>{
+ const card=new Card();
+ card.setConfig({model:'G6',year:'2026',color:'arctic_white',interior:'light_gray'});
+ const backdrop=card.sceneBackdrop();
+ const light=card.interiorPreview();
+ assert.match(light,/#d8d9d4/);
+ card.setConfig({model:'G6',year:'2026',color:'arctic_white',interior:'dark_gray'});
+ const dark=card.interiorPreview();
+ assert.match(dark,/#40454b/);
+ assert.notEqual(light,dark);
+ assert.equal(card.sceneBackdrop(),backdrop);
+ card.setConfig({model:'G6',year:'2026',interior:'light_gray',interior_image:'/local/my-cabin.webp'});
+ assert.match(card.interiorPreview(),/my-cabin.webp/);
+});
