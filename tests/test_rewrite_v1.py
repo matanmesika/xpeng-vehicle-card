@@ -66,6 +66,10 @@ with sync_playwright() as p:
         page.route('**/local/xpeng/**', serve_asset)
         page.route('**/hacsfiles/xpeng-vehicle-card/assets/**', serve_asset)
         assert (ROOT / 'dist/assets/xpeng-reference-background.webp').is_file()
+        from hashlib import sha256
+        original_bg=ROOT/'dist/assets/xpeng-reference-background.webp'
+        assert original_bg.stat().st_size == 50018
+        assert sha256(original_bg.read_bytes()).hexdigest() == '5f6ea56528b84b7e25bb94cf1395a27e1338dccbe3e3e9dde537e7ce634af9de'
 
         page.set_content(
             '<!doctype html><html><head><base href="https://ha.local/"><meta charset="utf-8">'
