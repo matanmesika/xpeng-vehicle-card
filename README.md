@@ -26,7 +26,7 @@ A standalone, **read-only Home Assistant dashboard card** for XPENG vehicles. Th
 
 The mapping is recorded in [model-artwork.json](model-artwork.json). Currently, G6 uses its available `core_performance_awd` artwork, G9 uses `performance_awd`, and other models fall back to their available model-colour illustrations. **Existing artwork is illustrative/unverified, not confirmed manufacturer photography of every highest trim.** The card does not falsely claim a rear or overhead manufacturer cutout exists: rear images are pending, and TPMS uses a labelled overhead illustration until a suitable owner-provided `top_image` is configured.
 
-See [artwork and tire view policy](docs/SHAPE_ASSETS_AND_TPMS.md) and [design lock](DESIGN_LOCK.md).
+See [artwork and tire view policy](docs/SHAPE_ASSETS_AND_TPMS.md) and [design lock](docs/DESIGN_LOCK.md).
 
 ## Installation through HACS
 
@@ -87,6 +87,6 @@ The charging sensor determines the view; an available charging cable alone does 
 - `model-artwork.json` is the simplified model+paint mapping; `vehicle-art-inventory.json` lists the actual packaged files, including historical source paths (which **do not** control runtime year/trim selection).
 - `tests/` covers appearance invariants, real sensor mapping, network info popup, charging and tire modes, responsive desktop/phone browser rendering, image inventory and HACS packaging.
 
-The tested UI improvements originated in [PR #21](https://github.com/matanmesika/xpeng-vehicle-card/pull/21); image research continues separately. See [release checklist](RELEASE_CHECKLIST.md) and [changelog](CHANGELOG.md). Final real-vehicle photography, licence checks, owner visual sign-off, and installation testing in an actual Home Assistant instance remain separate release gates.
+The tested UI improvements originated in [PR #21](https://github.com/matanmesika/xpeng-vehicle-card/pull/21); image research continues separately. See [release checklist](docs/RELEASE_CHECKLIST.md) and [changelog](CHANGELOG.md). Final real-vehicle photography, licence checks, owner visual sign-off, and installation testing in an actual Home Assistant instance remain separate release gates.
 
 *Independent community dashboard; not an official XPENG product.*
