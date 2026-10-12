@@ -1,0 +1,33 @@
+name: Vehicle artwork transparency audit
+on:
+  push:
+    branches:
+      - feature/reference-background-parity-v012
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install pillow
+      - name: Inspect all model-year previews for transparent overlay support
+        run: python tools/audit_vehicle_art.py
+      - name: Collect original sedan/MPV photos for shape review
+        run: |
+          git fetch --depth=1 origin main
+          mkdir -p previews/original_studio
+          for model in g7 g9 x9 next_p7 p7 p7i p7_plus p5 mona_m03; do
+            git show "origin/main:dist/assets/models/${model}-arctic_white.webp" > "previews/original_studio/${model}-arctic_white.webp"
+          done
+      - name: Attach original images for cutout verification
+        uses: actions/upload-artifact@v4
+        with:
+          name: xpeng-studio-sedan-source-reference
+          path: previews/original_studio/*.webp
+          if-no-files-found: error

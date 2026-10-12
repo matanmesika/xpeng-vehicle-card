@@ -4,6 +4,7 @@ The injected values below are *test fixtures* and must never be hardcoded in
 the actual card. The vehicle integration is outside the scope of this test.
 """
 from pathlib import Path
+import hashlib
 import shutil
 from playwright.sync_api import sync_playwright
 
@@ -52,7 +53,10 @@ with sync_playwright() as p:
         page.on('pageerror', lambda e: errors.append(str(e)))
 
         def serve_asset(route):
-            file = ROOT / 'dist' / 'assets' / route.request.url.split('/local/xpeng/', 1)[-1]
+            url = route.request.url
+            relative = (url.split('/local/xpeng/',1)[-1] if '/local/xpeng/' in url
+                        else url.split('/hacsfiles/xpeng-vehicle-card/assets/',1)[-1])
+            file = ROOT / 'dist' / 'assets' / relative
             if not file.is_file():
                 missing.append(str(file))
                 return route.fulfill(status=404, body='Missing artwork')
@@ -60,6 +64,13 @@ with sync_playwright() as p:
             route.fulfill(status=200, body=file.read_bytes(), content_type=mime)
 
         page.route('**/local/xpeng/**', serve_asset)
+        page.route('**/hacsfiles/xpeng-vehicle-card/assets/**', serve_asset)
+        assert (ROOT / 'dist/assets/xpeng-approved-lakeside-background.webp').is_file()
+        from hashlib import sha256
+        original_bg=ROOT/'dist/assets/xpeng-approved-lakeside-background.webp'
+        assert original_bg.stat().st_size == 255854
+        assert sha256(original_bg.read_bytes()).hexdigest() == 'c0db38e9cd1c1827c53005c874af420563034258eb25444c1698d978277cf1ef'
+
         page.set_content(
             '<!doctype html><html><head><base href="https://ha.local/"><meta charset="utf-8">'
             '<style>body{margin:0;background:#030e1b;padding:0}xpeng-vehicle-card{display:block;width:100%}</style>'
@@ -76,6 +87,9 @@ with sync_playwright() as p:
 
         host = page.locator('xpeng-vehicle-card')
         assert host.locator('.xp-overview').count() == 1
+        assert host.locator('.xp-brand').is_visible()
+        assert '/hacsfiles/xpeng-vehicle-card/assets/xpeng-approved-lakeside-background.webp' in host.locator('.xp-night-photo').get_attribute('style')
+
         assert host.locator('.xp-charge').count() == 0
         assert '—' in host.locator('.xp-soc').inner_text()
         assert host.locator('.xp-status-panel').count() == 1
@@ -89,6 +103,43 @@ with sync_playwright() as p:
         # Only the overview: no buttons to enter old detailed control pages.
         page.evaluate("states => document.querySelector('xpeng-vehicle-card').hass = {states}", BASE)
         assert host.locator('.xp-overview').count() == 1
+        assert host.locator('[data-view],.xp-clock').count() == 0
+
+        # The background is a single packaged raster file, with no rendering differences
+        # across views. Check the *actual Chrome pixels*, not just matching CSS strings.
+        # Hide all interactive/vehicle overlays before comparing the same background area.
+        def backdrop_snapshot(states, mode):
+            page.evaluate("states => document.querySelector('xpeng-vehicle-card').hass = {states}", states)
+            layout = page.evaluate("""() => {
+                const root = document.querySelector('xpeng-vehicle-card').shadowRoot;
+                const photo = root.querySelector('.xp-night-photo');
+                const style = getComputedStyle(photo);
+                const rect = photo.getBoundingClientRect();
+                return {
+                  url: style.backgroundImage, size: style.backgroundSize,
+                  position: style.backgroundPosition, repeat: style.backgroundRepeat,
+                  bounds: [rect.x, rect.y, rect.width, rect.height]
+                };
+            }""")
+            assert 'xpeng-approved-lakeside-background.webp' in layout['url'], layout
+            assert layout['size'] == 'cover', layout
+            assert layout['position'] == '50% 50%', layout
+            page.evaluate("""() => {
+                const root = document.querySelector('xpeng-vehicle-card').shadowRoot;
+                const layer = document.createElement('style');
+                layer.textContent = '.xp-scene > :not(.xp-night-photo){visibility:hidden!important;}';
+                root.append(layer);
+            }""")
+            photo_png = host.screenshot(path=str(OUT / f'{tag}-background-{mode}-ISOLATED.png'))
+            return (layout, hashlib.sha256(photo_png).hexdigest())
+
+        overview_layout, overview_pixels = backdrop_snapshot(BASE, 'overview')
+        charging_layout, charging_pixels = backdrop_snapshot(CHARGING, 'charging')
+        assert overview_layout == charging_layout, (overview_layout, charging_layout)
+        assert overview_pixels == charging_pixels, (
+            f'Dashboard background changed with charging state: {overview_pixels} != {charging_pixels}')
+        # Restore the normal overview scene before the remaining assertions.
+        page.evaluate("states => document.querySelector('xpeng-vehicle-card').hass = {states}", BASE)
         assert '62%' in host.locator('.xp-overview-stat').inner_text()
         assert '391 km' in host.locator('.xp-overview-stat').inner_text()
         assert '12,548 km' in host.locator('.xp-status-panel').inner_text()
@@ -100,6 +151,7 @@ with sync_playwright() as p:
         page.evaluate("states => document.querySelector('xpeng-vehicle-card').hass = {states}", CHARGING)
         assert host.locator('.xp-charge').count() == 1
         assert host.locator('.xp-overview').count() == 0
+        assert host.locator('.xp-brand').is_visible()
         assert host.locator('.xp-charge-card').count() == 1
         assert 'Charging now' in host.locator('.xp-charge-heading').inner_text()
         assert '62%' in host.locator('.xp-charge-card').inner_text()
@@ -108,13 +160,49 @@ with sync_playwright() as p:
         assert '90 %' in host.locator('.xp-charge-card').inner_text()
         page.screenshot(path=str(OUT / f'{tag}-charging-DEMO.png'), full_page=True)
 
-        # Home is a view switch, not a vehicle-control command.
-        host.locator('[data-view="overview"]').click()
-        assert host.locator('.xp-overview').count() == 1
+        # Home and clock are removed from the header. Only charging telemetry changes the view.
+        assert host.locator('[data-view],.xp-clock,.xp-head-separator').count() == 0
+        assert host.locator('[data-expand]').count() == 0
+        page.evaluate("""() => {
+            const card=document.querySelector('xpeng-vehicle-card');
+            const data={...card.hass.states};
+            data['sensor.my_xpeng_soc']={state:'68'};
+            card.hass={states:data};
+        }""")
+        assert host.locator('.xp-charge').count() == 1
 
-        # A transition back to idle always restores Vehicle status.
-        page.evaluate("states => document.querySelector('xpeng-vehicle-card').hass = {states}", BASE)
+        # Idle, paused, plugged-only and unavailable charging status always show Vehicle status.
+        for state in ('off','paused','plugged_in','unavailable'):
+            page.evaluate("""state => {
+                const card=document.querySelector('xpeng-vehicle-card');
+                card.hass={states:{...card.hass.states,
+                  'binary_sensor.my_xpeng_is_charging':{state}}};
+            }""",state)
+            assert host.locator('.xp-overview').count() == 1
+            assert host.locator('.xp-charge').count() == 0
+        # Strict sensor mapping permits other integrations, with charge-state in an attribute.
+        page.evaluate("""() => {
+            const card=document.querySelector('xpeng-vehicle-card');
+            card.setConfig({prefix:'my_xpeng',model:'G6',year:'2026',trim:'core_plus_rwd',
+               color:'arctic_white',image_path:'/local/xpeng',
+               entities:{charging:'select.external_ev|charging_state'}});
+            card.hass={states:{...card.hass.states,
+               'select.external_ev':{state:'ready',attributes:{charging_state:'charging'}}}};
+        }""")
+        assert host.locator('.xp-charge').count() == 1
+        page.evaluate("""() => {
+            const card=document.querySelector('xpeng-vehicle-card');
+            card.hass={states:{...card.hass.states,
+               'select.external_ev':{state:'ready',attributes:{charging_state:'idle'}}}};
+        }""")
         assert host.locator('.xp-overview').count() == 1
+        # Restore default sensor mapping before testing unavailable values.
+        page.evaluate("""states => {
+            const card=document.querySelector('xpeng-vehicle-card');
+            card.setConfig({prefix:'my_xpeng',model:'G6',year:'2026',trim:'core_plus_rwd',
+               color:'arctic_white',image_path:'/local/xpeng'});
+            card.hass={states};
+        }""",BASE)
 
         # Missing data stays unavailable: zero and screenshot demo values are never substituted.
         page.evaluate("states => document.querySelector('xpeng-vehicle-card').hass = {states}", {
@@ -124,11 +212,8 @@ with sync_playwright() as p:
         assert '—' in host.locator('.xp-charge-card .xp-soc').inner_text()
         assert '11.2 kW' not in host.locator('.xp-charge-card').inner_text()
 
-        # Fullscreen CSS fallback remains functional even if a browser rejects native fullscreen.
-        host.locator('[data-expand]').click()
-        assert host.get_attribute('data-expanded') is not None
-        host.locator('[data-expand]').click()
-        assert host.get_attribute('data-expanded') is None
+        # No in-card Full Screen button in either screen.
+        assert host.locator('[data-expand]').count() == 0
 
         if tag == 'phone':
             dimensions = page.evaluate('''() => ({
@@ -150,6 +235,38 @@ with sync_playwright() as p:
         assert editor.locator('[data-entity="charging"]').count() == 1
         assert editor.locator('[data-entity="tire_fl"]').count() == 1
         assert host.locator('[data-key="color"],[data-entity]').count() == 0
+
+        # Browser-test representative generations; all use the same scenic bitmap,
+        # with a different car render and interior selected in the card editor.
+        catalogue=[
+            ('G6','2026','core_plus_rwd','arctic_white','light_gray','model-year-trim'),
+            ('G9','2026','long_range_rwd','graphite_gray','coffee','model-year-trim'),
+            ('X9','2026','unspecified','silver_frost','light_gray','model-family'),
+            ('G7','2025','unspecified','midnight_black','dark_gray','model-family'),
+            ('Next P7','2026','unspecified','arctic_white','dark_gray','model-family'),
+            ('P7','2020','unspecified','stellar_purple','dark_gray','model-family')
+        ]
+        for model,year,trim,paint,cabin,tier in catalogue:
+            page.evaluate("""arg => {
+                const [v,states]=arg;
+                const card=document.querySelector('xpeng-vehicle-card');
+                card.setConfig({prefix:'my_xpeng',model:v[0],year:v[1],
+                  trim:v[2],color:v[3],interior:v[4],image_path:'/local/xpeng'});
+                card.hass={states};
+            }""",[[model,year,trim,paint,cabin],BASE])
+            page.wait_for_function("""() => {
+                const img=document.querySelector('xpeng-vehicle-card')
+                  .shadowRoot.querySelector('img[data-car-art]');
+                return img && img.complete && img.naturalWidth>=250;
+            }""")
+            image=host.locator('img[data-car-art]')
+            assert image.get_attribute('data-art-tier')==tier,(model,year,tier)
+            assert image.get_attribute('data-fallback-used') is None
+            assert 'xpeng-approved-lakeside-background.webp' in host.locator('.xp-night-photo').get_attribute('style')
+            assert host.locator('.xp-overview').count()==1
+            if tag=='desktop':
+                safe='-'.join((model,year,paint)).lower().replace(' ','_')
+                host.screenshot(path=str(OUT/f'catalogue-{safe}.png'))
 
         assert not errors, errors
         # Release gate: all model/year/colour assets must exist before release.

@@ -1,8 +1,15 @@
 # XPENG Dashboard
 
-**Dashboard v0.1.1** — a standalone, read-only Home Assistant frontend card for XPENG vehicles.
+**Dashboard v1.0.0-alpha.4** — a standalone, read-only Home Assistant frontend card for XPENG vehicles.
 
-> **Image status:** current bundled G6 art and old preview screenshots are **not** an approved match for the owner's 2026 design reference. The new vehicle-year/trim/paint-specific art set and new actual screenshots must be delivered before a stable release. We do not promote the old images as the current dashboard.
+> **Image status:** the supplied approved backdrop and white G6 2026 transparent asset are included; exact full-scene visual parity still needs acceptance. The new vehicle-year/trim/paint-specific art set and new actual screenshots must be delivered before a stable release. We do not promote the old images as the current dashboard.
+
+**Design lock:** Preserve the current bundled house/lake/mountain night photograph and keep the vehicle on an independent foreground layer. No synthetic CSS mountain background. See [DESIGN_LOCK.md](DESIGN_LOCK.md).
+
+**Newer model previews:** The editor supports current catalogue models/years. For **G6 and G9 2026**, the card selects bundled model-year + trim + paint assets where available. These are *illustrative previews*, not independently authenticated manufacturer imagery. Unsupported exact variants show a clearly labeled placeholder rather than disguising older artwork as a current-year vehicle. The shared background is independent of model selection.
+
+
+> **Bundled approved-scene preview:** The approved lakeside night photograph is now packaged in both `assets/` and `dist/assets/` and selected as the default shared backdrop. The white 2026 G6 Core+ RWD transparent cutout is packaged at its exact model/year/trim/paint artwork path and selected automatically. No manual `background_image` or `image` configuration is required with HACS. Optional user overrides remain supported. This is still a visual preview, not proof of pixel-perfect matching of all vehicle/charging mockups.
 
 This repository contains the **dashboard**, not the XPENG integration. The integration is responsible for connecting to the vehicle and exposing Home Assistant entities. The dashboard only reads those entities and displays them. Updating this repository never updates the integration.
 
@@ -11,7 +18,7 @@ This repository contains the **dashboard**, not the XPENG integration. The integ
 - **Vehicle status** — XPENG vehicle artwork, battery percentage, estimated range, odometer, combined tire-pressure display and vehicle location.
 - **Charging** — the same vehicle artwork in a charging scene, live battery percentage, estimated range, charging power, estimated time remaining and charge limit.
 
-The card switches automatically from Vehicle status to Charging when `binary_sensor.<prefix>_is_charging` becomes `on`, and returns when it becomes `off`. A Home button allows viewing the status screen manually. The Full Screen button expands the card to the available browser viewport, with an iOS-compatible CSS fallback.
+The card switches automatically from Vehicle status to Charging when `binary_sensor.<prefix>_is_charging` becomes `on`, and returns when it becomes `off`. **The charging-state entity is the only screen-switch trigger.** There is no Home button, clock or Full Screen icon in the header. The card continues to fill its configured Lovelace grid width and adapts to mobile screens.
 
 There are **no** separate climate, controls, doors, seats, weather, settings or other dashboard pages. **All appearance choices** (model, year, trim, exterior and interior finish) are **manual and exist ONLY in Home Assistant’s card editor or YAML**, never as controls on either dashboard screen. Home Assistant telemetry can be mapped automatically or overridden individually in the card editor.
 
@@ -40,7 +47,7 @@ grid_options:
 
 In Home Assistant open **Edit dashboard → Edit XPENG Dashboard card**. The **Vehicle appearance** section lets you manually select model, model year, trim, exterior paint and interior finish. No XPENG account login is needed. These settings will not be replaced by sensor data.
 
-Open **Manual sensor mapping** in the *same card editor* to search your Home Assistant entities and assign each field. The editor currently provides **15 assignments**: charging state, battery, range, charging power, time remaining, charge target, cable connection, odometer, four tire pressures, location, last update and connection status. Leave an assignment **empty** to use auto-mapping based on the configured prefix. A manually selected entity always takes priority.
+Open **Manual sensor mapping** in the *same card editor* to search your Home Assistant entities and assign each field. The editor currently provides **15 assignments**: charging state, battery, range, charging power, time remaining, charge target, cable connection, odometer, four tire pressures, location, last update and connection status. Leave an assignment **empty** to use auto-mapping based on the configured prefix. A manually selected entity from **any HA integration/domain** takes priority; you can optionally read an entity attribute with `entity_id|attribute_name` (for example `select.my_car_charge|charging_state`). Manual and automatic mappings can be mixed independently across the 15 fields.
 
 Example YAML for direct assignment (the visual editor provides the same option):
 
@@ -60,7 +67,7 @@ entities:
   target: number.your_charge_limit
 ```
 
-All readings (including changes of charging state and screen switching) update automatically from their mapped Home Assistant entities. A missing or unavailable sensor displays **—**, never a fake live value. This card is presentation-only: it does not require or alter the experimental XPENG backend.
+Readings update automatically from the mapped Home Assistant entities. **Only an active charging state** (`on`, `true`, `1`, `charging`, `in_progress` or `active`) displays the charging screen. An idle, paused, connected-only or unavailable charging state displays Vehicle status. A missing or unavailable sensor displays **—**, never a fake live value. This card is presentation-only: it does not require or alter the experimental XPENG backend.
 
 The optional `image_path` may point to the installed local directory if installed manually. HACS defaults to `/hacsfiles/xpeng-vehicle-card/assets`. For manual installation copy `dist/xpeng-vehicle-card.js` and `dist/assets/` into your local Home Assistant `www` directory and register the JavaScript module.
 
@@ -108,3 +115,39 @@ _Not an official XPENG product. XPENG trademarks belong to their respective owne
 - Previous PNG previews in `previews/` are legacy design explorations. They are not current screenshots of v0.1.1, and will be replaced only after real browser captures pass visual review.
 
 For contribution and release gates see [AGENTS.md](AGENTS.md) and [artwork blocker #14](https://github.com/matanmesika/xpeng-vehicle-card/issues/14). **The project is a separate dashboard repository and makes no changes to the XPENG integration.**
+
+### Background implementation
+
+Both screens use **the exact original 1536×864 WebP uploaded by the owner**, `dist/assets/xpeng-approved-lakeside-background.webp` (SHA-256 `5f6ea56528b84b7e25bb94cf1395a27e1338dccbe3e3e9dde537e7ce634af9de`), packaged in HACS and kept separate from the vehicle image and live HA data. The background is fixed to the HACS asset path and does not change when someone configures a custom vehicle-image folder. It replaces the prior CSS/SVG-generated mountain skyline. The source is a clean landscape supplied during design review; it contains **no** baked-in vehicle, SOC, charging figures or user location. Other model images and lighting still need visual-review approval against the owner's composite screenshots.
+
+## Vehicle / background layer separation and artwork by year
+
+The scenic bitmap `assets/xpeng-approved-lakeside-background.webp` (HACS: `dist/assets/xpeng-approved-lakeside-background.webp`) is the **one fixed background layer** for both Vehicle status and Charging. The model, year, trim, paint and interior settings do not modify that background. Car art, text, telemetry and charger/cable elements are rendered as separate foreground layers.
+
+Supported catalog coverage is kept in `model-catalog.json` and `profiles/year-profiles.json`. The **real packaged image inventory** is `vehicle-art-inventory.json` (mirrored in `dist/vehicle-art-inventory.json`). At present, it registers 37 exact-path year/trim/paint *preview* files for G6 and G9 2026 and 80 generic model-family previews. Unavailable exact artwork falls back to clearly described model-family illustration or an illustrative silhouette; it is **not** passed off as a factory-accurate photo. This distinction also applies to 2026+ facelift vehicles that have not been photo-verified.
+
+In the card editor, select **model → year → trim → exterior paint → interior finish**. The optional `charging_image` setting lets owners supply a matching **rear/charging-view** render for that exact vehicle while keeping the same background; without it, the regular cutout is shown in both modes. If the precise art for that model/year/trim/paint is not packaged, the user can provide an optional `image` path to a local `/local/...` or `/hacsfiles/...` vehicle cutout. For model-specific interior imagery, the optional `interior_image` path can be supplied. If it is omitted, the info icon shows a colour-matched cabin schematic instead. Changing model/year/trim or paint clears a previous exact vehicle image so that an old model is not accidentally displayed. Changing the interior finish clears the cabin override. Neither override changes the scene background.
+
+Example editor-equivalent YAML:
+
+```yaml
+type: custom:xpeng-vehicle-card
+prefix: my_xpeng
+model: G6
+year: "2026"
+trim: core_plus_rwd
+color: arctic_white
+interior: light_gray
+# Optional exact imagery where no vetted year/trim artwork exists:
+# image: /local/xpeng/cars/g6-2026-coreplus-white.webp
+# interior_image: /local/xpeng/cabins/g6-2026-lightgray.webp
+entities:
+  soc: sensor.vehicle_soc
+  charging: binary_sensor.vehicle_actually_charging
+```
+
+**Transparent foreground verification (2026-10-12):** An initial audit found 26 usable alpha assets and 91 opaque studio images. The `tools/build_transparent_vehicle_previews.py` build generates per-model foreground masks from the unmodified original studio images (never from previously cropped cutouts), preserving headlights, front bodywork and wheels more faithfully. Both `assets/` and `dist/assets/` contain the generated alpha previews. Real browser screenshots of representative years/models are included in the frontend CI artifacts for visual inspection. The follow-up transparency audit completed successfully for all **117** listed car files. These are preview assets and still require human review for silhouette accuracy and real model-year styling; a transparent picture is not by itself an official XPENG render.
+
+The artwork and interior options are **visual selections**, not sensor data or confirmation of factory orderability by market. Live telemetry remains independently mapped through Home Assistant and is never embedded into artwork.
+
+**Release status:** this work remains an open draft until the latest owner-approved layout has been implemented as truly separate *high-quality* production assets and verified in actual browser screenshots. A successful unit test or an AI-generated mockup is not a visual-parity sign-off.

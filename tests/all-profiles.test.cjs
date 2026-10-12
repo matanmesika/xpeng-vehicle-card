@@ -4,6 +4,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
 const vm=require('node:vm');
+const crypto=require('node:crypto');
 
 const ROOT=path.resolve(__dirname,'..');
 const profiles=JSON.parse(fs.readFileSync(path.join(ROOT,'profiles/year-profiles.json'),'utf8'));
@@ -84,7 +85,191 @@ test('any unknown-year image is clearly labelled illustrative, no false official
  card.setConfig({model:'G9',year:'2024',color:'arctic_white'});
  assert.equal(card.assetSpec().illustrative,true);
  assert.match(card.assetSpec().description,/Generic model-family/);
- assert.match(card.shadowRoot.innerHTML,/Illustrative vehicle art/);
+ assert.match(card.shadowRoot.innerHTML,/illustrative artwork/); // clearly disclosed via accessible image alt without visual watermark
  card.setConfig({model:'G9',year:'2026',color:'kaitoke_green_matte'});
  assert.match(card.asset(),/^data:image\/svg\+xml/);
+});
+
+test('the approved background stays byte-for-byte frozen and shared between status and charging',()=>{
+ const expectedGitBlob='a28766ffcb8607f096077e67fdc3fbb04b79c883';
+ const file=path.join(ROOT,'dist/assets/xpeng-approved-lakeside-background.webp');
+ const raw=fs.readFileSync(file);
+ const blob=crypto.createHash('sha1')
+    .update(Buffer.from('blob '+raw.length)).update(Buffer.from([0]))
+   .update(raw).digest('hex');
+ assert.equal(blob,expectedGitBlob,
+   'Backdrop was changed without explicit owner approval; restore approved pixels');
+ const root=fs.readFileSync(path.join(ROOT,'assets/xpeng-approved-lakeside-background.webp'));
+ assert.ok(root.equals(raw),'Root and HACS background must be byte-identical');
+ const card=new Card();card.setConfig({model:'G6',year:'2026',color:'arctic_white'});
+ const idle=card.sceneBackdrop();
+ card.hass={states:{'binary_sensor.my_xpeng_is_charging':{state:'on'}}};
+ const active=card.sceneBackdrop();
+ assert.equal(idle,active);
+ assert.ok(idle.includes('xpeng-approved-lakeside-background.webp'));
+ assert.equal((idle.match(/xp-night-photo/g)||[]).length,1);
+ assert.ok(!source.includes('night-mountain-scene.svg'));
+});
+test('new 2026 G9 uses the actual bundled year/trim/paint-specific preview',()=>{
+ const card=new Card();
+ for(const trim of ['unspecified','standard_range_rwd','long_range_rwd','performance_awd']){
+   for(const paint of ['arctic_white','graphite_gray','midnight_black','silver_frost']){
+     card.setConfig({model:'G9',year:'2026',trim,color:paint});
+     const art=card.assetSpec();
+     assert.ok(art.src.endsWith('/vehicles/g9/2026/'+trim+'/'+paint+'.webp'),art.src);
+     assert.equal(art.illustrative,true);
+     const rel=art.src.replace('/hacsfiles/xpeng-vehicle-card/assets/','');
+     assert.ok(fs.existsSync(path.join(ROOT,'dist/assets',rel)),art.src);
+   }
+ }
+ // This colour is allowed by the catalogue but has no model-year verified art yet.
+ card.setConfig({model:'G9',year:'2026',trim:'long_range_rwd',color:'kaitoke_green_matte'});
+ assert.ok(card.assetSpec().src.startsWith('data:image/svg+xml'));
+ assert.match(card.assetSpec().description,/artwork pending/);
+});
+test('card editor remains appearance-only and dashboard does not add new screens',()=>{
+ const card=new Card(),editor=new Editor();
+ editor.setConfig({model:'G9',year:'2026',trim:'performance_awd',color:'arctic_white',interior:'coffee'});
+ assert.match(editor.shadowRoot.innerHTML,/data-key="year"/);
+ assert.match(editor.shadowRoot.innerHTML,/data-key="model"/);
+ assert.match(editor.shadowRoot.innerHTML,/data-key="interior"/);
+ assert.match(editor.shadowRoot.innerHTML,/Manual sensor mapping/);
+ card.setConfig({...editor._cfg});
+ assert.equal(card.appearance().model,'G9');
+ assert.doesNotMatch(card.shadowRoot.innerHTML,/data-key="year"|Manual sensor mapping/);
+ assert.equal((card.shadowRoot.innerHTML.match(/class="xp-night-photo"/g)||[]).length,1);
+});
+
+test('data-driven asset index matches actual repo files for every model and year',()=>{
+ const index=JSON.parse(fs.readFileSync(path.join(ROOT,'vehicle-art-inventory.json'),'utf8'));
+ const packaged=JSON.parse(fs.readFileSync(path.join(ROOT,'dist/vehicle-art-inventory.json'),'utf8'));
+ assert.deepEqual(index,packaged);
+ assert.equal(index.backdrop,'xpeng-approved-lakeside-background.webp');
+ assert.equal(index.backdrop_is_common,true);
+ const c=vm.runInNewContext('({exact:Array.from(XP_ARTWORK_INDEX.exact),family:Array.from(XP_ARTWORK_INDEX.family)})',context);
+ assert.deepEqual(Array.from(c.exact).sort(),index.exact.slice().sort());
+ assert.deepEqual(Array.from(c.family).sort(),index.model_family.slice().sort());
+ assert.equal(new Set(index.exact).size,index.exact.length);
+ assert.equal(new Set(index.model_family).size,index.model_family.length);
+ for(const rel of [...index.exact,...index.model_family]){
+   assert.ok(fs.existsSync(path.join(ROOT,'dist/assets',rel)),rel);
+   assert.ok(fs.existsSync(path.join(ROOT,'assets',rel)),rel);
+ }
+});
+test('all 2026 exact model/year/trim/paint choices are selected without changing the shared background',()=>{
+ const c=new Card();
+ const manifest=JSON.parse(fs.readFileSync(path.join(ROOT,'vehicle-art-inventory.json'),'utf8'));
+ const scene=c.sceneBackdrop();
+ for(const rel of manifest.exact){
+   const parts=rel.split('/');
+   const model=parts[1].toUpperCase(),year=parts[2],trim=parts[3],colour=parts[4].replace('.webp','');
+   const matched=profiles.profiles.find(p=>p.model.toUpperCase()===model&&p.year===year);
+   assert.ok(matched,'unknown exact asset profile '+rel);
+   c.setConfig({model,year,trim,color:colour,interior:matched.interior_options[0]});
+   const art=c.assetSpec();
+   assert.equal(art.tier,'model-year-trim',rel);
+   assert.ok(art.src.endsWith('/'+rel),art.src);
+   assert.equal(c.sceneBackdrop(),scene,'model selection must not change the background');
+ }
+});
+test('every catalog model and supported year keeps its selection and emits an honest artwork tier',()=>{
+ const card=new Card();
+ for(const p of profiles.profiles){
+   const a={model:p.model,year:p.year,trim:p.trims[0],color:p.paint_options[0],interior:p.interior_options[0]};
+   card.setConfig(a);
+   const art=card.assetSpec();
+   assert.equal(card.appearance().model,a.model);
+   assert.equal(card.appearance().year,a.year);
+   assert.ok(['model-year-trim','model-family','silhouette','manual'].includes(art.tier),p.display_name);
+   if(art.tier==='model-family')assert.match(art.description,/illustration/);
+   if(art.tier==='silhouette')assert.match(art.description,/Illustrative/);
+ }
+});
+test('model or paint changes never retain an unrelated manual vehicle/cabin image',()=>{
+ const editor=new Editor();
+ editor.setConfig({model:'G6',year:'2026',trim:'core_plus_rwd',color:'arctic_white',
+  interior:'light_gray',image:'/local/car-exact.webp',interior_image:'/local/cabin-exact.webp'});
+ assert.match(editor.shadowRoot.innerHTML,/data-key="image"/);
+ assert.match(editor.shadowRoot.innerHTML,/data-key="interior_image"/);
+ const simulate=(key,value)=>{
+  const ctrl={dataset:{key},value,hasAttribute:()=>false,setCustomValidity(){},reportValidity(){}};
+  editor.shadowRoot.handlers.change({target:{closest:()=>ctrl}});
+ };
+ simulate('color','graphite_gray');
+ assert.equal(editor._cfg.image,undefined,'old paint must not keep white car');
+ assert.equal(editor._cfg.interior_image,'/local/cabin-exact.webp','cabin choice independent of paint');
+ simulate('interior','dark_gray');
+ assert.equal(editor._cfg.interior_image,undefined,'changing upholstery invalidates manual cabin photo');
+});
+test('cabin preview changes with selected interior colour without changing the background',()=>{
+ const card=new Card();
+ card.setConfig({model:'G6',year:'2026',color:'arctic_white',interior:'light_gray'});
+ const backdrop=card.sceneBackdrop();
+ const light=card.interiorPreview();
+ assert.match(light,/#d8d9d4/);
+ card.setConfig({model:'G6',year:'2026',color:'arctic_white',interior:'dark_gray'});
+ const dark=card.interiorPreview();
+ assert.match(dark,/#40454b/);
+ assert.notEqual(light,dark);
+ assert.equal(card.sceneBackdrop(),backdrop);
+ card.setConfig({model:'G6',year:'2026',interior:'light_gray',interior_image:'/local/my-cabin.webp'});
+ assert.match(card.interiorPreview(),/my-cabin.webp/);
+});
+
+test('a charging/rear image is selected by charging state without ever changing scene background',()=>{
+ const card=new Card();
+ card.setConfig({model:'G6',year:'2026',trim:'core_plus_rwd',color:'arctic_white',
+    image:'/local/front-g6.webp',charging_image:'/local/rear-g6.webp'});
+ const backdrop=card.sceneBackdrop();
+ assert.equal(card.assetSpec().src,'/local/front-g6.webp');
+ card.hass={states:{'binary_sensor.my_xpeng_is_charging':{state:'on'}}};
+ assert.equal(card.assetSpec().src,'/local/rear-g6.webp');
+ assert.equal(card.sceneBackdrop(),backdrop);
+ card.hass={states:{'binary_sensor.my_xpeng_is_charging':{state:'off'}}};
+ assert.equal(card.assetSpec().src,'/local/front-g6.webp');
+ assert.equal(card.sceneBackdrop(),backdrop);
+ const editor=new Editor();
+ editor.setConfig({model:'G6',year:'2026',trim:'core_plus_rwd',color:'arctic_white',
+     image:'/local/front-g6.webp',charging_image:'/local/rear-g6.webp'});
+ assert.match(editor.shadowRoot.innerHTML,/data-key="charging_image"/);
+ const ctrl={dataset:{key:'color'},value:'graphite_gray',hasAttribute:()=>false,
+     setCustomValidity(){},reportValidity(){}};
+ editor.shadowRoot.handlers.change({target:{closest:()=>ctrl}});
+ assert.equal(editor._cfg.image,undefined);
+ assert.equal(editor._cfg.charging_image,undefined);
+});
+
+test('multi-vehicle profiles never inherit a different cars exterior or interior image',()=>{
+ const card=new Card();
+ card.setConfig({
+   prefix:'my_xpeng',
+   model:'G6',year:'2026',trim:'core_plus_rwd',color:'arctic_white',
+   image:'/local/root-image.webp',
+   interior_image:'/local/root-cabin.webp',
+   charging_image:'/local/root-rear.webp',
+   vehicles:[
+     {model:'G6',year:'2026',trim:'core_plus_rwd',color:'arctic_white',
+       interior:'light_gray',image:'/local/g6-front.webp',
+       interior_image:'/local/g6-cabin.webp',charging_image:'/local/g6-rear.webp'},
+     {model:'G9',year:'2026',trim:'long_range_rwd',color:'graphite_gray',
+       interior:'coffee'}
+   ]
+ });
+ const sharedBackground=card.sceneBackdrop();
+ assert.equal(card.assetSpec().src,'/local/g6-front.webp');
+ assert.match(card.interiorPreview(),/g6-cabin.webp/);
+ card._vehicleIndex=1;
+ card.render();
+ const g9=card.assetSpec();
+ assert.equal(g9.tier,'model-year-trim');
+ assert.ok(g9.src.endsWith('/vehicles/g9/2026/long_range_rwd/graphite_gray.webp'),g9.src);
+ assert.doesNotMatch(card.interiorPreview(),/g6-cabin|root-cabin/);
+ assert.match(card.interiorPreview(),/coffee/i);
+ card.hass={states:{'binary_sensor.my_xpeng_is_charging':{state:'on'}}};
+ const g9Charging=card.assetSpec();
+ assert.equal(g9Charging.src,g9.src,'do not inherit G6 rear/charging artwork');
+ assert.equal(card.sceneBackdrop(),sharedBackground);
+ card._vehicleIndex=0;
+ card.render();
+ assert.equal(card.assetSpec().src,'/local/g6-rear.webp');
 });

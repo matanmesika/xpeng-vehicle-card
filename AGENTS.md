@@ -25,3 +25,11 @@ No third page, no vehicle commands. Interior preview may appear only in the tran
 - **No backend edits**: a missing integration profile entity is an integration feature gap to track separately, not an excuse to scrape HA internals.
 
 Current status: layout/metadata plumbing is under review. Manufacturer-accurate artwork for all model/year/trim/paint variants and full visual parity are **not complete**.
+
+## Current reference-background review (v0.1.2 in progress)
+- Overview reference: /concept supplied privately by the owner; avoid committing the full screenshot because it contains example location/telemetry.
+- Charging reference: same cinematic blue-black night environment, green charging cable and charger visible.
+- The background must be a **clean scene-only asset**, while all car renders and telemetry remain dynamic Lovelace DOM layers.
+- Current `dist/assets/night-mountain-scene.svg` is a photographic-mood **reconstruction** (mountain horizons, pines, violet fog, blue reflective tarmac) and is NOT certified pixel-perfect.
+- Compare new live Chromium screenshots against both source references. If mountain geometry, haze, wet-road reflections or foreground contrast differs, file fixes before merge. Pixel parity and model-year photography need explicit owner approval.
+- Five specialist configurations exist in `.github/agents/`. These are instructions/review roles, not continuously running background autonomous agents.

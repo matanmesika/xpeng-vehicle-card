@@ -56,7 +56,28 @@ function xpConnText(v){
   if(['error','connection_error','auth_error'].includes(raw))return 'Connection error';
   return String(v).replace(/_/g,' ');
 }
-function xpBool(v){return v==='on'?true:v==='off'?false:null;}
+function xpBool(v){
+  const state=String(v??'').trim().toLowerCase();
+  if(['on','true','1'].includes(state))return true;
+  if(['off','false','0'].includes(state))return false;
+  return null;
+}
+// Accept status sensors from other integrations without confusing 'plugged in' with charging.
+function xpChargingActive(v){
+  const state=String(v??'').trim().toLowerCase().replace(/[ -]+/g,'_');
+  if(['on','true','1','charging','charging_now','charging_active','in_progress','active'].includes(state))return true;
+  if(['off','false','0','idle','paused','ready','stopped','not_charging','disconnected','plugged_in','connected','complete','finished'].includes(state))return false;
+  return null;
+}
+// Explicit mappings can read an entity state or one of its HA attributes.
+// Examples: sensor.vehicle_soc  or  sensor.ev_status|charging_state.
+function xpParseEntityMapping(value){
+  const text=String(value??'').trim();
+  const match=/^([a-z][a-z0-9_]*\.[a-z0-9_]+)(?:\|([A-Za-z_][A-Za-z0-9_]*))?$/.exec(text);
+  if(!match)return null;
+  if(match[2]&&['__proto__','prototype','constructor'].includes(match[2]))return null;
+  return {id:match[1],attribute:match[2]||null};
+}
 function xpPercent(v){if(v===null||v===undefined||v===''||!Number.isFinite(Number(v)))return null;return Math.max(0,Math.min(100,Number(v)));}
 function xpArt(model){let m=String(model).toUpperCase();if(/^G6(\W|$)/.test(m))return 'g6-studio.webp';if(/X9|MPV/.test(m))return 'mpv.svg';if(/P7|P5|M03|MONA|SEDAN/.test(m))return 'sedan.svg';return 'suv.svg';}
 const XP_CATALOG = Object.freeze({"models":[{"id":"G3","name":"G3","start":2018,"end":2021,"shape":"crossover","trim":"none"},{"id":"G3i","name":"G3i","start":2021,"end":2023,"shape":"crossover","trim":"none"},{"id":"P5","name":"P5","start":2021,"end":2024,"shape":"compact_sedan","trim":"none"},{"id":"P7","name":"P7 (Original)","start":2020,"end":2024,"shape":"fastback","trim":"none"},{"id":"P7i","name":"P7i","start":2023,"end":2025,"shape":"fastback","trim":"none"},{"id":"Next P7","name":"Next P7","start":2025,"end":2026,"shape":"fastback","trim":"none"},{"id":"P7+","name":"P7+","start":2024,"end":2026,"shape":"fastback","trim":"none"},{"id":"G6","name":"G6","start":2023,"end":2026,"shape":"g6","trim":"g6"},{"id":"G7","name":"G7","start":2025,"end":2026,"shape":"crossover","trim":"none"},{"id":"G9","name":"G9","start":2022,"end":2026,"shape":"suv","trim":"g9"},{"id":"G9L","name":"G9L","start":2026,"end":2026,"shape":"suv","trim":"none"},{"id":"X9","name":"X9","start":2024,"end":2026,"shape":"mpv","trim":"x9"},{"id":"MONA M03","name":"MONA M03","start":2024,"end":2026,"shape":"compact_sedan","trim":"none"},{"id":"L03","name":"L03","start":2026,"end":2026,"shape":"fastback","trim":"none"},{"id":"GX","name":"GX (fleet/research)","start":2026,"end":2026,"shape":"suv","trim":"none","research":true},{"id":"Other","name":"Other / Future XPENG","start":2018,"end":2026,"shape":"suv","trim":"none","other":true}],"paints":[{"id":"arctic_white","label":"Arctic White","hex":"#F2F4F2"},{"id":"graphite_gray","label":"Graphite Gray","hex":"#66717B"},{"id":"midnight_black","label":"Midnight Black","hex":"#15191F"},{"id":"silver_frost","label":"Silver Frost","hex":"#BCC4C9"},{"id":"stellar_purple","label":"Stellar Purple","hex":"#867592"},{"id":"kaitoke_green_matte","label":"Kaitoke Green Matte","hex":"#526F64"}],"trims":{"default":[{"id":"unspecified","label":"Trim not specified (market-dependent)"}],"G6:2026":[{"id":"core_rwd","label":"Core RWD"},{"id":"core_plus_rwd","label":"Core+ RWD"},{"id":"core_performance_awd","label":"Core Performance AWD"},{"id":"black_edition","label":"Core Performance AWD Black Edition"},{"id":"unspecified","label":"Other configuration / region"}],"G6:2023-2025":[{"id":"unspecified","label":"Trim not specified"},{"id":"standard_range_rwd","label":"Standard Range RWD"},{"id":"long_range_rwd","label":"Long Range RWD"},{"id":"performance_awd","label":"Performance AWD"}],"G9:2022-2026":[{"id":"unspecified","label":"Trim not specified"},{"id":"standard_range_rwd","label":"Standard Range RWD"},{"id":"long_range_rwd","label":"Long Range RWD"},{"id":"performance_awd","label":"Performance AWD"}],"X9:2024-2026":[{"id":"unspecified","label":"Trim not specified"},{"id":"fwd_long_range","label":"FWD Long Range"}]}});
@@ -118,19 +139,22 @@ function xpNormalizeAppearance(value){const v=value||{};const yr=XP_YEARS.includ
 }
 
 function xpAssetModel(model){return String(model).toLowerCase().replace(/\s+/g,'_').replace(/\+/g,'_plus').replace(/[^a-z0-9_]/g,'');}
+// Build-time inventory: each entry corresponds to an existing packaged file.
+const XP_ARTWORK_INDEX = Object.freeze({
+  exact:new Set(["vehicles/g6/2026/black_edition/midnight_black.webp","vehicles/g6/2026/core_performance_awd/arctic_white.webp","vehicles/g6/2026/core_performance_awd/graphite_gray.webp","vehicles/g6/2026/core_performance_awd/midnight_black.webp","vehicles/g6/2026/core_performance_awd/silver_frost.webp","vehicles/g6/2026/core_performance_awd/stellar_purple.webp","vehicles/g6/2026/core_plus_rwd/arctic_white.webp","vehicles/g6/2026/core_plus_rwd/graphite_gray.webp","vehicles/g6/2026/core_plus_rwd/midnight_black.webp","vehicles/g6/2026/core_plus_rwd/silver_frost.webp","vehicles/g6/2026/core_plus_rwd/stellar_purple.webp","vehicles/g6/2026/core_rwd/arctic_white.webp","vehicles/g6/2026/core_rwd/graphite_gray.webp","vehicles/g6/2026/core_rwd/midnight_black.webp","vehicles/g6/2026/core_rwd/silver_frost.webp","vehicles/g6/2026/core_rwd/stellar_purple.webp","vehicles/g6/2026/unspecified/arctic_white.webp","vehicles/g6/2026/unspecified/graphite_gray.webp","vehicles/g6/2026/unspecified/midnight_black.webp","vehicles/g6/2026/unspecified/silver_frost.webp","vehicles/g6/2026/unspecified/stellar_purple.webp","vehicles/g9/2026/long_range_rwd/arctic_white.webp","vehicles/g9/2026/long_range_rwd/graphite_gray.webp","vehicles/g9/2026/long_range_rwd/midnight_black.webp","vehicles/g9/2026/long_range_rwd/silver_frost.webp","vehicles/g9/2026/performance_awd/arctic_white.webp","vehicles/g9/2026/performance_awd/graphite_gray.webp","vehicles/g9/2026/performance_awd/midnight_black.webp","vehicles/g9/2026/performance_awd/silver_frost.webp","vehicles/g9/2026/standard_range_rwd/arctic_white.webp","vehicles/g9/2026/standard_range_rwd/graphite_gray.webp","vehicles/g9/2026/standard_range_rwd/midnight_black.webp","vehicles/g9/2026/standard_range_rwd/silver_frost.webp","vehicles/g9/2026/unspecified/arctic_white.webp","vehicles/g9/2026/unspecified/graphite_gray.webp","vehicles/g9/2026/unspecified/midnight_black.webp","vehicles/g9/2026/unspecified/silver_frost.webp"]),
+  family:new Set(["models/g3-arctic_white.webp","models/g3-jet_black.webp","models/g3-silver_frost.webp","models/g3-space_grey.webp","models/g3-stellar_purple.webp","models/g3i-arctic_white.webp","models/g3i-jet_black.webp","models/g3i-silver_frost.webp","models/g3i-space_grey.webp","models/g3i-stellar_purple.webp","models/g6-arctic_white.webp","models/g6-jet_black.webp","models/g6-silver_frost.webp","models/g6-space_grey.webp","models/g6-stellar_purple.webp","models/g7-arctic_white.webp","models/g7-jet_black.webp","models/g7-silver_frost.webp","models/g7-space_grey.webp","models/g7-stellar_purple.webp","models/g9-arctic_white.webp","models/g9-jet_black.webp","models/g9-silver_frost.webp","models/g9-space_grey.webp","models/g9-stellar_purple.webp","models/g9l-arctic_white.webp","models/g9l-jet_black.webp","models/g9l-silver_frost.webp","models/g9l-space_grey.webp","models/g9l-stellar_purple.webp","models/gx-arctic_white.webp","models/gx-jet_black.webp","models/gx-silver_frost.webp","models/gx-space_grey.webp","models/gx-stellar_purple.webp","models/l03-arctic_white.webp","models/l03-jet_black.webp","models/l03-silver_frost.webp","models/l03-space_grey.webp","models/l03-stellar_purple.webp","models/mona_m03-arctic_white.webp","models/mona_m03-jet_black.webp","models/mona_m03-silver_frost.webp","models/mona_m03-space_grey.webp","models/mona_m03-stellar_purple.webp","models/next_p7-arctic_white.webp","models/next_p7-jet_black.webp","models/next_p7-silver_frost.webp","models/next_p7-space_grey.webp","models/next_p7-stellar_purple.webp","models/other-arctic_white.webp","models/other-jet_black.webp","models/other-silver_frost.webp","models/other-space_grey.webp","models/other-stellar_purple.webp","models/p5-arctic_white.webp","models/p5-jet_black.webp","models/p5-silver_frost.webp","models/p5-space_grey.webp","models/p5-stellar_purple.webp","models/p7-arctic_white.webp","models/p7-jet_black.webp","models/p7-silver_frost.webp","models/p7-space_grey.webp","models/p7-stellar_purple.webp","models/p7_plus-arctic_white.webp","models/p7_plus-jet_black.webp","models/p7_plus-silver_frost.webp","models/p7_plus-space_grey.webp","models/p7_plus-stellar_purple.webp","models/p7i-arctic_white.webp","models/p7i-jet_black.webp","models/p7i-silver_frost.webp","models/p7i-space_grey.webp","models/p7i-stellar_purple.webp","models/x9-arctic_white.webp","models/x9-jet_black.webp","models/x9-silver_frost.webp","models/x9-space_grey.webp","models/x9-stellar_purple.webp"])
+});
+const XP_SCENE_BACKGROUND = 'xpeng-approved-lakeside-background.webp';
+function xpLocalArtworkPath(value){return typeof value==='string'&&/^\/(?:local|hacsfiles)\/[a-zA-Z0-9/_\-.]+$/.test(value);}
 const XP_CSS = `
 :host{display:block;color:#fff;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;--xp-mint:#00efbe;--xp-sky:#6aaaff}
 *{box-sizing:border-box}
 ha-card{background:transparent!important;border:0!important;box-shadow:none!important;overflow:visible!important}
 button{font:inherit;color:inherit;cursor:pointer}
 button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
-.xp-scene{position:relative;width:100%;min-height:620px;aspect-ratio:16/9;overflow:hidden;background:radial-gradient(ellipse 57% 35% at 56% 42%,#25365b 0%,#0e2441 43%,transparent 100%),linear-gradient(180deg,#030f21 0%,#041629 51%,#071e34 69%,#020914 100%);isolation:isolate;direction:ltr}
-.xp-scene:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 65% 8% at 60% 69%,#147fbb75,transparent),radial-gradient(ellipse 63% 16% at 67% 81%,#173c7a95,transparent);z-index:1}
-.xp-sky{position:absolute;inset:0;width:100%;height:100%;z-index:0}
-.xp-ground{position:absolute;inset:68% 0 0;background:repeating-linear-gradient(173deg,#3565ab1a 0px,#3565ab1a 2px,transparent 3px,transparent 46px),linear-gradient(180deg,#0b2139,#04111e);transform:perspective(500px) rotateX(12deg);transform-origin:50% 0}
-.xp-ground:before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 48% 48% at 59% 24%,#137ace4a,transparent 70%)}
-.xp-stage-glow{position:absolute;left:22%;right:6%;bottom:18%;height:12%;background:#168de7;border-radius:100%;filter:blur(34px);opacity:.25}
-.xp-stage-glow:after{content:"";position:absolute;inset:58% 2% 27%;background:#28bbff;filter:blur(8px)}
+.xp-scene{position:relative;width:100%;min-height:620px;aspect-ratio:16/9;overflow:hidden;background:#020b16;isolation:isolate;direction:ltr}
+
+.xp-night-photo{position:absolute;inset:0;z-index:0;pointer-events:none;background-color:#020d1b;background-size:cover;background-position:center center;background-repeat:no-repeat}
 .xp-header{position:absolute;z-index:8;top:3.2%;left:4.5%;right:3%;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .xp-brand{display:flex;align-items:center;gap:14px;font-weight:600;letter-spacing:.31em;font-size:clamp(14px,1.4vw,23px);white-space:nowrap}
 .xp-x-mark{font-size:26px;letter-spacing:-.13em;transform:scaleX(1.4)}
@@ -140,8 +164,6 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-head-button svg{width:24px;height:24px}
 .xp-wifi{color:#7088a0;display:flex;align-items:center}
 .xp-wifi.xp-connected{color:#66a9ff}
-.xp-head-separator{height:22px;border-left:1px solid #41506c}
-.xp-clock{font-variant-numeric:tabular-nums;font-weight:500}
 .xp-version{position:absolute;bottom:10px;right:12px;font-size:10px;color:#8399b6;opacity:.52;z-index:8}
 .xp-updated{position:absolute;z-index:4;right:5%;top:15%;text-align:right;color:#9cacca;font-size:clamp(11px,1vw,16px);line-height:1.45}
 .xp-updated strong{display:block;font-weight:400;color:#b4c5e1}
@@ -192,7 +214,6 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-charge-meta b{font-size:clamp(12px,1.5vw,25px);font-weight:560;white-space:nowrap}
 .xp-charge .xp-car{width:52%;left:41%;bottom:12%;height:auto;max-height:70%;z-index:7}
 .xp-charge .xp-title{left:5.3%;top:17%}
-.xp-charge .xp-brand{visibility:hidden}
 .xp-charge .xp-updated{right:19%;top:14%}
 .xp-station{position:absolute;z-index:2;right:3%;bottom:30%;width:5.3%;height:23%;min-width:45px;border:2px solid #55c8fb;border-radius:13px 13px 6px 6px;background:linear-gradient(90deg,#013861,#041b32 55%,#0b3150);box-shadow:0 0 18px #00c6ff85,inset 0 0 13px #08cafa74;display:grid;place-items:start center;padding-top:25px;font-size:26px;color:#e1f7ff}
 .xp-station:before{content:"";position:absolute;bottom:-5px;width:110%;height:7px;background:#03d7cf;filter:blur(4px)}
@@ -257,13 +278,16 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 @media(max-width:850px){.xp-meta-tools{top:151px;right:5%}.xp-charge .xp-meta-tools{top:158px}}
 .xp-car,.xp-car.xp-paint-silver_frost,.xp-car.xp-paint-space_grey,.xp-car.xp-paint-jet_black,.xp-car.xp-paint-stellar_purple{filter:drop-shadow(0 20px 20px #000b)}
 .xp-art-identity{position:absolute;z-index:8;left:45%;bottom:8%;font-size:11px;letter-spacing:.03em;color:#b5c4d5;opacity:.8;text-shadow:0 2px 4px #000a;pointer-events:none}
-.xp-studio-car{mask-image:radial-gradient(ellipse 74% 64% at 50% 52%,#000 67%,#000d 78%,transparent 100%);-webkit-mask-image:radial-gradient(ellipse 74% 64% at 50% 52%,#000 67%,#000d 78%,transparent 100%)}
+.xp-studio-car{mask-image:none;-webkit-mask-image:none}
+/* The approved 2026 white G6 cutout is already tightly cropped: frame its pixels to the reference shot. */
+.xp-overview .xp-car.xp-reference-cutout{left:25.5%;bottom:26.6%;width:51.4%;max-height:none;filter:drop-shadow(0 13px 13px #0005)}
+@media(max-width:850px){.xp-overview .xp-car.xp-reference-cutout{left:-3%;bottom:27%;width:108%;max-height:42%}}
 @media(max-width:850px){.xp-art-identity{left:15%;bottom:25%;font-size:10px}.xp-charge .xp-art-identity{bottom:7%}}
 @media(max-width:400px){.xp-charge-meta>div{padding:0 7px}.xp-charge-heading{font-size:19px}.xp-charge-meta b{font-size:12px}.xp-overview-stat{top:219px}.xp-status-panel{grid-template-columns:repeat(3,minmax(0,1fr))}}
 `;
 class XpengVehicleCard extends HTMLElement{
  constructor(){
-  super();this.attachShadow({mode:'open'});this._config={};this._hass=null;this._view='overview';this._lastCharging=undefined;this._expanded=false;this._vehicleIndex=0;this._infoOpen=false;
+  super();this.attachShadow({mode:'open'});this._config={};this._hass=null;this._view='overview';this._expanded=false;this._vehicleIndex=0;this._infoOpen=false;
   this.shadowRoot.addEventListener('error',ev=>{
       const img=ev.target;
       if(!img?.matches?.('img[data-car-art]')||img.dataset.fallbackUsed)return;
@@ -271,10 +295,8 @@ class XpengVehicleCard extends HTMLElement{
     },true);
    this.shadowRoot.addEventListener('click',ev=>{
     const b=ev.target.closest('button');if(!b)return;
-    if(b.hasAttribute('data-expand')){this.toggleFullScreen();return;}
      if(b.hasAttribute('data-meta-toggle')){this._infoOpen=!this._infoOpen;this.render();return;}
-    if(b.dataset.view){this._view=b.dataset.view;this.render();return;}
-    if(b.hasAttribute('data-cycle')){this._vehicleIndex=(this._vehicleIndex+1)%this.vehicles().length;this._lastCharging=undefined;this.render();}
+    if(b.hasAttribute('data-cycle')){this._vehicleIndex=(this._vehicleIndex+1)%this.vehicles().length;this.render();}
   });
  }
  connectedCallback(){if(!this._fullscreenHandler){this._fullscreenHandler=()=>{if(!document.fullscreenElement&&this._expanded){this._expanded=false;this.render();}};}document.addEventListener('fullscreenchange',this._fullscreenHandler);}
@@ -284,13 +306,13 @@ class XpengVehicleCard extends HTMLElement{
   if(!config||typeof config!=='object')throw Error('XPENG card configuration required');
   if(config.prefix&&!/^[a-z0-9_]+$/.test(config.prefix))throw Error('XPENG prefix must be a slug');
   if(config.image_path&&!/^\/(?:local|hacsfiles)\/[a-zA-Z0-9/_-]+\/?$/.test(config.image_path))throw Error('Invalid local image_path');
+  if(config.background_image&&!xpLocalArtworkPath(config.background_image))throw Error('Invalid local background_image');
   const v={prefix:'my_xpeng',year:'2026',model:'G6',trim:'core_plus_rwd',color:'arctic_white',interior:'dark_gray',theme:'dark',...config};
   this._config=xpNormalizeAppearance(v);this._infoOpen=false;this.render();
  }
  set hass(hass){
   this._hass=hass;
-  const charging=this.bool('charging')===true;
-  if(this._lastCharging===undefined||this._lastCharging!==charging){this._view=charging?'charging':'overview';this._lastCharging=charging;}
+  this._view=xpChargingActive(this.val('charging'))===true?'charging':'overview';
   this.render();
  }
  get hass(){return this._hass;}
@@ -307,12 +329,18 @@ class XpengVehicleCard extends HTMLElement{
  paint(){return this.appearance().color;}
  data(key){
    const spec=XP_KEYS[key];if(!spec)return null;
-   const override=this.vehicle()?.entities?.[key]||this._config.entities?.[key];
-   const ids=override?[override]:spec.slice(1).map(s=>spec[0]+'.'+this.prefix()+'_'+s);
+   const override=this.vehicle()?.entities?.[key]??this._config.entities?.[key];
+   const custom=override?xpParseEntityMapping(override):null;
+   const ids=custom?[custom.id]:spec.slice(1).map(s=>spec[0]+'.'+this.prefix()+'_'+s);
    const id=ids.find(x=>this._hass?.states?.[x])||ids[0];
-   const entity=this._hass?.states?.[id];const raw=entity?.state??null;
-   const valid=raw!==null&&!(typeof raw==='string'&&XP_INVALID.has(raw.toLowerCase()));
-   return {id,entity,value:valid?raw:null};
+   const entity=this._hass?.states?.[id];
+   const attribute=custom?.attribute;
+   const attrs=entity?.attributes;
+   const raw=attribute
+     ?(attrs&&Object.prototype.hasOwnProperty.call(attrs,attribute)?attrs[attribute]:null)
+     :(entity?.state??null);
+   const valid=raw!==null&&raw!==undefined&&!(typeof raw==='string'&&XP_INVALID.has(raw.trim().toLowerCase()));
+   return {id,entity,attribute,value:valid?raw:null};
  }
  val(key){return this.data(key)?.value??null;}
  number(key){const v=this.val(key);return v===null||v===''||!Number.isFinite(Number(v))?null:Number(v);}
@@ -320,23 +348,28 @@ class XpengVehicleCard extends HTMLElement{
  num(key,unit='',dec=0){const v=this.number(key);return v===null?'—':xpNum(v,dec)+(unit?' '+unit:'');}
  assetSpec(){
     const base=(this._config.image_path||'/hacsfiles/xpeng-vehicle-card/assets').replace(/\/$/,'');
-    const custom=this.vehicle()?.image||this._config.image;
-    const a=this.appearance(),model=xpAssetModel(a.model);
-    if(custom&&/^\/(?:local|hacsfiles)\/[a-zA-Z0-9/_\-.]+$/.test(custom))
-      return {src:custom,illustrative:false,studio:false,description:'User-supplied vehicle artwork'};
-    // Explicit 2026 G6 preview art is bundled per paint / trim, unlike older model artwork.
-    if(a.model==='G6'&&a.year==='2026')
-      return {src:base+'/vehicles/g6/2026/'+xpAssetModel(a.trim)+'/'+a.color+'.webp',
-        illustrative:true,studio:true,description:'2026 G6 catalogue artwork; studio backdrop may differ from the reference scene'};
-    // Existing model-family images are explicitly illustrative for other model years.
-    // They are NEVER represented as manufacturer-approved exact model/year photography.
-    const legacy={graphite_gray:'space_grey',midnight_black:'jet_black'}[a.color]||a.color;
-    const available=['arctic_white','silver_frost','space_grey','jet_black','stellar_purple'];
-    if(available.includes(legacy))
-      return {src:base+'/models/'+model+'-'+legacy+'.webp',
-        illustrative:true,studio:false,description:'Generic model-family illustration; exact '+a.year+' image pending'};
-    return {src:this.placeholderArt(),illustrative:true,studio:false,
-      description:'Coloured silhouette; exact '+a.model+' '+a.year+' photography pending'};
+    const profileArt=key=>Array.isArray(this._config.vehicles)&&this._config.vehicles.length
+      ?this.vehicle()?.[key]:this.vehicle()?.[key]||this._config[key];
+    const chosen=(this._view==='charging'&&profileArt('charging_image'))||profileArt('image');
+    const a=this.appearance(),model=xpAssetModel(a.model),trim=xpAssetModel(a.trim);
+    // A specific user artwork override applies only to the selected card profile.
+    // Never select a different year/trim/colour because an exact file is absent.
+    if(xpLocalArtworkPath(chosen))
+      return {src:chosen,illustrative:false,studio:false,tier:'manual',
+        description:'User-selected local artwork; model/year/paint suitability is the owner\'s choice'};
+    const exact='vehicles/'+model+'/'+a.year+'/'+trim+'/'+a.color+'.webp';
+    if(XP_ARTWORK_INDEX.exact.has(exact))
+      return {src:base+'/'+exact,illustrative:true,studio:false,tier:'model-year-trim',
+        description:a.model+' '+a.year+' '+a.trim+' '+a.color+' — exact-path model-year preview (not manufacturer verified)'};
+    // The fallback is correctly named as model-family illustration, not year-exact art.
+    // This preserves selection for every catalogued model/year, even without photography.
+    const olderAlias={graphite_gray:'space_grey',midnight_black:'jet_black'}[a.color]||a.color;
+    const family='models/'+model+'-'+olderAlias+'.webp';
+    if(XP_ARTWORK_INDEX.family.has(family))
+      return {src:base+'/'+family,illustrative:true,studio:false,tier:'model-family',
+        description:'Generic model-family illustration: '+a.model+' in '+a.color+'; exact '+a.year+' '+a.trim+' artwork unavailable'};
+    return {src:this.placeholderArt(),illustrative:true,studio:false,tier:'silhouette',
+      description:'Illustrative Coloured silhouette: '+a.model+' '+a.year+' '+a.color+'; exact artwork pending'};
   }
   asset(){return this.assetSpec().src;}
   placeholderArt(){
@@ -375,7 +408,7 @@ class XpengVehicleCard extends HTMLElement{
    return Math.floor(min/60)+'h '+Math.round(min%60)+'m';
  }
  chargeStatus(){
-  const v=this.bool('charging'),plug=this.bool('plugged');
+  const v=xpChargingActive(this.val('charging')),plug=this.bool('plugged');
   if(v===true)return 'Charging now';
   if(plug===true)return 'Plugged in';
   if(v===false)return 'Not charging';
@@ -385,23 +418,20 @@ class XpengVehicleCard extends HTMLElement{
   return `<div class="xp-title"><h1>XPENG <em>${xpEsc(this.model())}</em></h1><div class="xp-subtitle">${this._view==='charging'?xpEsc(this.chargeStatus()):'Vehicle status'}</div></div>`;
  }
  sceneBackdrop(){
-  return `<svg class="xp-sky" viewBox="0 0 1500 850" preserveAspectRatio="none" aria-hidden="true">
-    <defs><linearGradient id="xp-ridge" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#152a49"/><stop offset="1" stop-color="#031425"/></linearGradient>
-      <linearGradient id="xp-haze" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#314778"/><stop offset="1" stop-color="#031b35"/></linearGradient></defs>
-    <path d="M0 337L45 331 98 308 140 334 188 303 248 315 298 279 351 308 407 293 456 315 525 291 590 315 634 278 683 302 733 273 785 302 830 269 880 300 935 273 983 297 1034 260 1093 288 1154 255 1207 281 1250 270 1319 303 1370 275 1430 303 1500 282V710H0Z" fill="url(#xp-haze)" opacity=".6"/>
-    <path d="M0 430L57 415 103 390 151 409 198 385 245 401 289 373 324 394 392 355 437 373 475 340 527 366 565 338 602 356 646 331 686 363 737 324 788 349 828 327 866 353 910 316 951 356 1004 331 1053 357 1098 320 1155 346 1222 311 1265 343 1310 309 1359 340 1408 314 1454 344 1500 323V690H0Z" fill="url(#xp-ridge)" opacity=".9"/>
-    <path d="M0 552L60 534 106 518 174 536 227 499 273 507 327 485 384 508 419 486 462 506 516 478 558 496 620 471 666 496 726 472 769 486 821 464 871 488 912 470 964 489 1015 472 1072 492 1109 478 1158 505 1227 485 1264 517 1330 496 1391 525 1450 512 1500 527V692H0Z" fill="#061326" opacity=".9"/>
-  </svg><div class="xp-ground"></div><div class="xp-stage-glow"></div>`;
- }
+    // The scenic background belongs to the DASHBOARD, not to a model image folder.
+    // Identical pixel source and placement in both vehicle status and charging.
+    // One real image layer, shared for charging and overview. No CSS mountain or sky illustration.
+    // A manual dashboard-wide background never changes when vehicle/colour/charging changes.
+    const source=this._config.background_image||('/hacsfiles/xpeng-vehicle-card/assets/'+XP_SCENE_BACKGROUND);
+    return `<div class="xp-night-photo" aria-hidden="true"
+      style="background-image:url(&quot;${xpEsc(source)}&quot;)"></div>`;
+  }
  header(){
-   const now=new Date().toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});
    const conn=String(this.val('connection')||'').toLowerCase();
    const connected=['connected','online'].includes(conn);
    return `<header class="xp-header"><div class="xp-brand"><span class="xp-x-mark">✕</span><span>XPENG</span></div>
      <div class="xp-header-right"><span class="xp-wifi ${connected?'xp-connected':''}" aria-label="${xpEsc(xpConnText(this.val('connection')))}"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M2 8c5.7-5.6 14.3-5.6 20 0M5 12c4-3.6 10-3.6 14 0M9 16c1.8-1.4 4.2-1.4 6 0"/><circle cx="12" cy="20" r="1.3" fill="currentColor" stroke="none"/></svg></span>
-     <button class="xp-head-button" type="button" data-view="overview" aria-label="Vehicle overview">${xpIcon('home',23)}</button>
-     <button class="xp-head-button" type="button" data-expand aria-label="${this._expanded?'Exit full screen':'Full screen'}">${this._expanded?'✕':'⛶'}</button>
-     <span class="xp-head-separator"></span><span class="xp-clock">${xpEsc(now)}</span></div></header>`;
+     </div></header>`;
  }
  progress(){
    const soc=xpPercent(this.val('soc'));
@@ -428,6 +458,13 @@ class XpengVehicleCard extends HTMLElement{
   }
   interiorPreview(){
     const a=this.appearance(),finish=XP_INTERIORS.find(x=>x.id===a.interior)||XP_INTERIORS[0];
+    // Model/year/trim/cabin custom imagery stays independent of the background.
+    // If no matching art is provided, the colour-accurate schematic remains honest.
+    const interiorImg=Array.isArray(this._config.vehicles)&&this._config.vehicles.length
+      ?this.vehicle()?.interior_image:this.vehicle()?.interior_image||this._config.interior_image;
+    if(xpLocalArtworkPath(interiorImg))
+      return `<img class="xp-cabin-mini" src="${xpEsc(interiorImg)}"
+        alt="${xpEsc(a.model+' '+a.year+' '+finish.label+' interior (user-supplied artwork)')}" loading="lazy">`;
     const colour=xpEsc(finish.hex),shade=xpEsc(finish.secondary);
     return `<svg class="xp-cabin-mini" viewBox="0 0 350 155" role="img"
       aria-label="${xpEsc(a.model+' '+a.year+' cabin, '+finish.label)}">
@@ -444,11 +481,13 @@ class XpengVehicleCard extends HTMLElement{
   }
   carArt(){
     const a=this.appearance(),spec=this.assetSpec();
-    return `<img class="xp-car ${spec.studio?'xp-studio-car':''}" data-car-art
+    const referenceCutout=a.model==='G6'&&a.year==='2026'&&a.color==='arctic_white'&&/\/(?:xpeng-g6-2026-white-cutout\.(?:png|webp)|vehicles\/g6\/2026\/core_plus_rwd\/arctic_white\.webp)$/.test(spec.src);
+    return `<img class="xp-car ${referenceCutout?'xp-reference-cutout':''} ${spec.studio?'xp-studio-car':''}" data-car-art
       src="${xpEsc(spec.src)}"
       title="${xpEsc(spec.description)}"
+      data-art-tier="${xpEsc(spec.tier)}"
       alt="${xpEsc('XPENG '+a.model+' '+a.year+', '+a.color.replaceAll('_',' ')+(spec.illustrative?' (illustrative artwork)':''))}" loading="eager">
-      ${spec.illustrative?`<span class="xp-art-identity" title="${xpEsc(spec.description)}">Illustrative vehicle art · ${xpEsc(a.model+' '+a.year)}</span>`:''}`;
+      `;
   }
   overview(){
   const rows=[['gauge','Odometer',this.num('odometer','km')],['tire','Tire pressure',this.tireSummary()],['pin','Location',this.locationText()]];
@@ -481,7 +520,10 @@ class XpengVehicleCard extends HTMLElement{
  render(){
   if(!this.shadowRoot)return;
   this.toggleAttribute('data-expanded',this._expanded);
-  const isCharging=this._view==='charging';
+  // The charging entity is the single source of truth for choosing the screen.
+  // Only an explicit 'on' shows Charging. 'off', unknown and unavailable show Overview.
+  const isCharging=xpChargingActive(this.val('charging'))===true;
+  this._view=isCharging?'charging':'overview';
   this.shadowRoot.innerHTML=`<style>${XP_CSS}</style><ha-card><div class="xp-scene ${isCharging?'xp-charge':'xp-overview'}">
    ${this.sceneBackdrop()}${this.header()}${isCharging?this.charging():this.overview()}
    
@@ -499,7 +541,7 @@ class XpengVehicleCardEditor extends HTMLElement{
    if(el.hasAttribute('data-entity')){
      const field=el.dataset.entity,raw=String(el.value||'').trim();
      if(!XP_MAPPABLE_FIELDS.some(x=>x.key===field))return;
-     if(raw&&!/^(sensor|binary_sensor|device_tracker|number|input_number|input_boolean|switch|text|input_text)\.[a-z0-9_]+$/.test(raw)){
+     if(raw&&!xpParseEntityMapping(raw)){
        el.setCustomValidity('Enter a valid Home Assistant entity ID');el.reportValidity();return;
      }
      const mapping={...(this._cfg.entities||{})};
@@ -511,6 +553,13 @@ class XpengVehicleCardEditor extends HTMLElement{
    }
    const key=el.dataset.key;
    let cfg={...this._cfg,[key]:el.value};
+   if(['image','charging_image','interior_image','background_image'].includes(key)&&el.value&&!xpLocalArtworkPath(el.value)){
+     el.setCustomValidity('Use a local /local/... or /hacsfiles/... image URL');
+     el.reportValidity();return;
+   }
+   // A previous manual photo belongs to the old model/year/paint, not a new one.
+   if(['model','year','trim','color'].includes(key)){delete cfg.image;delete cfg.charging_image;}
+   if(['model','year','trim','interior'].includes(key))delete cfg.interior_image;
    if(cfg.prefix&&!/^[a-z0-9_]+$/.test(cfg.prefix))return;
    if(key==='year'&&!xpAllowedModels(cfg.year).some(x=>x.id===cfg.model))cfg.model=xpAllowedModels(cfg.year)[0]?.id||'Other';
    if(key==='year'||key==='model'){cfg.trim=xpAllowedTrims(cfg.model,cfg.year)[0].id;cfg.color=xpAllowedPaints(cfg.model,cfg.year,cfg.trim)[0].id;cfg.interior=xpAllowedInteriors(cfg.model,cfg.year,cfg.trim)[0].id;}
@@ -531,11 +580,11 @@ class XpengVehicleCardEditor extends HTMLElement{
   const select=(key,label,values)=>`<label>${xpEsc(label)}<select data-key="${key}">${values.map(x=>`<option value="${xpEsc(x.id)}" ${v[key]===x.id?'selected':''}>${xpEsc(x.label)}</option>`).join('')}</select></label>`;
   const prefix=v.prefix||'my_xpeng';
   const states=this._hass?.states||{};
-  const dataList=Object.keys(states).filter(id=>/^(sensor|binary_sensor|device_tracker|number|input_number|input_boolean|switch|text|input_text)\./.test(id)).sort().map(id=>'<option value="'+xpEsc(id)+'"></option>').join('');
+  const dataList=Object.keys(states).filter(id=>xpParseEntityMapping(id)).sort().map(id=>'<option value="'+xpEsc(id)+'"></option>').join('');
   const mappingRows=XP_MAPPABLE_FIELDS.map(field=>{
    const spec=XP_KEYS[field.key];
    const auto=spec[0]+'.'+prefix+'_'+spec[1];
-   return '<label class="xp-map-row"><span>'+xpEsc(field.label)+'</span><input data-entity="'+xpEsc(field.key)+'" list="xp-entity-choices" autocomplete="off" value="'+xpEsc(v.entities?.[field.key]||'')+'" placeholder="Auto: '+xpEsc(auto)+'" title="Leave blank for automatic sensor mapping"></label>';
+   return '<label class="xp-map-row"><span>'+xpEsc(field.label)+'</span><input data-entity="'+xpEsc(field.key)+'" list="xp-entity-choices" autocomplete="off" value="'+xpEsc(v.entities?.[field.key]||'')+'" placeholder="Auto: '+xpEsc(auto)+'" title="Leave blank for automatic mapping. Supports entity_id or entity_id|attribute_name"></label>';
   }).join('');
   const expanded=this.shadowRoot.querySelector?.('details[data-mappings]')?.open===true;
   this.shadowRoot.innerHTML=`<style>section{display:grid;gap:13px;padding:14px;font:inherit}label{display:grid;gap:5px;font-size:13px}input,select{border:1px solid #8b959e;border-radius:7px;padding:10px;background:var(--card-background-color,#fff);color:var(--primary-text-color,#111)}p{font-size:12px;opacity:.8;line-height:1.5}
@@ -555,10 +604,17 @@ class XpengVehicleCardEditor extends HTMLElement{
     ${select('color','Exterior paint',xpAllowedPaints(v.model,v.year,v.trim))}
      ${select('interior','Interior finish',xpAllowedInteriors(v.model,v.year,v.trim))}
      <p>${xpIsVerifiedPalette(v.model,v.year)?'Published colour palette; availability differs by market and trim.':'Illustrative colours for this model year; manufacturer availability is not verified.'}</p>
-    <h3>Data source</h3><p>Vehicle readings come from Home Assistant entities; they are automatically resolved by prefix unless manually mapped below.</p>
-     <label>Image assets directory<input data-key="image_path" value="${xpEsc(v.image_path||'/hacsfiles/xpeng-vehicle-card/assets')}"></label>
+    <h3>Data source</h3><p>Every measurement supports automatic matching by prefix or optional manual entity assignment, including from any Home Assistant integration. Charging activates the charging screen only while charging is reported as active.</p>
+     <label>Optional cabin photo for this selected model, year, trim and interior colour<input data-key="interior_image" value="${xpEsc(v.interior_image||'')}" placeholder="/local/my_xpeng/interiors/g6-2026-light-gray.webp"></label>
+    <p>Choosing another model/year/trim or interior finish clears the previous custom cabin photo so a different model is never shown by mistake. Without photography the compact information popup shows a colour-matched cabin illustration.</p>
+    <label>Optional rear/charging view image for this exact vehicle (when available)<input data-key="charging_image" value="${xpEsc(v.charging_image||'')}" placeholder="/local/my_xpeng/cars/g6-2026-white-rear.webp"></label>
+    <label>Optional exact vehicle image URL (when this profile has no bundled year-specific photo)<input data-key="image" value="${xpEsc(v.image||'')}" placeholder="/local/my_xpeng/cars/g6-2026-white.webp"></label>
+    <p>Background is stored separately and stays the same in both screens. The car image changes by your manual model/year/trim/exterior colour selection. 2026 G6/G9 have exact-path bundled previews; older/other models use clearly labelled illustrations unless you specify your own exact photo.</p>
+    <label>Optional scenic background for BOTH screens (separate from the car)<input data-key="background_image" value="${xpEsc(v.background_image||'')}" placeholder="/local/xpeng/xpeng-approved-lakeside-background.webp"></label>
+    <p>Use a genuine photograph in /local/ or /hacsfiles/, not CSS-painted mountains. The background is global and stays identical when charging or selecting another model; leaving it empty retains the bundled fallback.</p>
+    <label>Image assets directory<input data-key="image_path" value="${xpEsc(v.image_path||'/hacsfiles/xpeng-vehicle-card/assets')}"></label>
     <details data-mappings ${expanded?'open':''}><summary>Manual sensor mapping · ${XP_MAPPABLE_FIELDS.length} fields</summary>
-       <p>Leave a field blank for automatic matching by prefix. Otherwise choose an existing Home Assistant entity or type its exact ID.</p>
+       <p>Auto mode: leave an item empty and it uses the prefix. Manual mode: pick any Home Assistant entity (including those from another integration), or use entity_id|attribute_name to read an attribute. Each field is configured independently.</p>
        <div class="xp-map-fields">${mappingRows}</div>
        <datalist id="xp-entity-choices">${dataList}</datalist>
      </details>
