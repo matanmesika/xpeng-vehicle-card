@@ -297,3 +297,26 @@ test('editor accepts other HA domains and attribute paths, invalid strings are r
  assert.equal(bad,true);
  assert.equal(editor._cfg.entities.charging,'select.external_charge|charge_state');
 });
+
+test('overview and charging must render the exact same raster background and geometry',()=>{
+ const states=data(),card=setup(states);
+ const before=card.shadowRoot.innerHTML;
+ const normalize=html=>{
+    const match=html.match(/<div class="xp-night-photo"[^>]*><\/div>/);
+    assert.ok(match,'missing single background element');
+    return match[0];
+ };
+ const b1=normalize(before);
+ assert.match(b1,/xpeng-reference-background\.webp/);
+ assert.doesNotMatch(before,/<svg class="xp-sky"/);
+ assert.equal((before.match(/<div class="xp-night-photo"/g)||[]).length,1);
+ states['binary_sensor.my_xpeng_is_charging'].state='on';
+ card.hass={states};
+ const during=card.shadowRoot.innerHTML,b2=normalize(during);
+ assert.equal(b1,b2,'background URL, position, and markup may not vary with charging');
+ assert.equal((during.match(/<div class="xp-night-photo"/g)||[]).length,1);
+ assert.doesNotMatch(during,/<svg class="xp-sky"/);
+ states['binary_sensor.my_xpeng_is_charging'].state='off';
+ card.hass={states};
+ assert.equal(b1,normalize(card.shadowRoot.innerHTML));
+});
