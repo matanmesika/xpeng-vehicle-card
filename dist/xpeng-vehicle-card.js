@@ -406,8 +406,8 @@ class XpengVehicleCard extends HTMLElement{
   return `<div class="xp-title"><h1>XPENG <em>${xpEsc(this.model())}</em></h1><div class="xp-subtitle">${this._view==='charging'?xpEsc(this.chargeStatus()):'Vehicle status'}</div></div>`;
  }
  sceneBackdrop(){
-  const base=String(this.vehicle()?.image_path||this._config.image_path||'/hacsfiles/xpeng-vehicle-card/assets').replace(/\/$/,'');
-  return `<img class="xp-backdrop-image" src="${xpEsc(base+'/mountain-night-scene.svg')}" alt="" aria-hidden="true"><svg class="xp-sky" viewBox="0 0 1500 850" preserveAspectRatio="none" aria-hidden="true">
+  const backdrop='/local/xpeng-dashboard-background.webp';
+  return `<img class="xp-backdrop-image" src="${xpEsc(backdrop)}" alt="" aria-hidden="true"><svg class="xp-sky" viewBox="0 0 1500 850" preserveAspectRatio="none" aria-hidden="true">
     <defs><filter id="xp-soft" x="-20%" y="-25%" width="140%" height="150%"><feGaussianBlur stdDeviation="3.1"/></filter>
     <filter id="xp-noise" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".009 .018" numOctaves="4" seed="13" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
     <linearGradient id="xp-ridge" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#152a49"/><stop offset="1" stop-color="#031425"/></linearGradient>
