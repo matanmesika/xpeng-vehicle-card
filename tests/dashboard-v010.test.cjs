@@ -228,3 +228,72 @@ test('the alpha-cutout G6 preview has no studio mask or visible artwork watermar
  assert.match(c.asset(),/\/vehicles\/g6\/2026\/core_plus_rwd\/arctic_white\.webp$/);
  assert.match(html,/class="xp-night-photo"/);
 });
+
+test('header has no Home button or clock on either screen, while fullscreen remains',()=>{
+ const states=data(),card=setup(states);
+ assert.doesNotMatch(card.shadowRoot.innerHTML,/data-view="overview"|xp-clock|xp-head-separator/);
+ assert.match(card.shadowRoot.innerHTML,/data-expand/);
+ states['binary_sensor.my_xpeng_is_charging'].state='on';
+ card.hass={states};
+ assert.equal(card._view,'charging');
+ assert.doesNotMatch(card.shadowRoot.innerHTML,/data-view="overview"|xp-clock|xp-head-separator/);
+ assert.match(card.shadowRoot.innerHTML,/data-expand/);
+});
+test('charging view is strictly sensor-driven and unaffected by other entity changes',()=>{
+ const states=data(),card=setup(states);
+ for(const status of ['off','unavailable','unknown','idle','plugged_in','paused','disconnected']){
+   states['binary_sensor.my_xpeng_is_charging'].state=status;
+   card.hass={states};
+   assert.equal(card._view,'overview',status);
+ }
+ for(const status of ['on','true','1','charging','in_progress','active']){
+   states['binary_sensor.my_xpeng_is_charging'].state=status;
+   card.hass={states};
+   assert.equal(card._view,'charging',status);
+ }
+ states['binary_sensor.my_xpeng_is_charging'].state='off';
+ states['sensor.my_xpeng_soc'].state='99';
+ card.hass={states};
+ assert.equal(card._view,'overview');
+ assert.match(card.shadowRoot.innerHTML,/99<span class="xp-unit">%<\/span>/);
+});
+test('external integrations may map any HA entity domain or an attribute, with auto fallback',()=>{
+ const states=data();
+ states['select.third_party_status']={state:'idle',attributes:{charge_state:'charging'}};
+ states['input_number.third_party_battery']={state:'79'};
+ states['sensor.third_party_ev']={state:'active',attributes:{range_km:418,soc:67}};
+ const card=setup(states);
+ card.setConfig({model:'G6',year:'2026',prefix:'my_xpeng',
+   entities:{charging:'select.third_party_status|charge_state',
+             soc:'input_number.third_party_battery',
+             range:'sensor.third_party_ev|range_km'}});
+ card.hass={states};
+ assert.equal(card._view,'charging');
+ assert.equal(card.val('charging'),'charging');
+ assert.equal(card.number('range'),418);
+ assert.match(card.shadowRoot.innerHTML,/79<span class="xp-unit">%<\/span>/);
+ assert.match(card.shadowRoot.innerHTML,/418 km/);
+ states['select.third_party_status'].attributes.charge_state='paused';
+ card.hass={states};
+ assert.equal(card._view,'overview');
+ card.setConfig({model:'G6',prefix:'my_xpeng',entities:{charging:'select.third_party_status|charge_state'}});
+ card.hass={states};
+ assert.equal(card.number('soc'),62,'unmapped battery falls back to automatic entity');
+});
+test('editor accepts other HA domains and attribute paths, invalid strings are rejected',()=>{
+ const Editor=tags.get('xpeng-vehicle-card-editor');
+ const editor=new Editor();
+ editor.setConfig({prefix:'my_xpeng',year:'2026',model:'G6'});
+ editor.hass={states:{'select.external_charge':{state:'charging'},'input_number.ev_soc':{state:'80'}}};
+ assert.match(editor.shadowRoot.innerHTML,/select.external_charge/);
+ assert.match(editor.shadowRoot.innerHTML,/input_number.ev_soc/);
+ const field={dataset:{entity:'charging'},hasAttribute:key=>key==='data-entity',
+   value:'select.external_charge|charge_state',setCustomValidity(){},reportValidity(){}};
+ editor.shadowRoot.handlers.change({target:{closest:()=>field}});
+ assert.equal(editor._cfg.entities.charging,'select.external_charge|charge_state');
+ field.value='select.external_charge|__proto__';
+ let bad=false;field.setCustomValidity=message=>{bad=Boolean(message)};
+ editor.shadowRoot.handlers.change({target:{closest:()=>field}});
+ assert.equal(bad,true);
+ assert.equal(editor._cfg.entities.charging,'select.external_charge|charge_state');
+});
