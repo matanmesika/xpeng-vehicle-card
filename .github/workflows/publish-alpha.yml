@@ -1,67 +1,82 @@
-name: Publish XPENG alpha pre-release
+name: Publish XPENG beta pre-release
+
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/publish-alpha.yml'
+    inputs:
+      tag:
+        description: Beta tag to publish
+        required: true
+        default: v1.0.0-beta.1
 
 permissions:
   contents: write
 
 jobs:
-  prerelease:
-    name: Validate and publish experimental pre-release
+  beta:
+    name: Validate and publish beta
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Verify JS, catalog and HACS files
+
+      - name: Validate frontend and metadata
+        shell: bash
         run: |
+          set -euo pipefail
           node --check src/xpeng-vehicle-card.js
           node --check dist/xpeng-vehicle-card.js
-          python -m json.tool hacs.json > /dev/null
-          python -m json.tool model-catalog.json > /dev/null
-          python tests/test_hacs_package.py
-      - name: Test dashboard and charging behavior with real browser
-        run: |
-          python -m pip install playwright pytest
-          python -m playwright install --with-deps chromium
-          python tests/test_rewrite_v1.py
-          python -m pytest -q tests/test_brand_independence.py
-      - name: Keep real desktop and iPhone screenshots
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: xpeng-v1-dashboard-browser-screenshots
-          path: previews/rewrite-v1/*.png
-          if-no-files-found: warn
-      - name: Verify current version has not already been released
+          cmp src/xpeng-vehicle-card.js dist/xpeng-vehicle-card.js
+          python -m json.tool hacs.json >/dev/null
+          python -m json.tool model-artwork.json >/dev/null
+          python -m json.tool vehicle-art-inventory.json >/dev/null
+          test -s assets/xpeng-approved-lakeside-background.webp
+          test -s assets/vehicles/g6/2026/core_performance_awd/front.webp
+          test -s assets/vehicles/g6/2026/core_performance_awd/charging.webp
+          test -s assets/vehicles/g6/2026/core_performance_awd/top.webp
+          python - <<'PY'
+          from pathlib import Path
+          for name in [
+              "assets/xpeng-approved-lakeside-background.webp",
+              "assets/vehicles/g6/2026/core_performance_awd/front.webp",
+              "assets/vehicles/g6/2026/core_performance_awd/charging.webp",
+              "assets/vehicles/g6/2026/core_performance_awd/top.webp",
+          ]:
+              data = Path(name).read_bytes()
+              assert data[:4] == b"RIFF" and data[8:12] == b"WEBP", name
+          print("PASS: JavaScript, metadata and WebP assets validated")
+          PY
+
+      - name: Run frontend unit tests
+        run: node --test tests/dashboard-v010.test.cjs tests/all-profiles.test.cjs
+
+      - name: Refuse to overwrite an existing release
         env:
           GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
         run: |
-          if gh release view v1.0.0-alpha.1 >/dev/null 2>&1; then
-            echo 'v1.0.0-alpha.1 already exists; no changes were made.'
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "::error::Release $TAG already exists"
             exit 1
           fi
-      - name: Create explicitly experimental pre-release
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh release create v1.0.0-alpha.1 \
-            --repo "${GITHUB_REPOSITORY}" \
-            --target "${GITHUB_SHA}" \
-            --title "XPENG Vehicle Card v1.0.0-alpha.1 (Alpha)" \
-            --notes-file RELEASE_NOTES_v1.0.0-alpha.1.md \
-            --prerelease
 
-      - name: Attach real browser screenshots to pre-release
+      - name: Publish beta pre-release
         env:
           GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
         run: |
-          gh release upload v1.0.0-alpha.1 previews/rewrite-v1/*.png --repo "${GITHUB_REPOSITORY}"
+          gh release create "$TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title "XPENG Vehicle Card $TAG" \
+            --generate-notes \
+            --prerelease
