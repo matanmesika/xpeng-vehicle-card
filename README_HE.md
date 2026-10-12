@@ -56,6 +56,6 @@ grid_options:
 - [קטלוג תמונות לפי דגם וצבע](model-artwork.json)
 - [מיפוי החיישנים](docs/ENTITY_MAPPING.md)
 - [מצב התמונות ומבט־על לצמיגים](docs/SHAPE_ASSETS_AND_TPMS.md)
-- [תנאי שחרור](RELEASE_CHECKLIST.md)
+- [תנאי שחרור](docs/RELEASE_CHECKLIST.md)
 
 השלבים שעוד פתוחים לפני גרסה סופית: אימות תמונות רכב שקופות אמיתיות לפי דגם וצבע, תמונות אחוריות ומבט־על, רישיונות שימוש, אישור הנראות ב־Home Assistant עצמו ובדיקת התקנת HACS בפועל.
