@@ -129,10 +129,11 @@ test('when backend has no appearance entities, editor configuration is used',()=
 test('official 2026 paints and cabin colours depend on model',()=>{
   const x=vm.runInNewContext('({xpAllowedPaints,xpAllowedInteriors,xpIsVerifiedPalette})',context);
   assert.equal(x.xpIsVerifiedPalette('G6','2026'),true);
-  assert.equal(x.xpIsVerifiedPalette('G6','2024'),false);
+  assert.equal(x.xpIsVerifiedPalette('G6','2024'),true,'model paint preview is shared across years');
   assert.equal(x.xpAllowedPaints('G6','2026','core_plus_rwd').some(v=>v.id==='kaitoke_green_matte'),false);
   assert.equal(x.xpAllowedPaints('G9','2026','unspecified').some(v=>v.id==='kaitoke_green_matte'),true);
   assert.equal(x.xpAllowedInteriors('G9','2026','unspecified').some(v=>v.id==='saddle'),true);
+  assert.deepEqual(x.xpAllowedPaints('G6','2023','performance_awd').map(v=>v.id),x.xpAllowedPaints('G6','2026','black_edition').map(v=>v.id));
 });
 
 test('update time is behind an accessible info button, not static text',()=>{

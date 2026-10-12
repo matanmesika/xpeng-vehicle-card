@@ -1,30 +1,31 @@
-# XPENG shape-aware transparent vehicle artwork and four-tire TPMS
+# XPENG model-wide artwork and tire pressure view
 
-Frontend/dashboard only. The XPENG Home Assistant integration/backend is **not modified**.
+Frontend card only. The XPENG Home Assistant backend integration is unchanged.
 
-## Shape and asset indexing
+## Visual policy (owner-approved)
+- One **highest-available-trim** vehicle preview per model and exterior colour, **regardless of model year or selected trim**.
+- Model is chosen first. Years are limited to valid years for that model. Year changes the **trim name dropdown only**, without changing car artwork, exterior colour, cabin preview, charging photo, overhead photo or any sensor values.
+- Trim is informational: no effect on images, paint options, cabin preview, sensor mapping, or background. This means year-old cars may show the newer model's appearance by design.
+- The model+paint mapping is recorded in `model-artwork.json` (same packaged manifest in `dist/`). Do not use the old shape/year-by-year selection.
+- G6 uses the existing `core_performance_awd` art for every year/trim. G9 uses `performance_awd` art for every year/trim. These are **illustrative assets**, not manufacturer-verified packshots.
+- Where no identified high-trim cutout exists, the card uses the available model-family image of the chosen colour and *explicitly labels it illustrative*. No false high-trim guarantee. For absent colours/images it displays a labelled colour-matched placeholder.
+- Manufacturer-representative rear and top-view photos are **still missing** for all model-colour mappings. The charging view may reuse the front preview until a user-supplied rear cutout exists; the tire-pressure mode uses a labelled top-down illustration unless a matching `top_image` is manually supplied.
+- Approved lake-and-house photo stays pixel-identical in Overview/Charging/TPMS.
 
-- `shape-artwork.json` contains the exhaustive matrix of 53 configured model-year profiles with available trims and paint choices.
-- For each combination, it records `shape_options` (generation / facelift), a transparent `front` image if one has actually been packaged, and a separate `rear` image only if one has actually been verified.
-- On this revision there are **37 bundled year/trim/color-specific front-image paths** for G6/G9 2026, plus **80 model-family illustrations**; **zero independently verified rear cutouts**. Naming a file by model/year is not photographic verification. `shape_verified:false` remains explicit.
-- G6 and G9 were refreshed in 2025 according to XPENG: https://www.xpeng.com/news/019762f4239996d25db58a02820b01b0 . The dashboard offers both original and refreshed generations for 2025 where a market/year designation may differ, and does not claim the original generation survives into 2026.
-- Other model-family images are **illustrative, unverified**. No exact manufacturer packshot is invented or imported from another model year.
-- A 2024 G6/G9 currently shows a labelled neutral placeholder rather than reusing a potentially incorrect studio image. 2026 G6/G9 use their specific available front previews. In Charging a front cutout may be reused *only while explicitly labelled as 'front_fallback_rear_pending'*, not represented as a genuine rear photo.
-- Designer or user can override `image:` (overview) and `charging_image:` (rear) with **genuinely matching transparent PNG/WebP** served from `/local/` or `/hacsfiles/`; changing model/year/trim/color/generation clears old overrides in the card editor.
-- Artwork remains isolated from the fixed approved lakeside background and bundled as HACS-downloadable assets (direct files in `dist/`).
+## Informational model year / trims
+- The year dropdown shows known years for the selected model.
+- `xpAllowedTrims(model,year)` supplies labels. Different trim options may appear for older years versus newer years.
+- Changing year only updates this dropdown. Changing year/trim never clears an exact custom `image`, `charging_image`, `top_image`, or `interior_image`. A model/paint change clears previous vehicle photos to prevent an obviously wrong paint.
+- Exterior paint options are previews shared by all model years; availability for a particular historic vehicle is **not guaranteed**.
 
-## Adding new official photo cutouts
+## Tire pressures
+- Click Tire pressure in the existing vehicle-status information panel to replace the main car hero with a larger overhead vehicle image on the same backdrop, with front-left, front-right, rear-left and rear-right live values next to their wheels.
+- Tap Back to vehicle to return to Overview. Charging automatically takes priority if the real HA charging sensor reports charging.
+- Supports kPa/bar/psi/Pa to bar conversion; missing or invalid wheel data appears as `—`. No fabricated pressures, error limits or TPMS controls.
+- The default top view is explicitly illustrative and colour-matched to the model; a user can supply a genuine transparent overhead PNG/WebP via `top_image`.
 
-1. Verify manufacturer variant and market, year, trim, exterior paint and whether exterior shape actually changed.
-2. Export a **transparent cutout**, check visible wheel/headlight/rear-light form, and avoid visible checkerboard pixels: checkerboard must be transparency-preview only.
-3. Include distinct `front` and `rear` cutouts, or explicitly leave rear as missing. Do not mirror the front shot and claim it is a rear.
-4. Add assets to inventory, frontend source index, HACS flat distribution and every matching shape/year/trim/paint manifest record.
-5. Validate alpha channel, checksum, backdrop consistency and real Chromium screenshots in both states.
-
-## Tire pressure full-view behavior
-
-- In Vehicle status, tap **Tire pressure**: the three-quarter large car disappears, and a large central **top-down** vehicle appears on the same approved lakeside background. Four live readings appear beside the wheels. Tap **Back to vehicle** to restore overview.
-- A genuinely matching transparent overhead PNG/WebP can be provided using the optional `top_image` editor field. Its mapping must be rechecked after changing vehicle model, year, generation, trim, or paint.
-- Until a genuine model-specific overhead photo is verified, the car in this view is an **illustrative, color-matched top view**, not a manufacturer-accurate XPENG cutout. Missing top views are tracked separately in `shape-artwork.json` for every profile.
-- The existing four independent HA mappings `tire_fl`, `tire_fr`, `tire_rl`, `tire_rr` provide values. kPa, bar, psi and Pa units convert to bar. Unknown or missing values display `—`; no made-up readings or danger thresholds.
-- Charging view remains one of only two main modes; tire presentation is a temporary detail of Vehicle status, not a third navigation tab.
+## Release checklist
+1. Run Node regression tests, browser acceptance desktop/mobile, manifest audit, HACS layout tests.
+2. Do not claim an illustration is an officially accurate photo or that the model's highest trim has been authenticated.
+3. Collect licensed transparent cutouts by model and colour if true top-variant photographic realism is required.
+4. No changes to HA integration or user-approved backdrop.

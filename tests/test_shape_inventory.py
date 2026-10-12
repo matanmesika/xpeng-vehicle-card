@@ -1,38 +1,37 @@
-"""Audit every shape/year/trim/paint selection; no invented or mislabeled photos."""
-import json
+"""Verify model+paint artwork inventory; year and trim do not select artwork."""
 from pathlib import Path
-r=Path(__file__).resolve().parents[1]
-m=json.loads((r/'shape-artwork.json').read_text())
-p=json.loads((r/'profiles/year-profiles.json').read_text())
-a=json.loads((r/'vehicle-art-inventory.json').read_text())
-assert len(m['profiles'])==p['profile_count']==53
+import json
+root=Path(__file__).resolve().parents[1]
+m=json.loads((root/'model-artwork.json').read_text())
+copy=json.loads((root/'dist/model-artwork.json').read_text())
+assert m==copy
+cat=json.loads((root/'model-catalog.json').read_text())
+inv=json.loads((root/'vehicle-art-inventory.json').read_text())
+assert m['selection']=='model + exterior paint ONLY'
+assert len(m['models'])==len(cat['models'])==16
+exact=set(inv['exact'])
+family=set(inv['model_family'])
 seen=set()
-exact=set(a['exact']);family=set(a['model_family'])
-rear=0;count=0
-for row in m['profiles']:
-    key=(row['model'],row['year'])
-    assert key not in seen,key
-    seen.add(key)
-    assert row['shape_options']
-    assert row['default_shape_family'] in [x['id'] for x in row['shape_options']]
-    for trim in row['trims']:
-        for color in row['colors']:
-            item=row['assets'][trim][color]
-            front=item['front']
-            if front is not None:
-                assert front['shape_verified'] is False
-                assert front['path'] in exact|family,front['path']
-                assert (r/'dist/assets'/front['path']).is_file()
-                assert (r/'dist'/('xpeng-asset-'+front['path'].replace('/','-'))).is_file()
-            assert item['rear'] is None and item['charging'] is None and item['top'] is None
-            assert item['rear_status']=='missing'
-            assert item['top_status']=='missing_overhead_packshot_illustrative_preview'
-            count+=1
-for model in ['G6','G9']:
-    previous=next(row for row in m['profiles'] if row['model']==model and row['year']=='2024')
-    newer=next(row for row in m['profiles'] if row['model']==model and row['year']=='2026')
-    assert previous['default_shape_family']!=newer['default_shape_family']
-    both=next(row for row in m['profiles'] if row['model']==model and row['year']=='2025')
-    assert len(both['shape_options'])==2
-assert count>=400,count
-print(f'PASS: {len(seen)} model-years, {count} configurable trim/paint combinations, missing rear images explicitly marked')
+checked=0
+for model in m['models']:
+  assert model['model'] not in seen
+  seen.add(model['model'])
+  assert model['visual_year_policy']=='shared-across-all-years'
+  assert model['visual_trim_policy']=='shared-across-all-selected-trims'
+  for paint,item in model['colors'].items():
+    front=item['front']
+    if front:
+      path=front['path']
+      assert path in exact|family
+      assert front['manufacturer_verified'] is False
+      assert (root/'assets'/path).is_file()
+      assert (root/'dist/assets'/path).is_file()
+      assert (root/'dist'/('xpeng-asset-'+path.replace('/','-'))).is_file()
+      if front['tier']=='highest-trim-preview':
+        assert model['visual_trim_source'] is not None
+        assert f"/{model['visual_trim_source']}/" in path
+    assert item['rear'] is None
+    assert item['top'] is None
+    checked+=1
+assert checked>=75
+print(f"PASS: {len(seen)} model-wide vehicle profiles and {checked} model+paint mappings")

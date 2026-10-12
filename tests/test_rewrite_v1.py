@@ -16,7 +16,7 @@ assert 'localStorage' not in SCRIPT and 'callService(' not in SCRIPT and 'fetch(
 OUT = ROOT / 'previews' / 'dashboard-v011'
 OUT.mkdir(parents=True, exist_ok=True)
 # Release gate: do not silently validate a placeholder SVG or an outdated image.
-EXPECTED_ART = ROOT / 'dist/assets/vehicles/g6/2026/core_plus_rwd/arctic_white.webp'
+EXPECTED_ART = ROOT / 'dist/assets/vehicles/g6/2026/core_performance_awd/arctic_white.webp'
 assert EXPECTED_ART.is_file(), (
     f'Missing packaged G6 2026 preview artwork: {EXPECTED_ART}. '
     'Add model-year imagery or mark unverified styling before publishing.'
@@ -250,7 +250,7 @@ with sync_playwright() as p:
         }""")
         editor = page.locator('xpeng-vehicle-card-editor')
         assert editor.locator('[data-key="color"]').count() == 1
-        assert editor.locator('[data-key="shape_family"]').count() == 1
+        assert editor.locator('[data-key="shape_family"]').count() == 0
         assert editor.locator('[data-key="top_image"]').count() == 1
         assert editor.locator('[data-key="interior"]').count() == 1
         assert editor.locator('[data-entity="soc"]').count() == 1
@@ -261,8 +261,8 @@ with sync_playwright() as p:
         # Browser-test representative generations; all use the same scenic bitmap,
         # with a different car render and interior selected in the card editor.
         catalogue=[
-            ('G6','2026','core_plus_rwd','arctic_white','light_gray','model-year-trim'),
-            ('G9','2026','long_range_rwd','graphite_gray','coffee','model-year-trim'),
+            ('G6','2026','core_plus_rwd','arctic_white','light_gray','highest-trim-preview'),
+            ('G9','2026','long_range_rwd','graphite_gray','coffee','highest-trim-preview'),
             ('X9','2026','unspecified','silver_frost','light_gray','model-family'),
             ('G7','2025','unspecified','midnight_black','dark_gray','model-family'),
             ('Next P7','2026','unspecified','arctic_white','dark_gray','model-family'),
@@ -289,6 +289,23 @@ with sync_playwright() as p:
             if tag=='desktop':
                 safe='-'.join((model,year,paint)).lower().replace(' ','_')
                 host.screenshot(path=str(OUT/f'catalogue-{safe}.png'))
+
+        # Render invariant: model+paint chooses the same hero image regardless of year/trim.
+        for model,old_year,old_trim,new_year,new_trim,paint in [
+            ('G6','2023','standard_range_rwd','2026','core_plus_rwd','arctic_white'),
+            ('G9','2022','standard_range_rwd','2026','performance_awd','graphite_gray')]:
+            images=[]
+            for year,trim in [(old_year,old_trim),(new_year,new_trim)]:
+                page.evaluate("""arg => {
+                  const [model,year,trim,paint,states]=arg;
+                  const card=document.querySelector('xpeng-vehicle-card');
+                  card.setConfig({prefix:'my_xpeng',model,year,trim,color:paint,image_path:'/local/xpeng'});
+                  card.hass={states};
+                }""",[model,year,trim,paint,BASE])
+                image=host.locator('img[data-car-art]')
+                assert image.get_attribute('data-art-tier')=='highest-trim-preview'
+                images.append(image.get_attribute('src'))
+            assert images[0]==images[1], (model,images)
 
         assert not errors, errors
         # Release gate: all model/year/colour assets must exist before release.
