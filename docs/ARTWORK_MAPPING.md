@@ -32,3 +32,11 @@ The initial inventory spans **15 catalogue models, 18 generation groups, and 83 
 5. Merge/publish to update the online GitHub raw URLs read by the card, or set `image_path` to an existing Home Assistant local path. The approved background is untouched.
 
 **Limitations:** the presence of a file does not prove manufacturer authenticity. The current default loader reads artwork from the GitHub repository at runtime and therefore requires internet; `image_path` allows an explicitly configured local artwork root. No scraping/undocumented XPENG API and no arbitrary remote user-specified image URL are used.
+
+## Batch 1 — genuine, licensed photograph leads (2026-10-13)
+
+The first set of third-party **photographs** is tracked in `sources/vehicle-photo-candidates.json`. These are real vehicle photos, not AI-generated artwork. Sources include 2023 original G6 Fiery Orange, a CC0 original G6 photo, 2025 facelift G6 AWD Black Edition, and a 2025 refreshed G9 photo, all with documented author, source and licence.
+
+Their status is `reference_found`. **No photographs were inserted into the live overlay slots**, because the sources are opaque JPEG photographs and cannot yet replace the transparent, angle-matched WebP cutouts. Visual colour verification, model-year/market checking, optional background removal, transparency inspection and attribution are required. Attribution and Share-Alike terms must be preserved on derivative cutouts.
+
+Run `python tools/check_photo_candidates.py` to check that no source record has been misreported as a live image. This register is intentionally independent of runtime loading and cannot change the dashboard layout/background.
