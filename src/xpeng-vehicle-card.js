@@ -176,7 +176,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-title h1{font-size:clamp(32px,3.7vw,62px);line-height:1.02;letter-spacing:.035em;font-weight:730;margin:0;white-space:nowrap}
 .xp-title h1 em{font-style:normal;color:#7eaeff}
 .xp-subtitle{font-size:clamp(15px,2vw,30px);color:#8192b6;font-weight:400}
-.xp-car{position:absolute;z-index:3;width:57%;height:auto;max-height:73%;object-fit:contain;left:21%;bottom:16%;mix-blend-mode:multiply;filter:drop-shadow(0 20px 20px #000b) brightness(1.6) contrast(1.00)}
+.xp-car{position:absolute;z-index:3;width:57%;height:auto;max-height:73%;object-fit:contain;left:21%;bottom:16%;filter:drop-shadow(0 20px 20px #000b) brightness(1.6) contrast(1.00)}
 .xp-car.xp-paint-silver_frost{filter:drop-shadow(0 20px 20px #000b) brightness(1.13)}
 .xp-car.xp-paint-space_grey{filter:drop-shadow(0 20px 20px #000b) brightness(.78) hue-rotate(4deg)}
 .xp-car.xp-paint-jet_black{filter:drop-shadow(0 20px 20px #000b) brightness(.45)}
