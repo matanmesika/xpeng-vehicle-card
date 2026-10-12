@@ -130,13 +130,13 @@ function xpAllowedPaints(model,year,trim){
 }
 function xpNormalizeAppearance(value){const v=value||{};
  const incoming=String(v.model??'').replace(/^XPENG\s+/i,'').trim();
- const mdl=XP_MODELS.find(x=>x.id.toLowerCase()===incoming.toLowerCase())?.id||'G6';
+ const mdl='G6'; // Single supported artwork model; legacy model selections are ignored.
  const years=xpAllowedYears(mdl);
  const yr=years.includes(String(v.year))?String(v.year):years[0]||'2026';
  const options=xpAllowedTrims(mdl,yr);
  const trim=options.some(x=>x.id===v.trim)?v.trim:options[0].id;
  const paints=xpAllowedPaints(mdl,yr,trim),requestedPaint=xpAppearanceId(v.color);
- const color=paints.some(x=>x.id===requestedPaint)?requestedPaint:paints[0].id;
+ const color='graphite_gray'; // Only approved paint in the current artwork library.
  const interiors=xpAllowedInteriors(mdl,yr,trim),requestedInterior=xpAppearanceId(v.interior,'interior');
  const interior=interiors.some(x=>x.id===requestedInterior)?requestedInterior:interiors[0].id;
  return {...v,year:yr,model:mdl,trim,color,interior};
@@ -334,7 +334,7 @@ class XpengVehicleCard extends HTMLElement{
   if(config.prefix&&!/^[a-z0-9_]+$/.test(config.prefix))throw Error('XPENG prefix must be a slug');
   if(config.image_path&&!/^\/(?:local|hacsfiles)\/[a-zA-Z0-9/_-]+\/?$/.test(config.image_path))throw Error('Invalid local image_path');
   if(config.background_image&&!xpLocalArtworkPath(config.background_image))throw Error('Invalid local background_image');
-  const v={prefix:'my_xpeng',year:'2026',model:'G6',trim:'core_plus_rwd',color:'arctic_white',interior:'dark_gray',theme:'dark',...config};
+  const v={prefix:'my_xpeng',year:'2026',model:'G6',trim:'core_plus_rwd',color:'graphite_gray',interior:'dark_gray',theme:'dark',...config};
   this._config=xpNormalizeAppearance(v);this._infoOpen=false;this._tireOpen=false;this.render();
  }
  set hass(hass){
@@ -346,7 +346,7 @@ class XpengVehicleCard extends HTMLElement{
  get hass(){return this._hass;}
  getCardSize(){return 8;}
  static getConfigElement(){return document.createElement('xpeng-vehicle-card-editor');}
- static getStubConfig(){return {type:'custom:xpeng-vehicle-card',prefix:'my_xpeng',model:'G6',year:'2026',trim:'core_plus_rwd',color:'arctic_white',interior:'dark_gray'};}
+ static getStubConfig(){return {type:'custom:xpeng-vehicle-card',prefix:'my_xpeng',model:'G6',year:'2026',trim:'core_plus_rwd',color:'graphite_gray',interior:'dark_gray'};}
  vehicles(){return Array.isArray(this._config.vehicles)&&this._config.vehicles.length?this._config.vehicles:[this._config];}
  vehicle(){return this.vehicles()[Math.min(this._vehicleIndex,this.vehicles().length-1)];}
  prefix(){return this.vehicle()?.prefix||this._config.prefix||'my_xpeng';}
@@ -687,14 +687,14 @@ class XpengVehicleCardEditor extends HTMLElement{
    .xp-map-row input{font-size:12px}
    @media(max-width:460px){.xp-map-row{grid-template-columns:1fr}}
    </style><section>
-    <h3>Vehicle appearance (manual settings)</h3><p>The car always displays one highest-available-trim image for the selected model. Only exterior paint changes that image. Model year filters trim names; trim is information only.</p>
+    <h3>Vehicle appearance</h3><p>G6 · Graphite Gray. Model and year are fixed for the artwork library.</p>
      
-    ${select('model','Model',XP_MODELS.map(m=>({id:m.id,label:m.name})))}
-    ${select('year','Model year (trim names only)',xpAllowedYears(v.model).map(y=>({id:y,label:y})))}
-    ${select('trim','Trim (informational only)',xpAllowedTrims(v.model,v.year))}
-    ${select('color','Exterior paint',xpAllowedPaints(v.model,v.year,v.trim))}
+    
+    
+    
+    
      ${select('interior','Interior finish',xpAllowedInteriors(v.model,v.year,v.trim))}
-     <p>These exterior/interior colours are model-wide visual previews; historical factory paint availability has not been verified.</p>
+     <p>Additional model and paint artwork will be added after approval.</p>
     <h3>Sensor mapping</h3>
      <label>Mapping mode<select data-key="sensor_mapping_mode">
        <option value="auto" ${mappingMode==='auto'?'selected':''}>Automatic · XPENG integration</option>
