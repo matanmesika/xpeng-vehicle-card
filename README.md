@@ -14,9 +14,9 @@ A standalone, **read-only Home Assistant dashboard card** for XPENG vehicles. Th
 - The top-right header has **one Wi-Fi button** (no separate connection text or info icon) on desktop and mobile. Its colour indicates the mapped connection state, without assuming a connection when the sensor is missing. Tap the Wi-Fi icon to open a popup with only **Connection** and **Last vehicle update** from mapped Home Assistant sensors. The date/time is shown explicitly when supplied by the vehicle-update sensor; a Home Assistant entity's generic `last_updated` metadata is not treated as a vehicle refresh. Tap the same icon to close. No cabin, model, paint or artwork metadata in the popup.
 - No hardcoded SOC, range, TPMS, charging data, location or update times. Missing values are displayed as unavailable/—.
 
-## Artwork storage policy: model → year → exterior paint
+## Artwork storage policy: model → year group → exterior paint
 
-Vehicle artwork files use one canonical hierarchy: `assets/vehicles/{model}/{year}/{color}/{front,charging,top}.webp`. There is **no trim folder** in the artwork path. Trim may remain informational in configuration, but it never selects a different image file.
+`vehicle-catalog.json` is the canonical appearance catalog. Trim is display-only and does not select artwork.\n\nVehicle artwork files use one canonical hierarchy: `assets/vehicles/{model}/{year}/{color}/{front,charging,top}.webp`. There is **no trim folder** in the artwork path. Trim may remain informational in configuration, but it never selects a different image file.
 
 - **Model** changes vehicle artwork and its available selections.
 - **Exterior colour** changes the vehicle artwork (and any colour-matched preview).
