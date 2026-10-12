@@ -207,7 +207,7 @@ test('both dashboard views share one clean atmospheric backdrop without embedded
   const card=setup(data());
   let html=card.shadowRoot.innerHTML;
   assert.match(html,/class="xp-night-photo"/);
-  assert.match(html,/night-mountain-scene\.svg/);
+  assert.match(html,/xpeng-reference-background\.webp/);
   assert.doesNotMatch(html,/<svg class="xp-sky"/);
   assert.equal((html.match(/xp-night-photo/g)||[]).length>=1,true);
   const state=data();
@@ -215,9 +215,9 @@ test('both dashboard views share one clean atmospheric backdrop without embedded
   card.hass={states:state};
   html=card.shadowRoot.innerHTML;
   assert.match(html,/class="xp-night-photo"/);
-  assert.match(html,/night-mountain-scene\.svg/);
+  assert.match(html,/xpeng-reference-background\.webp/);
   assert.match(html,/Charging now/);
-  assert.doesNotMatch(html,/class="xp-ground"/);
+  assert.doesNotMatch(html,/class="xp-ground"|class="xp-night-floor-glow"/);
 });
 
 test('the alpha-cutout G6 preview has no studio mask or visible artwork watermark',()=>{
