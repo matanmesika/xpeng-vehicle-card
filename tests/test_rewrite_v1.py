@@ -207,6 +207,20 @@ with sync_playwright() as p:
             card.hass={states};
         }""",BASE)
 
+        # TPMS is an in-card detail panel, not another dashboard page.
+        # The actual browser must show independent FL/FR/RL/RR live readings.
+        page.evaluate("states => document.querySelector('xpeng-vehicle-card').hass={states}",BASE)
+        tire_button=host.locator('[data-tire-toggle]').first
+        tire_button.click()
+        tires=host.locator('.xp-tire-popover')
+        assert tires.is_visible()
+        for k in ('tire_fl','tire_fr','tire_rl','tire_rr'):
+            assert tires.locator('[data-wheel="'+k+'"]').count()==1
+        assert '2.5 bar' in tires.inner_text()
+        host.screenshot(path=str(OUT / f'{tag}-tires-DEMO.png'))
+        tires.locator('button[data-tire-toggle]').click()
+        assert host.locator('.xp-tire-popover').count()==0
+
         # Missing data stays unavailable: zero and screenshot demo values are never substituted.
         page.evaluate("states => document.querySelector('xpeng-vehicle-card').hass = {states}", {
             'binary_sensor.my_xpeng_is_charging': sensor('on'),
@@ -233,6 +247,7 @@ with sync_playwright() as p:
         }""")
         editor = page.locator('xpeng-vehicle-card-editor')
         assert editor.locator('[data-key="color"]').count() == 1
+        assert editor.locator('[data-key="shape_family"]').count() == 1
         assert editor.locator('[data-key="interior"]').count() == 1
         assert editor.locator('[data-entity="soc"]').count() == 1
         assert editor.locator('[data-entity="charging"]').count() == 1
