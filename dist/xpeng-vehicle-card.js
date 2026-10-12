@@ -361,9 +361,9 @@ class XpengVehicleCard extends HTMLElement{
     const family='models/'+model+'-'+olderAlias+'.webp';
     if(XP_ARTWORK_INDEX.family.has(family))
       return {src:base+'/'+family,illustrative:true,studio:false,tier:'model-family',
-        description:a.model+' family illustration in '+a.color+'; exact '+a.year+' '+a.trim+' artwork unavailable'};
+        description:'Generic model-family illustration: '+a.model+' in '+a.color+'; exact '+a.year+' '+a.trim+' artwork unavailable'};
     return {src:this.placeholderArt(),illustrative:true,studio:false,tier:'silhouette',
-      description:'Illustrative '+a.model+' '+a.year+' '+a.color+' silhouette; dedicated render unavailable'};
+      description:'Illustrative Coloured silhouette: '+a.model+' '+a.year+' '+a.color+'; exact artwork pending'};
   }
   asset(){return this.assetSpec().src;}
   placeholderArt(){
