@@ -1,0 +1,137 @@
+{
+  "schema_version": 1,
+  "updated": "2026-10-12",
+  "purpose": "Free, genuinely photographed/manufacturer-provided XPENG G6 2025-refresh references for future front/rear/overhead transparent car images. No new car images are included in alpha.6.",
+  "policy": "Do not copy or hotlink the official car asset into the public HACS distribution until license allows redistribution. Wikimedia CC BY-SA images may be adapted with attribution/license terms and derivative notices. No AI artwork should be presented as a genuine XPENG photo.",
+  "required_angles": [
+    "front_three_quarter",
+    "rear_three_quarter",
+    "true_overhead"
+  ],
+  "status": "sources_identified_not_packaged",
+  "source_candidates": [
+    {
+      "key": "official_configurator_white_front",
+      "angle": "front_three_quarter",
+      "model": "G6 facelift",
+      "year_scope": "2025/2026",
+      "paint": "arctic_white",
+      "trim": "core_rwd_18_not_highest_trim",
+      "kind": "manufacturer_configurator_render",
+      "url": "https://heyxpeng.co.il/wp-content/uploads/2025/11/g6-core-rwd-18-white.png",
+      "reference_page": "https://heyxpeng.co.il/g6/configurator/",
+      "license": "manufacturer copyright, redistribution not verified",
+      "transparency": "likely, must inspect PNG alpha bytes",
+      "usable_as_public_HACS_asset": false,
+      "status": "reference_only_requires_license_and_exact_trim"
+    },
+    {
+      "key": "xpeng_press_library",
+      "angle": "front_and_rear_three_quarter",
+      "model": "G6",
+      "year_scope": "2025 refresh assets mixed, check each filename",
+      "paint": "various",
+      "trim": "not_verified",
+      "kind": "manufacturer_press_photographs",
+      "url": "https://xpeng-newsroom.pr.co/de-DE/assets/236408/",
+      "license": "press materials, GitHub redistribution not yet authorized",
+      "transparency": "usually JPEG; background removal required",
+      "usable_as_public_HACS_asset": false,
+      "status": "download_available_license_pending"
+    },
+    {
+      "key": "commons_2025_facelift_front",
+      "angle": "front_three_quarter",
+      "model": "G6 facelift 2025",
+      "year_scope": "2025+",
+      "paint": "purple_original_photo",
+      "trim": "unknown",
+      "kind": "real_photograph",
+      "url": "https://commons.wikimedia.org/wiki/File:XPeng_G6_(2025)_IAA_2025_DSC_2057.jpg",
+      "photographer": "Alexander-93",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "source_dimensions": "4999x3341",
+      "transparency": "no, JPEG",
+      "usable_as_public_HACS_asset": true,
+      "status": "licensed_candidate_needs_clean_cutout_credit_and_visual_review"
+    },
+    {
+      "key": "commons_2025_facelift_silver_rear",
+      "angle": "rear_three_quarter",
+      "model": "G6 facelift 2025",
+      "year_scope": "2025+",
+      "paint": "silver",
+      "trim": "unknown",
+      "kind": "real_photograph",
+      "url": "https://commons.wikimedia.org/wiki/File:XPeng_G6_(2025)_IAA_2025_DSC_1802.jpg",
+      "photographer": "Alexander-93",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "source_dimensions": "5128x2969",
+      "transparency": "no, JPEG",
+      "usable_as_public_HACS_asset": true,
+      "status": "licensed_candidate_needs_clean_cutout_credit_and_visual_review"
+    },
+    {
+      "key": "commons_performance_black_ed",
+      "angle": "unverified_view",
+      "model": "G6 facelift 2025",
+      "year_scope": "2025+",
+      "paint": "black",
+      "trim": "AWD Performance Black Edition",
+      "kind": "real_photograph",
+      "url": "https://commons.wikimedia.org/wiki/File:2025_Xpeng_G6_AWD_Performance_Black_Edition.jpg",
+      "photographer": "Chanokchon",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "source_dimensions": "4608x3456",
+      "transparency": "no, JPEG",
+      "usable_as_public_HACS_asset": true,
+      "status": "licensed_candidate_needs_angle_cutout_credit_and_visual_review"
+    },
+    {
+      "key": "commons_2025_facelift_gallery",
+      "angle": "mixed",
+      "model": "G6 facelift 2025",
+      "year_scope": "2025+",
+      "paint": "various",
+      "trim": "mixed",
+      "kind": "real_photograph_collection",
+      "url": "https://commons.wikimedia.org/wiki/Category:XPeng_G6_(2025)",
+      "license": "per photo, verify before use",
+      "transparency": "no in known samples",
+      "usable_as_public_HACS_asset": false,
+      "status": "source_discovery_only"
+    }
+  ],
+  "missing": [
+    {
+      "angle": "rear_three_quarter",
+      "paint": "arctic_white",
+      "trim": "high_trim",
+      "status": "no verified transparent precise image yet"
+    },
+    {
+      "angle": "true_overhead",
+      "paint": "any",
+      "trim": "highest_trim",
+      "status": "no genuine overhead G6 2025/2026 image verified"
+    },
+    {
+      "angle": "front_three_quarter",
+      "paint": "each approved paint",
+      "trim": "highest_trim",
+      "status": "needs each native paint and license"
+    }
+  ],
+  "public_asset_requirements": [
+    "manufacturer-correct G6 facelift shape for chosen generation",
+    "real or authentic source, not AI-pseudo-vehicle",
+    "genuine chosen exterior paint; preserve source color",
+    "transparent RGBA WebP or PNG",
+    "matching composition across front/rear/top views",
+    "unmodified approved scene background",
+    "readable license/provenance notes and required attribution for any CC BY-SA derivative"
+  ]
+}
