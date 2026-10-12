@@ -238,3 +238,38 @@ test('a charging/rear image is selected by charging state without ever changing 
  assert.equal(editor._cfg.image,undefined);
  assert.equal(editor._cfg.charging_image,undefined);
 });
+
+test('multi-vehicle profiles never inherit a different cars exterior or interior image',()=>{
+ const card=new Card();
+ card.setConfig({
+   prefix:'my_xpeng',
+   model:'G6',year:'2026',trim:'core_plus_rwd',color:'arctic_white',
+   image:'/local/root-image.webp',
+   interior_image:'/local/root-cabin.webp',
+   charging_image:'/local/root-rear.webp',
+   vehicles:[
+     {model:'G6',year:'2026',trim:'core_plus_rwd',color:'arctic_white',
+       interior:'light_gray',image:'/local/g6-front.webp',
+       interior_image:'/local/g6-cabin.webp',charging_image:'/local/g6-rear.webp'},
+     {model:'G9',year:'2026',trim:'long_range_rwd',color:'graphite_gray',
+       interior:'coffee'}
+   ]
+ });
+ const sharedBackground=card.sceneBackdrop();
+ assert.equal(card.assetSpec().src,'/local/g6-front.webp');
+ assert.match(card.interiorPreview(),/g6-cabin.webp/);
+ card._vehicleIndex=1;
+ card.render();
+ const g9=card.assetSpec();
+ assert.equal(g9.tier,'model-year-trim');
+ assert.ok(g9.src.endsWith('/vehicles/g9/2026/long_range_rwd/graphite_gray.webp'),g9.src);
+ assert.doesNotMatch(card.interiorPreview(),/g6-cabin|root-cabin/);
+ assert.match(card.interiorPreview(),/coffee/i);
+ card.hass={states:{'binary_sensor.my_xpeng_is_charging':{state:'on'}}};
+ const g9Charging=card.assetSpec();
+ assert.equal(g9Charging.src,g9.src,'do not inherit G6 rear/charging artwork');
+ assert.equal(card.sceneBackdrop(),sharedBackground);
+ card._vehicleIndex=0;
+ card.render();
+ assert.equal(card.assetSpec().src,'/local/g6-rear.webp');
+});
