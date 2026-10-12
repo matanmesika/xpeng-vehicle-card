@@ -308,6 +308,11 @@ test('overview and charging must render the exact same raster background and geo
  };
  const b1=normalize(before);
  assert.match(b1,/xpeng-reference-background\.webp/);
+ assert.match(b1,/\/hacsfiles\/xpeng-vehicle-card\/assets\/xpeng-reference-background\.webp/);
+ // Vehicle-specific custom art does not move or replace the dashboard background.
+ card.setConfig({prefix:'my_xpeng',model:'G6',year:'2026',image_path:'/local/custom-vehicle-art'});
+ card.hass={states};
+ assert.equal(b1,normalize(card.shadowRoot.innerHTML));
  assert.doesNotMatch(before,/<svg class="xp-sky"/);
  assert.equal((before.match(/<div class="xp-night-photo"/g)||[]).length,1);
  states['binary_sensor.my_xpeng_is_charging'].state='on';
