@@ -44,9 +44,9 @@ jobs:
           from pathlib import Path
           files = [
               "assets/xpeng-approved-lakeside-background.webp",
-              "assets/vehicles/g6/2026/core_performance_awd/front.webp",
-              "assets/vehicles/g6/2026/core_performance_awd/charging.webp",
-              "assets/vehicles/g6/2026/core_performance_awd/top.webp",
+              "assets/vehicles/g6/2026/graphite_gray/front.webp",
+              "assets/vehicles/g6/2026/graphite_gray/charging.webp",
+              "assets/vehicles/g6/2026/graphite_gray/top.webp",
           ]
           for name in files:
               p = Path(name)
