@@ -1,5 +1,14 @@
 # XPENG Dashboard changelog
 
+## v1.0.0-beta.2 — model/year/color artwork hierarchy (2026-10-12)
+
+- Standardize vehicle artwork paths as `assets/vehicles/{model}/{year}/{color}/{front,charging,top}.webp`.
+- Remove trim from the artwork filesystem hierarchy and runtime image lookup.
+- Move the current G6 Graphite Gray assets to `assets/vehicles/g6/2026/graphite_gray/`.
+- Keep the approved lakeside dashboard background unchanged.
+- Keep `src` and `dist` synchronized and retain normal image compositing without the temporary multiply blend.
+- Prepare a dedicated beta prerelease workflow for this version.
+
 ## v1.0.0-beta.1 — initial beta candidate (2026-10-12)
 
 - Artwork hierarchy corrected to `assets/vehicles/{model}/{year}/{color}/...`; removed trim from vehicle-image paths and moved the G6 Graphite Gray set to `assets/vehicles/g6/2026/graphite_gray/`.
