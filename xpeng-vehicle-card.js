@@ -293,7 +293,6 @@ class XpengVehicleCard extends HTMLElement{
     },true);
    this.shadowRoot.addEventListener('click',ev=>{
     const b=ev.target.closest('button');if(!b)return;
-    if(b.hasAttribute('data-expand')){this.toggleFullScreen();return;}
      if(b.hasAttribute('data-meta-toggle')){this._infoOpen=!this._infoOpen;this.render();return;}
     if(b.hasAttribute('data-cycle')){this._vehicleIndex=(this._vehicleIndex+1)%this.vehicles().length;this.render();}
   });
@@ -423,7 +422,6 @@ class XpengVehicleCard extends HTMLElement{
    const connected=['connected','online'].includes(conn);
    return `<header class="xp-header"><div class="xp-brand"><span class="xp-x-mark">✕</span><span>XPENG</span></div>
      <div class="xp-header-right"><span class="xp-wifi ${connected?'xp-connected':''}" aria-label="${xpEsc(xpConnText(this.val('connection')))}"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M2 8c5.7-5.6 14.3-5.6 20 0M5 12c4-3.6 10-3.6 14 0M9 16c1.8-1.4 4.2-1.4 6 0"/><circle cx="12" cy="20" r="1.3" fill="currentColor" stroke="none"/></svg></span>
-     <button class="xp-head-button" type="button" data-expand aria-label="${this._expanded?'Exit full screen':'Full screen'}">${this._expanded?'✕':'⛶'}</button>
      </div></header>`;
  }
  progress(){
