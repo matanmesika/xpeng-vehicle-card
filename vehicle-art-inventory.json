@@ -1,11 +1,16 @@
 {
   "schema_version": 1,
-  "description": "Approved G6 Graphite Gray artwork is pending upload; no vehicle artwork is advertised as installed.",
-  "exact": [],
+  "description": "Approved G6 2026 Core Performance AWD three-view artwork available via remote GitHub URLs.",
+  "exact": [
+    "vehicles/g6/graphite_gray/front.webp",
+    "vehicles/g6/graphite_gray/charging.webp",
+    "vehicles/g6/graphite_gray/top.webp"
+  ],
   "model_family": [],
   "backdrop": "xpeng-approved-lakeside-background.webp",
   "backdrop_is_common": true,
   "caveats": [
-    "G6 front, charging, and top assets must be uploaded to assets and packaged for HACS before enabling artwork."
+    "Images are fetched from GitHub at runtime, not bundled with HACS; internet is required.",
+    "White-backed source images use CSS multiply blend, not true transparency."
   ]
 }
