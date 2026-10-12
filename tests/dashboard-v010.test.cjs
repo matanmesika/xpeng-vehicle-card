@@ -334,3 +334,18 @@ test('XPENG wordmark remains visible in both screen modes',()=>{
  card.hass={states};
  assert.match(card.shadowRoot.innerHTML,/class="xp-brand"/);
 });
+
+test('bundled scenic background is the exact approved 1536x864 WebP upload',()=>{
+ const crypto=require('node:crypto');
+ const file=path.resolve(__dirname,'../dist/assets/xpeng-reference-background.webp');
+ const background=fs.readFileSync(file);
+ assert.equal(background.byteLength,50018);
+ assert.equal(crypto.createHash('sha256').update(background).digest('hex'),'5f6ea56528b84b7e25bb94cf1395a27e1338dccbe3e3e9dde537e7ce634af9de');
+ const {width,height}=(()=> {
+    // WebP VP8 lossy frame stores 14-bit dimensions in the frame header.
+    const off=background.indexOf(Buffer.from([0x9d,0x01,0x2a]));
+    assert.ok(off>0,'Missing WebP VP8 frame');
+    return {width:background.readUInt16LE(off+3)&0x3fff,height:background.readUInt16LE(off+5)&0x3fff};
+ })();
+ assert.equal(width,1536); assert.equal(height,864);
+});
