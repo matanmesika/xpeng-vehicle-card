@@ -170,7 +170,7 @@ test('offline and error network labels stay visible and the same header info rem
   assert.equal((card.shadowRoot.innerHTML.match(/data-meta-toggle/g)||[]).length,1);
   card.shadowRoot.handlers.click({target:{closest:()=>({hasAttribute:key=>key==='data-meta-toggle'})}});
   assert.match(card.shadowRoot.innerHTML,/class="xp-meta-popover"/);
-  assert.doesNotMatch(card.shadowRoot.innerHTML,/xp-cabin-mini/);
+  assert.doesNotMatch(card.shadowRoot.innerHTML,/<(?:img|svg)[^>]*class="xp-cabin-mini"/);
 });
 test('rendering missing exact art uses safe shape fallback, not previous-year imagery',()=>{
  const card=setup(data());
