@@ -47,7 +47,7 @@ grid_options:
 
 Choose **Edit dashboard → Edit card** to select model, year, informational trim, paint and cabin finish. All appearance selectors stay **in the card editor**, never on the dashboard. The entire old **Data source** / picture-URL section was removed: car/charging/overhead/background image URLs, asset directories and the automatic prefix are no longer editable controls. Images are sourced from the packaged dashboard assets; old custom YAML paths remain supported for compatibility, but they are not shown in the visual editor. This is a read-only view; it neither authenticates with XPENG nor issues vehicle commands.
 
-### Manual sensor mapping and live Home Assistant sensors
+### Sensor mapping — Automatic or Manual
 
 The editor now has one **Sensor mapping** dropdown: **Automatic · XPENG integration** (default) or **Manual · choose sensors**. Automatic hides all 15 individual sensor fields and uses the integration's conventional Home Assistant entity names under the configured `prefix` (default `my_xpeng`, retained from YAML). Selecting Manual opens **all 15 sensor fields at once** with searchable Home Assistant entity suggestions. Each field can use any integration/entity, including `entity_id|attribute_name`; leaving a field empty falls back to its automatic lookup. Switching back to Automatic hides the fields and ignores stored manual choices without deleting them. Existing configurations with `entities:` and no mapping mode are treated as Manual for backward compatibility.
 
