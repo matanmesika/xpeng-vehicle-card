@@ -4,6 +4,9 @@ on:
     branches: [feature/hacs-bundled-approved-scene-alpha4]
     paths:
       - .github/workflows/publish-dashboard-alpha4.yml
+      - tests/dashboard-v010.test.cjs
+      - tests/all-profiles.test.cjs
+      - tests/test_rewrite_v1.py
   workflow_dispatch:
 
 permissions:
