@@ -143,8 +143,6 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-head-button svg{width:24px;height:24px}
 .xp-wifi{color:#7088a0;display:flex;align-items:center}
 .xp-wifi.xp-connected{color:#66a9ff}
-.xp-head-separator{height:22px;border-left:1px solid #41506c}
-.xp-clock{font-variant-numeric:tabular-nums;font-weight:500}
 .xp-version{position:absolute;bottom:10px;right:12px;font-size:10px;color:#8399b6;opacity:.52;z-index:8}
 .xp-updated{position:absolute;z-index:4;right:5%;top:15%;text-align:right;color:#9cacca;font-size:clamp(11px,1vw,16px);line-height:1.45}
 .xp-updated strong{display:block;font-weight:400;color:#b4c5e1}
@@ -266,7 +264,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 `;
 class XpengVehicleCard extends HTMLElement{
  constructor(){
-  super();this.attachShadow({mode:'open'});this._config={};this._hass=null;this._view='overview';this._lastCharging=undefined;this._expanded=false;this._vehicleIndex=0;this._infoOpen=false;
+  super();this.attachShadow({mode:'open'});this._config={};this._hass=null;this._view='overview';this._expanded=false;this._vehicleIndex=0;this._infoOpen=false;
   this.shadowRoot.addEventListener('error',ev=>{
       const img=ev.target;
       if(!img?.matches?.('img[data-car-art]')||img.dataset.fallbackUsed)return;
@@ -276,8 +274,7 @@ class XpengVehicleCard extends HTMLElement{
     const b=ev.target.closest('button');if(!b)return;
     if(b.hasAttribute('data-expand')){this.toggleFullScreen();return;}
      if(b.hasAttribute('data-meta-toggle')){this._infoOpen=!this._infoOpen;this.render();return;}
-    if(b.dataset.view){this._view=b.dataset.view;this.render();return;}
-    if(b.hasAttribute('data-cycle')){this._vehicleIndex=(this._vehicleIndex+1)%this.vehicles().length;this._lastCharging=undefined;this.render();}
+    if(b.hasAttribute('data-cycle')){this._vehicleIndex=(this._vehicleIndex+1)%this.vehicles().length;this.render();}
   });
  }
  connectedCallback(){if(!this._fullscreenHandler){this._fullscreenHandler=()=>{if(!document.fullscreenElement&&this._expanded){this._expanded=false;this.render();}};}document.addEventListener('fullscreenchange',this._fullscreenHandler);}
@@ -292,8 +289,7 @@ class XpengVehicleCard extends HTMLElement{
  }
  set hass(hass){
   this._hass=hass;
-  const charging=this.bool('charging')===true;
-  if(this._lastCharging===undefined||this._lastCharging!==charging){this._view=charging?'charging':'overview';this._lastCharging=charging;}
+  this._view=this.bool('charging')===true?'charging':'overview';
   this.render();
  }
  get hass(){return this._hass;}
@@ -396,14 +392,12 @@ class XpengVehicleCard extends HTMLElement{
       <div class="xp-night-floor-glow" aria-hidden="true"></div>`;
   }
  header(){
-   const now=new Date().toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});
    const conn=String(this.val('connection')||'').toLowerCase();
    const connected=['connected','online'].includes(conn);
    return `<header class="xp-header"><div class="xp-brand"><span class="xp-x-mark">✕</span><span>XPENG</span></div>
      <div class="xp-header-right"><span class="xp-wifi ${connected?'xp-connected':''}" aria-label="${xpEsc(xpConnText(this.val('connection')))}"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M2 8c5.7-5.6 14.3-5.6 20 0M5 12c4-3.6 10-3.6 14 0M9 16c1.8-1.4 4.2-1.4 6 0"/><circle cx="12" cy="20" r="1.3" fill="currentColor" stroke="none"/></svg></span>
-     <button class="xp-head-button" type="button" data-view="overview" aria-label="Vehicle overview">${xpIcon('home',23)}</button>
      <button class="xp-head-button" type="button" data-expand aria-label="${this._expanded?'Exit full screen':'Full screen'}">${this._expanded?'✕':'⛶'}</button>
-     <span class="xp-head-separator"></span><span class="xp-clock">${xpEsc(now)}</span></div></header>`;
+     </div></header>`;
  }
  progress(){
    const soc=xpPercent(this.val('soc'));
@@ -483,7 +477,10 @@ class XpengVehicleCard extends HTMLElement{
  render(){
   if(!this.shadowRoot)return;
   this.toggleAttribute('data-expanded',this._expanded);
-  const isCharging=this._view==='charging';
+  // The charging entity is the single source of truth for choosing the screen.
+  // Only an explicit 'on' shows Charging. 'off', unknown and unavailable show Overview.
+  const isCharging=this.bool('charging')===true;
+  this._view=isCharging?'charging':'overview';
   this.shadowRoot.innerHTML=`<style>${XP_CSS}</style><ha-card><div class="xp-scene ${isCharging?'xp-charge':'xp-overview'}">
    ${this.sceneBackdrop()}${this.header()}${isCharging?this.charging():this.overview()}
    
