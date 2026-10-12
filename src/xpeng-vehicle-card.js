@@ -145,8 +145,7 @@ function xpNormalizeAppearance(value){const v=value||{};
 function xpAssetModel(model){return String(model).toLowerCase().replace(/\s+/g,'_').replace(/\+/g,'_plus').replace(/[^a-z0-9_]/g,'');}
 // Build-time inventory: each entry corresponds to an existing packaged file.
 const XP_ARTWORK_INDEX = Object.freeze({
-  exact:new Set(), // Three-view assets are not packaged yet; do not advertise missing files.
-  family:new Set()
+  exact:new Set() // Approved images are pending; no unverified paths are advertised.
 });
 const XP_SCENE_BACKGROUND = 'xpeng-approved-lakeside-background.webp';
 // HACS installs files directly under dist/; nested folders are not reliably copied.
@@ -391,22 +390,6 @@ class XpengVehicleCard extends HTMLElement{
     if(XP_ARTWORK_INDEX.exact.has(candidate))
       return {src:bundled(candidate),illustrative:false,studio:false,tier:'exact-view',view,
         view_status:'matching_view',description:'Matched '+a.model+' '+a.year+' '+a.color+' '+view};
-    // Display uses one representative trim per model/year, regardless of selected trim.
-    // Legacy 2026 previews are used only for 2026, never for other model years.
-    const highest={G6:'core_performance_awd',G9:'performance_awd'}[a.model];
-    if(highest&&String(a.year)==='2026'){
-      const exact='vehicles/'+model+'/2026/'+highest+'/'+a.color+'.webp';
-      if(XP_ARTWORK_INDEX.exact.has(exact))
-        return {src:bundled(exact),illustrative:true,studio:false,tier:'highest-trim-preview',view,
-          view_status:view==='rear'?'front_fallback_rear_pending':'highest_available_preview',
-          description:'Representative '+a.model+' 2026 preview in '+a.color+' for all selected trims; not manufacturer verified'};
-    }
-    const alias={graphite_gray:'space_grey',midnight_black:'jet_black'}[a.color]||a.color;
-    const family='models/'+model+'-'+alias+'.webp';
-    if(XP_ARTWORK_INDEX.family.has(family))
-      return {src:bundled(family),illustrative:true,studio:false,tier:'model-family',view,
-        view_status:view==='rear'?'front_fallback_rear_pending':'generic_model_illustration',
-        description:'Shared model+paint illustration; no verified high-trim transparent cutout yet'};
     return {src:this.placeholderArt(),illustrative:true,studio:false,tier:'silhouette',view,
       view_status:'image_pending',description:'Transparent model+paint preview pending for '+a.model+' '+a.color};
   }
