@@ -1,6 +1,6 @@
 # XPENG Dashboard — Approved Design Lock
 
-> **DESIGN DIRECTION FROZEN — NOT YET RELEASED.** Do not invent another layout or vehicle scene. The **latest user-favoured reference image** must be explicitly confirmed and separated into production assets before final visual signoff. This is a frontend-only repository.
+> **VISUAL DESIGN FROZEN — NOT YET IMPLEMENTED OR RELEASED.** The one user-approved 1536×864 screenshot is documented in [VISUAL_REFERENCE_G6_2026.md](VISUAL_REFERENCE_G6_2026.md) by original JPEG file name and SHA-256. That screenshot is the binding acceptance target; never swap it for an AI-generated mockup. This is a frontend-only repository.
 
 ## Approved visual baseline
 
