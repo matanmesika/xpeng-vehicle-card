@@ -33,4 +33,10 @@ print('TRANSPARENT:',len(transparent),'OPAQUE:',len(opaque),'INVALID:',len(inval
 for category,items in [('opaque',opaque),('invalid',invalid)]:
     for item in items[:200]:print(category,item)
 assert not invalid,'Corrupt or unreadable vehicle preview'
-assert len(transparent)+len(opaque)==len(MAN['exact'])+len(MAN['model_family'])
+assert not opaque,'Packaged vehicle photos MUST be transparent cutouts rather than opaque studio rectangles'
+assert len(transparent)==len(MAN['exact'])+len(MAN['model_family'])
+for relative in MAN['exact']+MAN['model_family']:
+    root=ROOT/'assets'/relative
+    dist=ROOT/'dist/assets'/relative
+    assert root.read_bytes()==dist.read_bytes(), f'Frontend assets/HACS assets differ: {relative}'
+print('PASS:',len(transparent),'real alpha car overlays, all asset copies identical')
