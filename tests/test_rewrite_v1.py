@@ -84,23 +84,19 @@ with sync_playwright() as p:
             const image = document.querySelector('xpeng-vehicle-card').shadowRoot.querySelector('.xp-car');
             return image && image.complete && image.naturalWidth >= 350;
         }""")
-        # A studio image with an opaque rectangular backdrop is a visual
-        # regression, even if the file exists and renders. Verify actual
-        # decoded WebP transparency in Chromium, not just its filename.
+        # Decode the packaged asset locally. Canvas pixel reads from a
+        # cross-origin image are blocked by browser security (CORS), even
+        # when the image renders correctly in the card.
         if tag == 'desktop':
-            matte = host.evaluate("""node => {
-                const image = node.shadowRoot.querySelector('.xp-car');
-                const canvas = document.createElement('canvas');
-                canvas.width=image.naturalWidth; canvas.height=image.naturalHeight;
-                const ctx=canvas.getContext('2d',{willReadFrequently:true});
-                ctx.drawImage(image,0,0);
-                const alpha=(x,y)=>ctx.getImageData(x,y,1,1).data[3];
-                const w=canvas.width,h=canvas.height;
-                return {corners:[alpha(0,0),alpha(w-1,0),alpha(0,h-1),alpha(w-1,h-1)],
-                        center:alpha(Math.floor(w/2),Math.floor(h/2))};
-            }""")
-            assert max(matte['corners']) == 0, f'OPAQUE STUDIO RECTANGLE: {matte}'
-            assert matte['center'] > 200, f'CAR ART EMPTY/UNREADABLE: {matte}'
+            from PIL import Image
+            with Image.open(EXPECTED_ART) as art:
+                rgba = art.convert('RGBA')
+                w, h = rgba.size
+                corners = [rgba.getpixel(pos)[3] for pos in
+                           [(0, 0), (w - 1, 0), (0, h - 1), (w - 1, h - 1)]]
+                center = rgba.getpixel((w // 2, h // 2))[3]
+            assert max(corners) == 0, f'OPAQUE STUDIO RECTANGLE: {corners}'
+            assert center > 200, f'CAR ART EMPTY/UNREADABLE: {center}'
         page.screenshot(path=str(OUT / f'{tag}-overview-UNAVAILABLE.png'), full_page=True)
 
         # Only the overview: no buttons to enter old detailed control pages.
