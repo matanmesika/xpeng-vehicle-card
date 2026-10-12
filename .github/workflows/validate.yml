@@ -13,8 +13,8 @@ jobs:
       - name: Verify frontend bundle and documented manual configuration
         run: |
           test -s dist/xpeng-vehicle-card.js
-          grep -Fq 'Manual sensor mapping' dist/xpeng-vehicle-card.js
-          grep -Fq 'Manual sensor mapping' README.md
+          grep -Fq 'Sensor mapping' dist/xpeng-vehicle-card.js
+          grep -Fq 'Sensor mapping' README.md
       - uses: hacs/action@main
         with:
           category: plugin

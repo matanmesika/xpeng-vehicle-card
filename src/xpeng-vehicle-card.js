@@ -110,12 +110,12 @@ function xpAppearanceId(v,kind='color'){
  return XP_ALIASES[k]||k;
 }
 function xpAllowedInteriors(model,year,trim){
- const verified=XP_VERIFIED_INTERIORS[model+':'+String(year)]||['dark_gray','light_gray'];
- if(model==='G6'&&String(year)==='2026'&&trim==='black_edition')return XP_INTERIORS.filter(p=>p.id==='dark_gray');
- return XP_INTERIORS.filter(p=>verified.includes(p.id));
+ const palette=XP_VERIFIED_INTERIORS[model+':2026']||['dark_gray','light_gray'];
+ return XP_INTERIORS.filter(p=>palette.includes(p.id));
 }
-function xpIsVerifiedPalette(model,year){return Boolean(XP_VERIFIED_PAINTS[model+':'+String(year)]);}
+function xpIsVerifiedPalette(model,year){return Boolean(XP_VERIFIED_PAINTS[model+':2026']);}
 function xpAllowedModels(year){const y=Number(year);return XP_MODELS.filter(m=>y>=m.start&&y<=m.end);}
+function xpAllowedYears(model){const m=xpModel(model);return XP_YEARS.filter(y=>Number(y)>=m.start&&Number(y)<=m.end);}
 function xpModel(model){return XP_MODELS.find(m=>m.id===model)||XP_MODELS.find(m=>m.id==='Other');}
 function xpAllowedTrims(model,year){const y=Number(year), x=String(model);
  if(x==='G6')return y===2026?XP_CATALOG.trims['G6:2026']:XP_CATALOG.trims['G6:2023-2025'];
@@ -125,17 +125,22 @@ function xpAllowedTrims(model,year){const y=Number(year), x=String(model);
  return XP_DEFAULT_TRIM;
 }
 function xpAllowedPaints(model,year,trim){
- const list=XP_VERIFIED_PAINTS[model+':'+String(year)]||['arctic_white','graphite_gray','midnight_black','silver_frost','stellar_purple'];
- if(model==='G6'&&String(year)==='2026'&&trim==='black_edition')return XP_PAINTS.filter(p=>p.id==='midnight_black');
+ // Only model determines palette. Neither model-year nor trim may change the visible paint.
+ const list=XP_VERIFIED_PAINTS[model+':2026']||['arctic_white','graphite_gray','midnight_black','silver_frost','stellar_purple'];
  return XP_PAINTS.filter(p=>list.includes(p.id));
 }
-function xpNormalizeAppearance(value){const v=value||{};const yr=XP_YEARS.includes(String(v.year))?String(v.year):'2026';
- const incoming=String(v.model??'').replace(/^XPENG\s+/i,'').trim();const mdl=xpAllowedModels(yr).find(x=>x.id.toLowerCase()===incoming.toLowerCase())?.id||(xpAllowedModels(yr).some(x=>x.id==='G6')?'G6':xpAllowedModels(yr)[0]?.id||'Other');
- const opts=xpAllowedTrims(mdl,yr);const tr=opts.some(x=>x.id===v.trim)?v.trim:opts[0].id;
- const colors=xpAllowedPaints(mdl,yr,tr);const inputColor=xpAppearanceId(v.color);const col=colors.some(x=>x.id===inputColor)?inputColor:colors[0].id;
- const interiors=xpAllowedInteriors(mdl,yr,tr);
- const inputInterior=xpAppearanceId(v.interior,'interior');const interior=interiors.some(x=>x.id===inputInterior)?inputInterior:interiors[0].id;
- return {...v,year:yr,model:mdl,trim:tr,color:col,interior};
+function xpNormalizeAppearance(value){const v=value||{};
+ const incoming=String(v.model??'').replace(/^XPENG\s+/i,'').trim();
+ const mdl=XP_MODELS.find(x=>x.id.toLowerCase()===incoming.toLowerCase())?.id||'G6';
+ const years=xpAllowedYears(mdl);
+ const yr=years.includes(String(v.year))?String(v.year):years[0]||'2026';
+ const options=xpAllowedTrims(mdl,yr);
+ const trim=options.some(x=>x.id===v.trim)?v.trim:options[0].id;
+ const paints=xpAllowedPaints(mdl,yr,trim),requestedPaint=xpAppearanceId(v.color);
+ const color=paints.some(x=>x.id===requestedPaint)?requestedPaint:paints[0].id;
+ const interiors=xpAllowedInteriors(mdl,yr,trim),requestedInterior=xpAppearanceId(v.interior,'interior');
+ const interior=interiors.some(x=>x.id===requestedInterior)?requestedInterior:interiors[0].id;
+ return {...v,year:yr,model:mdl,trim,color,interior};
 }
 
 function xpAssetModel(model){return String(model).toLowerCase().replace(/\s+/g,'_').replace(/\+/g,'_plus').replace(/[^a-z0-9_]/g,'');}
@@ -162,15 +167,12 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-header{position:absolute;z-index:8;top:3.2%;left:4.5%;right:3%;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .xp-brand{display:flex;align-items:center;gap:14px;font-weight:600;letter-spacing:.31em;font-size:clamp(14px,1.4vw,23px);white-space:nowrap}
 .xp-x-mark{font-size:26px;letter-spacing:-.13em;transform:scaleX(1.4)}
-.xp-header-right{display:flex;align-items:center;gap:18px;font-size:clamp(12px,1.2vw,20px)}
-.xp-head-button{display:grid;place-items:center;border:0;background:transparent;padding:6px;color:#fff;border-radius:9px}
-.xp-head-button:hover{background:#ffffff1c}
-.xp-head-button svg{width:24px;height:24px}
-.xp-wifi{color:#7088a0;display:flex;align-items:center}
+.xp-header-right{display:flex;align-items:center;gap:12px;min-width:0;font-size:clamp(12px,1.2vw,20px)}
+.xp-wifi{color:#7088a0;display:flex;align-items:center;gap:7px;white-space:nowrap}
+.xp-wifi svg{flex:none}
+.xp-connection-label{font-size:clamp(11px,1vw,15px);font-weight:550;letter-spacing:0}
+.xp-wifi.xp-disconnected{color:#a8b3c4}
 .xp-wifi.xp-connected{color:#66a9ff}
-.xp-version{position:absolute;bottom:10px;right:12px;font-size:10px;color:#8399b6;opacity:.52;z-index:8}
-.xp-updated{position:absolute;z-index:4;right:5%;top:15%;text-align:right;color:#9cacca;font-size:clamp(11px,1vw,16px);line-height:1.45}
-.xp-updated strong{display:block;font-weight:400;color:#b4c5e1}
 .xp-title{position:absolute;z-index:5;left:5.4%;top:17%;display:flex;flex-direction:column;gap:3px}
 .xp-title h1{font-size:clamp(32px,3.7vw,62px);line-height:1.02;letter-spacing:.035em;font-weight:730;margin:0;white-space:nowrap}
 .xp-title h1 em{font-style:normal;color:#7eaeff}
@@ -218,12 +220,9 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-charge-meta b{font-size:clamp(12px,1.5vw,25px);font-weight:560;white-space:nowrap}
 .xp-charge .xp-car{width:52%;left:41%;bottom:12%;height:auto;max-height:70%;z-index:7}
 .xp-charge .xp-title{left:5.3%;top:17%}
-.xp-charge .xp-updated{right:19%;top:14%}
 .xp-station{position:absolute;z-index:2;right:3%;bottom:30%;width:5.3%;height:23%;min-width:45px;border:2px solid #55c8fb;border-radius:13px 13px 6px 6px;background:linear-gradient(90deg,#013861,#041b32 55%,#0b3150);box-shadow:0 0 18px #00c6ff85,inset 0 0 13px #08cafa74;display:grid;place-items:start center;padding-top:25px;font-size:26px;color:#e1f7ff}
 .xp-station:before{content:"";position:absolute;bottom:-5px;width:110%;height:7px;background:#03d7cf;filter:blur(4px)}
 .xp-cable{position:absolute;z-index:2;inset:0;width:100%;height:100%;pointer-events:none}
-.xp-subtle-link{position:absolute;z-index:8;left:5.4%;bottom:4%;border:1px solid #779cce77;background:#0a2139a1;color:#cfe6fa;border-radius:20px;padding:6px 13px;font-size:12px}
-.xp-subtle-link:hover{background:#1e4361}
 :host([data-expanded]){position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;z-index:2147483100!important;background:#020b15!important;overflow:auto!important}
 :host([data-expanded]) ha-card,:host([data-expanded]) .xp-scene{width:100%!important;height:100dvh!important;min-height:550px!important;aspect-ratio:auto!important}
 @media(max-width:850px){
@@ -234,7 +233,6 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-title{left:5%;top:89px}
 .xp-title h1{font-size:34px}
 .xp-subtitle{font-size:18px}
-.xp-updated{top:155px;right:5%;font-size:11px}
 .xp-car{width:106%;left:-2%;bottom:29%;max-height:48%;object-fit:contain}
 .xp-overview-stat{left:5%;top:220px;width:43%}
 .xp-batt-glyph{height:56px;width:37px;border-width:2px;padding:4px}
@@ -253,7 +251,6 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-info-copy b{font-size:12px;white-space:normal;overflow-wrap:anywhere}
 .xp-status-panel .xp-chevron{display:none}
 .xp-charge .xp-title{left:5%;top:83px}
-.xp-charge .xp-updated{top:165px;right:5%}
 .xp-charge-card{top:225px;left:5%;width:90%;padding:18px}
 .xp-charge-heading{font-size:22px;margin-bottom:15px}
 .xp-charge-card .xp-progress{height:13px}
@@ -266,32 +263,64 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-charge-meta b{font-size:14px}
 .xp-charge .xp-car{width:96%;left:2%;bottom:9%;max-height:36%}
 .xp-station{right:5%;bottom:22%;height:13%;min-width:40px;font-size:16px}
-.xp-subtle-link{bottom:15px;left:5%}
-.xp-version{right:10px;bottom:3px}
 }
-.xp-meta-tools{position:absolute;z-index:25;right:4.4%;top:14%;display:flex;align-items:flex-end;flex-direction:column;gap:8px}
-.xp-meta-trigger{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;border:1px solid #7399c077;background:#03172bba;color:#c9e1fa}
+.xp-meta-tools{position:relative;z-index:25;flex:none;display:flex;align-items:center}
+.xp-meta-trigger{display:grid;place-items:center;width:30px;height:30px;padding:3px;border-radius:50%;border:1px solid #7399c077;background:#03172bba;color:#d6e9ff}
 .xp-meta-trigger:hover,.xp-meta-trigger:focus-visible{background:#194465}
-.xp-meta-popover{width:min(310px,83vw);border:1px solid #6580a388;border-radius:15px;background:#061829f0;padding:16px;box-shadow:0 16px 45px #000b;backdrop-filter:blur(12px)}
-.xp-meta-popover>div:not(.xp-cabin-mini){display:flex;justify-content:space-between;align-items:center;gap:14px;margin:6px 0}
-.xp-meta-popover small{font-size:12px;color:#b1c0d3}
-.xp-meta-popover strong{font-size:12px;text-align:right;max-width:60%;overflow-wrap:anywhere}
-.xp-meta-popover p{font-size:10px;line-height:1.4;color:#94a8bd;margin:6px 0 0}
+.xp-meta-popover{position:absolute;right:0;top:calc(100% + 9px);width:min(275px,82vw);border:1px solid #6580a388;border-radius:12px;background:#061829f3;padding:12px 14px;box-shadow:0 12px 35px #000b;backdrop-filter:blur(12px);display:flex;flex-direction:column;gap:9px}
+.xp-meta-field{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.xp-meta-field+.xp-meta-field{padding-top:9px;border-top:1px solid #7399c044}
+.xp-meta-popover small{font-size:11px;color:#b1c0d3}
+.xp-meta-popover strong{font-size:13px;font-weight:600;color:#f0f7ff;text-align:right;white-space:nowrap}
 .xp-cabin-mini{width:100%;height:auto;max-height:140px;margin-top:10px;display:block}
-.xp-updated{display:none!important}
-@media(max-width:850px){.xp-meta-tools{top:151px;right:5%}.xp-charge .xp-meta-tools{top:158px}}
+@media(max-width:850px){.xp-header-right{gap:8px}.xp-wifi{gap:4px}.xp-connection-label{font-size:11px}.xp-meta-trigger{width:28px;height:28px;padding:2px}.xp-meta-popover{top:calc(100% + 8px)}}
 .xp-car,.xp-car.xp-paint-silver_frost,.xp-car.xp-paint-space_grey,.xp-car.xp-paint-jet_black,.xp-car.xp-paint-stellar_purple{filter:drop-shadow(0 20px 20px #000b)}
-.xp-art-identity{position:absolute;z-index:8;left:45%;bottom:8%;font-size:11px;letter-spacing:.03em;color:#b5c4d5;opacity:.8;text-shadow:0 2px 4px #000a;pointer-events:none}
 .xp-studio-car{mask-image:none;-webkit-mask-image:none}
+
+.xp-tire-screen{position:absolute;z-index:7;inset:12% 4% 3%;display:flex;flex-direction:column}
+.xp-tire-screen-head{display:flex;justify-content:space-between;align-items:start;gap:16px;padding:6px}
+.xp-tire-screen-head small{font-size:13px;color:#81bfff;letter-spacing:.12em;font-weight:600}
+.xp-tire-screen-head h2{font-size:clamp(26px,3vw,44px);margin:6px 0;color:#f2faff}
+.xp-tire-screen-head p{font-size:clamp(11px,1.2vw,17px);margin:0;color:#c7d6e8}
+.xp-tire-screen-head button{display:flex;align-items:center;gap:8px;border:1px solid #8bcee29c;background:#0a2339e9;border-radius:13px;padding:12px;color:#fff;white-space:nowrap}
+.xp-tire-stage{width:min(830px,100%);flex:1;min-height:0;align-self:center;display:grid;
+grid-template-columns:minmax(105px,1fr) minmax(145px,39%) minmax(105px,1fr);grid-template-rows:1fr 1fr;gap:12px;align-items:center}
+.xp-tire-center{grid-area:1/2/3/3;min-height:0;height:100%;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 16px 20px #0009)}
+.xp-top-car,.xp-top-cutout{width:100%;max-width:290px;height:100%;max-height:100%;object-fit:contain}
+.xp-tire-reading{background:linear-gradient(130deg,#09243be9,#071526f0);border:1px solid #75adc58a;
+backdrop-filter:blur(14px);border-radius:17px;padding:15px 8px;text-align:center;display:flex;flex-direction:column;gap:4px}
+.xp-tire-reading small{color:#c4d4e6;font-size:clamp(10px,1.25vw,16px)}
+.xp-tire-reading strong{font-size:clamp(25px,3vw,47px);color:#fff;line-height:1.1}
+.xp-tire-reading span{color:#75f4c5;font-size:clamp(11px,1.2vw,18px)}
+.xp-tire-reading[data-wheel="tire_fl"]{grid-area:1/1}.xp-tire-reading[data-wheel="tire_fr"]{grid-area:1/3}
+.xp-tire-reading[data-wheel="tire_rl"]{grid-area:2/1}.xp-tire-reading[data-wheel="tire_rr"]{grid-area:2/3}
+.xp-tire-disclaimer{text-align:center;font-size:10px;color:#b9c9d8;padding-bottom:5px}
+@media(max-width:850px){.xp-tire-screen{inset:9% 3% 2%}.xp-tire-screen-head{padding-top:28px}
+.xp-tire-screen-head h2{font-size:27px}.xp-tire-screen-head p{font-size:12px}
+.xp-tire-screen-head button{font-size:12px;padding:10px 8px}
+.xp-tire-stage{grid-template-columns:minmax(90px,1fr) minmax(118px,39%) minmax(90px,1fr);gap:4px}
+.xp-tire-reading{padding:13px 3px}.xp-tire-reading strong{font-size:25px}.xp-tire-reading small{font-size:11px}.xp-tire-reading span{font-size:12px}}
+
+
+.xp-tire-row{width:100%;color:inherit;border:0;border-bottom:1px solid #56708a43;background:transparent;text-align:left;font:inherit}
+.xp-tire-row:hover,.xp-tire-row:focus-visible{background:#2e54653b}
+.xp-tire-row .xp-info-copy{align-items:flex-start}
+@media(max-width:850px){.xp-tire-row{min-height:88px;padding:7px 10px;border:0;border-right:1px solid #56708a43}}
+
 /* The approved 2026 white G6 cutout is already tightly cropped: frame its pixels to the reference shot. */
 .xp-overview .xp-car.xp-reference-cutout{left:25.5%;bottom:26.6%;width:51.4%;max-height:none;filter:drop-shadow(0 13px 13px #0005)}
 @media(max-width:850px){.xp-overview .xp-car.xp-reference-cutout{left:-3%;bottom:27%;width:108%;max-height:42%}}
-@media(max-width:850px){.xp-art-identity{left:15%;bottom:25%;font-size:10px}.xp-charge .xp-art-identity{bottom:7%}}
 @media(max-width:400px){.xp-charge-meta>div{padding:0 7px}.xp-charge-heading{font-size:19px}.xp-charge-meta b{font-size:12px}.xp-overview-stat{top:219px}.xp-status-panel{grid-template-columns:repeat(3,minmax(0,1fr))}}
 `;
+// Retain legacy manual entity mapping for older YAML; new configs are automatic.
+function xpSensorMappingMode(cfg,profile){
+ const mode=profile?.sensor_mapping_mode??cfg?.sensor_mapping_mode;
+ if(mode==='auto'||mode==='manual')return mode;
+ return Object.keys(profile?.entities||{}).length||Object.keys(cfg?.entities||{}).length?'manual':'auto';
+}
 class XpengVehicleCard extends HTMLElement{
  constructor(){
-  super();this.attachShadow({mode:'open'});this._config={};this._hass=null;this._view='overview';this._expanded=false;this._vehicleIndex=0;this._infoOpen=false;
+  super();this.attachShadow({mode:'open'});this._config={};this._hass=null;this._view='overview';this._expanded=false;this._vehicleIndex=0;this._infoOpen=false;this._tireOpen=false;
   this.shadowRoot.addEventListener('error',ev=>{
       const img=ev.target;
       if(!img?.matches?.('img[data-car-art]')||img.dataset.fallbackUsed)return;
@@ -299,8 +328,9 @@ class XpengVehicleCard extends HTMLElement{
     },true);
    this.shadowRoot.addEventListener('click',ev=>{
     const b=ev.target.closest('button');if(!b)return;
-     if(b.hasAttribute('data-meta-toggle')){this._infoOpen=!this._infoOpen;this.render();return;}
-    if(b.hasAttribute('data-cycle')){this._vehicleIndex=(this._vehicleIndex+1)%this.vehicles().length;this.render();}
+     if(b.hasAttribute('data-meta-toggle')){this._infoOpen=!this._infoOpen;this._tireOpen=false;this.render();return;}
+     if(b.hasAttribute('data-tire-toggle')){this._tireOpen=!this._tireOpen;this._infoOpen=false;this.render();return;}
+    if(b.hasAttribute('data-cycle')){this._vehicleIndex=(this._vehicleIndex+1)%this.vehicles().length;this._tireOpen=false;this.render();}
   });
  }
  connectedCallback(){if(!this._fullscreenHandler){this._fullscreenHandler=()=>{if(!document.fullscreenElement&&this._expanded){this._expanded=false;this.render();}};}document.addEventListener('fullscreenchange',this._fullscreenHandler);}
@@ -312,11 +342,12 @@ class XpengVehicleCard extends HTMLElement{
   if(config.image_path&&!/^\/(?:local|hacsfiles)\/[a-zA-Z0-9/_-]+\/?$/.test(config.image_path))throw Error('Invalid local image_path');
   if(config.background_image&&!xpLocalArtworkPath(config.background_image))throw Error('Invalid local background_image');
   const v={prefix:'my_xpeng',year:'2026',model:'G6',trim:'core_plus_rwd',color:'arctic_white',interior:'dark_gray',theme:'dark',...config};
-  this._config=xpNormalizeAppearance(v);this._infoOpen=false;this.render();
+  this._config=xpNormalizeAppearance(v);this._infoOpen=false;this._tireOpen=false;this.render();
  }
  set hass(hass){
   this._hass=hass;
   this._view=xpChargingActive(this.val('charging'))===true?'charging':'overview';
+  if(this._view==='charging')this._tireOpen=false;
   this.render();
  }
  get hass(){return this._hass;}
@@ -333,7 +364,7 @@ class XpengVehicleCard extends HTMLElement{
  paint(){return this.appearance().color;}
  data(key){
    const spec=XP_KEYS[key];if(!spec)return null;
-   const override=this.vehicle()?.entities?.[key]??this._config.entities?.[key];
+   const override=xpSensorMappingMode(this._config,this.vehicle())==='manual'?(this.vehicle()?.entities?.[key]??this._config.entities?.[key]):null;
    const custom=override?xpParseEntityMapping(override):null;
    const ids=custom?[custom.id]:spec.slice(1).map(s=>spec[0]+'.'+this.prefix()+'_'+s);
    const id=ids.find(x=>this._hass?.states?.[x])||ids[0];
@@ -357,32 +388,35 @@ class XpengVehicleCard extends HTMLElement{
     const profileArt=key=>Array.isArray(this._config.vehicles)&&this._config.vehicles.length
       ?this.vehicle()?.[key]:this.vehicle()?.[key]||this._config[key];
     const chosen=(this._view==='charging'&&profileArt('charging_image'))||profileArt('image');
-    const a=this.appearance(),model=xpAssetModel(a.model),trim=xpAssetModel(a.trim);
-    // A specific user artwork override applies only to the selected card profile.
-    // Never select a different year/trim/colour because an exact file is absent.
+    const a=this.appearance(),model=xpAssetModel(a.model),view=this._view==='charging'?'rear':'front';
     if(xpLocalArtworkPath(chosen))
-      return {src:chosen,illustrative:false,studio:false,tier:'manual',
-        description:'User-selected local artwork; model/year/paint suitability is the owner\'s choice'};
-    const exact='vehicles/'+model+'/'+a.year+'/'+trim+'/'+a.color+'.webp';
-    if(XP_ARTWORK_INDEX.exact.has(exact))
-      return {src:bundled(exact),illustrative:true,studio:false,tier:'model-year-trim',
-        description:a.model+' '+a.year+' '+a.trim+' '+a.color+' — exact-path model-year preview (not manufacturer verified)'};
-    // The fallback is correctly named as model-family illustration, not year-exact art.
-    // This preserves selection for every catalogued model/year, even without photography.
-    const olderAlias={graphite_gray:'space_grey',midnight_black:'jet_black'}[a.color]||a.color;
-    const family='models/'+model+'-'+olderAlias+'.webp';
+      return {src:chosen,illustrative:false,studio:false,tier:'manual',view,view_status:'owner_supplied',
+        description:'Owner-supplied artwork for '+a.model+' '+a.color};
+    // Visual policy: model+paint only. One top available trim for every year and selected trim.
+    // Paths happen to contain "2026"; that is source asset metadata, not a year filter.
+    const highest={G6:'core_performance_awd',G9:'performance_awd'}[a.model];
+    if(highest){
+      const exact='vehicles/'+model+'/2026/'+highest+'/'+a.color+'.webp';
+      if(XP_ARTWORK_INDEX.exact.has(exact))
+        return {src:bundled(exact),illustrative:true,studio:false,tier:'highest-trim-preview',view,
+          view_status:view==='rear'?'front_fallback_rear_pending':'highest_available_preview',
+          description:'Same highest-available-trim '+a.model+' preview in '+a.color+' for all years and trims; not manufacturer verified'};
+    }
+    const alias={graphite_gray:'space_grey',midnight_black:'jet_black'}[a.color]||a.color;
+    const family='models/'+model+'-'+alias+'.webp';
     if(XP_ARTWORK_INDEX.family.has(family))
-      return {src:bundled(family),illustrative:true,studio:false,tier:'model-family',
-        description:'Generic model-family illustration: '+a.model+' in '+a.color+'; exact '+a.year+' '+a.trim+' artwork unavailable'};
-    return {src:this.placeholderArt(),illustrative:true,studio:false,tier:'silhouette',
-      description:'Illustrative Coloured silhouette: '+a.model+' '+a.year+' '+a.color+'; exact artwork pending'};
+      return {src:bundled(family),illustrative:true,studio:false,tier:'model-family',view,
+        view_status:view==='rear'?'front_fallback_rear_pending':'generic_model_illustration',
+        description:'Shared model+paint illustration; no verified high-trim transparent cutout yet'};
+    return {src:this.placeholderArt(),illustrative:true,studio:false,tier:'silhouette',view,
+      view_status:'image_pending',description:'Transparent model+paint preview pending for '+a.model+' '+a.color};
   }
   asset(){return this.assetSpec().src;}
   placeholderArt(){
     const a=this.appearance(),colour=XP_PAINTS.find(x=>x.id===a.color)?.hex||'#b6bdc2';
     const shape=xpModel(a.model)?.shape||'suv';
     const roof=shape==='mpv'?'M140 220L200 83H613L735 225':shape.includes('sedan')||shape==='fastback'?'M140 220L298 125H558L735 225':'M140 220L246 105H607L735 225';
-    const label=xpEsc(a.model+' '+a.year);
+    const label=xpEsc(a.model);
     const svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850 420">'+
       '<path d="'+roof+'L785 254L774 324H67L65 253Z" fill="'+colour+'" stroke="#9dbad4" stroke-width="4"/>'+
       '<circle cx="223" cy="325" r="61" fill="#08101e" stroke="#8297ad" stroke-width="11"/>'+
@@ -397,10 +431,22 @@ class XpengVehicleCard extends HTMLElement{
    const parsed=Date.parse(String(t));if(!Number.isFinite(parsed))return String(t);
    const age=Math.max(0,Math.floor((Date.now()-parsed)/60000));return age<1?'Just now':age<60?age+' min ago':age<1440?Math.floor(age/60)+'h ago':new Date(parsed).toLocaleDateString();
  }
+  tirePressureBar(key){
+    const d=this.data(key),n=this.number(key);
+    if(n===null||n<0)return null;
+    const unit=String(d?.entity?.attributes?.unit_of_measurement||'kPa').trim().toLowerCase();
+    let bar=null;
+    if(unit==='kpa')bar=n/100;
+    else if(unit==='bar')bar=n;
+    else if(unit==='psi')bar=n*0.0689475729;
+    else if(unit==='pa')bar=n/100000;
+    return bar!==null&&bar>=0.5&&bar<=6?bar:null;
+  }
+
  tireSummary(){
-  const values=['tire_fl','tire_fr','tire_rl','tire_rr'].map(k=>this.number(k));
+  const values=['tire_fl','tire_fr','tire_rl','tire_rr'].map(k=>this.tirePressureBar(k));
   if(values.some(v=>v===null))return '—';
-  return xpNum(values.reduce((a,b)=>a+b,0)/400,2)+' bar';
+  return xpNum(values.reduce((a,b)=>a+b,0)/4,2)+' bar';
  }
  locationText(){
   const d=this.data('location');const raw=d?.value;
@@ -433,12 +479,30 @@ class XpengVehicleCard extends HTMLElement{
       style="background-image:url(&quot;${xpEsc(source)}&quot;)"></div>`;
   }
  header(){
-   const conn=String(this.val('connection')||'').toLowerCase();
-   const connected=['connected','online'].includes(conn);
-   return `<header class="xp-header"><div class="xp-brand"><span class="xp-x-mark">✕</span><span>XPENG</span></div>
-     <div class="xp-header-right"><span class="xp-wifi ${connected?'xp-connected':''}" aria-label="${xpEsc(xpConnText(this.val('connection')))}"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M2 8c5.7-5.6 14.3-5.6 20 0M5 12c4-3.6 10-3.6 14 0M9 16c1.8-1.4 4.2-1.4 6 0"/><circle cx="12" cy="20" r="1.3" fill="currentColor" stroke="none"/></svg></span>
-     </div></header>`;
- }
+    const connection=this.val('connection'),status=xpConnText(connection);
+    const connected=status==='Connected';
+    return `<header class="xp-header"><div class="xp-brand"><span class="xp-x-mark">✕</span><span>XPENG</span></div>
+      <div class="xp-header-right">
+        <span class="xp-wifi ${connected?'xp-connected':'xp-disconnected'}" role="status"
+          aria-label="${xpEsc('Vehicle network: '+status)}" title="${xpEsc(status)}">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor"
+            stroke-width="2.3" stroke-linecap="round" aria-hidden="true">
+            <path d="M2 8c5.7-5.6 14.3-5.6 20 0M5 12c4-3.6 10-3.6 14 0M9 16c1.8-1.4 4.2-1.4 6 0"/>
+            <circle cx="12" cy="20" r="1.3" fill="currentColor" stroke="none"/></svg>
+          <span class="xp-connection-label">${xpEsc(status)}</span>
+        </span>
+        <div class="xp-meta-tools">
+          <button class="xp-meta-trigger" type="button" data-meta-toggle
+            aria-label="Show vehicle connection and last update" aria-expanded="${this._infoOpen?'true':'false'}"
+            aria-controls="xp-last-update-details" title="Connection and last update">${xpIcon('info',20)}</button>
+          ${this._infoOpen?`<div id="xp-last-update-details" class="xp-meta-popover" role="region"
+            aria-label="Vehicle connection and last update">
+              <div class="xp-meta-field"><small>Connection</small><strong>${xpEsc(status)}</strong></div>
+              <div class="xp-meta-field"><small>Last vehicle update</small><strong>${xpEsc(this.lastUpdate())}</strong></div>
+            </div>`:''}
+        </div>
+      </div></header>`;
+  }
  progress(){
    const soc=xpPercent(this.val('soc'));
    return `<div class="xp-progress" role="progressbar" aria-label="Battery state of charge" aria-valuemin="0" aria-valuemax="100" ${soc===null?'':'aria-valuenow="'+soc+'"'}>
@@ -447,33 +511,18 @@ class XpengVehicleCard extends HTMLElement{
  socHtml(){
   const v=this.number('soc');return v===null?'—':xpNum(v)+'<span class="xp-unit">%</span>';
  }
- updated(){
-    const age=xpEsc(this.lastUpdate()),conn=xpEsc(xpConnText(this.val('connection')));
-    const v=this.appearance();
-    const finish=xpEsc(XP_INTERIORS.find(x=>x.id===v.interior)?.label||v.interior);
-    return `<div class="xp-meta-tools">
-      <button class="xp-meta-trigger" type="button" data-meta-toggle aria-label="Last vehicle update and information"
-      aria-expanded="${this._infoOpen?'true':'false'}" title="Vehicle information">${xpIcon('info',22)}</button>
-      ${this._infoOpen?`<div class="xp-meta-popover" role="region" aria-label="Last vehicle update">
-        <div><small>Last vehicle update</small><strong>${age}</strong></div>
-        <div><small>Connection</small><strong>${conn}</strong></div>
-        <div><small>Interior finish</small><strong>${finish}</strong></div>
-        ${this.interiorPreview()}
-        <p>Cabin illustration is colour guidance, not a photograph.</p>
-      </div>`:''}</div>`;
-  }
-  interiorPreview(){
+ interiorPreview(){
     const a=this.appearance(),finish=XP_INTERIORS.find(x=>x.id===a.interior)||XP_INTERIORS[0];
-    // Model/year/trim/cabin custom imagery stays independent of the background.
+    // The cabin preview is editor-controlled; changing year or trim does not select a different design.
     // If no matching art is provided, the colour-accurate schematic remains honest.
     const interiorImg=Array.isArray(this._config.vehicles)&&this._config.vehicles.length
       ?this.vehicle()?.interior_image:this.vehicle()?.interior_image||this._config.interior_image;
     if(xpLocalArtworkPath(interiorImg))
       return `<img class="xp-cabin-mini" src="${xpEsc(interiorImg)}"
-        alt="${xpEsc(a.model+' '+a.year+' '+finish.label+' interior (user-supplied artwork)')}" loading="lazy">`;
+        alt="${xpEsc(a.model+' '+finish.label+' interior (user-supplied artwork)')}" loading="lazy">`;
     const colour=xpEsc(finish.hex),shade=xpEsc(finish.secondary);
     return `<svg class="xp-cabin-mini" viewBox="0 0 350 155" role="img"
-      aria-label="${xpEsc(a.model+' '+a.year+' cabin, '+finish.label)}">
+      aria-label="${xpEsc(a.model+' cabin, '+finish.label)}">
       <rect x="0" y="0" width="350" height="155" rx="14" fill="#091a2c"/>
       <path d="M16 36Q175 -4 334 36L322 91H28Z" fill="${shade}" stroke="#687c93" stroke-width="2"/>
       <path d="M20 90l43-12 34 65H5Z M330 90l-43-12-34 65h92Z" fill="${colour}" stroke="#475d71"/>
@@ -487,29 +536,68 @@ class XpengVehicleCard extends HTMLElement{
   }
   carArt(){
     const a=this.appearance(),spec=this.assetSpec();
-    const referenceCutout=a.model==='G6'&&a.year==='2026'&&a.trim==='core_plus_rwd'&&a.color==='arctic_white'&&(spec.tier==='model-year-trim'||/\/xpeng-g6-2026-white-cutout\.(?:png|webp)$/.test(spec.src));
+    const referenceCutout=a.model==='G6'&&a.color==='arctic_white'&&(spec.tier==='highest-trim-preview'||/\/xpeng-g6-2026-white-cutout\.(?:png|webp)$/.test(spec.src));
     return `<img class="xp-car ${referenceCutout?'xp-reference-cutout':''} ${spec.studio?'xp-studio-car':''}" data-car-art
       src="${xpEsc(spec.src)}"
-      title="${xpEsc(spec.description)}"
+      title="${xpEsc(spec.description)}" data-view-status="${xpEsc(spec.view_status)}"
       data-art-tier="${xpEsc(spec.tier)}"
-      alt="${xpEsc('XPENG '+a.model+' '+a.year+', '+a.color.replaceAll('_',' ')+(spec.illustrative?' (illustrative artwork)':''))}" loading="eager">
+      alt="${xpEsc('XPENG '+a.model+', '+a.color.replaceAll('_',' ')+(spec.illustrative?' (illustrative artwork)':''))}" loading="eager">
       `;
   }
-  overview(){
+ 
+  topCarArt(){
+    const a=this.appearance(),photo=Array.isArray(this._config.vehicles)&&this._config.vehicles.length
+      ?this.vehicle()?.top_image:this.vehicle()?.top_image||this._config.top_image;
+    if(xpLocalArtworkPath(photo))return `<img class="xp-top-cutout" data-top-art src="${xpEsc(photo)}" alt="${xpEsc('Top-down view of '+a.model)}" loading="eager">`;
+    const paint=XP_PAINTS.find(p=>p.id===a.color)?.hex||'#f2f4f2';
+    return `<svg class="xp-top-car" viewBox="0 0 300 600" role="img" aria-label="${xpEsc('Illustrative overhead view of '+a.model)}">
+    <defs><linearGradient id="xp-top-body"><stop offset="0" stop-color="#647381"/><stop offset=".2" stop-color="${xpEsc(paint)}"/><stop offset=".8" stop-color="${xpEsc(paint)}"/><stop offset="1" stop-color="#546576"/></linearGradient>
+    <linearGradient id="xp-top-window" x2="1" y2="1"><stop stop-color="#2e4b64"/><stop offset="1" stop-color="#0b1728"/></linearGradient></defs>
+    <ellipse cx="150" cy="301" rx="119" ry="270" fill="#000" opacity=".35"/>
+    <g fill="#111820" stroke="#8597a4" stroke-width="3">
+      <rect x="17" y="135" width="45" height="111" rx="14"/><rect x="238" y="135" width="45" height="111" rx="14"/>
+      <rect x="17" y="362" width="45" height="111" rx="14"/><rect x="238" y="362" width="45" height="111" rx="14"/></g>
+    <path d="M109 33Q150 9 191 33L239 95Q255 145 255 200V451Q255 504 231 546Q150 573 69 546Q45 504 45 451V200Q45 145 61 95Z" fill="url(#xp-top-body)" stroke="#b1c7d5" stroke-width="3"/>
+    <path d="M77 143Q150 104 223 143L228 199Q150 221 72 199Z" fill="url(#xp-top-window)" stroke="#abc0ca" stroke-width="3"/>
+    <path d="M75 222Q150 211 225 222V406Q150 423 75 406Z" fill="url(#xp-top-window)" stroke="#abbac4" stroke-width="3"/>
+    <path d="M80 434Q150 422 220 434L211 488Q150 497 89 488Z" fill="url(#xp-top-window)" stroke="#9cabb6" stroke-width="2"/>
+    <path d="M73 60L106 46M194 46L227 60" stroke="#f3fcff" stroke-width="9" stroke-linecap="round"/>
+    <path d="M70 537Q150 554 230 537" stroke="#fa4047" stroke-width="9" fill="none" stroke-linecap="round"/>
+    </svg>`;
+  }
+  tireScreen(){
+    const a=this.appearance(),photo=Array.isArray(this._config.vehicles)&&this._config.vehicles.length
+      ?this.vehicle()?.top_image:this.vehicle()?.top_image||this._config.top_image;
+    const wheel=(key,label)=>{const bar=this.tirePressureBar(key);
+      return `<div class="xp-tire-reading" data-wheel="${key}"><small>${label}</small>
+        <strong>${bar===null?'—':xpEsc(xpNum(bar,2))}</strong><span>${bar===null?'Unavailable':'bar'}</span></div>`;};
+    return `<section class="xp-tire-screen" role="region" aria-label="Tire pressure from above">
+       <div class="xp-tire-screen-head"><div><small>XPENG ${xpEsc(a.model)}</small>
+         <h2>Tire pressures</h2><p>Four wheels · live Home Assistant readings</p></div>
+         <button type="button" data-tire-toggle aria-label="Back to vehicle status">${xpIcon('back',20)} Back to vehicle</button></div>
+       <div class="xp-tire-stage"><div class="xp-tire-center">${this.topCarArt()}</div>
+         ${wheel('tire_fl','Front left')}${wheel('tire_fr','Front right')}
+         ${wheel('tire_rl','Rear left')}${wheel('tire_rr','Rear right')}</div>
+       ${!xpLocalArtworkPath(photo)?'<div class="xp-tire-disclaimer">Illustrative overhead view · exact model artwork pending</div>':''}
+     </section>`;
+  }
+ overview(){
   const rows=[['gauge','Odometer',this.num('odometer','km')],['tire','Tire pressure',this.tireSummary()],['pin','Location',this.locationText()]];
-  return `${this.title()}${this.updated()}${this.carArt()}
+  return `${this.title()}${this.carArt()}
     <section class="xp-overview-stat" aria-label="Battery and estimated range">
      <div class="xp-batt-line"><div class="xp-batt-glyph"><div class="xp-batt-fill" style="height:${xpPercent(this.val('soc'))??0}%"></div></div>
        <div><div class="xp-stat-label">Battery</div><div class="xp-soc">${this.socHtml()}</div></div></div>
      ${this.progress()}<div class="xp-overview-range"><div class="xp-stat-label">Estimated range</div><div class="xp-range-num">${xpIcon('gauge',36)}<span>${xpEsc(this.num('range','km'))}</span></div></div>
     </section>
     <aside class="xp-status-panel" aria-label="Vehicle information">
-      ${rows.map(([icon,label,val])=>`<div class="xp-info-row"><div class="xp-info-icon">${xpIcon(icon,31)}</div>
+      ${rows.map(([icon,label,val])=>icon==='tire'
+      ?`<button class="xp-info-row xp-tire-row" type="button" data-tire-toggle aria-expanded="${this._tireOpen?'true':'false'}" aria-label="View all four tire pressures"><span class="xp-info-icon">${xpIcon(icon,31)}</span><span class="xp-info-copy"><small>${xpEsc(label)}</small><b>${xpEsc(val)}</b></span><span class="xp-chevron">${xpIcon('arrow',19)}</span></button>`
+      :`<div class="xp-info-row"><div class="xp-info-icon">${xpIcon(icon,31)}</div>
       <div class="xp-info-copy"><small>${xpEsc(label)}</small><b>${xpEsc(val)}</b></div><span class="xp-chevron">${xpIcon('arrow',19)}</span></div>`).join('')}
     </aside>`;
  }
  charging(){
-  return `${this.title()}${this.updated()}
+  return `${this.title()}
     <svg class="xp-cable" viewBox="0 0 1500 850" preserveAspectRatio="none" aria-hidden="true"><path d="M1282 444 Q1329 474 1366 569T1453 566" fill="none" stroke="#00e8b9" stroke-width="13" stroke-linecap="round" opacity=".29"/>
     <path d="M1282 444 Q1329 474 1366 569T1453 566" fill="none" stroke="#2efad2" stroke-width="5" stroke-linecap="round"/></svg>
     <div class="xp-station" aria-hidden="true">✕</div>${this.carArt()}
@@ -530,8 +618,9 @@ class XpengVehicleCard extends HTMLElement{
   // Only an explicit 'on' shows Charging. 'off', unknown and unavailable show Overview.
   const isCharging=xpChargingActive(this.val('charging'))===true;
   this._view=isCharging?'charging':'overview';
-  this.shadowRoot.innerHTML=`<style>${XP_CSS}</style><ha-card><div class="xp-scene ${isCharging?'xp-charge':'xp-overview'}">
-   ${this.sceneBackdrop()}${this.header()}${isCharging?this.charging():this.overview()}
+  if(isCharging)this._tireOpen=false;
+  this.shadowRoot.innerHTML=`<style>${XP_CSS}</style><ha-card><div class="xp-scene ${isCharging?'xp-charge':this._tireOpen?'xp-overview xp-tire-mode':'xp-overview'}">
+   ${this.sceneBackdrop()}${this.header()}${isCharging?this.charging():this._tireOpen?this.tireScreen():this.overview()}
    
    </div></ha-card>`;
  }
@@ -545,6 +634,7 @@ class XpengVehicleCardEditor extends HTMLElement{
    const el=e.target.closest('[data-key],[data-entity]');if(!el)return;
    if(el.hasAttribute('data-entity'))el.setCustomValidity('');
    if(el.hasAttribute('data-entity')){
+     if(xpSensorMappingMode(this._cfg)!=='manual')return;
      const field=el.dataset.entity,raw=String(el.value||'').trim();
      if(!XP_MAPPABLE_FIELDS.some(x=>x.key===field))return;
      if(raw&&!xpParseEntityMapping(raw)){
@@ -559,17 +649,17 @@ class XpengVehicleCardEditor extends HTMLElement{
    }
    const key=el.dataset.key;
    let cfg={...this._cfg,[key]:el.value};
-   if(['image','charging_image','interior_image','background_image'].includes(key)&&el.value&&!xpLocalArtworkPath(el.value)){
-     el.setCustomValidity('Use a local /local/... or /hacsfiles/... image URL');
-     el.reportValidity();return;
-   }
-   // A previous manual photo belongs to the old model/year/paint, not a new one.
-   if(['model','year','trim','color'].includes(key)){delete cfg.image;delete cfg.charging_image;}
-   if(['model','year','trim','interior'].includes(key))delete cfg.interior_image;
+   // Year changes ONLY the informational trim list; neither selection changes photos or colours.
+   if(['model','color'].includes(key)){delete cfg.image;delete cfg.charging_image;delete cfg.top_image;}
+   if(['model','interior'].includes(key))delete cfg.interior_image;
    if(cfg.prefix&&!/^[a-z0-9_]+$/.test(cfg.prefix))return;
-   if(key==='year'&&!xpAllowedModels(cfg.year).some(x=>x.id===cfg.model))cfg.model=xpAllowedModels(cfg.year)[0]?.id||'Other';
-   if(key==='year'||key==='model'){cfg.trim=xpAllowedTrims(cfg.model,cfg.year)[0].id;cfg.color=xpAllowedPaints(cfg.model,cfg.year,cfg.trim)[0].id;cfg.interior=xpAllowedInteriors(cfg.model,cfg.year,cfg.trim)[0].id;}
-   if(key==='trim'){if(!xpAllowedPaints(cfg.model,cfg.year,cfg.trim).some(x=>x.id===cfg.color))cfg.color=xpAllowedPaints(cfg.model,cfg.year,cfg.trim)[0].id;if(!xpAllowedInteriors(cfg.model,cfg.year,cfg.trim).some(x=>x.id===cfg.interior))cfg.interior=xpAllowedInteriors(cfg.model,cfg.year,cfg.trim)[0].id;}
+   if(key==='model'){
+     cfg.year=xpAllowedYears(cfg.model)[0]||cfg.year;
+     cfg.trim=xpAllowedTrims(cfg.model,cfg.year)[0].id;
+     cfg.color=xpAllowedPaints(cfg.model,cfg.year,cfg.trim)[0].id;
+     cfg.interior=xpAllowedInteriors(cfg.model,cfg.year,cfg.trim)[0].id;
+   }
+   if(key==='year')cfg.trim=xpAllowedTrims(cfg.model,cfg.year)[0].id;
    this._cfg=xpNormalizeAppearance(cfg);this.render();
    this.dispatchEvent(new CustomEvent('config-changed',{detail:{config:this._cfg},bubbles:true,composed:true}));
   });
@@ -585,6 +675,7 @@ class XpengVehicleCardEditor extends HTMLElement{
   const v=xpNormalizeAppearance(this._cfg);
   const select=(key,label,values)=>`<label>${xpEsc(label)}<select data-key="${key}">${values.map(x=>`<option value="${xpEsc(x.id)}" ${v[key]===x.id?'selected':''}>${xpEsc(x.label)}</option>`).join('')}</select></label>`;
   const prefix=v.prefix||'my_xpeng';
+  const mappingMode=xpSensorMappingMode(v);
   const states=this._hass?.states||{};
   const dataList=Object.keys(states).filter(id=>xpParseEntityMapping(id)).sort().map(id=>'<option value="'+xpEsc(id)+'"></option>').join('');
   const mappingRows=XP_MAPPABLE_FIELDS.map(field=>{
@@ -592,7 +683,6 @@ class XpengVehicleCardEditor extends HTMLElement{
    const auto=spec[0]+'.'+prefix+'_'+spec[1];
    return '<label class="xp-map-row"><span>'+xpEsc(field.label)+'</span><input data-entity="'+xpEsc(field.key)+'" list="xp-entity-choices" autocomplete="off" value="'+xpEsc(v.entities?.[field.key]||'')+'" placeholder="Auto: '+xpEsc(auto)+'" title="Leave blank for automatic mapping. Supports entity_id or entity_id|attribute_name"></label>';
   }).join('');
-  const expanded=this.shadowRoot.querySelector?.('details[data-mappings]')?.open===true;
   this.shadowRoot.innerHTML=`<style>section{display:grid;gap:13px;padding:14px;font:inherit}label{display:grid;gap:5px;font-size:13px}input,select{border:1px solid #8b959e;border-radius:7px;padding:10px;background:var(--card-background-color,#fff);color:var(--primary-text-color,#111)}p{font-size:12px;opacity:.8;line-height:1.5}
    h3{margin:8px 0 0;font-size:15px}
    details{border:1px solid var(--divider-color,#7d879a77);border-radius:9px;padding:11px}
@@ -602,28 +692,24 @@ class XpengVehicleCardEditor extends HTMLElement{
    .xp-map-row input{font-size:12px}
    @media(max-width:460px){.xp-map-row{grid-template-columns:1fr}}
    </style><section>
-    <h3>Vehicle appearance (manual settings)</h3><p>Model, model year, trim and both paint choices are set here only. The dashboard itself contains no settings.</p>
-     <label>Automatic sensor prefix<input data-key="prefix" value="${xpEsc(v.prefix||'my_xpeng')}"></label>
-    ${select('year','Model year',XP_YEARS.map(y=>({id:y,label:y})))}
-    ${select('model','Model',xpAllowedModels(v.year).map(m=>({id:m.id,label:m.name})))}
-    ${select('trim','Trim',xpAllowedTrims(v.model,v.year))}
+    <h3>Vehicle appearance (manual settings)</h3><p>The car always displays one highest-available-trim image for the selected model. Only exterior paint changes that image. Model year filters trim names; trim is information only.</p>
+     
+    ${select('model','Model',XP_MODELS.map(m=>({id:m.id,label:m.name})))}
+    ${select('year','Model year (trim names only)',xpAllowedYears(v.model).map(y=>({id:y,label:y})))}
+    ${select('trim','Trim (informational only)',xpAllowedTrims(v.model,v.year))}
     ${select('color','Exterior paint',xpAllowedPaints(v.model,v.year,v.trim))}
      ${select('interior','Interior finish',xpAllowedInteriors(v.model,v.year,v.trim))}
-     <p>${xpIsVerifiedPalette(v.model,v.year)?'Published colour palette; availability differs by market and trim.':'Illustrative colours for this model year; manufacturer availability is not verified.'}</p>
-    <h3>Data source</h3><p>Every measurement supports automatic matching by prefix or optional manual entity assignment, including from any Home Assistant integration. Charging activates the charging screen only while charging is reported as active.</p>
-     <label>Optional cabin photo for this selected model, year, trim and interior colour<input data-key="interior_image" value="${xpEsc(v.interior_image||'')}" placeholder="/local/my_xpeng/interiors/g6-2026-light-gray.webp"></label>
-    <p>Choosing another model/year/trim or interior finish clears the previous custom cabin photo so a different model is never shown by mistake. Without photography the compact information popup shows a colour-matched cabin illustration.</p>
-    <label>Optional rear/charging view image for this exact vehicle (when available)<input data-key="charging_image" value="${xpEsc(v.charging_image||'')}" placeholder="/local/my_xpeng/cars/g6-2026-white-rear.webp"></label>
-    <label>Optional exact vehicle image URL (when this profile has no bundled year-specific photo)<input data-key="image" value="${xpEsc(v.image||'')}" placeholder="/local/my_xpeng/cars/g6-2026-white.webp"></label>
-    <p>Background is stored separately and stays the same in both screens. The car image changes by your manual model/year/trim/exterior colour selection. 2026 G6/G9 have exact-path bundled previews; older/other models use clearly labelled illustrations unless you specify your own exact photo.</p>
-    <label>Optional scenic background for BOTH screens (separate from the car)<input data-key="background_image" value="${xpEsc(v.background_image||'')}" placeholder="/local/xpeng/xpeng-approved-lakeside-background.webp"></label>
-    <p>Use a genuine photograph in /local/ or /hacsfiles/, not CSS-painted mountains. The background is global and stays identical when charging or selecting another model; leaving it empty retains the bundled fallback.</p>
-    <label>Optional custom asset directory (leave empty for automatic HACS bundled images)<input data-key="image_path" value="${xpEsc(v.image_path&&v.image_path!=='/hacsfiles/xpeng-vehicle-card/assets'?v.image_path:'')}"></label>
-    <details data-mappings ${expanded?'open':''}><summary>Manual sensor mapping · ${XP_MAPPABLE_FIELDS.length} fields</summary>
-       <p>Auto mode: leave an item empty and it uses the prefix. Manual mode: pick any Home Assistant entity (including those from another integration), or use entity_id|attribute_name to read an attribute. Each field is configured independently.</p>
-       <div class="xp-map-fields">${mappingRows}</div>
+     <p>These exterior/interior colours are model-wide visual previews; historical factory paint availability has not been verified.</p>
+    <h3>Sensor mapping</h3>
+     <label>Mapping mode<select data-key="sensor_mapping_mode">
+       <option value="auto" ${mappingMode==='auto'?'selected':''}>Automatic · XPENG integration</option>
+       <option value="manual" ${mappingMode==='manual'?'selected':''}>Manual · choose sensors</option>
+     </select></label>
+     ${mappingMode==='manual'? `<div class="xp-map-fields" data-mappings>
+       <p>Choose any of the ${XP_MAPPABLE_FIELDS.length} Home Assistant sensors. A blank field uses automatic integration mapping. Entity attributes: entity_id|attribute_name.</p>
+       ${mappingRows}
        <datalist id="xp-entity-choices">${dataList}</datalist>
-     </details>
+     </div>`:`<p data-auto-mapping>Vehicle sensors are matched automatically using the XPENG integration. Choose Manual to show and assign individual sensor entities.</p>`}
      <p>The only screens are Vehicle status and Charging. Live readings update automatically; missing sensors stay unavailable. Vehicle appearance is edited here, never on the dashboard.</p>
   </section>`;
  }

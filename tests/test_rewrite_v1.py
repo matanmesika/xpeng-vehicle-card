@@ -16,7 +16,7 @@ assert 'localStorage' not in SCRIPT and 'callService(' not in SCRIPT and 'fetch(
 OUT = ROOT / 'previews' / 'dashboard-v011'
 OUT.mkdir(parents=True, exist_ok=True)
 # Release gate: do not silently validate a placeholder SVG or an outdated image.
-EXPECTED_ART = ROOT / 'dist/assets/vehicles/g6/2026/core_plus_rwd/arctic_white.webp'
+EXPECTED_ART = ROOT / 'dist/assets/vehicles/g6/2026/core_performance_awd/arctic_white.webp'
 assert EXPECTED_ART.is_file(), (
     f'Missing packaged G6 2026 preview artwork: {EXPECTED_ART}. '
     'Add model-year imagery or mark unverified styling before publishing.'
@@ -148,6 +148,32 @@ with sync_playwright() as p:
         assert '12,548 km' in host.locator('.xp-status-panel').inner_text()
         assert '2.5 bar' in host.locator('.xp-status-panel').inner_text()
         assert 'Ramat Gan, Israel' in host.locator('.xp-status-panel').inner_text()
+        # Info stays inline with network status; both live connection and last update are shown.
+        wifi=host.locator('.xp-header-right .xp-wifi')
+        info=host.locator('.xp-header-right [data-meta-toggle]')
+        assert wifi.count()==1 and info.count()==1
+        assert 'Connected' in wifi.inner_text()
+        w=wifi.bounding_box()
+        b=info.bounding_box()
+        assert abs((w['y']+w['height']/2)-(b['y']+b['height']/2))<=5
+        info.click()
+        popup=host.locator('.xp-header-right .xp-meta-popover')
+        assert popup.is_visible()
+        assert 'Connection' in popup.inner_text()
+        assert 'Connected' in popup.inner_text()
+        assert 'Last vehicle update' in popup.inner_text()
+        assert popup.locator('.xp-meta-field').count()==2
+        assert popup.locator('small').count()==2
+        assert popup.locator('strong').count()==2
+        assert popup.locator('.xp-cabin-mini').count()==0
+        for forbidden in ['Interior finish','Artwork','Displayed vehicle','Cabin illustration']:
+            assert forbidden not in popup.inner_text()
+        p=popup.bounding_box()
+        assert p['x']>=0 and p['x']+p['width']<=width+2
+        host.screenshot(path=str(OUT / f'{tag}-header-info-CONNECTION-UPDATE.png'))
+        info.click()
+        assert host.locator('.xp-meta-popover').count()==0
+
         page.screenshot(path=str(OUT / f'{tag}-overview-DEMO.png'), full_page=True)
 
         # The real charging binary entity switches the entire scene, not a secondary details page.
@@ -207,6 +233,23 @@ with sync_playwright() as p:
             card.hass={states};
         }""",BASE)
 
+        # User-selected Tire pressure replaces the entire central vehicle with overhead view.
+        page.evaluate("states => document.querySelector('xpeng-vehicle-card').hass={states}",BASE)
+        background_before=host.locator('.xp-night-photo').get_attribute('style')
+        host.locator('.xp-info-row[data-tire-toggle]').click()
+        tires=host.locator('.xp-tire-screen')
+        assert tires.is_visible()
+        assert host.locator('img[data-car-art]').count()==0
+        assert tires.locator('.xp-top-car').count()==1
+        for k in ('tire_fl','tire_fr','tire_rl','tire_rr'):
+            assert tires.locator('[data-wheel="'+k+'"]').count()==1
+        assert tires.inner_text().count('2.5')>=4
+        assert host.locator('.xp-night-photo').get_attribute('style')==background_before
+        host.screenshot(path=str(OUT / f'{tag}-tires-DEMO.png'))
+        tires.locator('button[data-tire-toggle]').click()
+        assert host.locator('.xp-tire-screen').count()==0
+        assert host.locator('img[data-car-art]').count()==1
+
         # Missing data stays unavailable: zero and screenshot demo values are never substituted.
         page.evaluate("states => document.querySelector('xpeng-vehicle-card').hass = {states}", {
             'binary_sensor.my_xpeng_is_charging': sensor('on'),
@@ -233,17 +276,27 @@ with sync_playwright() as p:
         }""")
         editor = page.locator('xpeng-vehicle-card-editor')
         assert editor.locator('[data-key="color"]').count() == 1
+        assert editor.locator('[data-key="shape_family"]').count() == 0
+        assert editor.locator('[data-key="top_image"]').count() == 0
         assert editor.locator('[data-key="interior"]').count() == 1
+        assert editor.locator('[data-key="prefix"]').count() == 0
+        assert editor.locator('[data-key="sensor_mapping_mode"]').count() == 1
+        assert editor.locator('[data-entity]').count() == 0
+        assert 'Data source' not in editor.inner_text()
+        editor.locator('[data-key="sensor_mapping_mode"]').select_option('manual')
+        assert editor.locator('[data-entity]').count() == 15
         assert editor.locator('[data-entity="soc"]').count() == 1
         assert editor.locator('[data-entity="charging"]').count() == 1
         assert editor.locator('[data-entity="tire_fl"]').count() == 1
+        editor.locator('[data-key="sensor_mapping_mode"]').select_option('auto')
+        assert editor.locator('[data-entity]').count() == 0
         assert host.locator('[data-key="color"],[data-entity]').count() == 0
 
         # Browser-test representative generations; all use the same scenic bitmap,
         # with a different car render and interior selected in the card editor.
         catalogue=[
-            ('G6','2026','core_plus_rwd','arctic_white','light_gray','model-year-trim'),
-            ('G9','2026','long_range_rwd','graphite_gray','coffee','model-year-trim'),
+            ('G6','2026','core_plus_rwd','arctic_white','light_gray','highest-trim-preview'),
+            ('G9','2026','long_range_rwd','graphite_gray','coffee','highest-trim-preview'),
             ('X9','2026','unspecified','silver_frost','light_gray','model-family'),
             ('G7','2025','unspecified','midnight_black','dark_gray','model-family'),
             ('Next P7','2026','unspecified','arctic_white','dark_gray','model-family'),
@@ -270,6 +323,23 @@ with sync_playwright() as p:
             if tag=='desktop':
                 safe='-'.join((model,year,paint)).lower().replace(' ','_')
                 host.screenshot(path=str(OUT/f'catalogue-{safe}.png'))
+
+        # Render invariant: model+paint chooses the same hero image regardless of year/trim.
+        for model,old_year,old_trim,new_year,new_trim,paint in [
+            ('G6','2023','standard_range_rwd','2026','core_plus_rwd','arctic_white'),
+            ('G9','2022','standard_range_rwd','2026','performance_awd','graphite_gray')]:
+            images=[]
+            for year,trim in [(old_year,old_trim),(new_year,new_trim)]:
+                page.evaluate("""arg => {
+                  const [model,year,trim,paint,states]=arg;
+                  const card=document.querySelector('xpeng-vehicle-card');
+                  card.setConfig({prefix:'my_xpeng',model,year,trim,color:paint,image_path:'/local/xpeng'});
+                  card.hass={states};
+                }""",[model,year,trim,paint,BASE])
+                image=host.locator('img[data-car-art]')
+                assert image.get_attribute('data-art-tier')=='highest-trim-preview'
+                images.append(image.get_attribute('src'))
+            assert images[0]==images[1], (model,images)
 
         assert not errors, errors
         # Release gate: all model/year/colour assets must exist before release.

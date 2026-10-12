@@ -114,7 +114,7 @@ test('manual appearance in card editor always wins over integration profile enti
  assert.equal(card.appearance().model,'G6');
  assert.equal(card.appearance().color,'arctic_white');
  assert.equal(card.appearance().interior,'dark_gray');
- assert.match(card.asset(),/\/xpeng-asset-vehicles-g6-2026-core_plus_rwd-arctic_white\.webp$/);
+ assert.match(card.asset(),/\/xpeng-asset-vehicles-g6-2026-core_performance_awd-arctic_white\.webp$/);
  assert.doesNotMatch(card.shadowRoot.innerHTML,/Manual sensor mapping|Exterior paint|Interior cabin finish/);
 });
 
@@ -129,53 +129,89 @@ test('when backend has no appearance entities, editor configuration is used',()=
 test('official 2026 paints and cabin colours depend on model',()=>{
   const x=vm.runInNewContext('({xpAllowedPaints,xpAllowedInteriors,xpIsVerifiedPalette})',context);
   assert.equal(x.xpIsVerifiedPalette('G6','2026'),true);
-  assert.equal(x.xpIsVerifiedPalette('G6','2024'),false);
+  assert.equal(x.xpIsVerifiedPalette('G6','2024'),true,'model paint preview is shared across years');
   assert.equal(x.xpAllowedPaints('G6','2026','core_plus_rwd').some(v=>v.id==='kaitoke_green_matte'),false);
   assert.equal(x.xpAllowedPaints('G9','2026','unspecified').some(v=>v.id==='kaitoke_green_matte'),true);
   assert.equal(x.xpAllowedInteriors('G9','2026','unspecified').some(v=>v.id==='saddle'),true);
+  assert.deepEqual(x.xpAllowedPaints('G6','2023','performance_awd').map(v=>v.id),x.xpAllowedPaints('G6','2026','black_edition').map(v=>v.id));
 });
 
-test('update time is behind an accessible info button, not static text',()=>{
-  const card=setup(data());
+test('information icon is directly beside network status and shows connection plus last update only',()=>{
+  const states=data();
+  states['sensor.my_xpeng_api_connection_status']={state:'connected'};
+  states['sensor.my_xpeng_last_update']={state:'2026-10-12T06:00:00Z'};
+  const card=setup(states);
   let html=card.shadowRoot.innerHTML;
-  assert.match(html,/data-meta-toggle/);
-  assert.doesNotMatch(html,/class="xp-updated"/);
-  card.shadowRoot.handlers.click({target:{closest:()=>({hasAttribute:key=>key==='data-meta-toggle',dataset:{}})}});
+  assert.match(html,/class="xp-header-right"[\s\S]*?class="xp-wifi xp-connected"[\s\S]*?class="xp-connection-label">Connected<\/span>[\s\S]*?class="xp-meta-tools"/);
+  assert.equal((html.match(/data-meta-toggle/g)||[]).length,1,'exactly one info control in header');
+  assert.doesNotMatch(html,/class="xp-meta-popover"/,'popup closed by default');
+  assert.doesNotMatch(html,/class="xp-updated"/,'no old separate updated label');
+  const info={hasAttribute:key=>key==='data-meta-toggle',dataset:{}};
+  card.shadowRoot.handlers.click({target:{closest:()=>info}});
   html=card.shadowRoot.innerHTML;
-  assert.match(html,/Last vehicle update/);
-  assert.match(html,/xp-cabin-mini/);
+  const pop=html.slice(html.indexOf('<div id="xp-last-update-details"'),html.indexOf('</header>'));
+  assert.ok(pop,'info popup must be anchored to the header');
+  assert.match(pop,/Vehicle connection and last update/);
+  assert.match(pop,/<small>Connection<\/small><strong>Connected<\/strong>/);
+  assert.match(pop,/<small>Last vehicle update<\/small><strong>[^<]+<\/strong>/);
+  assert.doesNotMatch(pop,/Interior finish|Artwork|Displayed vehicle|xp-cabin-mini|Cabin illustration/);
+  assert.equal((pop.match(/class="xp-meta-field"/g)||[]).length,2);
+  assert.equal((pop.match(/<small>/g)||[]).length,2);
+  assert.equal((pop.match(/<strong>/g)||[]).length,2);
+  card.shadowRoot.handlers.click({target:{closest:()=>info}});
+  assert.doesNotMatch(card.shadowRoot.innerHTML,/class="xp-meta-popover"/);
 });
-
+test('offline and error network labels stay visible and the same header info remains on charging',()=>{
+  const states=data(),card=setup(states);
+  assert.match(card.shadowRoot.innerHTML,/class="xp-connection-label">Not connected<\/span>/);
+  states['sensor.my_xpeng_api_connection_status']={state:'auth_error'};
+  states['binary_sensor.my_xpeng_is_charging']={state:'on'};
+  card.hass={states};
+  assert.equal(card._view,'charging');
+  assert.match(card.shadowRoot.innerHTML,/class="xp-connection-label">Connection error<\/span>/);
+  assert.equal((card.shadowRoot.innerHTML.match(/data-meta-toggle/g)||[]).length,1);
+  card.shadowRoot.handlers.click({target:{closest:()=>({hasAttribute:key=>key==='data-meta-toggle'})}});
+  const chargingHtml=card.shadowRoot.innerHTML;
+  const pop=chargingHtml.slice(chargingHtml.indexOf('<div id="xp-last-update-details"'),chargingHtml.indexOf('</header>'));
+  assert.ok(pop,'info popup available in charging mode');
+  assert.match(pop,/<small>Connection<\/small><strong>Connection error<\/strong>/);
+  assert.match(pop,/<small>Last vehicle update<\/small><strong>[^<]+<\/strong>/);
+  assert.doesNotMatch(pop,/Interior finish|Artwork|Displayed vehicle|xp-cabin-mini/);
+  assert.equal((pop.match(/class="xp-meta-field"/g)||[]).length,2);
+});
 test('rendering missing exact art uses safe shape fallback, not previous-year imagery',()=>{
  const card=setup(data());
- assert.match(card.asset(),/\/xpeng-asset-vehicles-g6-2026-core_plus_rwd-arctic_white\.webp$/);
+ assert.match(card.asset(),/\/xpeng-asset-vehicles-g6-2026-core_performance_awd-arctic_white\.webp$/);
  assert.match(card.placeholderArt(),/^data:image\/svg\+xml;/);
  assert.doesNotMatch(card.asset(),/g6-studio\.webp/);
 });
 
-test('card editor offers model/year/paint/interior only in settings, alongside 15 mapping fields',()=>{
-  const Editor=tags.get('xpeng-vehicle-card-editor');
-  const editor=new Editor();
-  editor.setConfig({type:'custom:xpeng-vehicle-card',prefix:'my_xpeng',model:'G6',year:'2026',trim:'core_plus_rwd',
-    color:'arctic_white',interior:'light_gray'});
-  editor.hass={states:{'sensor.custom_battery':{state:'93'},'binary_sensor.custom_charging':{state:'on'}}};
-  const html=editor.shadowRoot.innerHTML;
-  assert.match(html,/Manual sensor mapping/);
-  assert.match(html,/data-key="year"/);
-  assert.match(html,/data-key="model"/);
-  assert.match(html,/data-key="trim"/);
-  assert.match(html,/data-key="color"/);
-  assert.match(html,/data-key="interior"/);
-  assert.match(html,/data-entity="soc"/);
-  assert.match(html,/data-entity="charging"/);
-  assert.match(html,/sensor.custom_battery/);
-  assert.match(html,/binary_sensor.custom_charging/);
+test('the editor shows auto mode by default and all 15 sensors only after selecting manual',()=>{
+ const Editor=tags.get('xpeng-vehicle-card-editor'),editor=new Editor();
+ editor.setConfig({prefix:'my_xpeng',model:'G6',year:'2026'});
+ editor.hass={states:{'sensor.custom_battery':{state:'93'},'binary_sensor.custom_charging':{state:'on'}}};
+ const html=editor.shadowRoot.innerHTML;
+ for(const key of ['model','year','trim','color','interior','sensor_mapping_mode'])
+   assert.match(html,new RegExp('data-key="'+key+'"'));
+ assert.match(html,/Automatic · XPENG integration/);
+ assert.doesNotMatch(html,/data-entity="|<h3>Data source|data-key="prefix"|data-key="image"|data-key="top_image"/);
+ const change={dataset:{key:'sensor_mapping_mode'},value:'manual',hasAttribute:()=>false};
+ editor.shadowRoot.handlers.change({target:{closest:()=>change}});
+ const expanded=editor.shadowRoot.innerHTML;
+ assert.equal(editor._cfg.sensor_mapping_mode,'manual');
+ assert.equal((expanded.match(/data-entity="/g)||[]).length,15);
+ assert.match(expanded,/data-entity="soc"/);
+ assert.match(expanded,/data-entity="charging"/);
+ assert.match(expanded,/sensor.custom_battery/);
+ assert.match(expanded,/binary_sensor.custom_charging/);
+ change.value='auto';
+ editor.shadowRoot.handlers.change({target:{closest:()=>change}});
+ assert.doesNotMatch(editor.shadowRoot.innerHTML,/data-entity="/);
 });
-
 test('manual sensor mapping persists as entities and overrides automatic prefix lookup',()=>{
   const Editor=tags.get('xpeng-vehicle-card-editor');
   const editor=new Editor();
-  editor.setConfig({type:'custom:xpeng-vehicle-card',prefix:'my_xpeng',model:'G6',year:'2026',color:'arctic_white'});
+  editor.setConfig({type:'custom:xpeng-vehicle-card',prefix:'my_xpeng',model:'G6',year:'2026',color:'arctic_white',sensor_mapping_mode:'manual'});
   const el={dataset:{entity:'soc'},value:'sensor.alternate_battery',hasAttribute:k=>k==='data-entity',
     setCustomValidity(){},reportValidity(){}};
   editor.shadowRoot.handlers.change({target:{closest:()=>el}});
@@ -194,7 +230,7 @@ test('manual sensor mapping persists as entities and overrides automatic prefix 
 test('card editor rejects invalid manual entity IDs',()=>{
   const Editor=tags.get('xpeng-vehicle-card-editor');
   const editor=new Editor();
-  editor.setConfig({prefix:'my_xpeng',year:'2026',model:'G6'});
+  editor.setConfig({prefix:'my_xpeng',year:'2026',model:'G6',sensor_mapping_mode:'manual'});
   let rejected=false;
   const el={dataset:{entity:'soc'},value:'sensor.BAD-ID',hasAttribute:k=>k==='data-entity',
     setCustomValidity:message=>{rejected=Boolean(message);},reportValidity(){}};
@@ -225,7 +261,7 @@ test('the alpha-cutout G6 preview has no studio mask or visible artwork watermar
  const html=c.shadowRoot.innerHTML;
  assert.doesNotMatch(html,/Illustrative vehicle art/);
  assert.doesNotMatch(html,/class="xp-car xp-studio-car"/);
- assert.match(c.asset(),/\/xpeng-asset-vehicles-g6-2026-core_plus_rwd-arctic_white\.webp$/);
+ assert.match(c.asset(),/\/xpeng-asset-vehicles-g6-2026-core_performance_awd-arctic_white\.webp$/);
  assert.match(html,/class="xp-night-photo"/);
 });
 
@@ -283,7 +319,7 @@ test('external integrations may map any HA entity domain or an attribute, with a
 test('editor accepts other HA domains and attribute paths, invalid strings are rejected',()=>{
  const Editor=tags.get('xpeng-vehicle-card-editor');
  const editor=new Editor();
- editor.setConfig({prefix:'my_xpeng',year:'2026',model:'G6'});
+ editor.setConfig({prefix:'my_xpeng',year:'2026',model:'G6',sensor_mapping_mode:'manual'});
  editor.hass={states:{'select.external_charge':{state:'charging'},'input_number.ev_soc':{state:'80'}}};
  assert.match(editor.shadowRoot.innerHTML,/select.external_charge/);
  assert.match(editor.shadowRoot.innerHTML,/input_number.ev_soc/);
@@ -377,10 +413,157 @@ test('card editor exposes the independent photographic background and preserves 
  const Editor=tags.get('xpeng-vehicle-card-editor'),editor=new Editor();
  editor.setConfig({prefix:'my_xpeng',model:'G6',year:'2026',background_image:'/local/xpeng/bg.webp',
    image:'/local/xpeng/xpeng-g6-2026-white-cutout.webp'});
- assert.match(editor.shadowRoot.innerHTML,/data-key="background_image"/);
+ assert.doesNotMatch(editor.shadowRoot.innerHTML,/data-key="background_image"/);
  const ctrl={dataset:{key:'color'},value:'graphite_gray',hasAttribute:()=>false,
    setCustomValidity(){},reportValidity(){}};
  editor.shadowRoot.handlers.change({target:{closest:()=>ctrl}});
  assert.equal(editor._cfg.background_image,'/local/xpeng/bg.webp');
  assert.equal(editor._cfg.image,undefined,'G6 white cutout cannot transfer to another paint');
+});
+
+
+test('tire selection transforms central vehicle into overhead four-wheel view and back',()=>{
+ const states=data(),card=setup(states),background=card.sceneBackdrop();
+ assert.match(card.shadowRoot.innerHTML,/data-tire-toggle/);
+ const toggle={hasAttribute:key=>key==='data-tire-toggle'};
+ card.shadowRoot.handlers.click({target:{closest:()=>toggle}});
+ let html=card.shadowRoot.innerHTML;
+ assert.match(html,/class="xp-tire-screen"/);
+ assert.match(html,/class="xp-top-car"/);
+ assert.doesNotMatch(html,/data-car-art/,'normal three-quarter vehicle must disappear during top view');
+ assert.match(html,/Back to vehicle/);
+ for(const wheel of ['tire_fl','tire_fr','tire_rl','tire_rr'])
+   assert.match(html,new RegExp('data-wheel="'+wheel+'"'));
+ assert.equal((html.match(/<strong>2.5<\/strong>/g)||[]).length,4);
+ assert.equal(card.sceneBackdrop(),background,'tire view cannot change approved scenery');
+ assert.equal(card._view,'overview','tire detail is not a third vehicle status page');
+ card.shadowRoot.handlers.click({target:{closest:()=>toggle}});
+ assert.match(card.shadowRoot.innerHTML,/data-car-art/);
+ assert.doesNotMatch(card.shadowRoot.innerHTML,/class="xp-tire-screen"/);
+});
+test('optional exact overhead art follows model/trim/paint and is cleared when choosing another paint',()=>{
+ const CardEditor=tags.get('xpeng-vehicle-card-editor'),editor=new CardEditor();
+ const card=setup(data());
+ card.setConfig({model:'G6',year:'2026',trim:'core_plus_rwd',color:'arctic_white',top_image:'/local/g6-2026-white-overhead.webp'});
+ card._tireOpen=true;card.render();
+ assert.match(card.shadowRoot.innerHTML,/g6-2026-white-overhead.webp/);
+ assert.match(card.shadowRoot.innerHTML,/data-top-art/);
+ editor.setConfig({model:'G6',year:'2026',trim:'core_plus_rwd',color:'arctic_white',top_image:'/local/g6-2026-white-overhead.webp'});
+ assert.doesNotMatch(editor.shadowRoot.innerHTML,/data-key="top_image"/);
+ const control={dataset:{key:'color'},value:'graphite_gray',hasAttribute:()=>false,setCustomValidity(){},reportValidity(){}};
+ editor.shadowRoot.handlers.change({target:{closest:()=>control}});
+ assert.equal(editor._cfg.top_image,undefined,'overhead image must not carry to another paint');
+});
+test('tire pressures support bar, kPa, psi and individual unavailable readings without invented values',()=>{
+ const states=data(),card=setup(states);
+ states['sensor.my_xpeng_tire_pressure_front_left_kpa']={state:'2.4',attributes:{unit_of_measurement:'bar'}};
+ states['sensor.my_xpeng_tire_pressure_front_right_kpa']={state:'36.26',attributes:{unit_of_measurement:'psi'}};
+ states['sensor.my_xpeng_tire_pressure_rear_left_kpa']={state:'250',attributes:{unit_of_measurement:'kPa'}};
+ states['sensor.my_xpeng_tire_pressure_rear_right_kpa']={state:'260000',attributes:{unit_of_measurement:'Pa'}};
+ card.hass={states};
+ assert.equal(card.tirePressureBar('tire_fl'),2.4);
+ assert.ok(Math.abs(card.tirePressureBar('tire_fr')-2.5)<.01);
+ assert.equal(card.tirePressureBar('tire_rl'),2.5);
+ assert.equal(card.tirePressureBar('tire_rr'),2.6);
+ card._tireOpen=true;card.render();
+ assert.match(card.shadowRoot.innerHTML,/<strong>2.4<\/strong>/);
+ assert.match(card.shadowRoot.innerHTML,/<strong>2.6<\/strong>/);
+ states['sensor.my_xpeng_tire_pressure_front_right_kpa']={state:'unknown'};
+ card.hass={states};
+ assert.equal(card.tirePressureBar('tire_fr'),null);
+ assert.equal(card.tireSummary(),'—');
+ assert.ok(card.tireScreen().includes('data-wheel="tire_fr"'));
+ assert.ok(card.tireScreen().includes('<strong>—</strong>'));
+ states['sensor.my_xpeng_tire_pressure_front_right_kpa']={state:'250',attributes:{unit_of_measurement:'mystery'}};
+ card.hass={states};
+ assert.equal(card.tirePressureBar('tire_fr'),null);
+});
+
+test('header information only opens on user click and contains two live values',()=>{
+ const states=data();
+ states['sensor.my_xpeng_api_connection_status']={state:'online'};
+ states['sensor.my_xpeng_last_update']={state:'just-updated'};
+ const card=setup(states);
+ assert.doesNotMatch(source,/\.xp-tire-popover\{/,'obsolete tire popover styles must be removed');
+ assert.doesNotMatch(source,/\.xp-updated\{/,'obsolete always-hidden update label styles must be removed');
+ assert.doesNotMatch(card.shadowRoot.innerHTML,/<div id="xp-last-update-details"/);
+ let button=card.shadowRoot.innerHTML.match(/data-meta-toggle[^>]*aria-expanded="([^"]+)"/);
+ assert.ok(button&&button[1]==='false');
+ // Telemetry updates must never open the popup by themselves.
+ states['sensor.my_xpeng_api_connection_status']={state:'offline'};
+ card.hass={states};
+ assert.doesNotMatch(card.shadowRoot.innerHTML,/<div id="xp-last-update-details"/);
+ const click=()=>card.shadowRoot.handlers.click({target:{closest:()=>({
+   hasAttribute:attr=>attr==='data-meta-toggle',dataset:{}
+ })}});
+ click();
+ let html=card.shadowRoot.innerHTML;
+ let popup=html.slice(html.indexOf('<div id="xp-last-update-details"'),html.indexOf('</header>'));
+ assert.equal((popup.match(/class="xp-meta-field"/g)||[]).length,2);
+ assert.match(popup,/<small>Connection<\/small><strong>Not connected<\/strong>/);
+ assert.match(popup,/<small>Last vehicle update<\/small><strong>just-updated<\/strong>/);
+ for(const forbidden of ['Interior finish','Artwork','Displayed vehicle','Cabin illustration'])
+   assert.ok(!popup.includes(forbidden),forbidden);
+ // Changing an entity while open refreshes the same two values in place.
+ states['sensor.my_xpeng_api_connection_status']={state:'connected'};
+ card.hass={states};
+ popup=card.shadowRoot.innerHTML.slice(card.shadowRoot.innerHTML.indexOf('<div id="xp-last-update-details"'),
+   card.shadowRoot.innerHTML.indexOf('</header>'));
+ assert.match(popup,/<small>Connection<\/small><strong>Connected<\/strong>/);
+ assert.equal((popup.match(/class="xp-meta-field"/g)||[]).length,2);
+ click();
+ assert.doesNotMatch(card.shadowRoot.innerHTML,/<div id="xp-last-update-details"/);
+});
+
+test('the year and selected trim never alter car, top-down artwork, or visual labels',()=>{
+ const card=new Card();
+ card.setConfig({model:'G6',year:'2023',trim:'standard_range_rwd',
+   color:'arctic_white',interior:'light_gray'});
+ const appearance={car:card.carArt(),top:card.topCarArt(),tire:card.tireScreen(),
+   asset:card.assetSpec().src};
+ card.setConfig({model:'G6',year:'2026',trim:'black_edition',
+   color:'arctic_white',interior:'light_gray'});
+ assert.equal(card.assetSpec().src,appearance.asset);
+ assert.equal(card.carArt(),appearance.car);
+ assert.equal(card.topCarArt(),appearance.top);
+ assert.equal(card.tireScreen(),appearance.tire);
+ assert.doesNotMatch(card.tireScreen(),/\b20(?:2[0-9]|3[0-9])\b/,'model year must never decorate the image');
+});
+
+test('auto mode ignores saved manual overrides; manual mode shows 15 sensor fields',()=>{
+ const Editor=tags.get('xpeng-vehicle-card-editor'),ed=new Editor();
+ ed.setConfig({prefix:'my_xpeng',model:'G6',entities:{soc:'sensor.custom_soc'},
+   sensor_mapping_mode:'auto',image:'/local/g6.webp',background_image:'/local/bg.webp'});
+ assert.doesNotMatch(ed.shadowRoot.innerHTML,/data-entity="|Data source|data-key="prefix"|data-key="image"|data-key="background_image"/);
+ const change=(value)=>{
+  const el={dataset:{key:'sensor_mapping_mode'},value,hasAttribute:()=>false};
+  ed.shadowRoot.handlers.change({target:{closest:()=>el}});
+ };
+ change('manual');
+ assert.equal((ed.shadowRoot.innerHTML.match(/data-entity="/g)||[]).length,15);
+ assert.equal(ed._cfg.entities.soc,'sensor.custom_soc');
+ const states=data();states['sensor.custom_soc']={state:'77'};
+ const card=setup(states);
+ card.setConfig({...ed._cfg});card.hass={states};
+ assert.equal(card.number('soc'),77);
+ change('auto');
+ assert.doesNotMatch(ed.shadowRoot.innerHTML,/data-entity="/);
+ assert.equal(ed._cfg.entities.soc,'sensor.custom_soc');
+ card.setConfig({...ed._cfg});card.hass={states};
+ assert.equal(card.number('soc'),62,'auto ignores stored manual overrides');
+ assert.equal(card._config.image,'/local/g6.webp','advanced YAML vehicle image retained');
+ assert.equal(card._config.background_image,'/local/bg.webp','advanced YAML scene retained');
+ change('manual');
+ assert.equal(ed._cfg.entities.soc,'sensor.custom_soc');
+ assert.equal((ed.shadowRoot.innerHTML.match(/data-entity="/g)||[]).length,15);
+});
+test('legacy YAML entity overrides remain active without mode',()=>{
+ const states=data();states['sensor.custom_soc']={state:'91'};
+ const card=setup(states);
+ card.setConfig({prefix:'my_xpeng',entities:{soc:'sensor.custom_soc'}});
+ card.hass={states};
+ assert.equal(card.number('soc'),91);
+ const Editor=tags.get('xpeng-vehicle-card-editor'),ed=new Editor();
+ ed.setConfig({prefix:'my_xpeng',entities:{soc:'sensor.custom_soc'}});
+ assert.equal((ed.shadowRoot.innerHTML.match(/data-entity="/g)||[]).length,15);
 });

@@ -1,3 +1,7 @@
+> **ARCHIVED CONCEPT — NOT THE ACTIVE DASHBOARD SPECIFICATION.** This file describes an abandoned multi-page UI prototype. For the current owner-approved two-screen status/charging card with top-down TPMS and click-only network info, see [DESIGN_LOCK.md](../DESIGN_LOCK.md) and [README_HE.md](../README_HE.md). Do not implement older navigation, climate, or interior preview concepts from this page.
+
+---
+
 # XPENG Vehicle Card — clean rebuild v1 (preview / not released)
 
 This iteration is a **status-first Home Assistant vehicle dashboard**.

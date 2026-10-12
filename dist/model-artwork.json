@@ -1,0 +1,871 @@
+{
+  "schema_version": 2,
+  "as_of": "2026-10-12",
+  "selection": "model + exterior paint ONLY",
+  "model_year": "changes trim names only, never artwork",
+  "selected_trim": "informational only, never artwork",
+  "backdrop": "xpeng-approved-lakeside-background.webp",
+  "notice": "Existing assets are illustrative/unverified; a verified highest-factory-trim packshot does not exist for every model. Rear and overhead views are missing.",
+  "models": [
+    {
+      "model": "G3",
+      "display_name": "G3",
+      "visual_trim_source": null,
+      "visual_year_policy": "shared-across-all-years",
+      "visual_trim_policy": "shared-across-all-selected-trims",
+      "colors": {
+        "arctic_white": {
+          "front": {
+            "path": "models/g3-arctic_white.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "graphite_gray": {
+          "front": {
+            "path": "models/g3-space_grey.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "midnight_black": {
+          "front": {
+            "path": "models/g3-jet_black.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "silver_frost": {
+          "front": {
+            "path": "models/g3-silver_frost.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "stellar_purple": {
+          "front": {
+            "path": "models/g3-stellar_purple.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        }
+      }
+    },
+    {
+      "model": "G3i",
+      "display_name": "G3i",
+      "visual_trim_source": null,
+      "visual_year_policy": "shared-across-all-years",
+      "visual_trim_policy": "shared-across-all-selected-trims",
+      "colors": {
+        "arctic_white": {
+          "front": {
+            "path": "models/g3i-arctic_white.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "graphite_gray": {
+          "front": {
+            "path": "models/g3i-space_grey.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "midnight_black": {
+          "front": {
+            "path": "models/g3i-jet_black.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "silver_frost": {
+          "front": {
+            "path": "models/g3i-silver_frost.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "stellar_purple": {
+          "front": {
+            "path": "models/g3i-stellar_purple.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        }
+      }
+    },
+    {
+      "model": "P5",
+      "display_name": "P5",
+      "visual_trim_source": null,
+      "visual_year_policy": "shared-across-all-years",
+      "visual_trim_policy": "shared-across-all-selected-trims",
+      "colors": {
+        "arctic_white": {
+          "front": {
+            "path": "models/p5-arctic_white.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "graphite_gray": {
+          "front": {
+            "path": "models/p5-space_grey.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "midnight_black": {
+          "front": {
+            "path": "models/p5-jet_black.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "silver_frost": {
+          "front": {
+            "path": "models/p5-silver_frost.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "stellar_purple": {
+          "front": {
+            "path": "models/p5-stellar_purple.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        }
+      }
+    },
+    {
+      "model": "P7",
+      "display_name": "P7 (Original)",
+      "visual_trim_source": null,
+      "visual_year_policy": "shared-across-all-years",
+      "visual_trim_policy": "shared-across-all-selected-trims",
+      "colors": {
+        "arctic_white": {
+          "front": {
+            "path": "models/p7-arctic_white.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "graphite_gray": {
+          "front": {
+            "path": "models/p7-space_grey.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "midnight_black": {
+          "front": {
+            "path": "models/p7-jet_black.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "silver_frost": {
+          "front": {
+            "path": "models/p7-silver_frost.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "stellar_purple": {
+          "front": {
+            "path": "models/p7-stellar_purple.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        }
+      }
+    },
+    {
+      "model": "P7i",
+      "display_name": "P7i",
+      "visual_trim_source": null,
+      "visual_year_policy": "shared-across-all-years",
+      "visual_trim_policy": "shared-across-all-selected-trims",
+      "colors": {
+        "arctic_white": {
+          "front": {
+            "path": "models/p7i-arctic_white.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "graphite_gray": {
+          "front": {
+            "path": "models/p7i-space_grey.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "midnight_black": {
+          "front": {
+            "path": "models/p7i-jet_black.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "silver_frost": {
+          "front": {
+            "path": "models/p7i-silver_frost.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "stellar_purple": {
+          "front": {
+            "path": "models/p7i-stellar_purple.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        }
+      }
+    },
+    {
+      "model": "Next P7",
+      "display_name": "Next P7",
+      "visual_trim_source": null,
+      "visual_year_policy": "shared-across-all-years",
+      "visual_trim_policy": "shared-across-all-selected-trims",
+      "colors": {
+        "arctic_white": {
+          "front": {
+            "path": "models/next_p7-arctic_white.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "graphite_gray": {
+          "front": {
+            "path": "models/next_p7-space_grey.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "midnight_black": {
+          "front": {
+            "path": "models/next_p7-jet_black.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "silver_frost": {
+          "front": {
+            "path": "models/next_p7-silver_frost.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "stellar_purple": {
+          "front": {
+            "path": "models/next_p7-stellar_purple.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        }
+      }
+    },
+    {
+      "model": "P7+",
+      "display_name": "P7+",
+      "visual_trim_source": null,
+      "visual_year_policy": "shared-across-all-years",
+      "visual_trim_policy": "shared-across-all-selected-trims",
+      "colors": {
+        "arctic_white": {
+          "front": {
+            "path": "models/p7_plus-arctic_white.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "graphite_gray": {
+          "front": {
+            "path": "models/p7_plus-space_grey.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "midnight_black": {
+          "front": {
+            "path": "models/p7_plus-jet_black.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "silver_frost": {
+          "front": {
+            "path": "models/p7_plus-silver_frost.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "stellar_purple": {
+          "front": {
+            "path": "models/p7_plus-stellar_purple.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        }
+      }
+    },
+    {
+      "model": "G6",
+      "display_name": "G6",
+      "visual_trim_source": "core_performance_awd",
+      "visual_year_policy": "shared-across-all-years",
+      "visual_trim_policy": "shared-across-all-selected-trims",
+      "colors": {
+        "arctic_white": {
+          "front": {
+            "path": "vehicles/g6/2026/core_performance_awd/arctic_white.webp",
+            "tier": "highest-trim-preview",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "graphite_gray": {
+          "front": {
+            "path": "vehicles/g6/2026/core_performance_awd/graphite_gray.webp",
+            "tier": "highest-trim-preview",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "midnight_black": {
+          "front": {
+            "path": "vehicles/g6/2026/core_performance_awd/midnight_black.webp",
+            "tier": "highest-trim-preview",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "silver_frost": {
+          "front": {
+            "path": "vehicles/g6/2026/core_performance_awd/silver_frost.webp",
+            "tier": "highest-trim-preview",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "stellar_purple": {
+          "front": {
+            "path": "vehicles/g6/2026/core_performance_awd/stellar_purple.webp",
+            "tier": "highest-trim-preview",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        }
+      }
+    },
+    {
+      "model": "G7",
+      "display_name": "G7",
+      "visual_trim_source": null,
+      "visual_year_policy": "shared-across-all-years",
+      "visual_trim_policy": "shared-across-all-selected-trims",
+      "colors": {
+        "arctic_white": {
+          "front": {
+            "path": "models/g7-arctic_white.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "graphite_gray": {
+          "front": {
+            "path": "models/g7-space_grey.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "midnight_black": {
+          "front": {
+            "path": "models/g7-jet_black.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "silver_frost": {
+          "front": {
+            "path": "models/g7-silver_frost.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "stellar_purple": {
+          "front": {
+            "path": "models/g7-stellar_purple.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        }
+      }
+    },
+    {
+      "model": "G9",
+      "display_name": "G9",
+      "visual_trim_source": "performance_awd",
+      "visual_year_policy": "shared-across-all-years",
+      "visual_trim_policy": "shared-across-all-selected-trims",
+      "colors": {
+        "arctic_white": {
+          "front": {
+            "path": "vehicles/g9/2026/performance_awd/arctic_white.webp",
+            "tier": "highest-trim-preview",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "graphite_gray": {
+          "front": {
+            "path": "vehicles/g9/2026/performance_awd/graphite_gray.webp",
+            "tier": "highest-trim-preview",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "midnight_black": {
+          "front": {
+            "path": "vehicles/g9/2026/performance_awd/midnight_black.webp",
+            "tier": "highest-trim-preview",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "silver_frost": {
+          "front": {
+            "path": "vehicles/g9/2026/performance_awd/silver_frost.webp",
+            "tier": "highest-trim-preview",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "kaitoke_green_matte": {
+          "front": null,
+          "rear": null,
+          "top": null
+        }
+      }
+    },
+    {
+      "model": "G9L",
+      "display_name": "G9L",
+      "visual_trim_source": null,
+      "visual_year_policy": "shared-across-all-years",
+      "visual_trim_policy": "shared-across-all-selected-trims",
+      "colors": {
+        "arctic_white": {
+          "front": {
+            "path": "models/g9l-arctic_white.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "graphite_gray": {
+          "front": {
+            "path": "models/g9l-space_grey.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "midnight_black": {
+          "front": {
+            "path": "models/g9l-jet_black.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "silver_frost": {
+          "front": {
+            "path": "models/g9l-silver_frost.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "stellar_purple": {
+          "front": {
+            "path": "models/g9l-stellar_purple.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        }
+      }
+    },
+    {
+      "model": "X9",
+      "display_name": "X9",
+      "visual_trim_source": null,
+      "visual_year_policy": "shared-across-all-years",
+      "visual_trim_policy": "shared-across-all-selected-trims",
+      "colors": {
+        "arctic_white": {
+          "front": {
+            "path": "models/x9-arctic_white.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "graphite_gray": {
+          "front": {
+            "path": "models/x9-space_grey.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "midnight_black": {
+          "front": {
+            "path": "models/x9-jet_black.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "silver_frost": {
+          "front": {
+            "path": "models/x9-silver_frost.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "stellar_purple": {
+          "front": {
+            "path": "models/x9-stellar_purple.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        }
+      }
+    },
+    {
+      "model": "MONA M03",
+      "display_name": "MONA M03",
+      "visual_trim_source": null,
+      "visual_year_policy": "shared-across-all-years",
+      "visual_trim_policy": "shared-across-all-selected-trims",
+      "colors": {
+        "arctic_white": {
+          "front": {
+            "path": "models/mona_m03-arctic_white.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "graphite_gray": {
+          "front": {
+            "path": "models/mona_m03-space_grey.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "midnight_black": {
+          "front": {
+            "path": "models/mona_m03-jet_black.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "silver_frost": {
+          "front": {
+            "path": "models/mona_m03-silver_frost.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "stellar_purple": {
+          "front": {
+            "path": "models/mona_m03-stellar_purple.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        }
+      }
+    },
+    {
+      "model": "L03",
+      "display_name": "L03",
+      "visual_trim_source": null,
+      "visual_year_policy": "shared-across-all-years",
+      "visual_trim_policy": "shared-across-all-selected-trims",
+      "colors": {
+        "arctic_white": {
+          "front": {
+            "path": "models/l03-arctic_white.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "graphite_gray": {
+          "front": {
+            "path": "models/l03-space_grey.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "midnight_black": {
+          "front": {
+            "path": "models/l03-jet_black.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "silver_frost": {
+          "front": {
+            "path": "models/l03-silver_frost.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "stellar_purple": {
+          "front": {
+            "path": "models/l03-stellar_purple.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        }
+      }
+    },
+    {
+      "model": "GX",
+      "display_name": "GX (fleet/research)",
+      "visual_trim_source": null,
+      "visual_year_policy": "shared-across-all-years",
+      "visual_trim_policy": "shared-across-all-selected-trims",
+      "colors": {
+        "arctic_white": {
+          "front": {
+            "path": "models/gx-arctic_white.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "graphite_gray": {
+          "front": {
+            "path": "models/gx-space_grey.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "midnight_black": {
+          "front": {
+            "path": "models/gx-jet_black.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "silver_frost": {
+          "front": {
+            "path": "models/gx-silver_frost.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "stellar_purple": {
+          "front": {
+            "path": "models/gx-stellar_purple.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        }
+      }
+    },
+    {
+      "model": "Other",
+      "display_name": "Other / Future XPENG",
+      "visual_trim_source": null,
+      "visual_year_policy": "shared-across-all-years",
+      "visual_trim_policy": "shared-across-all-selected-trims",
+      "colors": {
+        "arctic_white": {
+          "front": {
+            "path": "models/other-arctic_white.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "graphite_gray": {
+          "front": {
+            "path": "models/other-space_grey.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "midnight_black": {
+          "front": {
+            "path": "models/other-jet_black.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "silver_frost": {
+          "front": {
+            "path": "models/other-silver_frost.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        },
+        "stellar_purple": {
+          "front": {
+            "path": "models/other-stellar_purple.webp",
+            "tier": "model-family",
+            "manufacturer_verified": false
+          },
+          "rear": null,
+          "top": null
+        }
+      }
+    }
+  ]
+}
