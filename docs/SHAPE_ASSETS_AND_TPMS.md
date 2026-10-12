@@ -29,3 +29,10 @@ Frontend card only. The XPENG Home Assistant backend integration is unchanged.
 2. Do not claim an illustration is an officially accurate photo or that the model's highest trim has been authenticated.
 3. Collect licensed transparent cutouts by model and colour if true top-variant photographic realism is required.
 4. No changes to HA integration or user-approved backdrop.
+
+## Network / last-update header
+
+- The header's right-hand side shows the Wi-Fi icon and a real connection state label (`Connected`, `Not connected`, or `Connection error`); it never guesses online status from missing telemetry.
+- A small info icon sits directly beside the network status **on the same line**, on desktop and mobile, in Overview, Charging and tire detail.
+- Tapping that icon reveals just `Last vehicle update` and its sensor-derived value. No cabin imagery, model, trim, paint, connection duplicate or artwork metadata appears in the info popover.
+- The old detached floating info control is removed. The approved background and integrations are unchanged.

@@ -136,17 +136,42 @@ test('official 2026 paints and cabin colours depend on model',()=>{
   assert.deepEqual(x.xpAllowedPaints('G6','2023','performance_awd').map(v=>v.id),x.xpAllowedPaints('G6','2026','black_edition').map(v=>v.id));
 });
 
-test('update time is behind an accessible info button, not static text',()=>{
-  const card=setup(data());
+test('information icon is directly beside network status and shows ONLY last update',()=>{
+  const states=data();
+  states['sensor.my_xpeng_api_connection_status']={state:'connected'};
+  states['sensor.my_xpeng_last_update']={state:'2026-10-12T06:00:00Z'};
+  const card=setup(states);
   let html=card.shadowRoot.innerHTML;
-  assert.match(html,/data-meta-toggle/);
-  assert.doesNotMatch(html,/class="xp-updated"/);
-  card.shadowRoot.handlers.click({target:{closest:()=>({hasAttribute:key=>key==='data-meta-toggle',dataset:{}})}});
+  assert.match(html,/class="xp-header-right"[\s\S]*?class="xp-wifi xp-connected"[\s\S]*?class="xp-connection-label">Connected<\/span>[\s\S]*?class="xp-meta-tools"/);
+  assert.equal((html.match(/data-meta-toggle/g)||[]).length,1,'exactly one info control in header');
+  assert.doesNotMatch(html,/class="xp-meta-popover"/,'popup closed by default');
+  assert.doesNotMatch(html,/class="xp-updated"/,'no old separate updated label');
+  const info={hasAttribute:key=>key==='data-meta-toggle',dataset:{}};
+  card.shadowRoot.handlers.click({target:{closest:()=>info}});
   html=card.shadowRoot.innerHTML;
-  assert.match(html,/Last vehicle update/);
-  assert.match(html,/xp-cabin-mini/);
+  const pop=html.match(/<div id="xp-last-update-details"[\s\S]*?<\/div>/)?.[0];
+  assert.ok(pop,'info popup must be anchored to the header');
+  assert.match(pop,/Last vehicle update/);
+  assert.match(pop,/<strong>[\s\S]+<\/strong>/);
+  assert.doesNotMatch(pop,/Connection|Interior finish|Artwork|Displayed vehicle|xp-cabin-mini|Cabin illustration/);
+  assert.equal((pop.match(/<small>/g)||[]).length,1);
+  assert.equal((pop.match(/<strong>/g)||[]).length,1);
+  card.shadowRoot.handlers.click({target:{closest:()=>info}});
+  assert.doesNotMatch(card.shadowRoot.innerHTML,/class="xp-meta-popover"/);
 });
-
+test('offline and error network labels stay visible and the same header info remains on charging',()=>{
+  const states=data(),card=setup(states);
+  assert.match(card.shadowRoot.innerHTML,/class="xp-connection-label">Not connected<\/span>/);
+  states['sensor.my_xpeng_api_connection_status']={state:'auth_error'};
+  states['binary_sensor.my_xpeng_is_charging']={state:'on'};
+  card.hass={states};
+  assert.equal(card._view,'charging');
+  assert.match(card.shadowRoot.innerHTML,/class="xp-connection-label">Connection error<\/span>/);
+  assert.equal((card.shadowRoot.innerHTML.match(/data-meta-toggle/g)||[]).length,1);
+  card.shadowRoot.handlers.click({target:{closest:()=>({hasAttribute:key=>key==='data-meta-toggle'})}});
+  assert.match(card.shadowRoot.innerHTML,/class="xp-meta-popover"/);
+  assert.doesNotMatch(card.shadowRoot.innerHTML,/xp-cabin-mini/);
+});
 test('rendering missing exact art uses safe shape fallback, not previous-year imagery',()=>{
  const card=setup(data());
  assert.match(card.asset(),/\/xpeng-asset-vehicles-g6-2026-core_performance_awd-arctic_white\.webp$/);

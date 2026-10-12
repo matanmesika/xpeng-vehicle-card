@@ -167,11 +167,14 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-header{position:absolute;z-index:8;top:3.2%;left:4.5%;right:3%;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .xp-brand{display:flex;align-items:center;gap:14px;font-weight:600;letter-spacing:.31em;font-size:clamp(14px,1.4vw,23px);white-space:nowrap}
 .xp-x-mark{font-size:26px;letter-spacing:-.13em;transform:scaleX(1.4)}
-.xp-header-right{display:flex;align-items:center;gap:18px;font-size:clamp(12px,1.2vw,20px)}
+.xp-header-right{display:flex;align-items:center;gap:12px;min-width:0;font-size:clamp(12px,1.2vw,20px)}
 .xp-head-button{display:grid;place-items:center;border:0;background:transparent;padding:6px;color:#fff;border-radius:9px}
 .xp-head-button:hover{background:#ffffff1c}
 .xp-head-button svg{width:24px;height:24px}
-.xp-wifi{color:#7088a0;display:flex;align-items:center}
+.xp-wifi{color:#7088a0;display:flex;align-items:center;gap:7px;white-space:nowrap}
+.xp-wifi svg{flex:none}
+.xp-connection-label{font-size:clamp(11px,1vw,15px);font-weight:550;letter-spacing:0}
+.xp-wifi.xp-disconnected{color:#a8b3c4}
 .xp-wifi.xp-connected{color:#66a9ff}
 .xp-version{position:absolute;bottom:10px;right:12px;font-size:10px;color:#8399b6;opacity:.52;z-index:8}
 .xp-updated{position:absolute;z-index:4;right:5%;top:15%;text-align:right;color:#9cacca;font-size:clamp(11px,1vw,16px);line-height:1.45}
@@ -274,17 +277,15 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-subtle-link{bottom:15px;left:5%}
 .xp-version{right:10px;bottom:3px}
 }
-.xp-meta-tools{position:absolute;z-index:25;right:4.4%;top:14%;display:flex;align-items:flex-end;flex-direction:column;gap:8px}
-.xp-meta-trigger{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;border:1px solid #7399c077;background:#03172bba;color:#c9e1fa}
+.xp-meta-tools{position:relative;z-index:25;flex:none;display:flex;align-items:center}
+.xp-meta-trigger{display:grid;place-items:center;width:30px;height:30px;padding:3px;border-radius:50%;border:1px solid #7399c077;background:#03172bba;color:#d6e9ff}
 .xp-meta-trigger:hover,.xp-meta-trigger:focus-visible{background:#194465}
-.xp-meta-popover{width:min(310px,83vw);border:1px solid #6580a388;border-radius:15px;background:#061829f0;padding:16px;box-shadow:0 16px 45px #000b;backdrop-filter:blur(12px)}
-.xp-meta-popover>div:not(.xp-cabin-mini){display:flex;justify-content:space-between;align-items:center;gap:14px;margin:6px 0}
-.xp-meta-popover small{font-size:12px;color:#b1c0d3}
-.xp-meta-popover strong{font-size:12px;text-align:right;max-width:60%;overflow-wrap:anywhere}
-.xp-meta-popover p{font-size:10px;line-height:1.4;color:#94a8bd;margin:6px 0 0}
+.xp-meta-popover{position:absolute;right:0;top:calc(100% + 9px);width:max-content;max-width:min(240px,82vw);border:1px solid #6580a388;border-radius:12px;background:#061829f3;padding:11px 13px;box-shadow:0 12px 35px #000b;backdrop-filter:blur(12px);display:flex;flex-direction:column;gap:5px;white-space:nowrap}
+.xp-meta-popover small{font-size:11px;color:#b1c0d3}
+.xp-meta-popover strong{font-size:14px;font-weight:600;color:#f0f7ff}
 .xp-cabin-mini{width:100%;height:auto;max-height:140px;margin-top:10px;display:block}
 .xp-updated{display:none!important}
-@media(max-width:850px){.xp-meta-tools{top:151px;right:5%}.xp-charge .xp-meta-tools{top:158px}}
+@media(max-width:850px){.xp-header-right{gap:8px}.xp-wifi{gap:4px}.xp-connection-label{font-size:11px}.xp-meta-trigger{width:28px;height:28px;padding:2px}.xp-meta-popover{top:calc(100% + 8px)}}
 .xp-car,.xp-car.xp-paint-silver_frost,.xp-car.xp-paint-space_grey,.xp-car.xp-paint-jet_black,.xp-car.xp-paint-stellar_purple{filter:drop-shadow(0 20px 20px #000b)}
 .xp-art-identity{position:absolute;z-index:8;left:45%;bottom:8%;font-size:11px;letter-spacing:.03em;color:#b5c4d5;opacity:.8;text-shadow:0 2px 4px #000a;pointer-events:none}
 .xp-studio-car{mask-image:none;-webkit-mask-image:none}
@@ -496,12 +497,27 @@ class XpengVehicleCard extends HTMLElement{
       style="background-image:url(&quot;${xpEsc(source)}&quot;)"></div>`;
   }
  header(){
-   const conn=String(this.val('connection')||'').toLowerCase();
-   const connected=['connected','online'].includes(conn);
-   return `<header class="xp-header"><div class="xp-brand"><span class="xp-x-mark">✕</span><span>XPENG</span></div>
-     <div class="xp-header-right"><span class="xp-wifi ${connected?'xp-connected':''}" aria-label="${xpEsc(xpConnText(this.val('connection')))}"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M2 8c5.7-5.6 14.3-5.6 20 0M5 12c4-3.6 10-3.6 14 0M9 16c1.8-1.4 4.2-1.4 6 0"/><circle cx="12" cy="20" r="1.3" fill="currentColor" stroke="none"/></svg></span>
-     </div></header>`;
- }
+    const connection=this.val('connection'),status=xpConnText(connection);
+    const connected=status==='Connected';
+    return `<header class="xp-header"><div class="xp-brand"><span class="xp-x-mark">✕</span><span>XPENG</span></div>
+      <div class="xp-header-right">
+        <span class="xp-wifi ${connected?'xp-connected':'xp-disconnected'}" role="status"
+          aria-label="${xpEsc('Vehicle network: '+status)}" title="${xpEsc(status)}">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor"
+            stroke-width="2.3" stroke-linecap="round" aria-hidden="true">
+            <path d="M2 8c5.7-5.6 14.3-5.6 20 0M5 12c4-3.6 10-3.6 14 0M9 16c1.8-1.4 4.2-1.4 6 0"/>
+            <circle cx="12" cy="20" r="1.3" fill="currentColor" stroke="none"/></svg>
+          <span class="xp-connection-label">${xpEsc(status)}</span>
+        </span>
+        <div class="xp-meta-tools">
+          <button class="xp-meta-trigger" type="button" data-meta-toggle
+            aria-label="Show last vehicle update" aria-expanded="${this._infoOpen?'true':'false'}"
+            aria-controls="xp-last-update-details" title="Last vehicle update">${xpIcon('info',20)}</button>
+          ${this._infoOpen?`<div id="xp-last-update-details" class="xp-meta-popover" role="region"
+            aria-label="Last vehicle update"><small>Last vehicle update</small><strong>${xpEsc(this.lastUpdate())}</strong></div>`:''}
+        </div>
+      </div></header>`;
+  }
  progress(){
    const soc=xpPercent(this.val('soc'));
    return `<div class="xp-progress" role="progressbar" aria-label="Battery state of charge" aria-valuemin="0" aria-valuemax="100" ${soc===null?'':'aria-valuenow="'+soc+'"'}>
@@ -510,25 +526,7 @@ class XpengVehicleCard extends HTMLElement{
  socHtml(){
   const v=this.number('soc');return v===null?'—':xpNum(v)+'<span class="xp-unit">%</span>';
  }
- updated(){
-    const age=xpEsc(this.lastUpdate()),conn=xpEsc(xpConnText(this.val('connection')));
-    const v=this.appearance();
-    const finish=xpEsc(XP_INTERIORS.find(x=>x.id===v.interior)?.label||v.interior);
-     const artwork=this.assetSpec();
-    return `<div class="xp-meta-tools">
-      <button class="xp-meta-trigger" type="button" data-meta-toggle aria-label="Last vehicle update and information"
-      aria-expanded="${this._infoOpen?'true':'false'}" title="Vehicle information">${xpIcon('info',22)}</button>
-      ${this._infoOpen?`<div class="xp-meta-popover" role="region" aria-label="Last vehicle update">
-        <div><small>Last vehicle update</small><strong>${age}</strong></div>
-        <div><small>Connection</small><strong>${conn}</strong></div>
-        <div><small>Interior finish</small><strong>${finish}</strong></div>
-         <div><small>Displayed vehicle</small><strong>Highest available trim</strong></div>
-         <div><small>Artwork</small><strong>${xpEsc(artwork.view_status)}</strong></div>
-        ${this.interiorPreview()}
-        <p>Cabin illustration is colour guidance, not a photograph.</p>
-      </div>`:''}</div>`;
-  }
-  interiorPreview(){
+ interiorPreview(){
     const a=this.appearance(),finish=XP_INTERIORS.find(x=>x.id===a.interior)||XP_INTERIORS[0];
     // Model/year/trim/cabin custom imagery stays independent of the background.
     // If no matching art is provided, the colour-accurate schematic remains honest.
@@ -600,7 +598,7 @@ class XpengVehicleCard extends HTMLElement{
   }
  overview(){
   const rows=[['gauge','Odometer',this.num('odometer','km')],['tire','Tire pressure',this.tireSummary()],['pin','Location',this.locationText()]];
-  return `${this.title()}${this.updated()}${this.carArt()}
+  return `${this.title()}${this.carArt()}
     <section class="xp-overview-stat" aria-label="Battery and estimated range">
      <div class="xp-batt-line"><div class="xp-batt-glyph"><div class="xp-batt-fill" style="height:${xpPercent(this.val('soc'))??0}%"></div></div>
        <div><div class="xp-stat-label">Battery</div><div class="xp-soc">${this.socHtml()}</div></div></div>
@@ -614,7 +612,7 @@ class XpengVehicleCard extends HTMLElement{
     </aside>`;
  }
  charging(){
-  return `${this.title()}${this.updated()}
+  return `${this.title()}
     <svg class="xp-cable" viewBox="0 0 1500 850" preserveAspectRatio="none" aria-hidden="true"><path d="M1282 444 Q1329 474 1366 569T1453 566" fill="none" stroke="#00e8b9" stroke-width="13" stroke-linecap="round" opacity=".29"/>
     <path d="M1282 444 Q1329 474 1366 569T1453 566" fill="none" stroke="#2efad2" stroke-width="5" stroke-linecap="round"/></svg>
     <div class="xp-station" aria-hidden="true">✕</div>${this.carArt()}
