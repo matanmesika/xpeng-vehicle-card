@@ -139,6 +139,13 @@ function xpNormalizeAppearance(value){const v=value||{};const yr=XP_YEARS.includ
 }
 
 function xpAssetModel(model){return String(model).toLowerCase().replace(/\s+/g,'_').replace(/\+/g,'_plus').replace(/[^a-z0-9_]/g,'');}
+// Build-time inventory: each entry corresponds to an existing packaged file.
+const XP_ARTWORK_INDEX = Object.freeze({
+  exact:new Set(["vehicles/g6/2026/black_edition/midnight_black.webp","vehicles/g6/2026/core_performance_awd/arctic_white.webp","vehicles/g6/2026/core_performance_awd/graphite_gray.webp","vehicles/g6/2026/core_performance_awd/midnight_black.webp","vehicles/g6/2026/core_performance_awd/silver_frost.webp","vehicles/g6/2026/core_performance_awd/stellar_purple.webp","vehicles/g6/2026/core_plus_rwd/arctic_white.webp","vehicles/g6/2026/core_plus_rwd/graphite_gray.webp","vehicles/g6/2026/core_plus_rwd/midnight_black.webp","vehicles/g6/2026/core_plus_rwd/silver_frost.webp","vehicles/g6/2026/core_plus_rwd/stellar_purple.webp","vehicles/g6/2026/core_rwd/arctic_white.webp","vehicles/g6/2026/core_rwd/graphite_gray.webp","vehicles/g6/2026/core_rwd/midnight_black.webp","vehicles/g6/2026/core_rwd/silver_frost.webp","vehicles/g6/2026/core_rwd/stellar_purple.webp","vehicles/g6/2026/unspecified/arctic_white.webp","vehicles/g6/2026/unspecified/graphite_gray.webp","vehicles/g6/2026/unspecified/midnight_black.webp","vehicles/g6/2026/unspecified/silver_frost.webp","vehicles/g6/2026/unspecified/stellar_purple.webp","vehicles/g9/2026/long_range_rwd/arctic_white.webp","vehicles/g9/2026/long_range_rwd/graphite_gray.webp","vehicles/g9/2026/long_range_rwd/midnight_black.webp","vehicles/g9/2026/long_range_rwd/silver_frost.webp","vehicles/g9/2026/performance_awd/arctic_white.webp","vehicles/g9/2026/performance_awd/graphite_gray.webp","vehicles/g9/2026/performance_awd/midnight_black.webp","vehicles/g9/2026/performance_awd/silver_frost.webp","vehicles/g9/2026/standard_range_rwd/arctic_white.webp","vehicles/g9/2026/standard_range_rwd/graphite_gray.webp","vehicles/g9/2026/standard_range_rwd/midnight_black.webp","vehicles/g9/2026/standard_range_rwd/silver_frost.webp","vehicles/g9/2026/unspecified/arctic_white.webp","vehicles/g9/2026/unspecified/graphite_gray.webp","vehicles/g9/2026/unspecified/midnight_black.webp","vehicles/g9/2026/unspecified/silver_frost.webp"]),
+  family:new Set(["models/g3-arctic_white.webp","models/g3-jet_black.webp","models/g3-silver_frost.webp","models/g3-space_grey.webp","models/g3-stellar_purple.webp","models/g3i-arctic_white.webp","models/g3i-jet_black.webp","models/g3i-silver_frost.webp","models/g3i-space_grey.webp","models/g3i-stellar_purple.webp","models/g6-arctic_white.webp","models/g6-jet_black.webp","models/g6-silver_frost.webp","models/g6-space_grey.webp","models/g6-stellar_purple.webp","models/g7-arctic_white.webp","models/g7-jet_black.webp","models/g7-silver_frost.webp","models/g7-space_grey.webp","models/g7-stellar_purple.webp","models/g9-arctic_white.webp","models/g9-jet_black.webp","models/g9-silver_frost.webp","models/g9-space_grey.webp","models/g9-stellar_purple.webp","models/g9l-arctic_white.webp","models/g9l-jet_black.webp","models/g9l-silver_frost.webp","models/g9l-space_grey.webp","models/g9l-stellar_purple.webp","models/gx-arctic_white.webp","models/gx-jet_black.webp","models/gx-silver_frost.webp","models/gx-space_grey.webp","models/gx-stellar_purple.webp","models/l03-arctic_white.webp","models/l03-jet_black.webp","models/l03-silver_frost.webp","models/l03-space_grey.webp","models/l03-stellar_purple.webp","models/mona_m03-arctic_white.webp","models/mona_m03-jet_black.webp","models/mona_m03-silver_frost.webp","models/mona_m03-space_grey.webp","models/mona_m03-stellar_purple.webp","models/next_p7-arctic_white.webp","models/next_p7-jet_black.webp","models/next_p7-silver_frost.webp","models/next_p7-space_grey.webp","models/next_p7-stellar_purple.webp","models/other-arctic_white.webp","models/other-jet_black.webp","models/other-silver_frost.webp","models/other-space_grey.webp","models/other-stellar_purple.webp","models/p5-arctic_white.webp","models/p5-jet_black.webp","models/p5-silver_frost.webp","models/p5-space_grey.webp","models/p5-stellar_purple.webp","models/p7-arctic_white.webp","models/p7-jet_black.webp","models/p7-silver_frost.webp","models/p7-space_grey.webp","models/p7-stellar_purple.webp","models/p7_plus-arctic_white.webp","models/p7_plus-jet_black.webp","models/p7_plus-silver_frost.webp","models/p7_plus-space_grey.webp","models/p7_plus-stellar_purple.webp","models/p7i-arctic_white.webp","models/p7i-jet_black.webp","models/p7i-silver_frost.webp","models/p7i-space_grey.webp","models/p7i-stellar_purple.webp","models/x9-arctic_white.webp","models/x9-jet_black.webp","models/x9-silver_frost.webp","models/x9-space_grey.webp","models/x9-stellar_purple.webp"])
+});
+const XP_SCENE_BACKGROUND = 'xpeng-reference-background.webp';
+function xpLocalArtworkPath(value){return typeof value==='string'&&/^\/(?:local|hacsfiles)\/[a-zA-Z0-9/_\-.]+$/.test(value);}
 const XP_CSS = `
 :host{display:block;color:#fff;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;--xp-mint:#00efbe;--xp-sky:#6aaaff}
 *{box-sizing:border-box}
@@ -337,48 +344,26 @@ class XpengVehicleCard extends HTMLElement{
  num(key,unit='',dec=0){const v=this.number(key);return v===null?'—':xpNum(v,dec)+(unit?' '+unit:'');}
  assetSpec(){
     const base=(this._config.image_path||'/hacsfiles/xpeng-vehicle-card/assets').replace(/\/$/,'');
-    const custom=this.vehicle()?.image||this._config.image;
-    const a=this.appearance(),model=xpAssetModel(a.model);
-    if(custom&&/^\/(?:local|hacsfiles)\/[a-zA-Z0-9/_\-.]+$/.test(custom))
-      return {src:custom,illustrative:false,studio:false,description:'User-supplied vehicle artwork'};
-    // Strict 2026 asset inventory: prefer year/trim/paint previews only when the
-    // exact packaged variant exists. Do NOT substitute a different colour or year.
-    // These are illustrative renderings, not manufacturer-certified photographs.
-    const supportedYearArt={
-      G6:{
-        core_rwd:['arctic_white','graphite_gray','midnight_black','silver_frost','stellar_purple'],
-        core_plus_rwd:['arctic_white','graphite_gray','midnight_black','silver_frost','stellar_purple'],
-        core_performance_awd:['arctic_white','graphite_gray','midnight_black','silver_frost','stellar_purple'],
-        black_edition:['midnight_black'],
-        unspecified:['arctic_white','graphite_gray','midnight_black','silver_frost','stellar_purple']
-      },
-      G9:{
-        standard_range_rwd:['arctic_white','graphite_gray','midnight_black','silver_frost'],
-        long_range_rwd:['arctic_white','graphite_gray','midnight_black','silver_frost'],
-        performance_awd:['arctic_white','graphite_gray','midnight_black','silver_frost'],
-        unspecified:['arctic_white','graphite_gray','midnight_black','silver_frost']
-      }
-    };
-    const paints=a.year==='2026'?supportedYearArt[a.model]?.[a.trim]:null;
-    if(paints?.includes(a.color)){
-      return {src:base+'/vehicles/'+model+'/'+a.year+'/'+xpAssetModel(a.trim)+'/'+a.color+'.webp',
-        illustrative:true,studio:false,
-        description:a.model+' '+a.year+' '+a.trim+' '+a.color+' illustrative year-specific preview; manufacturer verification pending'};
-    }
-    // When the colour is not in the exact model/year bundle, explicitly display a
-    // labelled silhouette rather than implying that another year's car is correct.
-    if(a.year==='2026'&&['G6','G9'].includes(a.model))
-      return {src:this.placeholderArt(),illustrative:true,studio:false,
-        description:'Coloured silhouette; exact '+a.model+' '+a.year+' '+a.color+' artwork pending'};
-    // Existing model-family images are explicitly illustrative for other model years.
-    // They are NEVER represented as manufacturer-approved exact model/year photography.
-    const legacy={graphite_gray:'space_grey',midnight_black:'jet_black'}[a.color]||a.color;
-    const available=['arctic_white','silver_frost','space_grey','jet_black','stellar_purple'];
-    if(available.includes(legacy))
-      return {src:base+'/models/'+model+'-'+legacy+'.webp',
-        illustrative:true,studio:false,description:'Generic model-family illustration; exact '+a.year+' image pending'};
-    return {src:this.placeholderArt(),illustrative:true,studio:false,
-      description:'Coloured silhouette; exact '+a.model+' '+a.year+' photography pending'};
+    const chosen=this.vehicle()?.image||this._config.image;
+    const a=this.appearance(),model=xpAssetModel(a.model),trim=xpAssetModel(a.trim);
+    // A specific user artwork override applies only to the selected card profile.
+    // Never select a different year/trim/colour because an exact file is absent.
+    if(xpLocalArtworkPath(chosen))
+      return {src:chosen,illustrative:false,studio:false,tier:'manual',
+        description:'User-selected local artwork; model/year/paint suitability is the owner\'s choice'};
+    const exact='vehicles/'+model+'/'+a.year+'/'+trim+'/'+a.color+'.webp';
+    if(XP_ARTWORK_INDEX.exact.has(exact))
+      return {src:base+'/'+exact,illustrative:true,studio:false,tier:'model-year-trim',
+        description:a.model+' '+a.year+' '+a.trim+' '+a.color+' — exact-path model-year preview (not manufacturer verified)'};
+    // The fallback is correctly named as model-family illustration, not year-exact art.
+    // This preserves selection for every catalogued model/year, even without photography.
+    const olderAlias={graphite_gray:'space_grey',midnight_black:'jet_black'}[a.color]||a.color;
+    const family='models/'+model+'-'+olderAlias+'.webp';
+    if(XP_ARTWORK_INDEX.family.has(family))
+      return {src:base+'/'+family,illustrative:true,studio:false,tier:'model-family',
+        description:a.model+' family illustration in '+a.color+'; exact '+a.year+' '+a.trim+' artwork unavailable'};
+    return {src:this.placeholderArt(),illustrative:true,studio:false,tier:'silhouette',
+      description:'Illustrative '+a.model+' '+a.year+' '+a.color+' silhouette; dedicated render unavailable'};
   }
   asset(){return this.assetSpec().src;}
   placeholderArt(){
@@ -429,7 +414,7 @@ class XpengVehicleCard extends HTMLElement{
  sceneBackdrop(){
     // The scenic background belongs to the DASHBOARD, not to a model image folder.
     // Identical pixel source and placement in both vehicle status and charging.
-    const source='/hacsfiles/xpeng-vehicle-card/assets/xpeng-reference-background.webp';
+    const source='/hacsfiles/xpeng-vehicle-card/assets/'+XP_SCENE_BACKGROUND;
     return `<div class="xp-night-photo" aria-hidden="true"
       style="background-image:url(&quot;${source}&quot;)"></div>`;
   }
@@ -484,6 +469,7 @@ class XpengVehicleCard extends HTMLElement{
     return `<img class="xp-car ${spec.studio?'xp-studio-car':''}" data-car-art
       src="${xpEsc(spec.src)}"
       title="${xpEsc(spec.description)}"
+      data-art-tier="${xpEsc(spec.tier)}"
       alt="${xpEsc('XPENG '+a.model+' '+a.year+', '+a.color.replaceAll('_',' ')+(spec.illustrative?' (illustrative artwork)':''))}" loading="eager">
       `;
   }
@@ -551,6 +537,12 @@ class XpengVehicleCardEditor extends HTMLElement{
    }
    const key=el.dataset.key;
    let cfg={...this._cfg,[key]:el.value};
+   if(key==='image'&&el.value&&!xpLocalArtworkPath(el.value)){
+     el.setCustomValidity('Use a local /local/... or /hacsfiles/... image URL');
+     el.reportValidity();return;
+   }
+   // A previous manual photo belongs to the old model/year/paint, not a new one.
+   if(['model','year','trim','color'].includes(key))delete cfg.image;
    if(cfg.prefix&&!/^[a-z0-9_]+$/.test(cfg.prefix))return;
    if(key==='year'&&!xpAllowedModels(cfg.year).some(x=>x.id===cfg.model))cfg.model=xpAllowedModels(cfg.year)[0]?.id||'Other';
    if(key==='year'||key==='model'){cfg.trim=xpAllowedTrims(cfg.model,cfg.year)[0].id;cfg.color=xpAllowedPaints(cfg.model,cfg.year,cfg.trim)[0].id;cfg.interior=xpAllowedInteriors(cfg.model,cfg.year,cfg.trim)[0].id;}
@@ -596,7 +588,9 @@ class XpengVehicleCardEditor extends HTMLElement{
      ${select('interior','Interior finish',xpAllowedInteriors(v.model,v.year,v.trim))}
      <p>${xpIsVerifiedPalette(v.model,v.year)?'Published colour palette; availability differs by market and trim.':'Illustrative colours for this model year; manufacturer availability is not verified.'}</p>
     <h3>Data source</h3><p>Every measurement supports automatic matching by prefix or optional manual entity assignment, including from any Home Assistant integration. Charging activates the charging screen only while charging is reported as active.</p>
-     <label>Image assets directory<input data-key="image_path" value="${xpEsc(v.image_path||'/hacsfiles/xpeng-vehicle-card/assets')}"></label>
+     <label>Optional exact vehicle image URL (when this profile has no bundled year-specific photo)<input data-key="image" value="${xpEsc(v.image||'')}" placeholder="/local/my_xpeng/cars/g6-2026-white.webp"></label>
+    <p>Background is stored separately and stays the same in both screens. The car image changes by your manual model/year/trim/exterior colour selection. 2026 G6/G9 have exact-path bundled previews; older/other models use clearly labelled illustrations unless you specify your own exact photo.</p>
+    <label>Image assets directory<input data-key="image_path" value="${xpEsc(v.image_path||'/hacsfiles/xpeng-vehicle-card/assets')}"></label>
     <details data-mappings ${expanded?'open':''}><summary>Manual sensor mapping · ${XP_MAPPABLE_FIELDS.length} fields</summary>
        <p>Auto mode: leave an item empty and it uses the prefix. Manual mode: pick any Home Assistant entity (including those from another integration), or use entity_id|attribute_name to read an attribute. Each field is configured independently.</p>
        <div class="xp-map-fields">${mappingRows}</div>
