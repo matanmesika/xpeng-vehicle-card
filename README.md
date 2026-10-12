@@ -108,3 +108,7 @@ _Not an official XPENG product. XPENG trademarks belong to their respective owne
 - Previous PNG previews in `previews/` are legacy design explorations. They are not current screenshots of v0.1.1, and will be replaced only after real browser captures pass visual review.
 
 For contribution and release gates see [AGENTS.md](AGENTS.md) and [artwork blocker #14](https://github.com/matanmesika/xpeng-vehicle-card/issues/14). **The project is a separate dashboard repository and makes no changes to the XPENG integration.**
+
+### Background implementation
+
+Both screens use the same **real raster image** `dist/assets/xpeng-reference-background.webp`, packaged in HACS and kept separate from the vehicle image and live HA data. It replaces the prior CSS/SVG-generated mountain skyline. The source is a clean landscape supplied during design review; it contains **no** baked-in vehicle, SOC, charging figures or user location. Other model images and lighting still need visual-review approval against the owner's composite screenshots.
