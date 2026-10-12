@@ -215,3 +215,26 @@ test('cabin preview changes with selected interior colour without changing the b
  card.setConfig({model:'G6',year:'2026',interior:'light_gray',interior_image:'/local/my-cabin.webp'});
  assert.match(card.interiorPreview(),/my-cabin.webp/);
 });
+
+test('a charging/rear image is selected by charging state without ever changing scene background',()=>{
+ const card=new Card();
+ card.setConfig({model:'G6',year:'2026',trim:'core_plus_rwd',color:'arctic_white',
+    image:'/local/front-g6.webp',charging_image:'/local/rear-g6.webp'});
+ const backdrop=card.sceneBackdrop();
+ assert.equal(card.assetSpec().src,'/local/front-g6.webp');
+ card.hass={states:{'binary_sensor.my_xpeng_is_charging':{state:'on'}}};
+ assert.equal(card.assetSpec().src,'/local/rear-g6.webp');
+ assert.equal(card.sceneBackdrop(),backdrop);
+ card.hass={states:{'binary_sensor.my_xpeng_is_charging':{state:'off'}}};
+ assert.equal(card.assetSpec().src,'/local/front-g6.webp');
+ assert.equal(card.sceneBackdrop(),backdrop);
+ const editor=new Editor();
+ editor.setConfig({model:'G6',year:'2026',trim:'core_plus_rwd',color:'arctic_white',
+     image:'/local/front-g6.webp',charging_image:'/local/rear-g6.webp'});
+ assert.match(editor.shadowRoot.innerHTML,/data-key="charging_image"/);
+ const ctrl={dataset:{key:'color'},value:'graphite_gray',hasAttribute:()=>false,
+     setCustomValidity(){},reportValidity(){}};
+ editor.shadowRoot.handlers.change({target:{closest:()=>ctrl}});
+ assert.equal(editor._cfg.image,undefined);
+ assert.equal(editor._cfg.charging_image,undefined);
+});
