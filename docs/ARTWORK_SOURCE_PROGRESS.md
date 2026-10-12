@@ -5,7 +5,7 @@ This is a source register, **not a claim that the live dashboard has new images*
 | Candidate | Catalog slot | Photographer | Licence | Remaining step |
 |---|---|---|---|---|
 | [Original G6 at Shanghai Auto Show](https://commons.wikimedia.org/wiki/File:XPeng_G6_001.jpg) | G6 · 2023–2025 · Fiery Orange | JustAnotherCarDesigner | CC BY-SA 4.0 | Confirm original paint and camera angle; create transparent cutout |
-| [Original G6 photograph (cropped)](https://commons.wikimedia.org/wiki/File:XPeng_G6_018_(cropped).jpg) | G6 · 2023–2025 · colour to verify | JustAnotherCarDesigner | CC0 1.0 | Identify paint and angle; create transparent cutout |
+| [Original G6 photograph (cropped)](https://commons.wikimedia.org/wiki/File:XPeng_G6_018_(cropped).jpg) | G6 · 2023–2025 · Arctic White candidate | JustAnotherCarDesigner | CC0 1.0 | Angle verified; confirm exact factory white; create transparent cutout |
 | [G6 AWD Black Edition](https://commons.wikimedia.org/wiki/File:2025_Xpeng_G6_AWD_Performance_Black_Edition.jpg) | G6 · MY2026 · Black Edition paint | Chanokchon | CC BY-SA 4.0 | Visual/market review and transparent front cutout |
 | [Refreshed G9 left-front](https://commons.wikimedia.org/wiki/File:XPeng_G9_(2025)_IAA_2025_DSC_2054.jpg) | G9 · 2025–2026 · colour to verify | Alexander-93 | CC BY-SA 4.0 | Confirm factory paint; isolate car |
 
@@ -19,3 +19,5 @@ This is a source register, **not a claim that the live dashboard has new images*
 
 ## Sources
 See `sources/vehicle-photo-candidates.json` for each source URL, author, licence, date, status and notes.
+
+**Manual thumbnail review (2026-10-13):** G6 orange, G6 white, G6 facelift Black Edition and G9 facelift are all visibly real vehicles in front-three-quarter photographs. Colours are visually identified but exact paint names (except the explicitly badged Black Edition) are not factory-confirmed. These JPEG source photos still require background removal and transparent cutout approval; image availability counts remain unchanged.

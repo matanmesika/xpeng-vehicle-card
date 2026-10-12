@@ -17,17 +17,17 @@
       "license_id": "CC-BY-SA-4.0",
       "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
       "status": "reference_found",
-      "visual_review": "pending",
-      "paint_review": "pending",
+      "visual_review": "confirmed_front_three_quarter",
+      "paint_review": "orange_visible_factory_name_unverified",
       "asset_ready": false,
-      "notes": "Photograph of original pre-facelift G6 at Shanghai Auto Show; Commons categorizes it as orange. Front angle and exact Fiery Orange factory shade need visual review. Current 2023-2025 group follows Israeli pre-facelift sales; market-specific 2025 facelift needs separate year handling."
+      "notes": "Inspected Wikimedia 960px thumbnail: original G6 pre-facelift, orange, front-left 3/4, entire car visible; people and stage behind require precise isolation. Actual Fiery Orange factory code still to validate. G6 2025 market-year remains subject to Israel/global ambiguity."
     },
     {
       "id": "g6-original-2024-cc0-2025-photo",
       "model": "G6",
       "year_group": "2023-2025",
-      "exterior_color": null,
-      "view": null,
+      "exterior_color": "arctic_white",
+      "view": "front",
       "photo_name": "XPeng G6 018 (cropped).jpg",
       "page_url": "https://commons.wikimedia.org/wiki/File:XPeng_G6_018_(cropped).jpg",
       "photographer": "JustAnotherCarDesigner",
@@ -35,10 +35,10 @@
       "license_id": "CC0-1.0",
       "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
       "status": "reference_found",
-      "visual_review": "pending",
-      "paint_review": "pending",
+      "visual_review": "confirmed_front_three_quarter",
+      "paint_review": "white_visible_factory_name_unverified",
       "asset_ready": false,
-      "notes": "CC0 photograph of original G6; not assigned to a colour/view until image inspection."
+      "notes": "Inspected Wikimedia original cropped photo: original pre-facelift G6 in white, front-right 3/4, all wheels and body visible. CC0 is preferable where feasible; verify exact factory white name before publishing and isolate from outdoor backdrop."
     },
     {
       "id": "g6-facelift-black-edition-2025-photograph",
@@ -53,10 +53,10 @@
       "license_id": "CC-BY-SA-4.0",
       "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
       "status": "reference_found",
-      "visual_review": "pending",
+      "visual_review": "confirmed_front_three_quarter",
       "paint_review": "confirmed_black_edition",
       "asset_ready": false,
-      "notes": "Photograph explicitly labelled facelift AWD Performance Black Edition in Bangkok. Verify front camera angle and availability as Israel MY2026; cannot be used directly as transparent cutout. Trim selection is informational; this is a colour record, NOT trim-based routing."
+      "notes": "Inspected original Wikimedia image: genuine facelift G6 AWD Performance Black Edition at BITEC, front-left three-quarter view with stage reflections and people behind. This is a photo reference, not a ready dashboard cutout. Israel markets the facelift as MY2026; trim remains display-only."
     },
     {
       "id": "g9-facelift-2025-black-iaa",
@@ -74,7 +74,7 @@
       "visual_review": "confirmed_left_front",
       "paint_review": "pending",
       "asset_ready": false,
-      "notes": "Wikimedia Valued Image for G9 2025 left-front view, tagged black G9 Performance. Factory colour ID still unverified, so cannot be assigned to a specific paint slot."
+      "notes": "Inspected Commons thumbnail: refreshed 2025 G9 front-left three-quarter shot; vehicle complete, dark paint, showroom scene; factory color code not established, so no automatic assignment."
     }
   ]
 }
