@@ -4,7 +4,7 @@ A standalone, **read-only Home Assistant dashboard card** for XPENG vehicles. Th
 
 **Updates and release history:** [CHANGELOG.md](CHANGELOG.md) is the single canonical history for this project. Obsolete per-release note files were removed; installable versions are published separately under [GitHub Releases](https://github.com/matanmesika/xpeng-vehicle-card/releases).
 
-**Current candidate (2026-10-12):** **v1.0.0-beta.1**. It includes the current dashboard/UI, the approved lakeside backdrop, and the current G6 front/charging/top artwork. The temporary `mix-blend-mode: multiply` workaround has been removed so the updated front artwork renders normally.
+**Current candidate (2026-10-12):** **v1.0.0-beta.2**. It includes the current dashboard/UI, the approved lakeside backdrop, and the current G6 front/charging/top artwork. The temporary `mix-blend-mode: multiply` workaround has been removed so the updated front artwork renders normally.
 
 ## User-approved design
 
@@ -30,7 +30,7 @@ See [artwork and tire view policy](docs/SHAPE_ASSETS_AND_TPMS.md) and [design lo
 
 ## Installation through HACS
 
-Add `https://github.com/matanmesika/xpeng-vehicle-card` to **HACS → Custom repositories**, category **Dashboard**. Install the most recent published beta and reload Home Assistant. The current release candidate is `v1.0.0-beta.1`; check GitHub Releases for actual publication status.
+Add `https://github.com/matanmesika/xpeng-vehicle-card` to **HACS → Custom repositories**, category **Dashboard**. Install the most recent published beta and reload Home Assistant. The current release candidate is `v1.0.0-beta.2`; check GitHub Releases for actual publication status.
 
 Example configuration:
 
