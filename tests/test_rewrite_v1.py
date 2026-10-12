@@ -10,7 +10,7 @@ from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = (ROOT / 'dist/xpeng-vehicle-card.js').read_text(encoding='utf-8')
-assert SCRIPT == (ROOT / 'xpeng-vehicle-card.js').read_text(encoding='utf-8')
+assert SCRIPT == (ROOT / 'src/xpeng-vehicle-card.js').read_text(encoding='utf-8')
 assert 'Dashboard v0.1.1' in SCRIPT
 assert 'localStorage' not in SCRIPT and 'callService(' not in SCRIPT and 'fetch(' not in SCRIPT
 OUT = ROOT / 'previews' / 'dashboard-v011'
@@ -54,9 +54,12 @@ with sync_playwright() as p:
 
         def serve_asset(route):
             url = route.request.url
-            relative = (url.split('/local/xpeng/',1)[-1] if '/local/xpeng/' in url
-                        else url.split('/hacsfiles/xpeng-vehicle-card/assets/',1)[-1])
-            file = ROOT / 'dist' / 'assets' / relative
+            if '/local/xpeng/' in url:
+                relative=url.split('/local/xpeng/',1)[-1]
+                file=ROOT/'dist'/'assets'/relative
+            else:
+                relative=url.split('/hacsfiles/xpeng-vehicle-card/',1)[-1]
+                file=ROOT/'dist'/relative
             if not file.is_file():
                 missing.append(str(file))
                 return route.fulfill(status=404, body='Missing artwork')
@@ -64,7 +67,7 @@ with sync_playwright() as p:
             route.fulfill(status=200, body=file.read_bytes(), content_type=mime)
 
         page.route('**/local/xpeng/**', serve_asset)
-        page.route('**/hacsfiles/xpeng-vehicle-card/assets/**', serve_asset)
+        page.route('**/hacsfiles/xpeng-vehicle-card/**', serve_asset)
         assert (ROOT / 'dist/assets/xpeng-approved-lakeside-background.webp').is_file()
         from hashlib import sha256
         original_bg=ROOT/'dist/assets/xpeng-approved-lakeside-background.webp'
@@ -80,7 +83,7 @@ with sync_playwright() as p:
             const card = document.querySelector('xpeng-vehicle-card');
             card.setConfig({
                 prefix:'my_xpeng',model:'G6',year:'2026',trim:'core_plus_rwd',
-                color:'arctic_white',image_path:'/local/xpeng'
+                color:'arctic_white'
             });
             card.hass = {states};
         }""", OFFLINE)
@@ -88,7 +91,7 @@ with sync_playwright() as p:
         host = page.locator('xpeng-vehicle-card')
         assert host.locator('.xp-overview').count() == 1
         assert host.locator('.xp-brand').is_visible()
-        assert '/hacsfiles/xpeng-vehicle-card/assets/xpeng-approved-lakeside-background.webp' in host.locator('.xp-night-photo').get_attribute('style')
+        assert '/hacsfiles/xpeng-vehicle-card/xpeng-approved-lakeside-background.webp' in host.locator('.xp-night-photo').get_attribute('style')
 
         assert host.locator('.xp-charge').count() == 0
         assert '—' in host.locator('.xp-soc').inner_text()
@@ -184,7 +187,7 @@ with sync_playwright() as p:
         page.evaluate("""() => {
             const card=document.querySelector('xpeng-vehicle-card');
             card.setConfig({prefix:'my_xpeng',model:'G6',year:'2026',trim:'core_plus_rwd',
-               color:'arctic_white',image_path:'/local/xpeng',
+               color:'arctic_white',
                entities:{charging:'select.external_ev|charging_state'}});
             card.hass={states:{...card.hass.states,
                'select.external_ev':{state:'ready',attributes:{charging_state:'charging'}}}};
@@ -200,7 +203,7 @@ with sync_playwright() as p:
         page.evaluate("""states => {
             const card=document.querySelector('xpeng-vehicle-card');
             card.setConfig({prefix:'my_xpeng',model:'G6',year:'2026',trim:'core_plus_rwd',
-               color:'arctic_white',image_path:'/local/xpeng'});
+               color:'arctic_white'});
             card.hass={states};
         }""",BASE)
 
@@ -226,7 +229,7 @@ with sync_playwright() as p:
             const editor=document.createElement('xpeng-vehicle-card-editor');
             document.body.append(editor);
             editor.setConfig({prefix:'my_xpeng',model:'G6',year:'2026',trim:'core_plus_rwd',
-                              color:'arctic_white',image_path:'/local/xpeng'});
+                              color:'arctic_white'});
         }""")
         editor = page.locator('xpeng-vehicle-card-editor')
         assert editor.locator('[data-key="color"]').count() == 1

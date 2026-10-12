@@ -23,7 +23,7 @@ jobs:
           python-version: '3.12'
       - name: Verify JS, catalog and HACS files
         run: |
-          node --check xpeng-vehicle-card.js
+          node --check src/xpeng-vehicle-card.js
           node --check dist/xpeng-vehicle-card.js
           python -m json.tool hacs.json > /dev/null
           python -m json.tool model-catalog.json > /dev/null

@@ -57,7 +57,7 @@ test('all year profiles load in the card editor without errors',()=>{
 });
 
 test('every offered exterior choice loads existing bundled art or a labelled silhouette fallback',()=>{
- const card=new Card(),prefix='/hacsfiles/xpeng-vehicle-card/assets/';
+ const card=new Card(),prefix='/hacsfiles/xpeng-vehicle-card/xpeng-asset-';
  let checked=0;
  for(const p of profiles.profiles){
   for(const trim of p.trims){
@@ -69,7 +69,7 @@ test('every offered exterior choice loads existing bundled art or a labelled sil
       assert.equal(spec.illustrative,true);
     }else{
       assert.ok(spec.src.startsWith(prefix),spec.src);
-      const sourcePath=path.join(ROOT,'dist/assets',spec.src.slice(prefix.length));
+      const sourcePath=path.join(ROOT,'dist',spec.src.replace('/hacsfiles/xpeng-vehicle-card/',''));
       assert.ok(fs.existsSync(sourcePath),p.display_name+' '+trim+' '+color+' missing: '+sourcePath);
       assert.equal(spec.illustrative,true);
     }
@@ -116,10 +116,10 @@ test('new 2026 G9 uses the actual bundled year/trim/paint-specific preview',()=>
    for(const paint of ['arctic_white','graphite_gray','midnight_black','silver_frost']){
      card.setConfig({model:'G9',year:'2026',trim,color:paint});
      const art=card.assetSpec();
-     assert.ok(art.src.endsWith('/vehicles/g9/2026/'+trim+'/'+paint+'.webp'),art.src);
+     assert.ok(art.src.endsWith('/xpeng-asset-vehicles-g9-2026-'+trim+'-'+paint+'.webp'),art.src);
      assert.equal(art.illustrative,true);
-     const rel=art.src.replace('/hacsfiles/xpeng-vehicle-card/assets/','');
-     assert.ok(fs.existsSync(path.join(ROOT,'dist/assets',rel)),art.src);
+     const rel=art.src.replace('/hacsfiles/xpeng-vehicle-card/','');
+     assert.ok(fs.existsSync(path.join(ROOT,'dist',rel)),art.src);
    }
  }
  // This colour is allowed by the catalogue but has no model-year verified art yet.
@@ -168,7 +168,7 @@ test('all 2026 exact model/year/trim/paint choices are selected without changing
    c.setConfig({model,year,trim,color:colour,interior:matched.interior_options[0]});
    const art=c.assetSpec();
    assert.equal(art.tier,'model-year-trim',rel);
-   assert.ok(art.src.endsWith('/'+rel),art.src);
+   assert.ok(art.src.endsWith('/xpeng-asset-'+rel.replaceAll('/','-')),art.src);
    assert.equal(c.sceneBackdrop(),scene,'model selection must not change the background');
  }
 });

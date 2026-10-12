@@ -23,9 +23,9 @@ jobs:
           python-version: '3.12'
       - name: Validate dashboard sources, mappings, HACS package and released binary inventory
         run: |
-          node --check xpeng-vehicle-card.js
+          node --check src/xpeng-vehicle-card.js
           node --check dist/xpeng-vehicle-card.js
-          cmp xpeng-vehicle-card.js dist/xpeng-vehicle-card.js
+          cmp src/xpeng-vehicle-card.js dist/xpeng-vehicle-card.js
           node --test tests/dashboard-v010.test.cjs tests/all-profiles.test.cjs
           python tests/test_hacs_package.py
           python -m json.tool model-catalog.json >/dev/null

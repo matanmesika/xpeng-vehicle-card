@@ -19,7 +19,7 @@ jobs:
       - name: Validate JavaScript and JSON
         run: |
           node --check dist/xpeng-vehicle-card.js
-          node --check xpeng-vehicle-card.js
+          node --check src/xpeng-vehicle-card.js
           python -m json.tool hacs.json > /dev/null
           python -m json.tool model-catalog.json > /dev/null
           python -m json.tool profiles/year-profiles.json > /dev/null

@@ -145,6 +145,10 @@ const XP_ARTWORK_INDEX = Object.freeze({
   family:new Set(["models/g3-arctic_white.webp","models/g3-jet_black.webp","models/g3-silver_frost.webp","models/g3-space_grey.webp","models/g3-stellar_purple.webp","models/g3i-arctic_white.webp","models/g3i-jet_black.webp","models/g3i-silver_frost.webp","models/g3i-space_grey.webp","models/g3i-stellar_purple.webp","models/g6-arctic_white.webp","models/g6-jet_black.webp","models/g6-silver_frost.webp","models/g6-space_grey.webp","models/g6-stellar_purple.webp","models/g7-arctic_white.webp","models/g7-jet_black.webp","models/g7-silver_frost.webp","models/g7-space_grey.webp","models/g7-stellar_purple.webp","models/g9-arctic_white.webp","models/g9-jet_black.webp","models/g9-silver_frost.webp","models/g9-space_grey.webp","models/g9-stellar_purple.webp","models/g9l-arctic_white.webp","models/g9l-jet_black.webp","models/g9l-silver_frost.webp","models/g9l-space_grey.webp","models/g9l-stellar_purple.webp","models/gx-arctic_white.webp","models/gx-jet_black.webp","models/gx-silver_frost.webp","models/gx-space_grey.webp","models/gx-stellar_purple.webp","models/l03-arctic_white.webp","models/l03-jet_black.webp","models/l03-silver_frost.webp","models/l03-space_grey.webp","models/l03-stellar_purple.webp","models/mona_m03-arctic_white.webp","models/mona_m03-jet_black.webp","models/mona_m03-silver_frost.webp","models/mona_m03-space_grey.webp","models/mona_m03-stellar_purple.webp","models/next_p7-arctic_white.webp","models/next_p7-jet_black.webp","models/next_p7-silver_frost.webp","models/next_p7-space_grey.webp","models/next_p7-stellar_purple.webp","models/other-arctic_white.webp","models/other-jet_black.webp","models/other-silver_frost.webp","models/other-space_grey.webp","models/other-stellar_purple.webp","models/p5-arctic_white.webp","models/p5-jet_black.webp","models/p5-silver_frost.webp","models/p5-space_grey.webp","models/p5-stellar_purple.webp","models/p7-arctic_white.webp","models/p7-jet_black.webp","models/p7-silver_frost.webp","models/p7-space_grey.webp","models/p7-stellar_purple.webp","models/p7_plus-arctic_white.webp","models/p7_plus-jet_black.webp","models/p7_plus-silver_frost.webp","models/p7_plus-space_grey.webp","models/p7_plus-stellar_purple.webp","models/p7i-arctic_white.webp","models/p7i-jet_black.webp","models/p7i-silver_frost.webp","models/p7i-space_grey.webp","models/p7i-stellar_purple.webp","models/x9-arctic_white.webp","models/x9-jet_black.webp","models/x9-silver_frost.webp","models/x9-space_grey.webp","models/x9-stellar_purple.webp"])
 });
 const XP_SCENE_BACKGROUND = 'xpeng-approved-lakeside-background.webp';
+// HACS installs files directly under dist/; nested folders are not reliably copied.
+// Keep every runtime file as a *direct child* of dist/ with a collision-free name.
+const XP_HACS_BASE='/hacsfiles/xpeng-vehicle-card/';
+function xpPackagedUrl(relative){return XP_HACS_BASE+'xpeng-asset-'+relative.replaceAll('/','-');}
 function xpLocalArtworkPath(value){return typeof value==='string'&&/^\/(?:local|hacsfiles)\/[a-zA-Z0-9/_\-.]+$/.test(value);}
 const XP_CSS = `
 :host{display:block;color:#fff;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;--xp-mint:#00efbe;--xp-sky:#6aaaff}
@@ -347,7 +351,9 @@ class XpengVehicleCard extends HTMLElement{
  bool(key){return xpBool(this.val(key));}
  num(key,unit='',dec=0){const v=this.number(key);return v===null?'—':xpNum(v,dec)+(unit?' '+unit:'');}
  assetSpec(){
-    const base=(this._config.image_path||'/hacsfiles/xpeng-vehicle-card/assets').replace(/\/$/,'');
+    const configuredBase=this._config.image_path;
+    const base=(!configuredBase||configuredBase==='/hacsfiles/xpeng-vehicle-card/assets')?null:configuredBase.replace(/\/$/,'');
+    const bundled=relative=>base?base+'/'+relative:xpPackagedUrl(relative);
     const profileArt=key=>Array.isArray(this._config.vehicles)&&this._config.vehicles.length
       ?this.vehicle()?.[key]:this.vehicle()?.[key]||this._config[key];
     const chosen=(this._view==='charging'&&profileArt('charging_image'))||profileArt('image');
@@ -359,14 +365,14 @@ class XpengVehicleCard extends HTMLElement{
         description:'User-selected local artwork; model/year/paint suitability is the owner\'s choice'};
     const exact='vehicles/'+model+'/'+a.year+'/'+trim+'/'+a.color+'.webp';
     if(XP_ARTWORK_INDEX.exact.has(exact))
-      return {src:base+'/'+exact,illustrative:true,studio:false,tier:'model-year-trim',
+      return {src:bundled(exact),illustrative:true,studio:false,tier:'model-year-trim',
         description:a.model+' '+a.year+' '+a.trim+' '+a.color+' — exact-path model-year preview (not manufacturer verified)'};
     // The fallback is correctly named as model-family illustration, not year-exact art.
     // This preserves selection for every catalogued model/year, even without photography.
     const olderAlias={graphite_gray:'space_grey',midnight_black:'jet_black'}[a.color]||a.color;
     const family='models/'+model+'-'+olderAlias+'.webp';
     if(XP_ARTWORK_INDEX.family.has(family))
-      return {src:base+'/'+family,illustrative:true,studio:false,tier:'model-family',
+      return {src:bundled(family),illustrative:true,studio:false,tier:'model-family',
         description:'Generic model-family illustration: '+a.model+' in '+a.color+'; exact '+a.year+' '+a.trim+' artwork unavailable'};
     return {src:this.placeholderArt(),illustrative:true,studio:false,tier:'silhouette',
       description:'Illustrative Coloured silhouette: '+a.model+' '+a.year+' '+a.color+'; exact artwork pending'};
@@ -422,7 +428,7 @@ class XpengVehicleCard extends HTMLElement{
     // Identical pixel source and placement in both vehicle status and charging.
     // One real image layer, shared for charging and overview. No CSS mountain or sky illustration.
     // A manual dashboard-wide background never changes when vehicle/colour/charging changes.
-    const source=this._config.background_image||('/hacsfiles/xpeng-vehicle-card/assets/'+XP_SCENE_BACKGROUND);
+    const source=this._config.background_image||(XP_HACS_BASE+XP_SCENE_BACKGROUND);
     return `<div class="xp-night-photo" aria-hidden="true"
       style="background-image:url(&quot;${xpEsc(source)}&quot;)"></div>`;
   }
@@ -481,7 +487,7 @@ class XpengVehicleCard extends HTMLElement{
   }
   carArt(){
     const a=this.appearance(),spec=this.assetSpec();
-    const referenceCutout=a.model==='G6'&&a.year==='2026'&&a.color==='arctic_white'&&/\/(?:xpeng-g6-2026-white-cutout\.(?:png|webp)|vehicles\/g6\/2026\/core_plus_rwd\/arctic_white\.webp)$/.test(spec.src);
+    const referenceCutout=a.model==='G6'&&a.year==='2026'&&a.trim==='core_plus_rwd'&&a.color==='arctic_white'&&(spec.tier==='model-year-trim'||/\/xpeng-g6-2026-white-cutout\.(?:png|webp)$/.test(spec.src));
     return `<img class="xp-car ${referenceCutout?'xp-reference-cutout':''} ${spec.studio?'xp-studio-car':''}" data-car-art
       src="${xpEsc(spec.src)}"
       title="${xpEsc(spec.description)}"
@@ -612,7 +618,7 @@ class XpengVehicleCardEditor extends HTMLElement{
     <p>Background is stored separately and stays the same in both screens. The car image changes by your manual model/year/trim/exterior colour selection. 2026 G6/G9 have exact-path bundled previews; older/other models use clearly labelled illustrations unless you specify your own exact photo.</p>
     <label>Optional scenic background for BOTH screens (separate from the car)<input data-key="background_image" value="${xpEsc(v.background_image||'')}" placeholder="/local/xpeng/xpeng-approved-lakeside-background.webp"></label>
     <p>Use a genuine photograph in /local/ or /hacsfiles/, not CSS-painted mountains. The background is global and stays identical when charging or selecting another model; leaving it empty retains the bundled fallback.</p>
-    <label>Image assets directory<input data-key="image_path" value="${xpEsc(v.image_path||'/hacsfiles/xpeng-vehicle-card/assets')}"></label>
+    <label>Optional custom asset directory (leave empty for automatic HACS bundled images)<input data-key="image_path" value="${xpEsc(v.image_path&&v.image_path!=='/hacsfiles/xpeng-vehicle-card/assets'?v.image_path:'')}"></label>
     <details data-mappings ${expanded?'open':''}><summary>Manual sensor mapping · ${XP_MAPPABLE_FIELDS.length} fields</summary>
        <p>Auto mode: leave an item empty and it uses the prefix. Manual mode: pick any Home Assistant entity (including those from another integration), or use entity_id|attribute_name to read an attribute. Each field is configured independently.</p>
        <div class="xp-map-fields">${mappingRows}</div>

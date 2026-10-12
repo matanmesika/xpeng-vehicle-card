@@ -308,7 +308,7 @@ test('overview and charging must render the exact same raster background and geo
  };
  const b1=normalize(before);
  assert.match(b1,/xpeng-approved-lakeside-background\.webp/);
- assert.match(b1,/\/hacsfiles\/xpeng-vehicle-card\/assets\/xpeng-approved-lakeside-background\.webp/);
+ assert.match(b1,/\/hacsfiles\/xpeng-vehicle-card\/xpeng-approved-lakeside-background\.webp/);
  // Vehicle-specific custom art does not move or replace the dashboard background.
  card.setConfig({prefix:'my_xpeng',model:'G6',year:'2026',image_path:'/local/custom-vehicle-art'});
  card.hass={states};
@@ -360,7 +360,7 @@ test('approved lakeside background overrides the legacy bitmap without CSS drawi
  card.hass={states};
  const idle=card.sceneBackdrop();
  assert.ok(idle.includes(background),idle);
- assert.ok(!idle.includes('/hacsfiles/xpeng-vehicle-card/assets/xpeng-approved-lakeside-background.webp'),'user-defined /local photo takes priority over built-in scene');
+ assert.ok(!idle.includes('/hacsfiles/xpeng-vehicle-card/xpeng-approved-lakeside-background.webp'),'user-defined /local photo takes priority over built-in scene');
  assert.match(card.shadowRoot.innerHTML,/xp-reference-cutout/);
  assert.ok(!idle.includes('<svg'));
  states['binary_sensor.my_xpeng_is_charging'].state='on';
