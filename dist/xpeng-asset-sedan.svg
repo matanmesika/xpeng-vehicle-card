@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 375" aria-label="Illustrative sedan electric vehicle">
+ <defs>
+<linearGradient id="body" x1="0" x2="0.15" y1="0" y2="1"><stop offset="0" stop-color="#edf2f6"/><stop offset="0.40" stop-color="#b9c6cf"/><stop offset="0.76" stop-color="#63727f"/><stop offset="1" stop-color="#323b46"/></linearGradient>
+<linearGradient id="glass" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#2d3e50"/><stop offset="1" stop-color="#080e17"/></linearGradient>
+<linearGradient id="shadow" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#0d141b" stop-opacity=".6"/><stop offset="1" stop-color="#0d141b" stop-opacity="0"/></linearGradient>
+<filter id="blur"><feGaussianBlur stdDeviation="11"/></filter></defs><ellipse cx="456" cy="291" rx="348" ry="35" fill="#06090e" opacity=".56" filter="url(#blur)"/>
+ <path d="M83 240 Q102 209 158 198 L273 185 Q348 119 396 116 L551 116 Q616 123 690 184 L783 206 Q811 213 818 246 L809 264 Q783 276 735 275 Q722 231 677 230 Q627 230 619 275 L297 275 Q291 231 245 230 Q196 230 186 275 L113 269 Q87 261 83 240 Z" fill="url(#body)" stroke="#dfebef" stroke-width="2"/>
+ <path d="M311 187 Q357 131 404 128 L548 129 Q588 132 653 185 Z" fill="url(#glass)" stroke="#a7b4c1" stroke-width="2"/>
+ <path d="M655 185 L695 186 L670 195 Z" fill="#0a1017" opacity=".65"/>
+ <path d="M463 119 L468 173" stroke="#27343f" stroke-width="4" opacity=".7"/>
+ <path d="M305 191 Q430 186 625 191" fill="none" stroke="#fbffff" opacity=".45" stroke-width="2"/>
+ <path d="M110 228 Q100 222 94 233" stroke="#e3effa" stroke-width="7" stroke-linecap="round"/>
+ <path d="M790 229 L810 224" stroke="#e5393e" stroke-width="6" stroke-linecap="round"/>
+ <circle cx="244" cy="269" r="53" fill="#111923" stroke="#202833" stroke-width="4"/>
+ <circle cx="244" cy="269" r="32" fill="#9aabb6"/><circle cx="244" cy="269" r="18" fill="#4c5965"/>
+ <circle cx="677" cy="269" r="53" fill="#111923" stroke="#202833" stroke-width="4"/>
+ <circle cx="677" cy="269" r="32" fill="#9aabb6"/><circle cx="677" cy="269" r="18" fill="#4c5965"/>
+ <path d="M115 260 L800 260" stroke="#18202b" stroke-width="3" opacity=".45"/>
+ </svg>

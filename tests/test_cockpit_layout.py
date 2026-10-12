@@ -9,7 +9,7 @@ from playwright.sync_api import sync_playwright
 
 ROOT=Path(__file__).resolve().parents[1]
 SCRIPT=(ROOT/'dist/xpeng-vehicle-card.js').read_text(encoding='utf-8')
-assert SCRIPT==(ROOT/'xpeng-vehicle-card.js').read_text(encoding='utf-8')
+assert SCRIPT==(ROOT/'src/xpeng-vehicle-card.js').read_text(encoding='utf-8')
 assert 'XPENG Vehicle Card v0.7.0-alpha.1' in SCRIPT
 assert 'localStorage' not in SCRIPT
 OUT=ROOT/'previews'/'cockpit-v070'

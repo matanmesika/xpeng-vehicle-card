@@ -114,7 +114,7 @@ test('manual appearance in card editor always wins over integration profile enti
  assert.equal(card.appearance().model,'G6');
  assert.equal(card.appearance().color,'arctic_white');
  assert.equal(card.appearance().interior,'dark_gray');
- assert.match(card.asset(),/\/vehicles\/g6\/2026\/core_plus_rwd\/arctic_white\.webp$/);
+ assert.match(card.asset(),/\/xpeng-asset-vehicles-g6-2026-core_plus_rwd-arctic_white\.webp$/);
  assert.doesNotMatch(card.shadowRoot.innerHTML,/Manual sensor mapping|Exterior paint|Interior cabin finish/);
 });
 
@@ -148,7 +148,7 @@ test('update time is behind an accessible info button, not static text',()=>{
 
 test('rendering missing exact art uses safe shape fallback, not previous-year imagery',()=>{
  const card=setup(data());
- assert.match(card.asset(),/\/vehicles\/g6\/2026\/core_plus_rwd\/arctic_white\.webp$/);
+ assert.match(card.asset(),/\/xpeng-asset-vehicles-g6-2026-core_plus_rwd-arctic_white\.webp$/);
  assert.match(card.placeholderArt(),/^data:image\/svg\+xml;/);
  assert.doesNotMatch(card.asset(),/g6-studio\.webp/);
 });
@@ -225,7 +225,7 @@ test('the alpha-cutout G6 preview has no studio mask or visible artwork watermar
  const html=c.shadowRoot.innerHTML;
  assert.doesNotMatch(html,/Illustrative vehicle art/);
  assert.doesNotMatch(html,/class="xp-car xp-studio-car"/);
- assert.match(c.asset(),/\/vehicles\/g6\/2026\/core_plus_rwd\/arctic_white\.webp$/);
+ assert.match(c.asset(),/\/xpeng-asset-vehicles-g6-2026-core_plus_rwd-arctic_white\.webp$/);
  assert.match(html,/class="xp-night-photo"/);
 });
 
@@ -308,7 +308,7 @@ test('overview and charging must render the exact same raster background and geo
  };
  const b1=normalize(before);
  assert.match(b1,/xpeng-approved-lakeside-background\.webp/);
- assert.match(b1,/\/hacsfiles\/xpeng-vehicle-card\/assets\/xpeng-approved-lakeside-background\.webp/);
+ assert.match(b1,/\/hacsfiles\/xpeng-vehicle-card\/xpeng-approved-lakeside-background\.webp/);
  // Vehicle-specific custom art does not move or replace the dashboard background.
  card.setConfig({prefix:'my_xpeng',model:'G6',year:'2026',image_path:'/local/custom-vehicle-art'});
  card.hass={states};
@@ -360,7 +360,7 @@ test('approved lakeside background overrides the legacy bitmap without CSS drawi
  card.hass={states};
  const idle=card.sceneBackdrop();
  assert.ok(idle.includes(background),idle);
- assert.ok(!idle.includes('/hacsfiles/xpeng-vehicle-card/assets/xpeng-approved-lakeside-background.webp'),'user-defined /local photo takes priority over built-in scene');
+ assert.ok(!idle.includes('/hacsfiles/xpeng-vehicle-card/xpeng-approved-lakeside-background.webp'),'user-defined /local photo takes priority over built-in scene');
  assert.match(card.shadowRoot.innerHTML,/xp-reference-cutout/);
  assert.ok(!idle.includes('<svg'));
  states['binary_sensor.my_xpeng_is_charging'].state='on';
