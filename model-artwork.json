@@ -1,11 +1,11 @@
 {
   "schema_version": 2,
   "as_of": "2026-10-12",
-  "selection": "G6 Graphite Gray approved three-view artwork available; other colors use placeholder",
+  "selection": "G6 2026 Graphite Gray three-view artwork available; other colors use placeholder",
   "model_year": "not selectable",
   "selected_trim": "not user-selectable",
   "backdrop": "xpeng-approved-lakeside-background.webp",
-  "notice": "G6 2026 Core Performance AWD artwork is hosted in GitHub assets and fetched remotely at runtime; images are not bundled in HACS dist.",
+  "notice": "Artwork is organized by model/year/exterior color. Trim does not select artwork.",
   "models": [
     {
       "model": "G6",
@@ -14,12 +14,12 @@
       "visual_trim_policy": "shared-across-all-selected-trims",
       "colors": {
         "graphite_gray": {
-          "front": "assets/vehicles/g6/2026/core_performance_awd/front.webp",
-          "rear": "assets/vehicles/g6/2026/core_performance_awd/charging.webp",
-          "top": "assets/vehicles/g6/2026/core_performance_awd/top.webp"
+          "front": "assets/vehicles/g6/2026/graphite_gray/front.webp",
+          "rear": "assets/vehicles/g6/2026/graphite_gray/charging.webp",
+          "top": "assets/vehicles/g6/2026/graphite_gray/top.webp"
         }
       }
     }
   ],
-  "target_asset_layout": "assets/vehicles/g6/2026/core_performance_awd/{front,charging,top}.webp"
+  "target_asset_layout": "assets/vehicles/{model}/{year}/{color}/{front,charging,top}.webp"
 }
