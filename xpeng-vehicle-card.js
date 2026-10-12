@@ -279,6 +279,9 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-car,.xp-car.xp-paint-silver_frost,.xp-car.xp-paint-space_grey,.xp-car.xp-paint-jet_black,.xp-car.xp-paint-stellar_purple{filter:drop-shadow(0 20px 20px #000b)}
 .xp-art-identity{position:absolute;z-index:8;left:45%;bottom:8%;font-size:11px;letter-spacing:.03em;color:#b5c4d5;opacity:.8;text-shadow:0 2px 4px #000a;pointer-events:none}
 .xp-studio-car{mask-image:none;-webkit-mask-image:none}
+/* The approved 2026 white G6 cutout is already tightly cropped: frame its pixels to the reference shot. */
+.xp-overview .xp-car.xp-reference-cutout{left:25.5%;bottom:26.6%;width:51.4%;max-height:none;filter:drop-shadow(0 13px 13px #0005)}
+@media(max-width:850px){.xp-overview .xp-car.xp-reference-cutout{left:-3%;bottom:27%;width:108%;max-height:42%}}
 @media(max-width:850px){.xp-art-identity{left:15%;bottom:25%;font-size:10px}.xp-charge .xp-art-identity{bottom:7%}}
 @media(max-width:400px){.xp-charge-meta>div{padding:0 7px}.xp-charge-heading{font-size:19px}.xp-charge-meta b{font-size:12px}.xp-overview-stat{top:219px}.xp-status-panel{grid-template-columns:repeat(3,minmax(0,1fr))}}
 `;
@@ -303,6 +306,7 @@ class XpengVehicleCard extends HTMLElement{
   if(!config||typeof config!=='object')throw Error('XPENG card configuration required');
   if(config.prefix&&!/^[a-z0-9_]+$/.test(config.prefix))throw Error('XPENG prefix must be a slug');
   if(config.image_path&&!/^\/(?:local|hacsfiles)\/[a-zA-Z0-9/_-]+\/?$/.test(config.image_path))throw Error('Invalid local image_path');
+  if(config.background_image&&!xpLocalArtworkPath(config.background_image))throw Error('Invalid local background_image');
   const v={prefix:'my_xpeng',year:'2026',model:'G6',trim:'core_plus_rwd',color:'arctic_white',interior:'dark_gray',theme:'dark',...config};
   this._config=xpNormalizeAppearance(v);this._infoOpen=false;this.render();
  }
@@ -416,9 +420,11 @@ class XpengVehicleCard extends HTMLElement{
  sceneBackdrop(){
     // The scenic background belongs to the DASHBOARD, not to a model image folder.
     // Identical pixel source and placement in both vehicle status and charging.
-    const source='/hacsfiles/xpeng-vehicle-card/assets/'+XP_SCENE_BACKGROUND;
+    // One real image layer, shared for charging and overview. No CSS mountain or sky illustration.
+    // A manual dashboard-wide background never changes when vehicle/colour/charging changes.
+    const source=this._config.background_image||('/hacsfiles/xpeng-vehicle-card/assets/'+XP_SCENE_BACKGROUND);
     return `<div class="xp-night-photo" aria-hidden="true"
-      style="background-image:url(&quot;${source}&quot;)"></div>`;
+      style="background-image:url(&quot;${xpEsc(source)}&quot;)"></div>`;
   }
  header(){
    const conn=String(this.val('connection')||'').toLowerCase();
@@ -475,7 +481,8 @@ class XpengVehicleCard extends HTMLElement{
   }
   carArt(){
     const a=this.appearance(),spec=this.assetSpec();
-    return `<img class="xp-car ${spec.studio?'xp-studio-car':''}" data-car-art
+    const referenceCutout=a.model==='G6'&&a.year==='2026'&&a.color==='arctic_white'&&/\/xpeng-g6-2026-white-cutout\.(?:png|webp)$/.test(spec.src);
+    return `<img class="xp-car ${referenceCutout?'xp-reference-cutout':''} ${spec.studio?'xp-studio-car':''}" data-car-art
       src="${xpEsc(spec.src)}"
       title="${xpEsc(spec.description)}"
       data-art-tier="${xpEsc(spec.tier)}"
@@ -546,7 +553,7 @@ class XpengVehicleCardEditor extends HTMLElement{
    }
    const key=el.dataset.key;
    let cfg={...this._cfg,[key]:el.value};
-   if(['image','charging_image','interior_image'].includes(key)&&el.value&&!xpLocalArtworkPath(el.value)){
+   if(['image','charging_image','interior_image','background_image'].includes(key)&&el.value&&!xpLocalArtworkPath(el.value)){
      el.setCustomValidity('Use a local /local/... or /hacsfiles/... image URL');
      el.reportValidity();return;
    }
@@ -603,6 +610,8 @@ class XpengVehicleCardEditor extends HTMLElement{
     <label>Optional rear/charging view image for this exact vehicle (when available)<input data-key="charging_image" value="${xpEsc(v.charging_image||'')}" placeholder="/local/my_xpeng/cars/g6-2026-white-rear.webp"></label>
     <label>Optional exact vehicle image URL (when this profile has no bundled year-specific photo)<input data-key="image" value="${xpEsc(v.image||'')}" placeholder="/local/my_xpeng/cars/g6-2026-white.webp"></label>
     <p>Background is stored separately and stays the same in both screens. The car image changes by your manual model/year/trim/exterior colour selection. 2026 G6/G9 have exact-path bundled previews; older/other models use clearly labelled illustrations unless you specify your own exact photo.</p>
+    <label>Optional scenic background for BOTH screens (separate from the car)<input data-key="background_image" value="${xpEsc(v.background_image||'')}" placeholder="/local/xpeng/xpeng-approved-lakeside-background.webp"></label>
+    <p>Use a genuine photograph in /local/ or /hacsfiles/, not CSS-painted mountains. The background is global and stays identical when charging or selecting another model; leaving it empty retains the bundled fallback.</p>
     <label>Image assets directory<input data-key="image_path" value="${xpEsc(v.image_path||'/hacsfiles/xpeng-vehicle-card/assets')}"></label>
     <details data-mappings ${expanded?'open':''}><summary>Manual sensor mapping · ${XP_MAPPABLE_FIELDS.length} fields</summary>
        <p>Auto mode: leave an item empty and it uses the prefix. Manual mode: pick any Home Assistant entity (including those from another integration), or use entity_id|attribute_name to read an attribute. Each field is configured independently.</p>

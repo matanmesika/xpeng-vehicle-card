@@ -349,3 +349,38 @@ test('bundled scenic background is the exact approved 1536x864 WebP upload',()=>
  })();
  assert.equal(width,1536); assert.equal(height,864);
 });
+
+
+test('approved lakeside background overrides the legacy bitmap without CSS drawing or changing with charging',()=>{
+ const states=data(),card=setup(states);
+ const background='/local/xpeng/xpeng-approved-lakeside-background.webp';
+ const cutout='/local/xpeng/xpeng-g6-2026-white-cutout.webp';
+ card.setConfig({prefix:'my_xpeng',model:'G6',year:'2026',trim:'core_plus_rwd',color:'arctic_white',
+   background_image:background,image:cutout});
+ card.hass={states};
+ const idle=card.sceneBackdrop();
+ assert.ok(idle.includes(background),idle);
+ assert.ok(!idle.includes('xpeng-reference-background.webp'));
+ assert.match(card.shadowRoot.innerHTML,/xp-reference-cutout/);
+ assert.ok(!idle.includes('<svg'));
+ states['binary_sensor.my_xpeng_is_charging'].state='on';
+ card.hass={states};
+ assert.equal(card.sceneBackdrop(),idle,'Charging must not modify the photograph or its geometry');
+ card.setConfig({prefix:'my_xpeng',model:'G9',year:'2026',background_image:background});
+ card.hass={states};
+ assert.equal(card.sceneBackdrop(),idle,'Model changes must never change the global landscape');
+ assert.throws(()=>card.setConfig({background_image:'https://other-site.example/x.webp'}),/Invalid local background_image/);
+ assert.throws(()=>card.setConfig({background_image:'/local/invalid\" onerror=alert(1).webp'}),/Invalid local background_image/);
+});
+
+test('card editor exposes the independent photographic background and preserves it across paint changes',()=>{
+ const Editor=tags.get('xpeng-vehicle-card-editor'),editor=new Editor();
+ editor.setConfig({prefix:'my_xpeng',model:'G6',year:'2026',background_image:'/local/xpeng/bg.webp',
+   image:'/local/xpeng/xpeng-g6-2026-white-cutout.webp'});
+ assert.match(editor.shadowRoot.innerHTML,/data-key="background_image"/);
+ const ctrl={dataset:{key:'color'},value:'graphite_gray',hasAttribute:()=>false,
+   setCustomValidity(){},reportValidity(){}};
+ editor.shadowRoot.handlers.change({target:{closest:()=>ctrl}});
+ assert.equal(editor._cfg.background_image,'/local/xpeng/bg.webp');
+ assert.equal(editor._cfg.image,undefined,'G6 white cutout cannot transfer to another paint');
+});
