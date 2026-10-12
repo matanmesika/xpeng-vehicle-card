@@ -47,7 +47,7 @@ grid_options:
 
 Choose **Edit dashboard → Edit card** to select model, year, informational trim, paint and cabin finish. All appearance selectors stay **in the card editor**, never on the dashboard. Optional `image`, `charging_image`, `top_image` and `background_image` allow local custom images when available. Explicit custom cutouts should correspond to the chosen model/colour. This is a read-only view; it neither authenticates with XPENG nor issues vehicle commands.
 
-### Live Home Assistant sensors
+### Manual sensor mapping and live Home Assistant sensors
 
 The card automatically looks up sensor names using `prefix`, with optional manual mapping from **any** Home Assistant integration for each of the 15 display fields. The editor supports `entity_id|attribute_name` when data lives in an entity attribute.
 
