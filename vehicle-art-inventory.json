@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "Approved G6 2026 Graphite Gray three-view artwork using model/year/color hierarchy.",
+  "description": "G6 artwork inventory using model/year-group/exterior-color hierarchy.",
   "exact": [
     "vehicles/g6/2026/graphite_gray/front.webp",
     "vehicles/g6/2026/graphite_gray/charging.webp",
@@ -10,7 +10,30 @@
   "backdrop": "xpeng-approved-lakeside-background.webp",
   "backdrop_is_common": true,
   "caveats": [
-    "Images are fetched from GitHub at runtime, not bundled in HACS; internet is required.",
-    "Artwork selection uses model, year and exterior color only; trim does not affect the artwork path."
+    "Graphite Gray 2026 is already present in GitHub.",
+    "The four additional 2026 color packs are prepared as WebP assets and must be uploaded before this branch is merged.",
+    "The 2023-2025 generation uses a separate visual pack; its five exterior colors are mapped but artwork is pending.",
+    "Trim does not affect artwork selection."
+  ],
+  "expected_2026": [
+    "vehicles/g6/2026/arctic_white/front.webp",
+    "vehicles/g6/2026/arctic_white/charging.webp",
+    "vehicles/g6/2026/arctic_white/top.webp",
+    "vehicles/g6/2026/midnight_black/front.webp",
+    "vehicles/g6/2026/midnight_black/charging.webp",
+    "vehicles/g6/2026/midnight_black/top.webp",
+    "vehicles/g6/2026/silver_frost/front.webp",
+    "vehicles/g6/2026/silver_frost/charging.webp",
+    "vehicles/g6/2026/silver_frost/top.webp",
+    "vehicles/g6/2026/stellar_purple/front.webp",
+    "vehicles/g6/2026/stellar_purple/charging.webp",
+    "vehicles/g6/2026/stellar_purple/top.webp"
+  ],
+  "planned_2023_2025_colors": [
+    "arctic_white",
+    "graphite_gray",
+    "midnight_black",
+    "silver_frost",
+    "fiery_orange"
   ]
 }
