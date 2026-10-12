@@ -1,0 +1,805 @@
+{
+  "schema_version": 3,
+  "as_of": "2026-10-12",
+  "notes": [
+    "Artwork storage uses model/year-group/exterior-color. Trim is display-only and never changes the artwork path.",
+    "Year groups combine consecutive model years that share the same exterior generation.",
+    "Historic and market-specific trim/color availability can vary by country; entries marked market_dependent are intentionally conservative."
+  ],
+  "paints": [
+    {
+      "id": "arctic_white",
+      "label": "Arctic White",
+      "hex": "#F2F4F2"
+    },
+    {
+      "id": "graphite_gray",
+      "label": "Graphite Gray",
+      "hex": "#66717B"
+    },
+    {
+      "id": "midnight_black",
+      "label": "Midnight Black",
+      "hex": "#15191F"
+    },
+    {
+      "id": "silver_frost",
+      "label": "Silver Frost",
+      "hex": "#BCC4C9"
+    },
+    {
+      "id": "stellar_purple",
+      "label": "Stellar Purple",
+      "hex": "#867592"
+    },
+    {
+      "id": "fiery_orange",
+      "label": "Fiery Orange",
+      "hex": "#C95D2A"
+    },
+    {
+      "id": "kaitoke_green_matte",
+      "label": "Kaitoke Green Matte",
+      "hex": "#526F64"
+    },
+    {
+      "id": "jet_black",
+      "label": "Jet Black",
+      "hex": "#111316"
+    },
+    {
+      "id": "space_gray",
+      "label": "Space Gray",
+      "hex": "#727A82"
+    },
+    {
+      "id": "lambent_cyan",
+      "label": "Lambent Cyan",
+      "hex": "#7BAFB2"
+    },
+    {
+      "id": "polar_violet",
+      "label": "Polar Violet",
+      "hex": "#8D7F9D"
+    },
+    {
+      "id": "matte_gray",
+      "label": "Matte Gray",
+      "hex": "#777B7E"
+    },
+    {
+      "id": "phantom_purple",
+      "label": "Phantom Purple",
+      "hex": "#77637F"
+    },
+    {
+      "id": "rock_gray",
+      "label": "Rock Gray",
+      "hex": "#6F7375"
+    },
+    {
+      "id": "black_edition",
+      "label": "Black Edition",
+      "hex": "#0D1013"
+    },
+    {
+      "id": "diamond_black",
+      "label": "Diamond Black",
+      "hex": "#111214"
+    },
+    {
+      "id": "mirror_gray",
+      "label": "Mirror Gray",
+      "hex": "#8C9194"
+    },
+    {
+      "id": "waving_green",
+      "label": "Waving Green",
+      "hex": "#667C70"
+    },
+    {
+      "id": "everest_white",
+      "label": "Everest White",
+      "hex": "#F4F4F1"
+    },
+    {
+      "id": "matte_desert_gold",
+      "label": "Matte Desert Gold",
+      "hex": "#B5A083"
+    },
+    {
+      "id": "two_tone_gray_silver",
+      "label": "Two Tone Grey & Silver",
+      "hex": "#8A9298"
+    },
+    {
+      "id": "coral_green",
+      "label": "Coral Green",
+      "hex": "#75A49C"
+    },
+    {
+      "id": "red",
+      "label": "Red",
+      "hex": "#A72C35"
+    },
+    {
+      "id": "green",
+      "label": "Green",
+      "hex": "#476B5C"
+    }
+  ],
+  "interiors": [
+    {
+      "id": "dark_gray",
+      "label": "Dark Gray"
+    },
+    {
+      "id": "light_gray",
+      "label": "Light Gray"
+    },
+    {
+      "id": "coffee",
+      "label": "Coffee"
+    },
+    {
+      "id": "saddle",
+      "label": "Saddle"
+    },
+    {
+      "id": "meteorite_black",
+      "label": "Meteorite Black"
+    },
+    {
+      "id": "tangerine",
+      "label": "Tangerine"
+    }
+  ],
+  "models": [
+    {
+      "id": "G3",
+      "name": "G3",
+      "shape": "crossover",
+      "groups": [
+        {
+          "id": "2018-2021",
+          "label": "2018-2021",
+          "years": [
+            2018,
+            2019,
+            2020,
+            2021
+          ],
+          "trims": [
+            {
+              "id": "long_range",
+              "label": "Long Range"
+            },
+            {
+              "id": "market_dependent",
+              "label": "Other / market-dependent"
+            }
+          ],
+          "colors": [
+            "arctic_white",
+            "graphite_gray",
+            "midnight_black"
+          ],
+          "catalog_status": "historic_market_dependent"
+        }
+      ]
+    },
+    {
+      "id": "G3i",
+      "name": "G3i",
+      "shape": "crossover",
+      "groups": [
+        {
+          "id": "2021-2023",
+          "label": "2021-2023",
+          "years": [
+            2021,
+            2022,
+            2023
+          ],
+          "trims": [
+            {
+              "id": "long_range",
+              "label": "Long Range"
+            },
+            {
+              "id": "market_dependent",
+              "label": "Other / market-dependent"
+            }
+          ],
+          "colors": [
+            "arctic_white",
+            "graphite_gray",
+            "midnight_black",
+            "coral_green"
+          ],
+          "catalog_status": "historic_market_dependent"
+        }
+      ]
+    },
+    {
+      "id": "P5",
+      "name": "P5",
+      "shape": "compact_sedan",
+      "groups": [
+        {
+          "id": "2021-2024",
+          "label": "2021-2024",
+          "years": [
+            2021,
+            2022,
+            2023,
+            2024
+          ],
+          "trims": [
+            {
+              "id": "standard",
+              "label": "Standard / market-dependent"
+            },
+            {
+              "id": "max",
+              "label": "Max / market-dependent"
+            }
+          ],
+          "colors": [
+            "arctic_white",
+            "graphite_gray",
+            "midnight_black"
+          ],
+          "catalog_status": "historic_market_dependent"
+        }
+      ]
+    },
+    {
+      "id": "P7",
+      "name": "P7 (Original)",
+      "shape": "fastback",
+      "groups": [
+        {
+          "id": "2020-2022",
+          "label": "2020-2022",
+          "years": [
+            2020,
+            2021,
+            2022
+          ],
+          "trims": [
+            {
+              "id": "rwd_super_long_range",
+              "label": "RWD Super Long Range"
+            },
+            {
+              "id": "awd_high_performance",
+              "label": "4WD High Performance"
+            },
+            {
+              "id": "wing_edition",
+              "label": "Wing Edition"
+            }
+          ],
+          "colors": [
+            "arctic_white",
+            "jet_black",
+            "space_gray",
+            "red",
+            "green"
+          ],
+          "catalog_status": "official_global"
+        }
+      ]
+    },
+    {
+      "id": "P7i",
+      "name": "P7i",
+      "shape": "fastback",
+      "groups": [
+        {
+          "id": "2023-2025",
+          "label": "2023-2025",
+          "years": [
+            2023,
+            2024,
+            2025
+          ],
+          "trims": [
+            {
+              "id": "rwd_long_range",
+              "label": "RWD Long Range"
+            },
+            {
+              "id": "awd_performance",
+              "label": "AWD Performance"
+            },
+            {
+              "id": "wing_edition",
+              "label": "Wing Edition / market-dependent"
+            }
+          ],
+          "colors": [
+            "arctic_white",
+            "jet_black",
+            "space_gray",
+            "silver_frost",
+            "kaitoke_green_matte"
+          ],
+          "catalog_status": "official_global"
+        }
+      ]
+    },
+    {
+      "id": "Next P7",
+      "name": "Next P7",
+      "shape": "fastback",
+      "groups": [
+        {
+          "id": "2025-2026",
+          "label": "2025-2026",
+          "years": [
+            2025,
+            2026
+          ],
+          "trims": [
+            {
+              "id": "market_dependent",
+              "label": "Variant / market-dependent"
+            }
+          ],
+          "colors": [
+            "arctic_white",
+            "graphite_gray",
+            "midnight_black",
+            "silver_frost"
+          ],
+          "catalog_status": "catalog_pending"
+        }
+      ]
+    },
+    {
+      "id": "P7+",
+      "name": "P7+",
+      "shape": "fastback",
+      "groups": [
+        {
+          "id": "2024-2026",
+          "label": "2024-2026",
+          "years": [
+            2024,
+            2025,
+            2026
+          ],
+          "trims": [
+            {
+              "id": "rwd_standard_range",
+              "label": "RWD Standard Range"
+            },
+            {
+              "id": "rwd_long_range",
+              "label": "RWD Long Range"
+            },
+            {
+              "id": "awd_performance",
+              "label": "AWD Performance"
+            }
+          ],
+          "colors": [
+            "arctic_white",
+            "graphite_gray",
+            "midnight_black",
+            "silver_frost",
+            "stellar_purple"
+          ],
+          "catalog_status": "official_global"
+        }
+      ]
+    },
+    {
+      "id": "G6",
+      "name": "G6",
+      "shape": "g6",
+      "groups": [
+        {
+          "id": "2023-2025",
+          "label": "2023-2025",
+          "years": [
+            2023,
+            2024,
+            2025
+          ],
+          "trims": [
+            {
+              "id": "rwd_standard_range",
+              "label": "RWD Standard Range"
+            },
+            {
+              "id": "rwd_long_range",
+              "label": "RWD Long Range"
+            },
+            {
+              "id": "awd_performance",
+              "label": "AWD Performance"
+            }
+          ],
+          "colors": [
+            "arctic_white",
+            "graphite_gray",
+            "midnight_black",
+            "silver_frost",
+            "fiery_orange"
+          ],
+          "interiors": [
+            "dark_gray",
+            "light_gray"
+          ],
+          "catalog_status": "official_global"
+        },
+        {
+          "id": "2026",
+          "label": "2026",
+          "years": [
+            2026
+          ],
+          "trims": [
+            {
+              "id": "core_rwd",
+              "label": "Core RWD / RWD Standard Range"
+            },
+            {
+              "id": "core_plus_rwd",
+              "label": "Core+ RWD / RWD Long Range"
+            },
+            {
+              "id": "core_performance_awd",
+              "label": "Core Performance AWD / AWD Performance"
+            },
+            {
+              "id": "black_edition",
+              "label": "Black Edition"
+            }
+          ],
+          "colors": [
+            "arctic_white",
+            "graphite_gray",
+            "midnight_black",
+            "silver_frost",
+            "stellar_purple",
+            "black_edition"
+          ],
+          "interiors": [
+            "dark_gray",
+            "light_gray"
+          ],
+          "catalog_status": "official_global"
+        }
+      ]
+    },
+    {
+      "id": "G7",
+      "name": "G7",
+      "shape": "crossover",
+      "groups": [
+        {
+          "id": "2025-2026",
+          "label": "2025-2026",
+          "years": [
+            2025,
+            2026
+          ],
+          "trims": [
+            {
+              "id": "market_dependent",
+              "label": "Variant / market-dependent"
+            }
+          ],
+          "colors": [
+            "arctic_white",
+            "graphite_gray",
+            "midnight_black",
+            "silver_frost"
+          ],
+          "catalog_status": "catalog_pending"
+        }
+      ]
+    },
+    {
+      "id": "G9",
+      "name": "G9",
+      "shape": "suv",
+      "groups": [
+        {
+          "id": "2022-2024",
+          "label": "2022-2024",
+          "years": [
+            2022,
+            2023,
+            2024
+          ],
+          "trims": [
+            {
+              "id": "rwd_standard_range",
+              "label": "RWD Standard Range"
+            },
+            {
+              "id": "rwd_long_range",
+              "label": "RWD Long Range"
+            },
+            {
+              "id": "awd_performance",
+              "label": "AWD Performance"
+            }
+          ],
+          "colors": [
+            "arctic_white",
+            "graphite_gray",
+            "midnight_black",
+            "silver_frost",
+            "kaitoke_green_matte"
+          ],
+          "catalog_status": "official_global"
+        },
+        {
+          "id": "2025-2026",
+          "label": "2025-2026",
+          "years": [
+            2025,
+            2026
+          ],
+          "trims": [
+            {
+              "id": "rwd_standard_range",
+              "label": "RWD Standard Range"
+            },
+            {
+              "id": "rwd_long_range",
+              "label": "RWD Long Range"
+            },
+            {
+              "id": "awd_performance",
+              "label": "AWD Performance"
+            },
+            {
+              "id": "black_edition",
+              "label": "Black Edition"
+            }
+          ],
+          "colors": [
+            "arctic_white",
+            "graphite_gray",
+            "midnight_black",
+            "silver_frost",
+            "kaitoke_green_matte",
+            "black_edition"
+          ],
+          "interiors": [
+            "dark_gray",
+            "coffee",
+            "saddle",
+            "light_gray"
+          ],
+          "catalog_status": "official_global"
+        }
+      ]
+    },
+    {
+      "id": "G9L",
+      "name": "G9L",
+      "shape": "suv",
+      "groups": [
+        {
+          "id": "2026",
+          "label": "2026",
+          "years": [
+            2026
+          ],
+          "trims": [
+            {
+              "id": "awd_performance_ultra_6",
+              "label": "6-seater AWD Performance Ultra"
+            },
+            {
+              "id": "rwd_long_range_ultra_7",
+              "label": "7-seater RWD Long Range Ultra"
+            },
+            {
+              "id": "awd_performance_ultra_7",
+              "label": "7-seater AWD Performance Ultra"
+            }
+          ],
+          "colors": [
+            "arctic_white",
+            "diamond_black",
+            "mirror_gray",
+            "waving_green"
+          ],
+          "interiors": [
+            "meteorite_black",
+            "tangerine"
+          ],
+          "catalog_status": "official_global"
+        }
+      ]
+    },
+    {
+      "id": "X9",
+      "name": "X9",
+      "shape": "mpv",
+      "groups": [
+        {
+          "id": "2024-2025",
+          "label": "2024-2025",
+          "years": [
+            2024,
+            2025
+          ],
+          "trims": [
+            {
+              "id": "fwd_long_range",
+              "label": "FWD Long Range"
+            },
+            {
+              "id": "awd_performance",
+              "label": "AWD Performance"
+            }
+          ],
+          "colors": [
+            "arctic_white",
+            "midnight_black",
+            "silver_frost",
+            "matte_gray"
+          ],
+          "catalog_status": "official_global"
+        },
+        {
+          "id": "2026",
+          "label": "2026",
+          "years": [
+            2026
+          ],
+          "trims": [
+            {
+              "id": "fwd_standard_range",
+              "label": "FWD Standard Range"
+            },
+            {
+              "id": "fwd_long_range",
+              "label": "FWD Long Range"
+            },
+            {
+              "id": "awd_performance",
+              "label": "AWD Performance"
+            }
+          ],
+          "colors": [
+            "arctic_white",
+            "midnight_black",
+            "silver_frost",
+            "matte_gray",
+            "lambent_cyan",
+            "polar_violet"
+          ],
+          "interiors": [
+            "meteorite_black",
+            "coffee"
+          ],
+          "catalog_status": "official_global"
+        }
+      ]
+    },
+    {
+      "id": "MONA M03",
+      "name": "MONA M03",
+      "shape": "compact_sedan",
+      "groups": [
+        {
+          "id": "2024-2026",
+          "label": "2024-2026",
+          "years": [
+            2024,
+            2025,
+            2026
+          ],
+          "trims": [
+            {
+              "id": "m03",
+              "label": "M03"
+            },
+            {
+              "id": "m03_max",
+              "label": "M03 Max"
+            },
+            {
+              "id": "market_dependent",
+              "label": "Other / market-dependent"
+            }
+          ],
+          "colors": [
+            "arctic_white",
+            "graphite_gray",
+            "midnight_black"
+          ],
+          "catalog_status": "catalog_pending"
+        }
+      ]
+    },
+    {
+      "id": "L03",
+      "name": "L03",
+      "shape": "fastback",
+      "groups": [
+        {
+          "id": "2026",
+          "label": "2026",
+          "years": [
+            2026
+          ],
+          "trims": [
+            {
+              "id": "rwd_standard_range",
+              "label": "RWD Standard Range"
+            },
+            {
+              "id": "rwd_long_range",
+              "label": "RWD Long Range"
+            },
+            {
+              "id": "awd_performance",
+              "label": "AWD Performance"
+            },
+            {
+              "id": "awd_performance_ultra",
+              "label": "AWD Performance Ultra"
+            },
+            {
+              "id": "reev",
+              "label": "REEV / Range Extender"
+            }
+          ],
+          "colors": [
+            "arctic_white",
+            "midnight_black",
+            "silver_frost",
+            "rock_gray",
+            "phantom_purple",
+            "black_edition"
+          ],
+          "interiors": [
+            "dark_gray",
+            "light_gray"
+          ],
+          "catalog_status": "official_global"
+        }
+      ]
+    },
+    {
+      "id": "GX",
+      "name": "GX",
+      "shape": "suv",
+      "groups": [
+        {
+          "id": "2026",
+          "label": "2026",
+          "years": [
+            2026
+          ],
+          "trims": [
+            {
+              "id": "preorder",
+              "label": "Pre-order / market-dependent"
+            }
+          ],
+          "colors": [
+            "diamond_black",
+            "everest_white",
+            "matte_desert_gold",
+            "graphite_gray",
+            "two_tone_gray_silver"
+          ],
+          "catalog_status": "official_regional"
+        }
+      ]
+    }
+  ]
+}
