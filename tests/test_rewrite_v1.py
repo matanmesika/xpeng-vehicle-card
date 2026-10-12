@@ -111,7 +111,7 @@ with sync_playwright() as p:
 
         # Home and clock are removed from the header. Only charging telemetry changes the view.
         assert host.locator('[data-view],.xp-clock,.xp-head-separator').count() == 0
-        assert host.locator('[data-expand]').count() == 1
+        assert host.locator('[data-expand]').count() == 0
         page.evaluate("""() => {
             const card=document.querySelector('xpeng-vehicle-card');
             const data={...card.hass.states};
@@ -161,11 +161,8 @@ with sync_playwright() as p:
         assert '—' in host.locator('.xp-charge-card .xp-soc').inner_text()
         assert '11.2 kW' not in host.locator('.xp-charge-card').inner_text()
 
-        # Fullscreen CSS fallback remains functional even if a browser rejects native fullscreen.
-        host.locator('[data-expand]').click()
-        assert host.get_attribute('data-expanded') is not None
-        host.locator('[data-expand]').click()
-        assert host.get_attribute('data-expanded') is None
+        # No in-card Full Screen button in either screen.
+        assert host.locator('[data-expand]').count() == 0
 
         if tag == 'phone':
             dimensions = page.evaluate('''() => ({
