@@ -31,6 +31,19 @@ LOWER={
          (370,454),(384,472),(414,508),(467,517),(490,501),(513,455),
          (654,433),(680,460),(705,476),(724,475),(748,451),(765,406)]
 }
+# Conservative upper contour by body style: stops isolated dark studio
+# columns from projecting above a roof/hood and covering the scenic sky.
+UPPER={
+  'suv':[(10,284),(15,270),(42,229),(98,208),(170,187),(215,164),
+         (259,122),(321,84),(399,80),(558,79),(643,87),(706,145),
+         (752,189),(765,226)],
+  'large_suv':[(13,313),(19,286),(54,251),(116,237),(151,219),
+         (184,200),(236,153),(292,134),(331,129),(553,127),
+         (645,143),(701,171),(755,233),(767,270)],
+  'mpv':[(12,290),(20,262),(58,228),(105,210),(162,190),
+         (206,165),(257,126),(311,115),(360,112),(551,111),
+         (660,120),(717,144),(755,177),(768,214)]
+}
 MODEL_BODY={
     'g9':'large_suv','g9l':'large_suv','gx':'large_suv',
     'x9':'mpv',
@@ -74,6 +87,10 @@ def mask_from_white(img,slug):
     top=np.interp(np.arange(w),valid,tops[valid]).astype(np.float32)
     top=cv2.medianBlur(top.astype(np.uint8).reshape(1,-1),9)[0].astype(np.float32)
     top=cv2.GaussianBlur(top.reshape(1,-1),(0,0),2)[0]
+    upper_points=UPPER[MODEL_BODY.get(slug,'suv')]
+    upper_limit=np.interp(np.arange(w)*780/w,
+        [p[0] for p in upper_points],[p[1] for p in upper_points])*h/585
+    top=np.maximum(top,upper_limit-2)
     points=LOWER[MODEL_BODY.get(slug,'suv')]
     lower=np.interp(np.arange(w)*780/w,
                     [p[0] for p in points],[p[1] for p in points])*h/585
