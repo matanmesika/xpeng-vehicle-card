@@ -386,21 +386,37 @@ test('card editor exposes the independent photographic background and preserves 
 });
 
 
-test('four tires open in an accessible popup and preserve independent sensor values',()=>{
- const states=data(),card=setup(states);
+test('tire selection transforms central vehicle into overhead four-wheel view and back',()=>{
+ const states=data(),card=setup(states),background=card.sceneBackdrop();
  assert.match(card.shadowRoot.innerHTML,/data-tire-toggle/);
- assert.doesNotMatch(card.shadowRoot.innerHTML,/class="xp-tire-popover"/);
  const toggle={hasAttribute:key=>key==='data-tire-toggle'};
  card.shadowRoot.handlers.click({target:{closest:()=>toggle}});
  let html=card.shadowRoot.innerHTML;
- assert.match(html,/class="xp-tire-popover"/);
- assert.match(html,/data-wheel="tire_fl"/);
- assert.match(html,/data-wheel="tire_fr"/);
- assert.match(html,/data-wheel="tire_rl"/);
- assert.match(html,/data-wheel="tire_rr"/);
- assert.equal((html.match(/2.5 bar/g)||[]).length>=4,true);
+ assert.match(html,/class="xp-tire-screen"/);
+ assert.match(html,/class="xp-top-car"/);
+ assert.doesNotMatch(html,/data-car-art/,'normal three-quarter vehicle must disappear during top view');
+ assert.match(html,/Back to vehicle/);
+ for(const wheel of ['tire_fl','tire_fr','tire_rl','tire_rr'])
+   assert.match(html,new RegExp('data-wheel="'+wheel+'"'));
+ assert.equal((html.match(/<strong>2.5<\/strong>/g)||[]).length,4);
+ assert.equal(card.sceneBackdrop(),background,'tire view cannot change approved scenery');
+ assert.equal(card._view,'overview','tire detail is not a third vehicle status page');
  card.shadowRoot.handlers.click({target:{closest:()=>toggle}});
- assert.doesNotMatch(card.shadowRoot.innerHTML,/class="xp-tire-popover"/);
+ assert.match(card.shadowRoot.innerHTML,/data-car-art/);
+ assert.doesNotMatch(card.shadowRoot.innerHTML,/class="xp-tire-screen"/);
+});
+test('optional exact overhead art follows model/trim/paint and is cleared when choosing another paint',()=>{
+ const CardEditor=tags.get('xpeng-vehicle-card-editor'),editor=new CardEditor();
+ const card=setup(data());
+ card.setConfig({model:'G6',year:'2026',trim:'core_plus_rwd',color:'arctic_white',top_image:'/local/g6-2026-white-overhead.webp'});
+ card._tireOpen=true;card.render();
+ assert.match(card.shadowRoot.innerHTML,/g6-2026-white-overhead.webp/);
+ assert.match(card.shadowRoot.innerHTML,/data-top-art/);
+ editor.setConfig({model:'G6',year:'2026',trim:'core_plus_rwd',color:'arctic_white',top_image:'/local/g6-2026-white-overhead.webp'});
+ assert.match(editor.shadowRoot.innerHTML,/data-key="top_image"/);
+ const control={dataset:{key:'color'},value:'graphite_gray',hasAttribute:()=>false,setCustomValidity(){},reportValidity(){}};
+ editor.shadowRoot.handlers.change({target:{closest:()=>control}});
+ assert.equal(editor._cfg.top_image,undefined,'overhead image must not carry to another paint');
 });
 test('tire pressures support bar, kPa, psi and individual unavailable readings without invented values',()=>{
  const states=data(),card=setup(states);
@@ -414,14 +430,14 @@ test('tire pressures support bar, kPa, psi and individual unavailable readings w
  assert.equal(card.tirePressureBar('tire_rl'),2.5);
  assert.equal(card.tirePressureBar('tire_rr'),2.6);
  card._tireOpen=true;card.render();
- assert.match(card.shadowRoot.innerHTML,/2.4 bar/);
- assert.match(card.shadowRoot.innerHTML,/2.6 bar/);
+ assert.match(card.shadowRoot.innerHTML,/<strong>2.4<\/strong>/);
+ assert.match(card.shadowRoot.innerHTML,/<strong>2.6<\/strong>/);
  states['sensor.my_xpeng_tire_pressure_front_right_kpa']={state:'unknown'};
  card.hass={states};
  assert.equal(card.tirePressureBar('tire_fr'),null);
  assert.equal(card.tireSummary(),'—');
- assert.ok(card.tireDetails().includes('data-wheel="tire_fr"'));
- assert.ok(card.tireDetails().includes('<strong>—</strong>'));
+ assert.ok(card.tireScreen().includes('data-wheel="tire_fr"'));
+ assert.ok(card.tireScreen().includes('<strong>—</strong>'));
  states['sensor.my_xpeng_tire_pressure_front_right_kpa']={state:'250',attributes:{unit_of_measurement:'mystery'}};
  card.hass={states};
  assert.equal(card.tirePressureBar('tire_fr'),null);

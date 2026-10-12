@@ -24,8 +24,9 @@ for row in m['profiles']:
                 assert front['path'] in exact|family,front['path']
                 assert (r/'dist/assets'/front['path']).is_file()
                 assert (r/'dist'/('xpeng-asset-'+front['path'].replace('/','-'))).is_file()
-            assert item['rear'] is None and item['charging'] is None
+            assert item['rear'] is None and item['charging'] is None and item['top'] is None
             assert item['rear_status']=='missing'
+            assert item['top_status']=='missing_overhead_packshot_illustrative_preview'
             count+=1
 for model in ['G6','G9']:
     previous=next(row for row in m['profiles'] if row['model']==model and row['year']=='2024')

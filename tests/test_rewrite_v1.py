@@ -207,19 +207,22 @@ with sync_playwright() as p:
             card.hass={states};
         }""",BASE)
 
-        # TPMS is an in-card detail panel, not another dashboard page.
-        # The actual browser must show independent FL/FR/RL/RR live readings.
+        # User-selected Tire pressure replaces the entire central vehicle with overhead view.
         page.evaluate("states => document.querySelector('xpeng-vehicle-card').hass={states}",BASE)
-        tire_button=host.locator('[data-tire-toggle]').first
-        tire_button.click()
-        tires=host.locator('.xp-tire-popover')
+        background_before=host.locator('.xp-night-photo').get_attribute('style')
+        host.locator('.xp-info-row[data-tire-toggle]').click()
+        tires=host.locator('.xp-tire-screen')
         assert tires.is_visible()
+        assert host.locator('img[data-car-art]').count()==0
+        assert tires.locator('.xp-top-car').count()==1
         for k in ('tire_fl','tire_fr','tire_rl','tire_rr'):
             assert tires.locator('[data-wheel="'+k+'"]').count()==1
-        assert '2.5 bar' in tires.inner_text()
+        assert tires.inner_text().count('2.5')>=4
+        assert host.locator('.xp-night-photo').get_attribute('style')==background_before
         host.screenshot(path=str(OUT / f'{tag}-tires-DEMO.png'))
         tires.locator('button[data-tire-toggle]').click()
-        assert host.locator('.xp-tire-popover').count()==0
+        assert host.locator('.xp-tire-screen').count()==0
+        assert host.locator('img[data-car-art]').count()==1
 
         # Missing data stays unavailable: zero and screenshot demo values are never substituted.
         page.evaluate("states => document.querySelector('xpeng-vehicle-card').hass = {states}", {
@@ -248,6 +251,7 @@ with sync_playwright() as p:
         editor = page.locator('xpeng-vehicle-card-editor')
         assert editor.locator('[data-key="color"]').count() == 1
         assert editor.locator('[data-key="shape_family"]').count() == 1
+        assert editor.locator('[data-key="top_image"]').count() == 1
         assert editor.locator('[data-key="interior"]').count() == 1
         assert editor.locator('[data-entity="soc"]').count() == 1
         assert editor.locator('[data-entity="charging"]').count() == 1

@@ -287,6 +287,31 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-art-identity{position:absolute;z-index:8;left:45%;bottom:8%;font-size:11px;letter-spacing:.03em;color:#b5c4d5;opacity:.8;text-shadow:0 2px 4px #000a;pointer-events:none}
 .xp-studio-car{mask-image:none;-webkit-mask-image:none}
 
+.xp-tire-screen{position:absolute;z-index:7;inset:12% 4% 3%;display:flex;flex-direction:column}
+.xp-tire-screen-head{display:flex;justify-content:space-between;align-items:start;gap:16px;padding:6px}
+.xp-tire-screen-head small{font-size:13px;color:#81bfff;letter-spacing:.12em;font-weight:600}
+.xp-tire-screen-head h2{font-size:clamp(26px,3vw,44px);margin:6px 0;color:#f2faff}
+.xp-tire-screen-head p{font-size:clamp(11px,1.2vw,17px);margin:0;color:#c7d6e8}
+.xp-tire-screen-head button{display:flex;align-items:center;gap:8px;border:1px solid #8bcee29c;background:#0a2339e9;border-radius:13px;padding:12px;color:#fff;white-space:nowrap}
+.xp-tire-stage{width:min(830px,100%);flex:1;min-height:0;align-self:center;display:grid;
+grid-template-columns:minmax(105px,1fr) minmax(145px,39%) minmax(105px,1fr);grid-template-rows:1fr 1fr;gap:12px;align-items:center}
+.xp-tire-center{grid-area:1/2/3/3;min-height:0;height:100%;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 16px 20px #0009)}
+.xp-top-car,.xp-top-cutout{width:100%;max-width:290px;height:100%;max-height:100%;object-fit:contain}
+.xp-tire-reading{background:linear-gradient(130deg,#09243be9,#071526f0);border:1px solid #75adc58a;
+backdrop-filter:blur(14px);border-radius:17px;padding:15px 8px;text-align:center;display:flex;flex-direction:column;gap:4px}
+.xp-tire-reading small{color:#c4d4e6;font-size:clamp(10px,1.25vw,16px)}
+.xp-tire-reading strong{font-size:clamp(25px,3vw,47px);color:#fff;line-height:1.1}
+.xp-tire-reading span{color:#75f4c5;font-size:clamp(11px,1.2vw,18px)}
+.xp-tire-reading[data-wheel="tire_fl"]{grid-area:1/1}.xp-tire-reading[data-wheel="tire_fr"]{grid-area:1/3}
+.xp-tire-reading[data-wheel="tire_rl"]{grid-area:2/1}.xp-tire-reading[data-wheel="tire_rr"]{grid-area:2/3}
+.xp-tire-disclaimer{text-align:center;font-size:10px;color:#b9c9d8;padding-bottom:5px}
+@media(max-width:850px){.xp-tire-screen{inset:9% 3% 2%}.xp-tire-screen-head{padding-top:28px}
+.xp-tire-screen-head h2{font-size:27px}.xp-tire-screen-head p{font-size:12px}
+.xp-tire-screen-head button{font-size:12px;padding:10px 8px}
+.xp-tire-stage{grid-template-columns:minmax(90px,1fr) minmax(118px,39%) minmax(90px,1fr);gap:4px}
+.xp-tire-reading{padding:13px 3px}.xp-tire-reading strong{font-size:25px}.xp-tire-reading small{font-size:11px}.xp-tire-reading span{font-size:12px}}
+
+
 .xp-tire-row{width:100%;color:inherit;border:0;border-bottom:1px solid #56708a43;background:transparent;text-align:left;font:inherit}
 .xp-tire-row:hover,.xp-tire-row:focus-visible{background:#2e54653b}
 .xp-tire-row .xp-info-copy{align-items:flex-start}
@@ -430,17 +455,7 @@ class XpengVehicleCard extends HTMLElement{
     else if(unit==='pa')bar=n/100000;
     return bar!==null&&bar>=0.5&&bar<=6?bar:null;
   }
-  tireDetails(){
-    const wheel=(key,label)=>{const v=this.tirePressureBar(key);return '<div class="xp-wheel" data-wheel="'+key+'"><small>'+label+'</small><strong>'+xpEsc(v===null?'—':xpNum(v,2)+' bar')+'</strong></div>';};
-    return `<section class="xp-tire-popover" role="region" aria-label="Individual tire pressures">
-      <div class="xp-tire-header"><strong>Tire pressures</strong><button type="button" data-tire-toggle aria-label="Close tire pressures">×</button></div>
-      <div class="xp-tire-diagram" aria-label="Top-down vehicle tire layout, front at top">
-      ${wheel('tire_fl','Front left')}${wheel('tire_fr','Front right')}
-      <div class="xp-tire-body" aria-hidden="true"><span>FRONT</span><span>REAR</span></div>
-      ${wheel('tire_rl','Rear left')}${wheel('tire_rr','Rear right')}</div>
-      <small class="xp-tire-note">Live mapped values only; no unverified tire-pressure thresholds.</small>
-    </section>`;
-  }
+
  tireSummary(){
   const values=['tire_fl','tire_fr','tire_rl','tire_rr'].map(k=>this.tirePressureBar(k));
   if(values.some(v=>v===null))return '—';
@@ -542,7 +557,44 @@ class XpengVehicleCard extends HTMLElement{
       alt="${xpEsc('XPENG '+a.model+' '+a.year+', '+a.color.replaceAll('_',' ')+(spec.illustrative?' (illustrative artwork)':''))}" loading="eager">
       `;
   }
-  overview(){
+ 
+  topCarArt(){
+    const a=this.appearance(),photo=Array.isArray(this._config.vehicles)&&this._config.vehicles.length
+      ?this.vehicle()?.top_image:this.vehicle()?.top_image||this._config.top_image;
+    if(xpLocalArtworkPath(photo))return `<img class="xp-top-cutout" data-top-art src="${xpEsc(photo)}" alt="${xpEsc('Top-down view of '+a.model+' '+a.year)}" loading="eager">`;
+    const paint=XP_PAINTS.find(p=>p.id===a.color)?.hex||'#f2f4f2';
+    return `<svg class="xp-top-car" viewBox="0 0 300 600" role="img" aria-label="${xpEsc('Illustrative overhead view of '+a.model+' '+a.year)}">
+    <defs><linearGradient id="xp-top-body"><stop offset="0" stop-color="#647381"/><stop offset=".2" stop-color="${xpEsc(paint)}"/><stop offset=".8" stop-color="${xpEsc(paint)}"/><stop offset="1" stop-color="#546576"/></linearGradient>
+    <linearGradient id="xp-top-window" x2="1" y2="1"><stop stop-color="#2e4b64"/><stop offset="1" stop-color="#0b1728"/></linearGradient></defs>
+    <ellipse cx="150" cy="301" rx="119" ry="270" fill="#000" opacity=".35"/>
+    <g fill="#111820" stroke="#8597a4" stroke-width="3">
+      <rect x="17" y="135" width="45" height="111" rx="14"/><rect x="238" y="135" width="45" height="111" rx="14"/>
+      <rect x="17" y="362" width="45" height="111" rx="14"/><rect x="238" y="362" width="45" height="111" rx="14"/></g>
+    <path d="M109 33Q150 9 191 33L239 95Q255 145 255 200V451Q255 504 231 546Q150 573 69 546Q45 504 45 451V200Q45 145 61 95Z" fill="url(#xp-top-body)" stroke="#b1c7d5" stroke-width="3"/>
+    <path d="M77 143Q150 104 223 143L228 199Q150 221 72 199Z" fill="url(#xp-top-window)" stroke="#abc0ca" stroke-width="3"/>
+    <path d="M75 222Q150 211 225 222V406Q150 423 75 406Z" fill="url(#xp-top-window)" stroke="#abbac4" stroke-width="3"/>
+    <path d="M80 434Q150 422 220 434L211 488Q150 497 89 488Z" fill="url(#xp-top-window)" stroke="#9cabb6" stroke-width="2"/>
+    <path d="M73 60L106 46M194 46L227 60" stroke="#f3fcff" stroke-width="9" stroke-linecap="round"/>
+    <path d="M70 537Q150 554 230 537" stroke="#fa4047" stroke-width="9" fill="none" stroke-linecap="round"/>
+    </svg>`;
+  }
+  tireScreen(){
+    const a=this.appearance(),photo=Array.isArray(this._config.vehicles)&&this._config.vehicles.length
+      ?this.vehicle()?.top_image:this.vehicle()?.top_image||this._config.top_image;
+    const wheel=(key,label)=>{const bar=this.tirePressureBar(key);
+      return `<div class="xp-tire-reading" data-wheel="${key}"><small>${label}</small>
+        <strong>${bar===null?'—':xpEsc(xpNum(bar,2))}</strong><span>${bar===null?'Unavailable':'bar'}</span></div>`;};
+    return `<section class="xp-tire-screen" role="region" aria-label="Tire pressure from above">
+       <div class="xp-tire-screen-head"><div><small>XPENG ${xpEsc(a.model)} · ${xpEsc(a.year)}</small>
+         <h2>Tire pressures</h2><p>Four wheels · live Home Assistant readings</p></div>
+         <button type="button" data-tire-toggle aria-label="Back to vehicle status">${xpIcon('back',20)} Back to vehicle</button></div>
+       <div class="xp-tire-stage"><div class="xp-tire-center">${this.topCarArt()}</div>
+         ${wheel('tire_fl','Front left')}${wheel('tire_fr','Front right')}
+         ${wheel('tire_rl','Rear left')}${wheel('tire_rr','Rear right')}</div>
+       ${!xpLocalArtworkPath(photo)?'<div class="xp-tire-disclaimer">Illustrative overhead view · exact model artwork pending</div>':''}
+     </section>`;
+  }
+ overview(){
   const rows=[['gauge','Odometer',this.num('odometer','km')],['tire','Tire pressure',this.tireSummary()],['pin','Location',this.locationText()]];
   return `${this.title()}${this.updated()}${this.carArt()}
     <section class="xp-overview-stat" aria-label="Battery and estimated range">
@@ -555,7 +607,7 @@ class XpengVehicleCard extends HTMLElement{
       ?`<button class="xp-info-row xp-tire-row" type="button" data-tire-toggle aria-expanded="${this._tireOpen?'true':'false'}" aria-label="View all four tire pressures"><span class="xp-info-icon">${xpIcon(icon,31)}</span><span class="xp-info-copy"><small>${xpEsc(label)}</small><b>${xpEsc(val)}</b></span><span class="xp-chevron">${xpIcon('arrow',19)}</span></button>`
       :`<div class="xp-info-row"><div class="xp-info-icon">${xpIcon(icon,31)}</div>
       <div class="xp-info-copy"><small>${xpEsc(label)}</small><b>${xpEsc(val)}</b></div><span class="xp-chevron">${xpIcon('arrow',19)}</span></div>`).join('')}
-    </aside>${this._tireOpen?this.tireDetails():''}`;
+    </aside>`;
  }
  charging(){
   return `${this.title()}${this.updated()}
@@ -579,8 +631,9 @@ class XpengVehicleCard extends HTMLElement{
   // Only an explicit 'on' shows Charging. 'off', unknown and unavailable show Overview.
   const isCharging=xpChargingActive(this.val('charging'))===true;
   this._view=isCharging?'charging':'overview';
-  this.shadowRoot.innerHTML=`<style>${XP_CSS}</style><ha-card><div class="xp-scene ${isCharging?'xp-charge':'xp-overview'}">
-   ${this.sceneBackdrop()}${this.header()}${isCharging?this.charging():this.overview()}
+  if(isCharging)this._tireOpen=false;
+  this.shadowRoot.innerHTML=`<style>${XP_CSS}</style><ha-card><div class="xp-scene ${isCharging?'xp-charge':this._tireOpen?'xp-overview xp-tire-mode':'xp-overview'}">
+   ${this.sceneBackdrop()}${this.header()}${isCharging?this.charging():this._tireOpen?this.tireScreen():this.overview()}
    
    </div></ha-card>`;
  }
@@ -608,12 +661,12 @@ class XpengVehicleCardEditor extends HTMLElement{
    }
    const key=el.dataset.key;
    let cfg={...this._cfg,[key]:el.value};
-   if(['image','charging_image','interior_image','background_image'].includes(key)&&el.value&&!xpLocalArtworkPath(el.value)){
+   if(['image','charging_image','top_image','interior_image','background_image'].includes(key)&&el.value&&!xpLocalArtworkPath(el.value)){
      el.setCustomValidity('Use a local /local/... or /hacsfiles/... image URL');
      el.reportValidity();return;
    }
    // A previous manual photo belongs to the old model/year/paint, not a new one.
-   if(['model','year','trim','color','shape_family'].includes(key)){delete cfg.image;delete cfg.charging_image;}
+   if(['model','year','trim','color','shape_family'].includes(key)){delete cfg.image;delete cfg.charging_image;delete cfg.top_image;}
     if(['model','year'].includes(key))delete cfg.shape_family;
    if(['model','year','trim','interior'].includes(key))delete cfg.interior_image;
    if(cfg.prefix&&!/^[a-z0-9_]+$/.test(cfg.prefix))return;
@@ -664,6 +717,8 @@ class XpengVehicleCardEditor extends HTMLElement{
     <h3>Data source</h3><p>Every measurement supports automatic matching by prefix or optional manual entity assignment, including from any Home Assistant integration. Charging activates the charging screen only while charging is reported as active.</p>
      <label>Optional cabin photo for this selected model, year, trim and interior colour<input data-key="interior_image" value="${xpEsc(v.interior_image||'')}" placeholder="/local/my_xpeng/interiors/g6-2026-light-gray.webp"></label>
     <p>Choosing another model/year/trim or interior finish clears the previous custom cabin photo so a different model is never shown by mistake. Without photography the compact information popup shows a colour-matched cabin illustration.</p>
+    <label>Optional matching overhead transparent vehicle image for tire display<input data-key="top_image" value="${xpEsc(v.top_image||'')}" placeholder="/local/my_xpeng/g6-overhead.webp"></label>
+    <p>Until a model-specific overhead asset is verified, Tire pressures uses a clearly labeled color-matched illustration.</p>
     <label>Optional rear/charging view image for this exact vehicle (when available)<input data-key="charging_image" value="${xpEsc(v.charging_image||'')}" placeholder="/local/my_xpeng/cars/g6-2026-white-rear.webp"></label>
     <label>Optional exact vehicle image URL (when this profile has no bundled year-specific photo)<input data-key="image" value="${xpEsc(v.image||'')}" placeholder="/local/my_xpeng/cars/g6-2026-white.webp"></label>
     <p>Background is stored separately and stays the same in both screens. The car image changes by your manual model/year/trim/exterior colour selection. 2026 G6/G9 have exact-path bundled previews; older/other models use clearly labelled illustrations unless you specify your own exact photo.</p>

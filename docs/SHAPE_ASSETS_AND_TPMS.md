@@ -21,9 +21,10 @@ Frontend/dashboard only. The XPENG Home Assistant integration/backend is **not m
 4. Add assets to inventory, frontend source index, HACS flat distribution and every matching shape/year/trim/paint manifest record.
 5. Validate alpha channel, checksum, backdrop consistency and real Chromium screenshots in both states.
 
-## Tire pressure details
+## Tire pressure full-view behavior
 
-- In the existing Vehicle status information panel, click **Tire pressure** to open a small car-top-view diagram with front-left, front-right, rear-left, rear-right values.
-- Uses the existing four read-only HA mappings `tire_fl`, `tire_fr`, `tire_rl`, `tire_rr`, which can each point to a dedicated entity or entity attribute.
-- Converts sensor unit `kPa`, `bar`, `psi`, or `Pa` to displayed bar. Unknown unit, invalid, absent or implausible value displays `—`.
-- No fictional pressures and no vehicle-specific danger thresholds. Does not add a third screen, doesn't control TPMS, and does not alter charging UI.
+- In Vehicle status, tap **Tire pressure**: the three-quarter large car disappears, and a large central **top-down** vehicle appears on the same approved lakeside background. Four live readings appear beside the wheels. Tap **Back to vehicle** to restore overview.
+- A genuinely matching transparent overhead PNG/WebP can be provided using the optional `top_image` editor field. Its mapping must be rechecked after changing vehicle model, year, generation, trim, or paint.
+- Until a genuine model-specific overhead photo is verified, the car in this view is an **illustrative, color-matched top view**, not a manufacturer-accurate XPENG cutout. Missing top views are tracked separately in `shape-artwork.json` for every profile.
+- The existing four independent HA mappings `tire_fl`, `tire_fr`, `tire_rl`, `tire_rr` provide values. kPa, bar, psi and Pa units convert to bar. Unknown or missing values display `—`; no made-up readings or danger thresholds.
+- Charging view remains one of only two main modes; tire presentation is a temporary detail of Vehicle status, not a third navigation tab.

@@ -45,7 +45,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -56,7 +58,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -67,7 +71,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -78,7 +84,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -89,7 +97,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -131,7 +141,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -142,7 +154,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -153,7 +167,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -164,7 +180,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -175,7 +193,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -217,7 +237,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -228,7 +250,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -239,7 +263,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -250,7 +276,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -261,7 +289,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -303,7 +333,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -314,7 +346,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -325,7 +359,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -336,7 +372,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -347,7 +385,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -389,7 +429,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -400,7 +442,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -411,7 +455,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -422,7 +468,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -433,7 +481,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -475,7 +525,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -486,7 +538,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -497,7 +551,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -508,7 +564,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -519,7 +577,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -561,7 +621,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -572,7 +634,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -583,7 +647,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -594,7 +660,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -605,7 +673,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -647,7 +717,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -658,7 +730,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -669,7 +743,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -680,7 +756,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -691,7 +769,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -733,7 +813,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -744,7 +826,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -755,7 +839,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -766,7 +852,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -777,7 +865,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -819,7 +909,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -830,7 +922,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -841,7 +935,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -852,7 +948,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -863,7 +961,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -905,7 +1005,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -916,7 +1018,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -927,7 +1031,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -938,7 +1044,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -949,7 +1057,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -991,7 +1101,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -1002,7 +1114,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -1013,7 +1127,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -1024,7 +1140,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -1035,7 +1153,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -1077,7 +1197,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -1088,7 +1210,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -1099,7 +1223,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -1110,7 +1236,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -1121,7 +1249,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -1163,7 +1293,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -1174,7 +1306,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -1185,7 +1319,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -1196,7 +1332,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -1207,7 +1345,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -1249,7 +1389,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -1260,7 +1402,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -1271,7 +1415,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -1282,7 +1428,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -1293,7 +1441,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -1335,7 +1485,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -1346,7 +1498,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -1357,7 +1511,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -1368,7 +1524,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -1379,7 +1537,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -1421,7 +1581,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -1432,7 +1594,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -1443,7 +1607,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -1454,7 +1620,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -1465,7 +1633,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -1507,7 +1677,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -1518,7 +1690,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -1529,7 +1703,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -1540,7 +1716,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -1551,7 +1729,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -1593,7 +1773,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -1604,7 +1786,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -1615,7 +1799,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -1626,7 +1812,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -1637,7 +1825,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -1679,7 +1869,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -1690,7 +1882,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -1701,7 +1895,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -1712,7 +1908,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -1723,7 +1921,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -1765,7 +1965,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -1776,7 +1978,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -1787,7 +1991,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -1798,7 +2004,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -1809,7 +2017,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -1851,7 +2061,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -1862,7 +2074,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -1873,7 +2087,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -1884,7 +2100,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -1895,7 +2113,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -1937,7 +2157,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -1948,7 +2170,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -1959,7 +2183,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -1970,7 +2196,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -1981,7 +2209,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -2023,7 +2253,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -2034,7 +2266,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -2045,7 +2279,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -2056,7 +2292,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -2067,7 +2305,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -2108,35 +2348,45 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         },
         "standard_range_rwd": {
@@ -2145,35 +2395,45 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         },
         "long_range_rwd": {
@@ -2182,35 +2442,45 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         },
         "performance_awd": {
@@ -2219,35 +2489,45 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -2288,35 +2568,45 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         },
         "standard_range_rwd": {
@@ -2325,35 +2615,45 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         },
         "long_range_rwd": {
@@ -2362,35 +2662,45 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         },
         "performance_awd": {
@@ -2399,35 +2709,45 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -2474,35 +2794,45 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         },
         "standard_range_rwd": {
@@ -2511,35 +2841,45 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         },
         "long_range_rwd": {
@@ -2548,35 +2888,45 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         },
         "performance_awd": {
@@ -2585,35 +2935,45 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -2659,7 +3019,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -2670,7 +3032,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -2681,7 +3045,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -2692,7 +3058,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -2703,7 +3071,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         },
         "core_plus_rwd": {
@@ -2716,7 +3086,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -2727,7 +3099,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -2738,7 +3112,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -2749,7 +3125,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -2760,7 +3138,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         },
         "core_performance_awd": {
@@ -2773,7 +3153,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -2784,7 +3166,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -2795,7 +3179,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -2806,7 +3192,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -2817,7 +3205,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         },
         "black_edition": {
@@ -2830,7 +3220,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -2841,7 +3233,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -2852,7 +3246,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -2863,7 +3259,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -2874,7 +3272,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         },
         "unspecified": {
@@ -2887,7 +3287,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -2898,7 +3300,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -2909,7 +3313,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -2920,7 +3326,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -2931,7 +3339,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -2973,7 +3383,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -2984,7 +3396,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -2995,7 +3409,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -3006,7 +3422,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -3017,7 +3435,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -3059,7 +3479,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -3070,7 +3492,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -3081,7 +3505,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -3092,7 +3518,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -3103,7 +3531,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -3144,35 +3574,45 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         },
         "standard_range_rwd": {
@@ -3181,35 +3621,45 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         },
         "long_range_rwd": {
@@ -3218,35 +3668,45 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         },
         "performance_awd": {
@@ -3255,35 +3715,45 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -3324,35 +3794,45 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         },
         "standard_range_rwd": {
@@ -3361,35 +3841,45 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         },
         "long_range_rwd": {
@@ -3398,35 +3888,45 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         },
         "performance_awd": {
@@ -3435,35 +3935,45 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -3504,35 +4014,45 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         },
         "standard_range_rwd": {
@@ -3541,35 +4061,45 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         },
         "long_range_rwd": {
@@ -3578,35 +4108,45 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         },
         "performance_awd": {
@@ -3615,35 +4155,45 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -3690,35 +4240,45 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         },
         "standard_range_rwd": {
@@ -3727,35 +4287,45 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         },
         "long_range_rwd": {
@@ -3764,35 +4334,45 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         },
         "performance_awd": {
@@ -3801,35 +4381,45 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -3876,7 +4466,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -3887,7 +4479,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -3898,7 +4492,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -3909,14 +4505,18 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "kaitoke_green_matte": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         },
         "standard_range_rwd": {
@@ -3929,7 +4529,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -3940,7 +4542,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -3951,7 +4555,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -3962,14 +4568,18 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "kaitoke_green_matte": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         },
         "long_range_rwd": {
@@ -3982,7 +4592,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -3993,7 +4605,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -4004,7 +4618,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -4015,14 +4631,18 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "kaitoke_green_matte": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         },
         "performance_awd": {
@@ -4035,7 +4655,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -4046,7 +4668,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -4057,7 +4681,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -4068,14 +4694,18 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "kaitoke_green_matte": {
             "front": null,
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -4117,7 +4747,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -4128,7 +4760,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -4139,7 +4773,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -4150,7 +4786,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -4161,7 +4799,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -4204,7 +4844,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -4215,7 +4857,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -4226,7 +4870,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -4237,7 +4883,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -4248,7 +4896,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         },
         "fwd_long_range": {
@@ -4261,7 +4911,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -4272,7 +4924,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -4283,7 +4937,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -4294,7 +4950,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -4305,7 +4963,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -4348,7 +5008,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -4359,7 +5021,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -4370,7 +5034,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -4381,7 +5047,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -4392,7 +5060,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         },
         "fwd_long_range": {
@@ -4405,7 +5075,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -4416,7 +5088,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -4427,7 +5101,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -4438,7 +5114,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -4449,7 +5127,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -4492,7 +5172,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -4503,7 +5185,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -4514,7 +5198,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -4525,7 +5211,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -4536,7 +5224,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         },
         "fwd_long_range": {
@@ -4549,7 +5239,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -4560,7 +5252,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -4571,7 +5265,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -4582,7 +5278,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -4593,7 +5291,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -4635,7 +5335,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -4646,7 +5348,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -4657,7 +5361,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -4668,7 +5374,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -4679,7 +5387,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -4721,7 +5431,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -4732,7 +5444,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -4743,7 +5457,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -4754,7 +5470,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -4765,7 +5483,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -4807,7 +5527,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -4818,7 +5540,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -4829,7 +5553,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -4840,7 +5566,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -4851,7 +5579,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -4893,7 +5623,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -4904,7 +5636,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -4915,7 +5649,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -4926,7 +5662,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -4937,7 +5675,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -4979,7 +5719,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -4990,7 +5732,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -5001,7 +5745,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -5012,7 +5758,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -5023,7 +5771,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -5065,7 +5815,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -5076,7 +5828,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -5087,7 +5841,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -5098,7 +5854,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -5109,7 +5867,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -5151,7 +5911,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -5162,7 +5924,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -5173,7 +5937,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -5184,7 +5950,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -5195,7 +5963,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -5237,7 +6007,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -5248,7 +6020,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -5259,7 +6033,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -5270,7 +6046,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -5281,7 +6059,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -5323,7 +6103,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -5334,7 +6116,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -5345,7 +6129,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -5356,7 +6142,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -5367,7 +6155,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -5409,7 +6199,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -5420,7 +6212,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -5431,7 +6225,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -5442,7 +6238,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -5453,7 +6251,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -5495,7 +6295,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -5506,7 +6308,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -5517,7 +6321,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -5528,7 +6334,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -5539,7 +6347,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -5581,7 +6391,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -5592,7 +6404,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -5603,7 +6417,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -5614,7 +6430,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -5625,7 +6443,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -5667,7 +6487,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -5678,7 +6500,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -5689,7 +6513,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -5700,7 +6526,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -5711,7 +6539,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
@@ -5753,7 +6583,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "graphite_gray": {
             "front": {
@@ -5764,7 +6596,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "midnight_black": {
             "front": {
@@ -5775,7 +6609,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "silver_frost": {
             "front": {
@@ -5786,7 +6622,9 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           },
           "stellar_purple": {
             "front": {
@@ -5797,10 +6635,13 @@
             "rear": null,
             "charging": null,
             "rear_status": "missing",
-            "fallback_strategy": "front_in_charging_labeled"
+            "fallback_strategy": "front_in_charging_labeled",
+            "top": null,
+            "top_status": "missing_overhead_packshot_illustrative_preview"
           }
         }
       }
     }
-  ]
+  ],
+  "top_views": 0
 }
