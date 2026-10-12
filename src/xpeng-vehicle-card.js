@@ -147,7 +147,7 @@ function xpAssetModel(model){return String(model).toLowerCase().replace(/\s+/g,'
 const XP_ARTWORK_INDEX = Object.freeze({
   exact:new Set(['vehicles/g6/graphite_gray/front.webp','vehicles/g6/graphite_gray/charging.webp','vehicles/g6/graphite_gray/top.webp']) // Approved G6 2026 artwork from PR #27.
 });
-const XP_SCENE_BACKGROUND = 'xpeng-approved-lakeside-background.webp';
+const XP_SCENE_BACKGROUND = 'https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/assets/xpeng-approved-lakeside-background.webp';
 // HACS installs files directly under dist/; nested folders are not reliably copied.
 // Keep every runtime file as a *direct child* of dist/ with a collision-free name.
 const XP_HACS_BASE='/hacsfiles/xpeng-vehicle-card/';
@@ -176,7 +176,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-title h1{font-size:clamp(32px,3.7vw,62px);line-height:1.02;letter-spacing:.035em;font-weight:730;margin:0;white-space:nowrap}
 .xp-title h1 em{font-style:normal;color:#7eaeff}
 .xp-subtitle{font-size:clamp(15px,2vw,30px);color:#8192b6;font-weight:400}
-.xp-car{position:absolute;z-index:3;width:57%;height:auto;max-height:73%;object-fit:contain;left:21%;bottom:16%;filter:drop-shadow(0 20px 20px #000b) brightness(1.6) contrast(1.00)}
+.xp-car{position:absolute;z-index:3;width:57%;height:auto;max-height:73%;object-fit:contain;left:21%;bottom:16%;mix-blend-mode:multiply;filter:drop-shadow(0 20px 20px #000b) brightness(1.6) contrast(1.00)}
 .xp-car.xp-paint-silver_frost{filter:drop-shadow(0 20px 20px #000b) brightness(1.13)}
 .xp-car.xp-paint-space_grey{filter:drop-shadow(0 20px 20px #000b) brightness(.78) hue-rotate(4deg)}
 .xp-car.xp-paint-jet_black{filter:drop-shadow(0 20px 20px #000b) brightness(.45)}
@@ -456,7 +456,7 @@ class XpengVehicleCard extends HTMLElement{
     // Identical pixel source and placement in both vehicle status and charging.
     // One real image layer, shared for charging and overview. No CSS mountain or sky illustration.
     // A manual dashboard-wide background never changes when vehicle/colour/charging changes.
-    const source=this._config.background_image||(XP_HACS_BASE+XP_SCENE_BACKGROUND);
+    const source=this._config.background_image||XP_SCENE_BACKGROUND;
     return `<div class="xp-night-photo" aria-hidden="true"
       style="background-image:url(&quot;${xpEsc(source)}&quot;)"></div>`;
   }
