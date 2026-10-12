@@ -344,7 +344,9 @@ class XpengVehicleCard extends HTMLElement{
  num(key,unit='',dec=0){const v=this.number(key);return v===null?'—':xpNum(v,dec)+(unit?' '+unit:'');}
  assetSpec(){
     const base=(this._config.image_path||'/hacsfiles/xpeng-vehicle-card/assets').replace(/\/$/,'');
-    const chosen=(this._view==='charging'&&(this.vehicle()?.charging_image||this._config.charging_image))||this.vehicle()?.image||this._config.image;
+    const profileArt=key=>Array.isArray(this._config.vehicles)&&this._config.vehicles.length
+      ?this.vehicle()?.[key]:this.vehicle()?.[key]||this._config[key];
+    const chosen=(this._view==='charging'&&profileArt('charging_image'))||profileArt('image');
     const a=this.appearance(),model=xpAssetModel(a.model),trim=xpAssetModel(a.trim);
     // A specific user artwork override applies only to the selected card profile.
     // Never select a different year/trim/colour because an exact file is absent.
@@ -452,7 +454,8 @@ class XpengVehicleCard extends HTMLElement{
     const a=this.appearance(),finish=XP_INTERIORS.find(x=>x.id===a.interior)||XP_INTERIORS[0];
     // Model/year/trim/cabin custom imagery stays independent of the background.
     // If no matching art is provided, the colour-accurate schematic remains honest.
-    const interiorImg=this.vehicle()?.interior_image||this._config.interior_image;
+    const interiorImg=Array.isArray(this._config.vehicles)&&this._config.vehicles.length
+      ?this.vehicle()?.interior_image:this.vehicle()?.interior_image||this._config.interior_image;
     if(xpLocalArtworkPath(interiorImg))
       return `<img class="xp-cabin-mini" src="${xpEsc(interiorImg)}"
         alt="${xpEsc(a.model+' '+a.year+' '+finish.label+' interior (user-supplied artwork)')}" loading="lazy">`;
