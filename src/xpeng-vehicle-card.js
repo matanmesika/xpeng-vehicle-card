@@ -388,19 +388,19 @@ class XpengVehicleCard extends HTMLElement{
         description:'Owner-supplied artwork for '+a.model+' '+a.color};
     // Prefer separately packaged and verified three-view assets when present.
     // A view must never silently reuse a front render as a rear or overhead render.
-    const candidate='vehicles/'+model+'/'+a.year+'/'+xpAssetModel(a.trim)+'/'+a.color+'/'+(view==='rear'?'charging':'front')+'.webp';
+    const candidate='vehicles/'+model+'/'+a.year/'+'display'+'/'+a.color+'/+(view==='rear'?'charging':'front')+'.webp';
     if(XP_ARTWORK_INDEX.exact.has(candidate))
       return {src:bundled(candidate),illustrative:false,studio:false,tier:'exact-view',view,
         view_status:'matching_view',description:'Matched '+a.model+' '+a.year+' '+a.trim+' '+a.color+' '+view};
-    // Visual policy: model+paint only. One top available trim for every year and selected trim.
-    // Paths happen to contain "2026"; that is source asset metadata, not a year filter.
+    // Display uses one representative trim per model/year, regardless of selected trim.
+    // Legacy 2026 previews are used only for 2026, never for other model years.
     const highest={G6:'core_performance_awd',G9:'performance_awd'}[a.model];
-    if(highest){
+    if(highest&&String(a.year)==='2026'){
       const exact='vehicles/'+model+'/2026/'+highest+'/'+a.color+'.webp';
       if(XP_ARTWORK_INDEX.exact.has(exact))
         return {src:bundled(exact),illustrative:true,studio:false,tier:'highest-trim-preview',view,
           view_status:view==='rear'?'front_fallback_rear_pending':'highest_available_preview',
-          description:'Same highest-available-trim '+a.model+' preview in '+a.color+' for all years and trims; not manufacturer verified'};
+          description:'Representative '+a.model+' 2026 preview in '+a.color+' for all selected trims; not manufacturer verified'};
     }
     const alias={graphite_gray:'space_grey',midnight_black:'jet_black'}[a.color]||a.color;
     const family='models/'+model+'-'+alias+'.webp';
