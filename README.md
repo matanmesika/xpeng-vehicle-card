@@ -2,9 +2,9 @@
 
 A standalone, **read-only Home Assistant dashboard card** for XPENG vehicles. This repository contains **frontend/UI only**; the XPENG Home Assistant integration is a separate project and is not modified here.
 
-**עדכונים והיסטוריית גרסאות:** [CHANGELOG.md](CHANGELOG.md) הוא המקור המרכזי והמתעדכן לשינויים בפרויקט. קובצי Release Notes היסטוריים, ככל שקיימים, אינם משמשים לניהול עדכונים שוטפים. פרסום גרסה להתקנה מתבצע בנפרד דרך [GitHub Releases](https://github.com/matanmesika/xpeng-vehicle-card/releases).
+**Updates and release history:** [CHANGELOG.md](CHANGELOG.md) is the single canonical history for this project. Obsolete per-release note files were removed; installable versions are published separately under [GitHub Releases](https://github.com/matanmesika/xpeng-vehicle-card/releases).
 
-**Release plan (2026-10-12):** The already-tested dashboard and sensor-mapping fixes are being shipped independently of missing photos as **v1.0.0-alpha.6**. Check [GitHub Releases](https://github.com/matanmesika/xpeng-vehicle-card/releases) to confirm publication. The previously published v1.0.0-alpha.5 was the baseline. **No replacement car images or approved background changes are included in alpha.6.**
+**Current candidate (2026-10-12):** **v1.0.0-beta.1**. It includes the current dashboard/UI, the approved lakeside backdrop, and the current G6 front/charging/top artwork. The temporary `mix-blend-mode: multiply` workaround has been removed so the updated front artwork renders normally.
 
 ## User-approved design
 
@@ -30,7 +30,7 @@ See [artwork and tire view policy](docs/SHAPE_ASSETS_AND_TPMS.md) and [design lo
 
 ## Installation through HACS
 
-Add `https://github.com/matanmesika/xpeng-vehicle-card` to **HACS → Custom repositories**, category **Dashboard**. Install the most recent published preview and reload Home Assistant. For the new UI and sensor editor, install alpha.6 once it appears on GitHub Releases. **Image improvements will be a separate later update.**
+Add `https://github.com/matanmesika/xpeng-vehicle-card` to **HACS → Custom repositories**, category **Dashboard**. Install the most recent published beta and reload Home Assistant. The current release candidate is `v1.0.0-beta.1`; check GitHub Releases for actual publication status.
 
 Example configuration:
 
