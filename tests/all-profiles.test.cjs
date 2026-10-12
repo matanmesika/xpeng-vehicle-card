@@ -4,6 +4,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
 const vm=require('node:vm');
+const crypto=require('node:crypto');
 
 const ROOT=path.resolve(__dirname,'..');
 const profiles=JSON.parse(fs.readFileSync(path.join(ROOT,'profiles/year-profiles.json'),'utf8'));
@@ -87,4 +88,54 @@ test('any unknown-year image is clearly labelled illustrative, no false official
  assert.match(card.shadowRoot.innerHTML,/illustrative artwork/); // clearly disclosed via accessible image alt without visual watermark
  card.setConfig({model:'G9',year:'2026',color:'kaitoke_green_matte'});
  assert.match(card.asset(),/^data:image\/svg\+xml/);
+});
+
+test('the approved background stays byte-for-byte frozen and shared between status and charging',()=>{
+ const expectedGitBlob='cc33b657c1785d1dbad0cb943a38ea4275a8435d';
+ const file=path.join(ROOT,'dist/assets/xpeng-reference-background.webp');
+ const raw=fs.readFileSync(file);
+ const blob=crypto.createHash('sha1')
+   .update(Buffer.from('blob '+raw.length+'\\0'))
+   .update(raw).digest('hex');
+ assert.equal(blob,expectedGitBlob,
+   'Backdrop was changed without explicit owner approval; restore approved pixels');
+ const root=fs.readFileSync(path.join(ROOT,'assets/xpeng-reference-background.webp'));
+ assert.ok(root.equals(raw),'Root and HACS background must be byte-identical');
+ const card=new Card();card.setConfig({model:'G6',year:'2026',color:'arctic_white'});
+ const idle=card.sceneBackdrop();
+ card.hass={states:{'binary_sensor.my_xpeng_is_charging':{state:'on'}}};
+ const active=card.sceneBackdrop();
+ assert.equal(idle,active);
+ assert.match(idle,/xpeng-reference-background\\.webp/);
+ assert.equal((idle.match(/xp-night-photo/g)||[]).length,1);
+ assert.doesNotMatch(source,/night-mountain-scene\\.svg/);
+});
+test('new 2026 G9 uses the actual bundled year/trim/paint-specific preview',()=>{
+ const card=new Card();
+ for(const trim of ['unspecified','standard_range_rwd','long_range_rwd','performance_awd']){
+   for(const paint of ['arctic_white','graphite_gray','midnight_black','silver_frost']){
+     card.setConfig({model:'G9',year:'2026',trim,color:paint});
+     const art=card.assetSpec();
+     assert.match(art.src,new RegExp('/vehicles/g9/2026/'+trim+'/'+paint+'\\\\.webp$'));
+     assert.equal(art.illustrative,true);
+     const rel=art.src.replace('/hacsfiles/xpeng-vehicle-card/assets/','');
+     assert.ok(fs.existsSync(path.join(ROOT,'dist/assets',rel)),art.src);
+   }
+ }
+ // This colour is allowed by the catalogue but has no model-year verified art yet.
+ card.setConfig({model:'G9',year:'2026',trim:'long_range_rwd',color:'kaitoke_green_matte'});
+ assert.match(card.assetSpec().src,/^data:image\\/svg\\+xml/);
+ assert.match(card.assetSpec().description,/artwork pending/);
+});
+test('card editor remains appearance-only and dashboard does not add new screens',()=>{
+ const card=new Card(),editor=new Editor();
+ editor.setConfig({model:'G9',year:'2026',trim:'performance_awd',color:'arctic_white',interior:'coffee'});
+ assert.match(editor.shadowRoot.innerHTML,/data-key="year"/);
+ assert.match(editor.shadowRoot.innerHTML,/data-key="model"/);
+ assert.match(editor.shadowRoot.innerHTML,/data-key="interior"/);
+ assert.match(editor.shadowRoot.innerHTML,/Manual sensor mapping/);
+ card.setConfig({...editor._cfg});
+ assert.equal(card.appearance().model,'G9');
+ assert.doesNotMatch(card.shadowRoot.innerHTML,/data-key="year"|Manual sensor mapping/);
+ assert.equal((card.shadowRoot.innerHTML.match(/class="xp-night-photo"/g)||[]).length,1);
 });
