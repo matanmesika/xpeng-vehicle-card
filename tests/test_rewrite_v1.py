@@ -236,6 +236,38 @@ with sync_playwright() as p:
         assert editor.locator('[data-entity="tire_fl"]').count() == 1
         assert host.locator('[data-key="color"],[data-entity]').count() == 0
 
+        # Browser-test representative generations; all use the same scenic bitmap,
+        # with a different car render and interior selected in the card editor.
+        catalogue=[
+            ('G6','2026','core_plus_rwd','arctic_white','light_gray','model-year-trim'),
+            ('G9','2026','long_range_rwd','graphite_gray','coffee','model-year-trim'),
+            ('X9','2026','unspecified','silver_frost','light_gray','model-family'),
+            ('G7','2025','unspecified','midnight_black','dark_gray','model-family'),
+            ('Next P7','2026','unspecified','arctic_white','dark_gray','model-family'),
+            ('P7','2020','unspecified','stellar_purple','dark_gray','model-family')
+        ]
+        for model,year,trim,paint,cabin,tier in catalogue:
+            page.evaluate("""arg => {
+                const [v,states]=arg;
+                const card=document.querySelector('xpeng-vehicle-card');
+                card.setConfig({prefix:'my_xpeng',model:v[0],year:v[1],
+                  trim:v[2],color:v[3],interior:v[4],image_path:'/local/xpeng'});
+                card.hass={states};
+            }""",[[model,year,trim,paint,cabin],BASE])
+            page.wait_for_function("""() => {
+                const img=document.querySelector('xpeng-vehicle-card')
+                  .shadowRoot.querySelector('img[data-car-art]');
+                return img && img.complete && img.naturalWidth>=250;
+            }""")
+            image=host.locator('img[data-car-art]')
+            assert image.get_attribute('data-art-tier')==tier,(model,year,tier)
+            assert image.get_attribute('data-fallback-used') is None
+            assert 'xpeng-reference-background.webp' in host.locator('.xp-night-photo').get_attribute('style')
+            assert host.locator('.xp-overview').count()==1
+            if tag=='desktop':
+                safe='-'.join((model,year,paint)).lower().replace(' ','_')
+                host.screenshot(path=str(OUT/f'catalogue-{safe}.png'))
+
         assert not errors, errors
         # Release gate: all model/year/colour assets must exist before release.
         assert not missing, f'MISSING MODEL-YEAR ART: {missing}'
