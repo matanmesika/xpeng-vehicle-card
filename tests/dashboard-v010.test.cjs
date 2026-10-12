@@ -114,7 +114,7 @@ test('manual appearance in card editor always wins over integration profile enti
  assert.equal(card.appearance().model,'G6');
  assert.equal(card.appearance().color,'arctic_white');
  assert.equal(card.appearance().interior,'dark_gray');
- assert.match(card.asset(),/\/xpeng-asset-vehicles-g6-2026-core_plus_rwd-arctic_white\.webp$/);
+ assert.match(card.asset(),/\/xpeng-asset-vehicles-g6-2026-core_performance_awd-arctic_white\.webp$/);
  assert.doesNotMatch(card.shadowRoot.innerHTML,/Manual sensor mapping|Exterior paint|Interior cabin finish/);
 });
 
@@ -149,7 +149,7 @@ test('update time is behind an accessible info button, not static text',()=>{
 
 test('rendering missing exact art uses safe shape fallback, not previous-year imagery',()=>{
  const card=setup(data());
- assert.match(card.asset(),/\/xpeng-asset-vehicles-g6-2026-core_plus_rwd-arctic_white\.webp$/);
+ assert.match(card.asset(),/\/xpeng-asset-vehicles-g6-2026-core_performance_awd-arctic_white\.webp$/);
  assert.match(card.placeholderArt(),/^data:image\/svg\+xml;/);
  assert.doesNotMatch(card.asset(),/g6-studio\.webp/);
 });
@@ -226,7 +226,7 @@ test('the alpha-cutout G6 preview has no studio mask or visible artwork watermar
  const html=c.shadowRoot.innerHTML;
  assert.doesNotMatch(html,/Illustrative vehicle art/);
  assert.doesNotMatch(html,/class="xp-car xp-studio-car"/);
- assert.match(c.asset(),/\/xpeng-asset-vehicles-g6-2026-core_plus_rwd-arctic_white\.webp$/);
+ assert.match(c.asset(),/\/xpeng-asset-vehicles-g6-2026-core_performance_awd-arctic_white\.webp$/);
  assert.match(html,/class="xp-night-photo"/);
 });
 
