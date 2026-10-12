@@ -145,16 +145,9 @@ const XP_CSS = `
 ha-card{background:transparent!important;border:0!important;box-shadow:none!important;overflow:visible!important}
 button{font:inherit;color:inherit;cursor:pointer}
 button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
-.xp-scene{position:relative;width:100%;min-height:620px;aspect-ratio:16/9;overflow:hidden;background:radial-gradient(ellipse 57% 35% at 56% 42%,#25365b 0%,#0e2441 43%,transparent 100%),linear-gradient(180deg,#030f21 0%,#041629 51%,#071e34 69%,#020914 100%);isolation:isolate;direction:ltr}
-.xp-scene:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,#00081726,transparent 28%,transparent 75%,#00081722);z-index:1}
+.xp-scene{position:relative;width:100%;min-height:620px;aspect-ratio:16/9;overflow:hidden;background:#020b16;isolation:isolate;direction:ltr}
+
 .xp-night-photo{position:absolute;inset:0;z-index:0;pointer-events:none;background-color:#020d1b;background-size:cover;background-position:center center;background-repeat:no-repeat}
-.xp-night-floor-glow{position:absolute;z-index:1;pointer-events:none;inset:51% 0 0;opacity:.82;background:radial-gradient(ellipse 9% 23% at 34% 70%,#329aff74,transparent 100%),radial-gradient(ellipse 10% 32% at 51% 82%,#147fde72,transparent 100%),radial-gradient(ellipse 12% 24% at 68% 67%,#137dcd55,transparent 100%),radial-gradient(ellipse 50% 8% at 51% 32%,#0d7dcc4e,transparent 100%);filter:blur(15px)}
-.xp-charge .xp-night-floor-glow{background:radial-gradient(ellipse at 65% 47%,#00e5a72a,#178ada19 37%,transparent 72%)}
-.xp-sky{position:absolute;inset:0;width:100%;height:100%;z-index:0}
-.xp-ground{position:absolute;inset:68% 0 0;background:repeating-linear-gradient(173deg,#3565ab1a 0px,#3565ab1a 2px,transparent 3px,transparent 46px),linear-gradient(180deg,#0b2139,#04111e);transform:perspective(500px) rotateX(12deg);transform-origin:50% 0}
-.xp-ground:before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 48% 48% at 59% 24%,#137ace4a,transparent 70%)}
-.xp-stage-glow{position:absolute;left:22%;right:6%;bottom:18%;height:12%;background:#168de7;border-radius:100%;filter:blur(34px);opacity:.25}
-.xp-stage-glow:after{content:"";position:absolute;inset:58% 2% 27%;background:#28bbff;filter:blur(8px)}
 .xp-header{position:absolute;z-index:8;top:3.2%;left:4.5%;right:3%;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .xp-brand{display:flex;align-items:center;gap:14px;font-weight:600;letter-spacing:.31em;font-size:clamp(14px,1.4vw,23px);white-space:nowrap}
 .xp-x-mark{font-size:26px;letter-spacing:-.13em;transform:scaleX(1.4)}
@@ -410,12 +403,12 @@ class XpengVehicleCard extends HTMLElement{
   return `<div class="xp-title"><h1>XPENG <em>${xpEsc(this.model())}</em></h1><div class="xp-subtitle">${this._view==='charging'?xpEsc(this.chargeStatus()):'Vehicle status'}</div></div>`;
  }
  sceneBackdrop(){
-    // Photo-like clean scene shared by Overview and Charging; never bake telemetry or the car into the background.
+    // The owner's CLEAN raster background is used unchanged on both views.
+    // Car artwork and sensor readings stay separate DOM layers.
     const base=(this._config.image_path||'/hacsfiles/xpeng-vehicle-card/assets').replace(/\/$/,'');
-    const source=base+'/night-mountain-scene.svg';
+    const source=base+'/xpeng-reference-background.webp';
     return `<div class="xp-night-photo" aria-hidden="true"
-      style="background-image:url(&quot;${xpEsc(source)}&quot;)"></div>
-      <div class="xp-night-floor-glow" aria-hidden="true"></div>`;
+      style="background-image:url(&quot;${xpEsc(source)}&quot;)"></div>`;
   }
  header(){
    const conn=String(this.val('connection')||'').toLowerCase();
