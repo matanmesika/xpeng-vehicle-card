@@ -295,7 +295,6 @@ class XpengVehicleCard extends HTMLElement{
     const b=ev.target.closest('button');if(!b)return;
     if(b.hasAttribute('data-expand')){this.toggleFullScreen();return;}
      if(b.hasAttribute('data-meta-toggle')){this._infoOpen=!this._infoOpen;this.render();return;}
-    if(b.dataset.view){this._view=b.dataset.view;this.render();return;}
     if(b.hasAttribute('data-cycle')){this._vehicleIndex=(this._vehicleIndex+1)%this.vehicles().length;this._lastCharging=undefined;this.render();}
   });
  }
@@ -312,7 +311,7 @@ class XpengVehicleCard extends HTMLElement{
  set hass(hass){
   this._hass=hass;
   const charging=this.bool('charging')===true;
-  if(this._lastCharging===undefined||this._lastCharging!==charging){this._view=charging?'charging':'overview';this._lastCharging=charging;}
+  this._view=charging?'charging':'overview';this._lastCharging=charging;
   this.render();
  }
  get hass(){return this._hass;}
@@ -423,14 +422,12 @@ class XpengVehicleCard extends HTMLElement{
     </svg><div class="xp-ground"></div><div class="xp-stage-glow"></div>`;
  }
  header(){
-   const now=new Date().toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});
    const conn=String(this.val('connection')||'').toLowerCase();
    const connected=['connected','online'].includes(conn);
    return `<header class="xp-header"><div class="xp-brand"><svg class="xp-x-mark" viewBox="0 0 56 36" aria-hidden="true" fill="#fff"><path d="M1 3h14l13 10-8 6L1 3ZM55 3H41L28 13l8 6L55 3ZM1 33h14l13-10-8-6L1 33ZM55 33H41L28 23l8-6 19 16Z"/></svg><span>XPENG</span></div>
      <div class="xp-header-right"><span class="xp-wifi ${connected?'xp-connected':''}" aria-label="${xpEsc(xpConnText(this.val('connection')))}"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M2 8c5.7-5.6 14.3-5.6 20 0M5 12c4-3.6 10-3.6 14 0M9 16c1.8-1.4 4.2-1.4 6 0"/><circle cx="12" cy="20" r="1.3" fill="currentColor" stroke="none"/></svg></span>
-     <button class="xp-head-button" type="button" data-view="overview" aria-label="Vehicle overview">${xpIcon('home',23)}</button>
      <button class="xp-head-button" type="button" data-expand aria-label="${this._expanded?'Exit full screen':'Full screen'}">${this._expanded?'✕':'⛶'}</button>
-     <span class="xp-head-separator"></span><span class="xp-clock">${xpEsc(now)}</span></div></header>`;
+     </div></header>`;
  }
  progress(){
    const soc=xpPercent(this.val('soc'));
