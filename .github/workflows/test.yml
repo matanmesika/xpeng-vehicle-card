@@ -27,7 +27,7 @@ jobs:
         run: node --test tests/dashboard-v010.test.cjs tests/all-profiles.test.cjs
       - name: Install browser test dependencies
         run: |
-          python -m pip install playwright pytest
+          python -m pip install playwright pytest pillow
           python -m playwright install --with-deps chromium
       - name: Run two-screen UI acceptance tests
         run: |
