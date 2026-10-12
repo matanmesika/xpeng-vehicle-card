@@ -14,17 +14,17 @@ A standalone, **read-only Home Assistant dashboard card** for XPENG vehicles. Th
 - The top-right header has **one Wi-Fi button** (no separate connection text or info icon) on desktop and mobile. Its colour indicates the mapped connection state, without assuming a connection when the sensor is missing. Tap the Wi-Fi icon to open a popup with only **Connection** and **Last vehicle update** from mapped Home Assistant sensors. The date/time is shown explicitly when supplied by the vehicle-update sensor; a Home Assistant entity's generic `last_updated` metadata is not treated as a vehicle refresh. Tap the same icon to close. No cabin, model, paint or artwork metadata in the popup.
 - No hardcoded SOC, range, TPMS, charging data, location or update times. Missing values are displayed as unavailable/—.
 
-## Artwork selection policy: model + exterior paint
+## Artwork storage policy: model → year → exterior paint
 
-**The pictured vehicle is determined by MODEL and EXTERIOR COLOUR ONLY.** Every supported model/year/trim selection shares **one highest-available-trim image** for the chosen model and colour.
+Vehicle artwork files use one canonical hierarchy: `assets/vehicles/{model}/{year}/{color}/{front,charging,top}.webp`. There is **no trim folder** in the artwork path. Trim may remain informational in configuration, but it never selects a different image file.
 
 - **Model** changes vehicle artwork and its available selections.
 - **Exterior colour** changes the vehicle artwork (and any colour-matched preview).
-- **Model year** changes only the *names offered in the trim list*. It never changes the vehicle image, chosen colour, cabin preview, charging/overhead photo or telemetry.
+- **Model year** is part of the artwork storage key. The current approved G6 artwork is mapped under year `2026`.
 - **Trim** is informational only, with no visual or sensor effect. Older years deliberately display the same current model picture.
 - **Interior finish** is an editor-only future-facing visual setting; it does not appear in the information popup.
 
-The mapping is recorded in [model-artwork.json](model-artwork.json). Currently, G6 uses its available `core_performance_awd` artwork, G9 uses `performance_awd`, and other models fall back to their available model-colour illustrations. **Existing artwork is illustrative/unverified, not confirmed manufacturer photography of every highest trim.** The card does not falsely claim a rear or overhead manufacturer cutout exists: rear images are pending, and TPMS uses a labelled overhead illustration until a suitable owner-provided `top_image` is configured.
+The mapping is recorded in [model-artwork.json](model-artwork.json). The current approved G6 set is stored at `assets/vehicles/g6/2026/graphite_gray/` with `front.webp`, `charging.webp`, and `top.webp`. Trim names are not part of the filesystem path.
 
 See [artwork and tire view policy](docs/SHAPE_ASSETS_AND_TPMS.md) and [design lock](docs/DESIGN_LOCK.md).
 
@@ -84,7 +84,7 @@ The charging sensor determines the view; an available charging cable alone does 
 
 - `src/xpeng-vehicle-card.js` is the development source; `dist/xpeng-vehicle-card.js` is the identical HACS delivery file.
 - `dist/` also contains the approved backdrop and the flat `xpeng-asset-*` image files required by HACS packaging.
-- `model-artwork.json` is the simplified model+paint mapping; `vehicle-art-inventory.json` lists the actual packaged files, including historical source paths (which **do not** control runtime year/trim selection).
+- `model-artwork.json` and `vehicle-art-inventory.json` use the canonical `model/year/color` artwork hierarchy. Trim is not part of artwork selection.
 - `tests/` covers appearance invariants, real sensor mapping, network info popup, charging and tire modes, responsive desktop/phone browser rendering, image inventory and HACS packaging.
 
 The tested UI improvements originated in [PR #21](https://github.com/matanmesika/xpeng-vehicle-card/pull/21); image research continues separately. See [release checklist](docs/RELEASE_CHECKLIST.md) and [changelog](CHANGELOG.md). Final real-vehicle photography, licence checks, owner visual sign-off, and installation testing in an actual Home Assistant instance remain separate release gates.
