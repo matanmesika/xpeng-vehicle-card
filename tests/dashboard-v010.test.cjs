@@ -475,3 +475,39 @@ test('tire pressures support bar, kPa, psi and individual unavailable readings w
  card.hass={states};
  assert.equal(card.tirePressureBar('tire_fr'),null);
 });
+
+test('header information only opens on user click and contains two live values',()=>{
+ const states=data();
+ states['sensor.my_xpeng_api_connection_status']={state:'online'};
+ states['sensor.my_xpeng_last_update']={state:'just-updated'};
+ const card=setup(states);
+ assert.doesNotMatch(source,/\.xp-tire-popover\{/,'obsolete tire popover styles must be removed');
+ assert.doesNotMatch(source,/\.xp-updated\{/,'obsolete always-hidden update label styles must be removed');
+ assert.doesNotMatch(card.shadowRoot.innerHTML,/<div id="xp-last-update-details"/);
+ let button=card.shadowRoot.innerHTML.match(/data-meta-toggle[^>]*aria-expanded="([^"]+)"/);
+ assert.ok(button&&button[1]==='false');
+ // Telemetry updates must never open the popup by themselves.
+ states['sensor.my_xpeng_api_connection_status']={state:'offline'};
+ card.hass={states};
+ assert.doesNotMatch(card.shadowRoot.innerHTML,/<div id="xp-last-update-details"/);
+ const click=()=>card.shadowRoot.handlers.click({target:{closest:()=>({
+   hasAttribute:attr=>attr==='data-meta-toggle',dataset:{}
+ })}});
+ click();
+ let html=card.shadowRoot.innerHTML;
+ let popup=html.slice(html.indexOf('<div id="xp-last-update-details"'),html.indexOf('</header>'));
+ assert.equal((popup.match(/class="xp-meta-field"/g)||[]).length,2);
+ assert.match(popup,/<small>Connection<\/small><strong>Not connected<\/strong>/);
+ assert.match(popup,/<small>Last vehicle update<\/small><strong>just-updated<\/strong>/);
+ for(const forbidden of ['Interior finish','Artwork','Displayed vehicle','Cabin illustration'])
+   assert.ok(!popup.includes(forbidden),forbidden);
+ // Changing an entity while open refreshes the same two values in place.
+ states['sensor.my_xpeng_api_connection_status']={state:'connected'};
+ card.hass={states};
+ popup=card.shadowRoot.innerHTML.slice(card.shadowRoot.innerHTML.indexOf('<div id="xp-last-update-details"'),
+   card.shadowRoot.innerHTML.indexOf('</header>'));
+ assert.match(popup,/<small>Connection<\/small><strong>Connected<\/strong>/);
+ assert.equal((popup.match(/class="xp-meta-field"/g)||[]).length,2);
+ click();
+ assert.doesNotMatch(card.shadowRoot.innerHTML,/<div id="xp-last-update-details"/);
+});

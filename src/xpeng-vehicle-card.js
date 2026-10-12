@@ -168,17 +168,11 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-brand{display:flex;align-items:center;gap:14px;font-weight:600;letter-spacing:.31em;font-size:clamp(14px,1.4vw,23px);white-space:nowrap}
 .xp-x-mark{font-size:26px;letter-spacing:-.13em;transform:scaleX(1.4)}
 .xp-header-right{display:flex;align-items:center;gap:12px;min-width:0;font-size:clamp(12px,1.2vw,20px)}
-.xp-head-button{display:grid;place-items:center;border:0;background:transparent;padding:6px;color:#fff;border-radius:9px}
-.xp-head-button:hover{background:#ffffff1c}
-.xp-head-button svg{width:24px;height:24px}
 .xp-wifi{color:#7088a0;display:flex;align-items:center;gap:7px;white-space:nowrap}
 .xp-wifi svg{flex:none}
 .xp-connection-label{font-size:clamp(11px,1vw,15px);font-weight:550;letter-spacing:0}
 .xp-wifi.xp-disconnected{color:#a8b3c4}
 .xp-wifi.xp-connected{color:#66a9ff}
-.xp-version{position:absolute;bottom:10px;right:12px;font-size:10px;color:#8399b6;opacity:.52;z-index:8}
-.xp-updated{position:absolute;z-index:4;right:5%;top:15%;text-align:right;color:#9cacca;font-size:clamp(11px,1vw,16px);line-height:1.45}
-.xp-updated strong{display:block;font-weight:400;color:#b4c5e1}
 .xp-title{position:absolute;z-index:5;left:5.4%;top:17%;display:flex;flex-direction:column;gap:3px}
 .xp-title h1{font-size:clamp(32px,3.7vw,62px);line-height:1.02;letter-spacing:.035em;font-weight:730;margin:0;white-space:nowrap}
 .xp-title h1 em{font-style:normal;color:#7eaeff}
@@ -226,12 +220,9 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-charge-meta b{font-size:clamp(12px,1.5vw,25px);font-weight:560;white-space:nowrap}
 .xp-charge .xp-car{width:52%;left:41%;bottom:12%;height:auto;max-height:70%;z-index:7}
 .xp-charge .xp-title{left:5.3%;top:17%}
-.xp-charge .xp-updated{right:19%;top:14%}
 .xp-station{position:absolute;z-index:2;right:3%;bottom:30%;width:5.3%;height:23%;min-width:45px;border:2px solid #55c8fb;border-radius:13px 13px 6px 6px;background:linear-gradient(90deg,#013861,#041b32 55%,#0b3150);box-shadow:0 0 18px #00c6ff85,inset 0 0 13px #08cafa74;display:grid;place-items:start center;padding-top:25px;font-size:26px;color:#e1f7ff}
 .xp-station:before{content:"";position:absolute;bottom:-5px;width:110%;height:7px;background:#03d7cf;filter:blur(4px)}
 .xp-cable{position:absolute;z-index:2;inset:0;width:100%;height:100%;pointer-events:none}
-.xp-subtle-link{position:absolute;z-index:8;left:5.4%;bottom:4%;border:1px solid #779cce77;background:#0a2139a1;color:#cfe6fa;border-radius:20px;padding:6px 13px;font-size:12px}
-.xp-subtle-link:hover{background:#1e4361}
 :host([data-expanded]){position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;z-index:2147483100!important;background:#020b15!important;overflow:auto!important}
 :host([data-expanded]) ha-card,:host([data-expanded]) .xp-scene{width:100%!important;height:100dvh!important;min-height:550px!important;aspect-ratio:auto!important}
 @media(max-width:850px){
@@ -242,7 +233,6 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-title{left:5%;top:89px}
 .xp-title h1{font-size:34px}
 .xp-subtitle{font-size:18px}
-.xp-updated{top:155px;right:5%;font-size:11px}
 .xp-car{width:106%;left:-2%;bottom:29%;max-height:48%;object-fit:contain}
 .xp-overview-stat{left:5%;top:220px;width:43%}
 .xp-batt-glyph{height:56px;width:37px;border-width:2px;padding:4px}
@@ -261,7 +251,6 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-info-copy b{font-size:12px;white-space:normal;overflow-wrap:anywhere}
 .xp-status-panel .xp-chevron{display:none}
 .xp-charge .xp-title{left:5%;top:83px}
-.xp-charge .xp-updated{top:165px;right:5%}
 .xp-charge-card{top:225px;left:5%;width:90%;padding:18px}
 .xp-charge-heading{font-size:22px;margin-bottom:15px}
 .xp-charge-card .xp-progress{height:13px}
@@ -274,8 +263,6 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-charge-meta b{font-size:14px}
 .xp-charge .xp-car{width:96%;left:2%;bottom:9%;max-height:36%}
 .xp-station{right:5%;bottom:22%;height:13%;min-width:40px;font-size:16px}
-.xp-subtle-link{bottom:15px;left:5%}
-.xp-version{right:10px;bottom:3px}
 }
 .xp-meta-tools{position:relative;z-index:25;flex:none;display:flex;align-items:center}
 .xp-meta-trigger{display:grid;place-items:center;width:30px;height:30px;padding:3px;border-radius:50%;border:1px solid #7399c077;background:#03172bba;color:#d6e9ff}
@@ -286,10 +273,8 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-meta-popover small{font-size:11px;color:#b1c0d3}
 .xp-meta-popover strong{font-size:13px;font-weight:600;color:#f0f7ff;text-align:right;white-space:nowrap}
 .xp-cabin-mini{width:100%;height:auto;max-height:140px;margin-top:10px;display:block}
-.xp-updated{display:none!important}
 @media(max-width:850px){.xp-header-right{gap:8px}.xp-wifi{gap:4px}.xp-connection-label{font-size:11px}.xp-meta-trigger{width:28px;height:28px;padding:2px}.xp-meta-popover{top:calc(100% + 8px)}}
 .xp-car,.xp-car.xp-paint-silver_frost,.xp-car.xp-paint-space_grey,.xp-car.xp-paint-jet_black,.xp-car.xp-paint-stellar_purple{filter:drop-shadow(0 20px 20px #000b)}
-.xp-art-identity{position:absolute;z-index:8;left:45%;bottom:8%;font-size:11px;letter-spacing:.03em;color:#b5c4d5;opacity:.8;text-shadow:0 2px 4px #000a;pointer-events:none}
 .xp-studio-car{mask-image:none;-webkit-mask-image:none}
 
 .xp-tire-screen{position:absolute;z-index:7;inset:12% 4% 3%;display:flex;flex-direction:column}
@@ -320,22 +305,11 @@ backdrop-filter:blur(14px);border-radius:17px;padding:15px 8px;text-align:center
 .xp-tire-row{width:100%;color:inherit;border:0;border-bottom:1px solid #56708a43;background:transparent;text-align:left;font:inherit}
 .xp-tire-row:hover,.xp-tire-row:focus-visible{background:#2e54653b}
 .xp-tire-row .xp-info-copy{align-items:flex-start}
-.xp-tire-popover{position:absolute;z-index:26;right:2.7%;bottom:calc(11% + 246px);width:min(336px,35%);min-width:290px;padding:15px;border:1px solid #6c95afad;border-radius:18px;background:#061625f2;backdrop-filter:blur(20px);box-shadow:0 12px 44px #0009}
-.xp-tire-header{display:flex;justify-content:space-between;align-items:center;color:#eef7ff;font-size:15px;margin-bottom:10px}
-.xp-tire-header button{border:0;border-radius:7px;background:#19405b;color:#fff;font-size:19px;min-width:30px;min-height:30px}
-.xp-tire-diagram{display:grid;grid-template-columns:1fr 70px 1fr;grid-template-rows:65px 70px 65px;align-items:center;gap:5px}
-.xp-tire-body{grid-area:1/2/4/3;height:92%;border:2px solid #8ba4b9;border-radius:30% 30% 22% 22%;display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:15px 3px;color:#9ac4df;font-size:9px;letter-spacing:.1em;background:#19344b88}
-.xp-wheel{display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px;padding:7px 3px;border-radius:10px;background:#23415766;white-space:nowrap}
-.xp-wheel small{font-size:10px;color:#becddc}.xp-wheel strong{font-size:13px}
-.xp-wheel[data-wheel="tire_fl"]{grid-area:1/1}.xp-wheel[data-wheel="tire_fr"]{grid-area:1/3}
-.xp-wheel[data-wheel="tire_rl"]{grid-area:3/1}.xp-wheel[data-wheel="tire_rr"]{grid-area:3/3}
-.xp-tire-note{display:block;margin-top:9px;font-size:10px;color:#b3c9d9;line-height:1.3}
-@media(max-width:850px){.xp-tire-row{min-height:88px;padding:7px 10px;border:0;border-right:1px solid #56708a43}.xp-tire-popover{left:5%;right:5%;bottom:142px;width:90%;min-width:0}.xp-tire-diagram{grid-template-rows:48px 40px 48px}.xp-tire-body{height:100%;padding:3px}.xp-wheel{padding:4px}.xp-wheel strong{font-size:12px}}
+@media(max-width:850px){.xp-tire-row{min-height:88px;padding:7px 10px;border:0;border-right:1px solid #56708a43}}
 
 /* The approved 2026 white G6 cutout is already tightly cropped: frame its pixels to the reference shot. */
 .xp-overview .xp-car.xp-reference-cutout{left:25.5%;bottom:26.6%;width:51.4%;max-height:none;filter:drop-shadow(0 13px 13px #0005)}
 @media(max-width:850px){.xp-overview .xp-car.xp-reference-cutout{left:-3%;bottom:27%;width:108%;max-height:42%}}
-@media(max-width:850px){.xp-art-identity{left:15%;bottom:25%;font-size:10px}.xp-charge .xp-art-identity{bottom:7%}}
 @media(max-width:400px){.xp-charge-meta>div{padding:0 7px}.xp-charge-heading{font-size:19px}.xp-charge-meta b{font-size:12px}.xp-overview-stat{top:219px}.xp-status-panel{grid-template-columns:repeat(3,minmax(0,1fr))}}
 `;
 class XpengVehicleCard extends HTMLElement{

@@ -1,35 +1,29 @@
-# XPENG Dashboard – contributor and agent instructions
+# XPENG Dashboard — contributor quality instructions
 
-## Strict repository boundary
-This repository is the **Lovelace dashboard frontend**. Never change or publish XPENG integration/backend code from this repository. The companion integration remains `matanmesika/xpeng-direct-homeassistant`.
+## Repository boundary
+This repository is the **frontend Lovelace XPENG dashboard only**. The companion integration is independent. Never modify integration code, change its entities, send car controls, use private XPENG APIs or place user secrets in screenshots/tests.
 
-## Required specialist reviews (workstreams, not autonomous running services)
-1. **Design parity reviewer**: compare real Chromium/HA screenshots with the two supplied 1536x864 reference images (status and charging). Block release if the car/year, background, lighting, layout or mobile rendering differs materially.
-2. **Vehicle catalogue reviewer**: use manufacturer model/year/market sources for each factory exterior/interior choice. Flag any unverified mapping as a preview, not a factory option.
-3. **Vehicle image reviewer**: verify exterior artwork represents the **exact** model year and exterior paint; interior art must match dashboard, steering wheel, door trims, console and seats as a group. Do not silently reuse another year/model.
-4. **Home Assistant state reviewer**: model, year, trim, exterior colour and interior finish are manual editor/YAML settings only. Telemetry is read from Home Assistant sensors; individual entity overrides live exclusively in the card editor/YAML. Never read XPENG integration private config or use its identity sensors to override visual settings.
-5. **QA reviewer**: run JS syntax/Node tests/Playwright desktop+mobile, image load checks, accessibility/info popover tests, full-window mode, and HACS package verification before approval.
+## Current product specification (owner-approved)
+- Two primary screens: Vehicle status and sensor-triggered Charging.
+- Approved nighttime landscape is one immutable shared background; actual car is a separate overlay.
+- Tire pressure opens a large top-down detail in the Vehicle status area, four live pressures around the wheels, with Back to vehicle.
+- **Image selection uses model + paint only**, always preferring the single highest-available-trim image for that model/paint. Year filters only trim names; selected trim does nothing visually or to telemetry. Model/paint changes may invalidate owner's manually supplied car art, but year/trim changes must not.
+- Connection indicator and info icon share the header row. **Only click on info opens** the transient popup with exactly Connection and Last vehicle update. No model/trim/cabin/image metadata in the popup.
+- No new climate/controls/doors/weather/navigation screens or dashboard appearance selectors.
+- Missing Home Assistant data must remain unavailable; no invented pressures, SOC or charging values.
+- Do not claim model-family illustrations are verified highest-trim photos. Rear and overhead transparent manufacturer photos are a known gap.
 
-## Approved views
-- Vehicle status
-- Charging when `binary_sensor.<prefix>_is_charging` is on
-No third page, no vehicle commands. Interior preview may appear only in the transient metadata popover until a new layout is expressly approved.
+## Review workstreams (instructions, not background autonomous agents)
+1. **Design review:** inspect real desktop/mobile Playwright browser renders against the owner-approved composite references. Check fixed landscape, vehicle size/placement, tyre-detail layout and popover alignment.
+2. **Asset review:** verify model/paint, copyright permission, file transparency and provenance. Label uncertain renderings illustrative.
+3. **Data review:** confirm the mapping uses only public Home Assistant entity/attribute data, charging is sensor-triggered, and missing values are not guessed.
+4. **Accessibility review:** network status text, popup labels, keyboard button focus, click-only activation, phone width and readable status/error messages.
+5. **Release review:** Node tests, Python audits, Chromium visual tests, HACS flat-asset packaging, source/dist parity, and rollback path.
 
-## Critical release gates
-- **Visual fidelity**: both screenshots reviewed; no fake live SOC/ETA/location values.
-- **Model-year fidelity**: correct shape and trim details, not an older G6/G9 image relabelled as 2026.
-- **Verified vehicle palettes**: G6/G9 2026 official catalogue included; do not claim older or other model palettes have been independently verified.
-- **Assets**: all selected `assets/vehicles/<model>/<year>/<trim>/<color>.webp` available and reviewed (unless deliberately declared unsupported). A generated SVG silhouette is only a visible missing-asset placeholder, never release-quality art.
-- **Privacy**: never commit VINs, tokens, locations or real car telemetry.
-- **Sync**: `dist/xpeng-vehicle-card.js` and `xpeng-vehicle-card.js` must be identical.
-- **No backend edits**: a missing integration profile entity is an integration feature gap to track separately, not an excuse to scrape HA internals.
-
-Current status: layout/metadata plumbing is under review. Manufacturer-accurate artwork for all model/year/trim/paint variants and full visual parity are **not complete**.
-
-## Current reference-background review (v0.1.2 in progress)
-- Overview reference: /concept supplied privately by the owner; avoid committing the full screenshot because it contains example location/telemetry.
-- Charging reference: same cinematic blue-black night environment, green charging cable and charger visible.
-- The background must be a **clean scene-only asset**, while all car renders and telemetry remain dynamic Lovelace DOM layers.
-- Current `dist/assets/night-mountain-scene.svg` is a photographic-mood **reconstruction** (mountain horizons, pines, violet fog, blue reflective tarmac) and is NOT certified pixel-perfect.
-- Compare new live Chromium screenshots against both source references. If mountain geometry, haze, wet-road reflections or foreground contrast differs, file fixes before merge. Pixel parity and model-year photography need explicit owner approval.
-- Five specialist configurations exist in `.github/agents/`. These are instructions/review roles, not continuously running background autonomous agents.
+## Release checklist
+- Keep `src/xpeng-vehicle-card.js` and `dist/xpeng-vehicle-card.js` byte-identical.
+- Do not alter the SHA of the user-approved background.
+- Check `model-artwork.json` records and actual flat HACS assets.
+- Verify two fields only inside the info popup in disconnected, connected and connection-error states; popup never auto-opens.
+- Check the frozen background on Overview and Charging and on mobile.
+- Keep draft [PR #21](https://github.com/matanmesika/xpeng-vehicle-card/pull/21) unmerged until missing licensed photography and user visual verification are addressed. The current published HACS version is v1.0.0-alpha.5.

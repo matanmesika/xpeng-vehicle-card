@@ -1,29 +1,28 @@
-# XPENG Dashboard — Approved Design Lock
+# XPENG Dashboard — Approved design and behaviour lock
 
-> **PHOTO ASSETS EMBEDDED IN v1.0.0-alpha.4 (experimental).** The one user-approved 1536×864 screenshot is documented in [VISUAL_REFERENCE_G6_2026.md](VISUAL_REFERENCE_G6_2026.md) by original JPEG file name and SHA-256. That screenshot is the binding acceptance target; never swap it for an AI-generated mockup. This is a frontend-only repository.
+**Frontend/dashboard repository only.** Do not edit, delete, merge or release the separate XPENG integration.
 
-## Approved visual baseline
+## Fixed visual design
 
-- **Current bundled backdrop**: `dist/assets/xpeng-approved-lakeside-background.webp` (identical root copy). The owner's approved house, lake, mountains, and wet-pavement scene is now a default photograph in both views, with no external uploads needed. This is a clean extracted asset from the approved concept, not a claim that every composite screenshot is pixel-identical.
-- New approved background Git blob SHA: `a28766ffcb8607f096077e67fdc3fbb04b79c883`. Original owner reference remains the benchmark for overall layout, despite the new background being packaged.
-- `.xp-night-photo` is a full-bleed layer positioned `center center`, sized `cover` in **both** screens. Never create another SVG/CSS approximation, season/weather variation, charger-only background or model-specific background.
-- **Two view states only**, no manual navigation or third page. Vehicle status by default; Charging only while the mapped charge sensor reports active charging.
-- No Home, wall clock or Full Screen icon. Keep only minimal top-right information/connection indicators, subject to the approved screen reference.
-- Vehicle status: white 2026 XPENG G6 visual baseline, SOC/range left, odometer/tires/location right. Charging: same backdrop, dynamic vehicle and station/cable, SOC/range/power/time/limit in left charging panel.
-- **Layout and appearance are locked against unsolicited redesigns.** The latest owner-favoured reference and the repository screenshot output still need a direct comparison; don't silently equate the existing asset with a newer generated concept.
+1. Keep the owner-approved night lake/house/mountain photographic background as the **single** scene background in Overview, Charging and the Tire pressure overlay. File: `dist/assets/xpeng-approved-lakeside-background.webp` and its byte-identical root copy. Git blob of approved original: `a28766ffcb8607f096077e67fdc3fbb04b79c883`.
+2. The vehicle must be a **separate transparent artwork layer**. Do not replace the background, reconstruct mountains with CSS or bake telemetric values into images.
+3. There are two primary states only: Vehicle status and Charging. **Charging is sensor-driven.** Tire pressures is a detail view within Vehicle status, replacing the center with a large top-down car and four corner pressure readings, with a back action.
+4. Preserve the simplified visual layout and responsive phone/desktop support. Do not add unrequested weather, controls, climate, seat, door, navigation or clock screens.
+5. The header top-right contains network connection **plus** adjacent info icon. **Information popup starts closed** and opens only when the icon is clicked. It displays **Connection** and **Last vehicle update**, *nothing else*. Clicking the icon again closes it.
+6. Home Assistant values always come from mapped entities. No fabricated sensor data and no vehicle commands.
 
-## Editing and data boundaries
+## Appearance policy — supersedes legacy year-shape mapping
 
-- Vehicle model, model year, trim, exterior colour and interior finish are **manual options exclusively in the card editor**. No controls on dashboard screens.
-- All telemetry comes from Home Assistant states, with individual manual mappings from any integration OR automatic prefix-based mapping. No private XPENG API dependency, no invented live values.
-- Use `dist/assets/vehicles/<model>/<year>/<trim>/<colour>.webp` when the **exact asset exists**. Existing G6 2026 and G9 2026 model-year images are previews only, not independently verified manufacturer photos.
-- An unsupported year/trim/paint must show an **explicitly illustrative** fallback, never silently reuse another year or colour. Modern models without year-specific art remain unverified; do not relabel generic pictures as current facelifts.
-- Interior finish illustration in the optional information popup follows manual selection; do not create a new full-screen cabin page.
+- **Runtime image selection = model + exterior paint only.**
+- Every supported year/trim of that model uses one highest-available-trim preview for its paint.
+- Model year only filters the list of trim names in the card editor. Selected trim is informational only; changing year/trim must **not** alter the displayed car, any custom cutout URL, paint, cabin finish or telemetry.
+- All appearance selectors are editor/YAML only, not visible on the dashboard.
+- `model-artwork.json` is the current model+paint inventory; `vehicle-art-inventory.json` is a historical filename inventory, not a runtime per-year selector.
+- G6 currently uses existing `core_performance_awd` preview images; G9 uses `performance_awd`. Other models use best available model+paint family imagery. All unverified visuals remain explicitly labelled illustrative. Do not claim photography or a factory highest trim is verified without evidence.
+- Manufacturer-accurate rear/overhead cutouts remain pending; the charged view may explicitly reuse front art as a fallback, and TPMS uses an acknowledged colour-matched overhead illustration.
 
-## Release and screenshot gates
+## Release policy
 
-1. Run Node tests, browser desktop/mobile tests and HACS validation.
-2. Compare screenshots from the **actual Lovelace card** in both modes, against the current owner-approved screen references. Pixel-identical shared backgrounds are necessary but not sufficient.
-3. Keep this work in **draft PR #18** until the owner approves visual parity. No tag/version increment or release as a substitute for design review.
-4. Updating assets requires a deliberate proposal with before/after images. An assistant-generated design mockup is **not** permission to replace the approved baseline.
-5. Do not modify the `xpeng-direct-homeassistant` integration/backend for card work.
+- Latest published HACS preview remains **v1.0.0-alpha.5**; current changes are in [draft PR #21](https://github.com/matanmesika/xpeng-vehicle-card/pull/21). Do not silently merge or tag the draft.
+- Before release: all Node/browser/HACS tests pass; source and dist JavaScript match; approved backdrop remains unchanged; actual Home Assistant desktop/mobile views receive owner approval; image licensing/provenance and advertised photo accuracy are confirmed.
+- Automated tests alone do not establish visual equivalence to the owner-approved reference. Historical design explorations are not active UI specifications.
