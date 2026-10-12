@@ -1,11 +1,11 @@
 {
   "schema_version": 2,
   "as_of": "2026-10-12",
-  "selection": "model + exterior paint ONLY",
-  "model_year": "2026 only for retained artwork",
-  "selected_trim": "informational only, never artwork",
+  "selection": "fixed G6 + graphite_gray until additional approved artwork is installed",
+  "model_year": "not user-selectable; legacy 2026 representative asset remains temporarily",
+  "selected_trim": "not user-selectable",
   "backdrop": "xpeng-approved-lakeside-background.webp",
-  "notice": "Only G6 2026 Graphite Gray representative front preview retained; separate charging and top views pending. Other colors/models are not installed.",
+  "notice": "Three-view yearless artwork is not yet uploaded. Existing 2026 representative front preview is retained as fallback until migration is verified.",
   "models": [
     {
       "model": "G6",
@@ -25,5 +25,6 @@
         }
       }
     }
-  ]
+  ],
+  "target_asset_layout": "vehicles/g6/graphite_gray/{front,charging,top}.webp"
 }
