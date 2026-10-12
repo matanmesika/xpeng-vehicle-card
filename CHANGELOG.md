@@ -2,6 +2,7 @@
 
 ## v1.0.0-beta.1 — initial beta candidate (2026-10-12)
 
+- Removed the temporary `mix-blend-mode: multiply` vehicle-layer workaround so the new transparent/front artwork renders normally over the approved background; `src` and `dist` remain synchronized.
 - First beta candidate of the standalone XPENG Home Assistant dashboard card (frontend only).
 - Vehicle status and sensor-driven charging view; owner-approved lakeside background and G6 artwork for front, charging and overhead views.
 - Includes merged [PR #28](https://github.com/matanmesika/xpeng-vehicle-card/pull/28) updating the G6 front three-quarter WebP image.
