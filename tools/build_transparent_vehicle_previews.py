@@ -1,101 +1,120 @@
-"""Separate legacy studio car previews from the shared XPENG dashboard scene.
+"""Rebuild illustrative car overlays without cropping headlights, bumpers or wheels.
 
-2026-10 preview pipeline: all converted images remain ILLUSTRATIVE, not
-manufacturer-authenticated. Alpha masks are derived per model family from its
-white reference pose, then reused across colours of the *same* family so dark
-paint variants do not accidentally lose the vehicle body. Existing transparent
-G6 2026 assets are never touched.
+Never change the approved scenic bitmap. All source RGB artwork is fetched from
+main: previously-processed transparent variants are intentionally NOT used as
+input, because compositing already-clipped previews compounds silhouette damage.
+
+The lower contour is a generous per-body-style envelope; the upper contour is
+detected independently for each model from the white source's brightest car
+pixels. All results are illustrative until the image owner approves them.
 """
 from pathlib import Path
+from io import BytesIO
 from PIL import Image
 import cv2
 import json
 import numpy as np
+import subprocess
 
 ROOT=Path(__file__).resolve().parents[1]
-ASSETS=ROOT/'dist/assets'
-MAN=json.loads((ROOT/'vehicle-art-inventory.json').read_text(encoding='utf-8'))
-FAMILY=MAN['model_family']
-EXACT=MAN['exact']
+MAN=json.loads((ROOT/'vehicle-art-inventory.json').read_text())
+SLUGS=('arctic_white','jet_black','silver_frost','space_grey','stellar_purple')
+# y coordinates normalized from 780x585 studio originals.
+LOWER={
+  'suv':[(10,355),(15,421),(60,445),(79,454),(108,454),(155,424),
+         (371,431),(385,456),(420,477),(468,479),(488,461),(500,441),
+         (654,411),(689,418),(717,435),(741,429),(764,391),(769,325)],
+  'large_suv':[(13,454),(43,469),(67,498),(110,506),(151,476),
+         (385,461),(399,482),(416,525),(466,534),(495,522),(516,474),
+         (656,438),(679,467),(700,491),(724,491),(746,469),(763,420),(767,349)],
+  'mpv':[(12,433),(46,472),(81,494),(116,493),(155,461),
+         (370,454),(384,472),(414,508),(467,517),(490,501),(513,455),
+         (654,433),(680,460),(705,476),(724,475),(748,451),(765,406)]
+}
+MODEL_BODY={
+    'g9':'large_suv','g9l':'large_suv','gx':'large_suv',
+    'x9':'mpv',
+    'g3':'suv','g3i':'suv','g7':'suv','l03':'suv','mona_m03':'suv',
+    'next_p7':'suv','p5':'suv','p7':'suv','p7_plus':'suv','p7i':'suv','other':'suv'
+}
 MASKS={}
 
-def family_slug(relative):
-    basename=relative.rsplit('/',1)[-1]
-    for colour in ('arctic_white','jet_black','silver_frost','space_grey','stellar_purple'):
-        suffix='-'+colour+'.webp'
-        if basename.endswith(suffix):
-            return basename[:-len(suffix)]
-    raise ValueError('Unknown existing-family file name: '+relative)
+def original(relative):
+    cmd=['git','show','origin/main:dist/assets/'+relative]
+    p=subprocess.run(cmd,cwd=ROOT,capture_output=True,check=True)
+    return Image.open(BytesIO(p.stdout)).convert('RGB')
 
-def photo_mask(photo):
-    rgb=np.asarray(photo.convert('RGB'),dtype=np.uint8)
+def family_name(relative):
+    filename=relative.rsplit('/',1)[-1]
+    for paint in SLUGS:
+        if filename.endswith('-'+paint+'.webp'):
+            return filename[:-len('-'+paint+'.webp')]
+    raise ValueError('Unknown family paint: '+relative)
+
+def mask_from_white(img,slug):
+    rgb=np.asarray(img,dtype=np.uint8)
     h,w=rgb.shape[:2]
-    if min(h,w)<250:raise ValueError('Unreasonably small car art')
-    mask=np.full((h,w),cv2.GC_PR_BGD,dtype=np.uint8)
-    mask[:int(h*.105),:]=cv2.GC_BGD
-    mask[int(h*.925):,:]=cv2.GC_BGD
-    mask[:,:int(w*.014)]=cv2.GC_BGD
-    mask[:,int(w*.986):]=cv2.GC_BGD
-    mask[int(h*.25):int(h*.68),int(w*.22):int(w*.82)]=cv2.GC_PR_FGD
-    bright=rgb.max(axis=2)
-    y=np.arange(h)[:,None]
-    mask[(bright>115)&(y>h*.10)&(y<h*.92)]=cv2.GC_FGD
-    bg=np.zeros((1,65),np.float64);fg=np.zeros((1,65),np.float64)
-    cv2.grabCut(cv2.cvtColor(rgb,cv2.COLOR_RGB2BGR),mask,None,bg,fg,7,cv2.GC_INIT_WITH_MASK)
-    alpha=np.where(np.isin(mask,[cv2.GC_FGD,cv2.GC_PR_FGD]),255,0).astype(np.uint8)
-    n,labels,stats,_=cv2.connectedComponentsWithStats(alpha,8)
-    if n>1:
-        largest=1+int(np.argmax(stats[1:,cv2.CC_STAT_AREA]))
-        alpha=np.where(labels==largest,255,0).astype(np.uint8)
-    # Restore dark rubber wheels and tinted windows without returning the
-    # full rectangular studio background. The source poses share normalized geometry.
-    alpha2=alpha.copy()
-    cv2.ellipse(alpha2,(int(.568*w),int(.698*h)),(int(.078*w),int(.116*h)),0,0,360,255,-1)
-    cv2.ellipse(alpha2,(int(.921*w),int(.654*h)),(int(.059*w),int(.103*h)),0,0,360,255,-1)
-    fg=alpha2>100
+    if w<400 or h<300:raise ValueError(f'Invalid source dimensions for {slug}: {w}x{h}')
+    luma=rgb.max(axis=2).astype(np.float32)
+    baseline=np.percentile(luma,10,axis=1)[:,None]
+    candidate=(luma>np.maximum(baseline+28,58))
+    candidate[:int(h*.10),:]=False
+    candidate[int(h*.92):,:]=False
+    candidate=cv2.morphologyEx(candidate.astype(np.uint8),cv2.MORPH_OPEN,np.ones((3,3),np.uint8)).astype(bool)
+    tops=np.full(w,np.nan,dtype=np.float32)
+    valid=[]
     for x in range(w):
-        ys=np.flatnonzero(fg[:,x])
-        if ys.size>0:alpha2[ys[0]:ys[-1]+1,x]=255
-    alpha2=cv2.GaussianBlur(alpha2,(3,3),.7)
-    fraction=np.mean(alpha2>30)
-    if not .27<fraction<.72:
-        raise ValueError(f'Unsafe silhouette mask coverage: {fraction:.3f}')
-    return Image.fromarray(alpha2,'L')
+        yy=np.flatnonzero(candidate[:,x])
+        yy=yy[(yy>=int(h*.09))&(yy<int(h*.87))]
+        if len(yy)>10:
+            tops[x]=max(0,int(yy.min())-4)
+            valid.append(x)
+    if len(valid)<w*.60:
+        raise ValueError(f'Source is not a recognizable car silhouette: {slug}')
+    top=np.interp(np.arange(w),valid,tops[valid]).astype(np.float32)
+    top=cv2.medianBlur(top.astype(np.uint8).reshape(1,-1),9)[0].astype(np.float32)
+    top=cv2.GaussianBlur(top.reshape(1,-1),(0,0),2)[0]
+    points=LOWER[MODEL_BODY.get(slug,'suv')]
+    lower=np.interp(np.arange(w)*780/w,
+                    [p[0] for p in points],[p[1] for p in points])*h/585
+    x0=int(points[0][0]*w/780)
+    x1=int(points[-1][0]*w/780)
+    mask=np.zeros((h,w),dtype=np.uint8)
+    for x in range(x0,x1+1):
+        y0=max(0,int(top[x]))
+        y1=min(h,int(lower[x]))
+        if y1>y0:mask[y0:y1,x]=255
+    mask=cv2.GaussianBlur(mask,(5,5),.7)
+    fraction=float(np.mean(mask>30))
+    if not .22<fraction<.73:
+        raise ValueError(f'Unexpected car matte coverage for {slug}: {fraction:.3f}')
+    return Image.fromarray(mask,'L')
 
-def transform(relative,mask):
-    src=ASSETS/relative
-    with Image.open(src) as im:
-        im.load()
-        if 'A' in im.getbands() and im.getchannel('A').getextrema()[0]<240:
-            return False
-        rgb=im.convert('RGB')
-    if rgb.size!=mask.size:
-        raise ValueError(f'Incompatible model-family poses {relative}: {rgb.size} vs {mask.size}')
-    image=rgb.convert('RGBA')
-    image.putalpha(mask)
-    for folder in ('assets','dist/assets'):
-        output=ROOT/folder/relative
-        output.parent.mkdir(parents=True,exist_ok=True)
-        image.save(output,'WEBP',quality=88,method=6)
-        with Image.open(output) as check:
-            assert check.mode=='RGBA' and check.getchannel('A').getextrema()[0]==0
-    print('Transparent car preview:',relative,flush=True)
-    return True
+def save(relative,photo,mask):
+    if photo.size!=mask.size:
+        raise ValueError(f'Paint variants have different poses: {relative}')
+    rgba=photo.convert('RGBA')
+    rgba.putalpha(mask)
+    for base in ('assets','dist/assets'):
+        p=ROOT/base/relative
+        p.parent.mkdir(parents=True,exist_ok=True)
+        rgba.save(p,'WEBP',quality=90,method=6)
+        with Image.open(p) as check:
+            assert check.mode=='RGBA' and check.getchannel('A').getextrema()==(0,255)
+    print('CUTOUT',relative,flush=True)
 
-converted=0
-for relative in FAMILY:
-    slug=family_slug(relative)
+for relative in MAN['model_family']:
+    slug=family_name(relative)
     if slug not in MASKS:
-        white=ASSETS/('models/'+slug+'-arctic_white.webp')
-        MASKS[slug]=photo_mask(Image.open(white))
-    converted+=int(transform(relative,MASKS[slug]))
-for relative in EXACT:
-    bits=relative.split('/')
-    slug=bits[1]
-    if slug=='g6':continue # Previously cut out and tested.
-    if slug not in MASKS:
-        white=ASSETS/('models/'+slug+'-arctic_white.webp')
-        MASKS[slug]=photo_mask(Image.open(white))
-    converted+=int(transform(relative,MASKS[slug]))
-assert converted==91, ('Unusual number of opaque previews',converted)
-print('Converted',converted,'opaque files; preserved transparent G6 files untouched')
+        MASKS[slug]=mask_from_white(original('models/'+slug+'-arctic_white.webp'),slug)
+    save(relative,original(relative),MASKS[slug])
+
+for relative in MAN['exact']:
+    model=relative.split('/')[1]
+    if model=='g6':continue  # G6 2026 production-cutout previews already have alpha.
+    if model not in MASKS:
+        MASKS[model]=mask_from_white(original('models/'+model+'-arctic_white.webp'),model)
+    save(relative,original(relative),MASKS[model])
+
+print('Rebuilt',len(MAN['model_family'])+len(MAN['exact'])-21,
+      'illustrative alpha car assets from unmodified studio originals.')
