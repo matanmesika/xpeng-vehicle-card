@@ -2,6 +2,8 @@
 
 A standalone, **read-only Home Assistant dashboard card** for XPENG vehicles. This repository contains **frontend/UI only**; the XPENG Home Assistant integration is a separate project and is not modified here.
 
+**עדכונים והיסטוריית גרסאות:** [CHANGELOG.md](CHANGELOG.md) הוא המקור המרכזי והמתעדכן לשינויים בפרויקט. קובצי Release Notes היסטוריים, ככל שקיימים, אינם משמשים לניהול עדכונים שוטפים. פרסום גרסה להתקנה מתבצע בנפרד דרך [GitHub Releases](https://github.com/matanmesika/xpeng-vehicle-card/releases).
+
 **Release plan (2026-10-12):** The already-tested dashboard and sensor-mapping fixes are being shipped independently of missing photos as **v1.0.0-alpha.6**. Check [GitHub Releases](https://github.com/matanmesika/xpeng-vehicle-card/releases) to confirm publication. The previously published v1.0.0-alpha.5 was the baseline. **No replacement car images or approved background changes are included in alpha.6.**
 
 ## User-approved design
