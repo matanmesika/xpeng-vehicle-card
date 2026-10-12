@@ -289,6 +289,10 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-tire-reading span{color:#75f4c5;font-size:clamp(11px,1.2vw,17px)}
 .xp-tire-reading[data-wheel="tire_fl"]{grid-area:1/1}.xp-tire-reading[data-wheel="tire_fr"]{grid-area:1/3}
 .xp-tire-reading[data-wheel="tire_rl"]{grid-area:2/1}.xp-tire-reading[data-wheel="tire_rr"]{grid-area:2/3}
+.xp-tire-reading[data-pressure-status="normal"]{border-color:#36d9a5aa}.xp-tire-reading[data-pressure-status="normal"] strong,.xp-tire-reading[data-pressure-status="normal"] span{color:#75f4c5}
+.xp-tire-reading[data-pressure-status="low"]{border-color:#ffb14caa}.xp-tire-reading[data-pressure-status="low"] strong,.xp-tire-reading[data-pressure-status="low"] span{color:#ffbd62}
+.xp-tire-reading[data-pressure-status="high"]{border-color:#ff617baa}.xp-tire-reading[data-pressure-status="high"] strong,.xp-tire-reading[data-pressure-status="high"] span{color:#ff7c91}
+.xp-tire-reading[data-pressure-status="unknown"]{border-color:#8793a088}.xp-tire-reading[data-pressure-status="unknown"] strong,.xp-tire-reading[data-pressure-status="unknown"] span{color:#b9c9d8}
 .xp-tire-disclaimer{text-align:center;font-size:10px;color:#b9c9d8;padding-bottom:5px}
 @media(max-width:850px){.xp-tire-screen{inset:23% 3% 4%}.xp-tire-actions{top:-52px;right:3px}
 .xp-tire-actions button{font-size:12px;padding:8px 10px}
@@ -557,9 +561,13 @@ class XpengVehicleCard extends HTMLElement{
     const a=this.appearance(),photo=Array.isArray(this._config.vehicles)&&this._config.vehicles.length
       ?this.vehicle()?.top_image:this.vehicle()?.top_image||this._config.top_image;
     const wheel=(key,label)=>{const bar=this.tirePressureBar(key);
-      return `<div class="xp-tire-reading" data-wheel="${key}"><small>${label}</small>
-        <strong>${bar===null?'—':xpEsc(xpNum(bar,2))}</strong><span>${bar===null?'Unavailable':'bar'}</span></div>`;};
-    return `<section class="xp-tire-screen" role="region" aria-label="Tire pressure from above">
+      const configuredTarget=Number(this._config.tire_target_bar),configuredTolerance=Number(this._config.tire_tolerance_bar);
+      const nominal=Number.isFinite(configuredTarget)&&configuredTarget>=1.5&&configuredTarget<=4?configuredTarget:2.5;
+      const margin=Number.isFinite(configuredTolerance)&&configuredTolerance>=0.05&&configuredTolerance<=0.8?configuredTolerance:0.3;
+      const status=bar===null?'unknown':bar<nominal-margin?'low':bar>nominal+margin?'high':'normal';
+      return `<div class="xp-tire-reading" data-wheel="${key}" data-pressure-status="${status}"><small>${label}</small>
+        <strong>${bar===null?'—':xpEsc(xpNum(bar,2))}</strong><span>${bar===null?'Unavailable':status==='normal'?'bar · OK':status==='low'?'bar · Low':'bar · High'}</span></div>`;};
+        return `<section class="xp-tire-screen" role="region" aria-label="Tire pressure from above">
        <div class="xp-tire-actions"><button type="button" data-tire-toggle aria-label="Back to vehicle status">${xpIcon('back',20)} Back to vehicle</button></div>
        <div class="xp-tire-stage"><div class="xp-tire-center">${this.topCarArt()}</div>
          ${wheel('tire_fl','Front left')}${wheel('tire_fr','Front right')}
