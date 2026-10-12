@@ -136,14 +136,16 @@ test('official 2026 paints and cabin colours depend on model',()=>{
   assert.deepEqual(x.xpAllowedPaints('G6','2023','performance_awd').map(v=>v.id),x.xpAllowedPaints('G6','2026','black_edition').map(v=>v.id));
 });
 
-test('information icon is directly beside network status and shows connection plus last update only',()=>{
+test('one Wi-Fi button opens only connection and exact last vehicle update',()=>{
   const states=data();
   states['sensor.my_xpeng_api_connection_status']={state:'connected'};
   states['sensor.my_xpeng_last_update']={state:'2026-10-12T06:00:00Z'};
   const card=setup(states);
   let html=card.shadowRoot.innerHTML;
-  assert.match(html,/class="xp-header-right"[\s\S]*?class="xp-wifi xp-connected"[\s\S]*?class="xp-connection-label">Connected<\/span>[\s\S]*?class="xp-meta-tools"/);
-  assert.equal((html.match(/data-meta-toggle/g)||[]).length,1,'exactly one info control in header');
+  assert.match(html,/class="xp-header-right"[\s\S]*?class="xp-meta-tools"[\s\S]*?<button class="xp-wifi xp-connected"[^>]*data-meta-toggle/);
+  assert.equal((html.match(/data-meta-toggle/g)||[]).length,1,'exactly one Wi-Fi control in header');
+  assert.doesNotMatch(html,/xp-connection-label|xp-meta-trigger/,'no duplicate visible network text or info icon');
+  assert.match(html,/aria-label="Vehicle communication details"/);
   assert.doesNotMatch(html,/class="xp-meta-popover"/,'popup closed by default');
   assert.doesNotMatch(html,/class="xp-updated"/,'no old separate updated label');
   const info={hasAttribute:key=>key==='data-meta-toggle',dataset:{}};
@@ -161,14 +163,14 @@ test('information icon is directly beside network status and shows connection pl
   card.shadowRoot.handlers.click({target:{closest:()=>info}});
   assert.doesNotMatch(card.shadowRoot.innerHTML,/class="xp-meta-popover"/);
 });
-test('offline and error network labels stay visible and the same header info remains on charging',()=>{
+test('offline and error network states color the same Wi-Fi button on charging',()=>{
   const states=data(),card=setup(states);
-  assert.match(card.shadowRoot.innerHTML,/class="xp-connection-label">Not connected<\/span>/);
+  assert.match(card.shadowRoot.innerHTML,/class="xp-wifi xp-disconnected"/);
   states['sensor.my_xpeng_api_connection_status']={state:'auth_error'};
   states['binary_sensor.my_xpeng_is_charging']={state:'on'};
   card.hass={states};
   assert.equal(card._view,'charging');
-  assert.match(card.shadowRoot.innerHTML,/class="xp-connection-label">Connection error<\/span>/);
+  assert.match(card.shadowRoot.innerHTML,/class="xp-wifi xp-error"/);
   assert.equal((card.shadowRoot.innerHTML.match(/data-meta-toggle/g)||[]).length,1);
   card.shadowRoot.handlers.click({target:{closest:()=>({hasAttribute:key=>key==='data-meta-toggle'})}});
   const chargingHtml=card.shadowRoot.innerHTML;
@@ -429,6 +431,9 @@ test('tire selection transforms central vehicle into overhead four-wheel view an
  card.shadowRoot.handlers.click({target:{closest:()=>toggle}});
  let html=card.shadowRoot.innerHTML;
  assert.match(html,/class="xp-tire-screen"/);
+ assert.match(html,/class="xp-subtitle">Tire pressure<\/div>/,'TPMS retains the main vehicle heading');
+ assert.match(html,/class="xp-tire-actions"/,'back control stays in the same card layout');
+ assert.doesNotMatch(html,/xp-tire-screen-head/,'TPMS must not show a second competing page header');
  assert.match(html,/class="xp-top-car"/);
  assert.doesNotMatch(html,/data-car-art/,'normal three-quarter vehicle must disappear during top view');
  assert.match(html,/Back to vehicle/);
@@ -477,6 +482,19 @@ test('tire pressures support bar, kPa, psi and individual unavailable readings w
  states['sensor.my_xpeng_tire_pressure_front_right_kpa']={state:'250',attributes:{unit_of_measurement:'mystery'}};
  card.hass={states};
  assert.equal(card.tirePressureBar('tire_fr'),null);
+});
+
+test('last vehicle update uses vehicle telemetry timestamp, never HA sensor last_updated as a surrogate',()=>{
+ const card=setup({'sensor.my_xpeng_last_update':{state:'unavailable',last_updated:'2026-10-12T06:00:00Z'}});
+ assert.equal(card.lastUpdate(),'Unavailable');
+ const state={'sensor.my_xpeng_last_update':{state:'2026-10-12T06:00:00Z'}};
+ card.hass={states:state};
+ assert.notEqual(card.lastUpdate(),'Unavailable');
+ assert.match(card.lastUpdate(),/2026/);
+ assert.doesNotMatch(card.lastUpdate(),/ago|Just now/i,'exact date and time rather than a relative time only');
+ const popupToggle={hasAttribute:key=>key==='data-meta-toggle'};
+ card.shadowRoot.handlers.click({target:{closest:()=>popupToggle}});
+ assert.match(card.shadowRoot.innerHTML,/Last vehicle update/);
 });
 
 test('header information only opens on user click and contains two live values',()=>{
