@@ -312,6 +312,12 @@ backdrop-filter:blur(14px);border-radius:17px;padding:15px 8px;text-align:center
 @media(max-width:850px){.xp-overview .xp-car.xp-reference-cutout{left:-3%;bottom:27%;width:108%;max-height:42%}}
 @media(max-width:400px){.xp-charge-meta>div{padding:0 7px}.xp-charge-heading{font-size:19px}.xp-charge-meta b{font-size:12px}.xp-overview-stat{top:219px}.xp-status-panel{grid-template-columns:repeat(3,minmax(0,1fr))}}
 `;
+// Retain legacy manual entity mapping for older YAML; new configs are automatic.
+function xpSensorMappingMode(cfg,profile){
+ const mode=profile?.sensor_mapping_mode??cfg?.sensor_mapping_mode;
+ if(mode==='auto'||mode==='manual')return mode;
+ return Object.keys(profile?.entities||{}).length||Object.keys(cfg?.entities||{}).length?'manual':'auto';
+}
 class XpengVehicleCard extends HTMLElement{
  constructor(){
   super();this.attachShadow({mode:'open'});this._config={};this._hass=null;this._view='overview';this._expanded=false;this._vehicleIndex=0;this._infoOpen=false;this._tireOpen=false;
@@ -358,7 +364,7 @@ class XpengVehicleCard extends HTMLElement{
  paint(){return this.appearance().color;}
  data(key){
    const spec=XP_KEYS[key];if(!spec)return null;
-   const override=this.vehicle()?.entities?.[key]??this._config.entities?.[key];
+   const override=xpSensorMappingMode(this._config,this.vehicle())==='manual'?(this.vehicle()?.entities?.[key]??this._config.entities?.[key]):null;
    const custom=override?xpParseEntityMapping(override):null;
    const ids=custom?[custom.id]:spec.slice(1).map(s=>spec[0]+'.'+this.prefix()+'_'+s);
    const id=ids.find(x=>this._hass?.states?.[x])||ids[0];
@@ -628,6 +634,7 @@ class XpengVehicleCardEditor extends HTMLElement{
    const el=e.target.closest('[data-key],[data-entity]');if(!el)return;
    if(el.hasAttribute('data-entity'))el.setCustomValidity('');
    if(el.hasAttribute('data-entity')){
+     if(xpSensorMappingMode(this._cfg)!=='manual')return;
      const field=el.dataset.entity,raw=String(el.value||'').trim();
      if(!XP_MAPPABLE_FIELDS.some(x=>x.key===field))return;
      if(raw&&!xpParseEntityMapping(raw)){
@@ -642,10 +649,6 @@ class XpengVehicleCardEditor extends HTMLElement{
    }
    const key=el.dataset.key;
    let cfg={...this._cfg,[key]:el.value};
-   if(['image','charging_image','top_image','interior_image','background_image'].includes(key)&&el.value&&!xpLocalArtworkPath(el.value)){
-     el.setCustomValidity('Use a local /local/... or /hacsfiles/... image URL');
-     el.reportValidity();return;
-   }
    // Year changes ONLY the informational trim list; neither selection changes photos or colours.
    if(['model','color'].includes(key)){delete cfg.image;delete cfg.charging_image;delete cfg.top_image;}
    if(['model','interior'].includes(key))delete cfg.interior_image;
@@ -672,6 +675,7 @@ class XpengVehicleCardEditor extends HTMLElement{
   const v=xpNormalizeAppearance(this._cfg);
   const select=(key,label,values)=>`<label>${xpEsc(label)}<select data-key="${key}">${values.map(x=>`<option value="${xpEsc(x.id)}" ${v[key]===x.id?'selected':''}>${xpEsc(x.label)}</option>`).join('')}</select></label>`;
   const prefix=v.prefix||'my_xpeng';
+  const mappingMode=xpSensorMappingMode(v);
   const states=this._hass?.states||{};
   const dataList=Object.keys(states).filter(id=>xpParseEntityMapping(id)).sort().map(id=>'<option value="'+xpEsc(id)+'"></option>').join('');
   const mappingRows=XP_MAPPABLE_FIELDS.map(field=>{
@@ -679,7 +683,6 @@ class XpengVehicleCardEditor extends HTMLElement{
    const auto=spec[0]+'.'+prefix+'_'+spec[1];
    return '<label class="xp-map-row"><span>'+xpEsc(field.label)+'</span><input data-entity="'+xpEsc(field.key)+'" list="xp-entity-choices" autocomplete="off" value="'+xpEsc(v.entities?.[field.key]||'')+'" placeholder="Auto: '+xpEsc(auto)+'" title="Leave blank for automatic mapping. Supports entity_id or entity_id|attribute_name"></label>';
   }).join('');
-  const expanded=this.shadowRoot.querySelector?.('details[data-mappings]')?.open===true;
   this.shadowRoot.innerHTML=`<style>section{display:grid;gap:13px;padding:14px;font:inherit}label{display:grid;gap:5px;font-size:13px}input,select{border:1px solid #8b959e;border-radius:7px;padding:10px;background:var(--card-background-color,#fff);color:var(--primary-text-color,#111)}p{font-size:12px;opacity:.8;line-height:1.5}
    h3{margin:8px 0 0;font-size:15px}
    details{border:1px solid var(--divider-color,#7d879a77);border-radius:9px;padding:11px}
@@ -690,29 +693,23 @@ class XpengVehicleCardEditor extends HTMLElement{
    @media(max-width:460px){.xp-map-row{grid-template-columns:1fr}}
    </style><section>
     <h3>Vehicle appearance (manual settings)</h3><p>The car always displays one highest-available-trim image for the selected model. Only exterior paint changes that image. Model year filters trim names; trim is information only.</p>
-     <label>Automatic sensor prefix<input data-key="prefix" value="${xpEsc(v.prefix||'my_xpeng')}"></label>
+     
     ${select('model','Model',XP_MODELS.map(m=>({id:m.id,label:m.name})))}
     ${select('year','Model year (trim names only)',xpAllowedYears(v.model).map(y=>({id:y,label:y})))}
     ${select('trim','Trim (informational only)',xpAllowedTrims(v.model,v.year))}
     ${select('color','Exterior paint',xpAllowedPaints(v.model,v.year,v.trim))}
      ${select('interior','Interior finish',xpAllowedInteriors(v.model,v.year,v.trim))}
      <p>These exterior/interior colours are model-wide visual previews; historical factory paint availability has not been verified.</p>
-    <h3>Data source</h3><p>Every measurement supports automatic matching by prefix or optional manual entity assignment, including from any Home Assistant integration. Charging activates the charging screen only while charging is reported as active.</p>
-     <label>Optional cabin photo for this selected model, year, trim and interior colour<input data-key="interior_image" value="${xpEsc(v.interior_image||'')}" placeholder="/local/my_xpeng/interiors/g6-2026-light-gray.webp"></label>
-    <p>Only model or interior changes clear a custom cabin photo; year and trim never affect it.</p>
-    <label>Optional matching overhead transparent vehicle image for tire display<input data-key="top_image" value="${xpEsc(v.top_image||'')}" placeholder="/local/my_xpeng/g6-overhead.webp"></label>
-    <p>Until a model-specific overhead asset is verified, Tire pressures uses a clearly labeled color-matched illustration.</p>
-    <label>Optional rear/charging view image for this exact vehicle (when available)<input data-key="charging_image" value="${xpEsc(v.charging_image||'')}" placeholder="/local/my_xpeng/cars/g6-2026-white-rear.webp"></label>
-    <label>Optional exact vehicle image URL (when this profile has no bundled year-specific photo)<input data-key="image" value="${xpEsc(v.image||'')}" placeholder="/local/my_xpeng/cars/g6-2026-white.webp"></label>
-    <p>Only model and exterior paint choose artwork. Year and trim are informational and never change front/rear/top images. G6/G9 use the highest available trim preview; other models use their existing generic family artwork until verified high-trim cutouts are added.</p>
-    <label>Optional scenic background for BOTH screens (separate from the car)<input data-key="background_image" value="${xpEsc(v.background_image||'')}" placeholder="/local/xpeng/xpeng-approved-lakeside-background.webp"></label>
-    <p>Use a genuine photograph in /local/ or /hacsfiles/, not CSS-painted mountains. The background is global and stays identical when charging or selecting another model; leaving it empty retains the bundled fallback.</p>
-    <label>Optional custom asset directory (leave empty for automatic HACS bundled images)<input data-key="image_path" value="${xpEsc(v.image_path&&v.image_path!=='/hacsfiles/xpeng-vehicle-card/assets'?v.image_path:'')}"></label>
-    <details data-mappings ${expanded?'open':''}><summary>Manual sensor mapping · ${XP_MAPPABLE_FIELDS.length} fields</summary>
-       <p>Auto mode: leave an item empty and it uses the prefix. Manual mode: pick any Home Assistant entity (including those from another integration), or use entity_id|attribute_name to read an attribute. Each field is configured independently.</p>
-       <div class="xp-map-fields">${mappingRows}</div>
+    <h3>Sensor mapping</h3>
+     <label>Mapping mode<select data-key="sensor_mapping_mode">
+       <option value="auto" ${mappingMode==='auto'?'selected':''}>Automatic · XPENG integration</option>
+       <option value="manual" ${mappingMode==='manual'?'selected':''}>Manual · choose sensors</option>
+     </select></label>
+     ${mappingMode==='manual'? `<div class="xp-map-fields" data-mappings>
+       <p>Choose any of the ${XP_MAPPABLE_FIELDS.length} Home Assistant sensors. A blank field uses automatic integration mapping. Entity attributes: entity_id|attribute_name.</p>
+       ${mappingRows}
        <datalist id="xp-entity-choices">${dataList}</datalist>
-     </details>
+     </div>`:`<p data-auto-mapping>Vehicle sensors are matched automatically using the XPENG integration. Choose Manual to show and assign individual sensor entities.</p>`}
      <p>The only screens are Vehicle status and Charging. Live readings update automatically; missing sensors stay unavailable. Vehicle appearance is edited here, never on the dashboard.</p>
   </section>`;
  }

@@ -277,11 +277,19 @@ with sync_playwright() as p:
         editor = page.locator('xpeng-vehicle-card-editor')
         assert editor.locator('[data-key="color"]').count() == 1
         assert editor.locator('[data-key="shape_family"]').count() == 0
-        assert editor.locator('[data-key="top_image"]').count() == 1
+        assert editor.locator('[data-key="top_image"]').count() == 0
         assert editor.locator('[data-key="interior"]').count() == 1
+        assert editor.locator('[data-key="prefix"]').count() == 0
+        assert editor.locator('[data-key="sensor_mapping_mode"]').count() == 1
+        assert editor.locator('[data-entity]').count() == 0
+        assert 'Data source' not in editor.inner_text()
+        editor.locator('[data-key="sensor_mapping_mode"]').select_option('manual')
+        assert editor.locator('[data-entity]').count() == 15
         assert editor.locator('[data-entity="soc"]').count() == 1
         assert editor.locator('[data-entity="charging"]').count() == 1
         assert editor.locator('[data-entity="tire_fl"]').count() == 1
+        editor.locator('[data-key="sensor_mapping_mode"]').select_option('auto')
+        assert editor.locator('[data-entity]').count() == 0
         assert host.locator('[data-key="color"],[data-entity]').count() == 0
 
         # Browser-test representative generations; all use the same scenic bitmap,

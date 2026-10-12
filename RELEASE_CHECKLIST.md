@@ -10,6 +10,7 @@
 - [x] Network and info icon on one header row; popup closed by default and toggles by click only.
 - [x] Info popup has exactly Connection and Last vehicle update. No legacy cabin/artwork details.
 - [x] Sensor-driven Charging and live TPMS overhead detail with four corner readings.
+- [x] Editor Data source image/path controls removed; only auto/manual sensor mapping selection remains. Manual exposes exactly 15 entity fields, auto hides all and ignores stored manual overrides; legacy YAML mapping remains compatible.
 - [x] Source/dist JavaScript synced; flat HACS distribution prepared.
 - [ ] Confirm all **current** GitHub CI checks green for the proposed merge SHA. Results may change as commits are added.
 - [ ] Verify actual Lovelace/HACS installation, resource refresh and icon/popover interaction against a real HA instance.

@@ -186,29 +186,32 @@ test('rendering missing exact art uses safe shape fallback, not previous-year im
  assert.doesNotMatch(card.asset(),/g6-studio\.webp/);
 });
 
-test('card editor offers model/year/paint/interior only in settings, alongside 15 mapping fields',()=>{
-  const Editor=tags.get('xpeng-vehicle-card-editor');
-  const editor=new Editor();
-  editor.setConfig({type:'custom:xpeng-vehicle-card',prefix:'my_xpeng',model:'G6',year:'2026',trim:'core_plus_rwd',
-    color:'arctic_white',interior:'light_gray'});
-  editor.hass={states:{'sensor.custom_battery':{state:'93'},'binary_sensor.custom_charging':{state:'on'}}};
-  const html=editor.shadowRoot.innerHTML;
-  assert.match(html,/Manual sensor mapping/);
-  assert.match(html,/data-key="year"/);
-  assert.match(html,/data-key="model"/);
-  assert.match(html,/data-key="trim"/);
-  assert.match(html,/data-key="color"/);
-  assert.match(html,/data-key="interior"/);
-  assert.match(html,/data-entity="soc"/);
-  assert.match(html,/data-entity="charging"/);
-  assert.match(html,/sensor.custom_battery/);
-  assert.match(html,/binary_sensor.custom_charging/);
+test('the editor shows auto mode by default and all 15 sensors only after selecting manual',()=>{
+ const Editor=tags.get('xpeng-vehicle-card-editor'),editor=new Editor();
+ editor.setConfig({prefix:'my_xpeng',model:'G6',year:'2026'});
+ editor.hass={states:{'sensor.custom_battery':{state:'93'},'binary_sensor.custom_charging':{state:'on'}}};
+ const html=editor.shadowRoot.innerHTML;
+ for(const key of ['model','year','trim','color','interior','sensor_mapping_mode'])
+   assert.match(html,new RegExp('data-key="'+key+'"'));
+ assert.match(html,/Automatic · XPENG integration/);
+ assert.doesNotMatch(html,/data-entity="|<h3>Data source|data-key="prefix"|data-key="image"|data-key="top_image"/);
+ const change={dataset:{key:'sensor_mapping_mode'},value:'manual',hasAttribute:()=>false};
+ editor.shadowRoot.handlers.change({target:{closest:()=>change}});
+ const expanded=editor.shadowRoot.innerHTML;
+ assert.equal(editor._cfg.sensor_mapping_mode,'manual');
+ assert.equal((expanded.match(/data-entity="/g)||[]).length,15);
+ assert.match(expanded,/data-entity="soc"/);
+ assert.match(expanded,/data-entity="charging"/);
+ assert.match(expanded,/sensor.custom_battery/);
+ assert.match(expanded,/binary_sensor.custom_charging/);
+ change.value='auto';
+ editor.shadowRoot.handlers.change({target:{closest:()=>change}});
+ assert.doesNotMatch(editor.shadowRoot.innerHTML,/data-entity="/);
 });
-
 test('manual sensor mapping persists as entities and overrides automatic prefix lookup',()=>{
   const Editor=tags.get('xpeng-vehicle-card-editor');
   const editor=new Editor();
-  editor.setConfig({type:'custom:xpeng-vehicle-card',prefix:'my_xpeng',model:'G6',year:'2026',color:'arctic_white'});
+  editor.setConfig({type:'custom:xpeng-vehicle-card',prefix:'my_xpeng',model:'G6',year:'2026',color:'arctic_white',sensor_mapping_mode:'manual'});
   const el={dataset:{entity:'soc'},value:'sensor.alternate_battery',hasAttribute:k=>k==='data-entity',
     setCustomValidity(){},reportValidity(){}};
   editor.shadowRoot.handlers.change({target:{closest:()=>el}});
@@ -227,7 +230,7 @@ test('manual sensor mapping persists as entities and overrides automatic prefix 
 test('card editor rejects invalid manual entity IDs',()=>{
   const Editor=tags.get('xpeng-vehicle-card-editor');
   const editor=new Editor();
-  editor.setConfig({prefix:'my_xpeng',year:'2026',model:'G6'});
+  editor.setConfig({prefix:'my_xpeng',year:'2026',model:'G6',sensor_mapping_mode:'manual'});
   let rejected=false;
   const el={dataset:{entity:'soc'},value:'sensor.BAD-ID',hasAttribute:k=>k==='data-entity',
     setCustomValidity:message=>{rejected=Boolean(message);},reportValidity(){}};
@@ -316,7 +319,7 @@ test('external integrations may map any HA entity domain or an attribute, with a
 test('editor accepts other HA domains and attribute paths, invalid strings are rejected',()=>{
  const Editor=tags.get('xpeng-vehicle-card-editor');
  const editor=new Editor();
- editor.setConfig({prefix:'my_xpeng',year:'2026',model:'G6'});
+ editor.setConfig({prefix:'my_xpeng',year:'2026',model:'G6',sensor_mapping_mode:'manual'});
  editor.hass={states:{'select.external_charge':{state:'charging'},'input_number.ev_soc':{state:'80'}}};
  assert.match(editor.shadowRoot.innerHTML,/select.external_charge/);
  assert.match(editor.shadowRoot.innerHTML,/input_number.ev_soc/);
@@ -410,7 +413,7 @@ test('card editor exposes the independent photographic background and preserves 
  const Editor=tags.get('xpeng-vehicle-card-editor'),editor=new Editor();
  editor.setConfig({prefix:'my_xpeng',model:'G6',year:'2026',background_image:'/local/xpeng/bg.webp',
    image:'/local/xpeng/xpeng-g6-2026-white-cutout.webp'});
- assert.match(editor.shadowRoot.innerHTML,/data-key="background_image"/);
+ assert.doesNotMatch(editor.shadowRoot.innerHTML,/data-key="background_image"/);
  const ctrl={dataset:{key:'color'},value:'graphite_gray',hasAttribute:()=>false,
    setCustomValidity(){},reportValidity(){}};
  editor.shadowRoot.handlers.change({target:{closest:()=>ctrl}});
@@ -446,7 +449,7 @@ test('optional exact overhead art follows model/trim/paint and is cleared when c
  assert.match(card.shadowRoot.innerHTML,/g6-2026-white-overhead.webp/);
  assert.match(card.shadowRoot.innerHTML,/data-top-art/);
  editor.setConfig({model:'G6',year:'2026',trim:'core_plus_rwd',color:'arctic_white',top_image:'/local/g6-2026-white-overhead.webp'});
- assert.match(editor.shadowRoot.innerHTML,/data-key="top_image"/);
+ assert.doesNotMatch(editor.shadowRoot.innerHTML,/data-key="top_image"/);
  const control={dataset:{key:'color'},value:'graphite_gray',hasAttribute:()=>false,setCustomValidity(){},reportValidity(){}};
  editor.shadowRoot.handlers.change({target:{closest:()=>control}});
  assert.equal(editor._cfg.top_image,undefined,'overhead image must not carry to another paint');
@@ -525,4 +528,42 @@ test('the year and selected trim never alter car, top-down artwork, or visual la
  assert.equal(card.topCarArt(),appearance.top);
  assert.equal(card.tireScreen(),appearance.tire);
  assert.doesNotMatch(card.tireScreen(),/\b20(?:2[0-9]|3[0-9])\b/,'model year must never decorate the image');
+});
+
+test('auto mode ignores saved manual overrides; manual mode shows 15 sensor fields',()=>{
+ const Editor=tags.get('xpeng-vehicle-card-editor'),ed=new Editor();
+ ed.setConfig({prefix:'my_xpeng',model:'G6',entities:{soc:'sensor.custom_soc'},
+   sensor_mapping_mode:'auto',image:'/local/g6.webp',background_image:'/local/bg.webp'});
+ assert.doesNotMatch(ed.shadowRoot.innerHTML,/data-entity="|Data source|data-key="prefix"|data-key="image"|data-key="background_image"/);
+ const change=(value)=>{
+  const el={dataset:{key:'sensor_mapping_mode'},value,hasAttribute:()=>false};
+  ed.shadowRoot.handlers.change({target:{closest:()=>el}});
+ };
+ change('manual');
+ assert.equal((ed.shadowRoot.innerHTML.match(/data-entity="/g)||[]).length,15);
+ assert.equal(ed._cfg.entities.soc,'sensor.custom_soc');
+ const states=data();states['sensor.custom_soc']={state:'77'};
+ const card=setup(states);
+ card.setConfig({...ed._cfg});card.hass={states};
+ assert.equal(card.number('soc'),77);
+ change('auto');
+ assert.doesNotMatch(ed.shadowRoot.innerHTML,/data-entity="/);
+ assert.equal(ed._cfg.entities.soc,'sensor.custom_soc');
+ card.setConfig({...ed._cfg});card.hass={states};
+ assert.equal(card.number('soc'),62,'auto ignores stored manual overrides');
+ assert.equal(card._config.image,'/local/g6.webp','advanced YAML vehicle image retained');
+ assert.equal(card._config.background_image,'/local/bg.webp','advanced YAML scene retained');
+ change('manual');
+ assert.equal(ed._cfg.entities.soc,'sensor.custom_soc');
+ assert.equal((ed.shadowRoot.innerHTML.match(/data-entity="/g)||[]).length,15);
+});
+test('legacy YAML entity overrides remain active without mode',()=>{
+ const states=data();states['sensor.custom_soc']={state:'91'};
+ const card=setup(states);
+ card.setConfig({prefix:'my_xpeng',entities:{soc:'sensor.custom_soc'}});
+ card.hass={states};
+ assert.equal(card.number('soc'),91);
+ const Editor=tags.get('xpeng-vehicle-card-editor'),ed=new Editor();
+ ed.setConfig({prefix:'my_xpeng',entities:{soc:'sensor.custom_soc'}});
+ assert.equal((ed.shadowRoot.innerHTML.match(/data-entity="/g)||[]).length,15);
 });

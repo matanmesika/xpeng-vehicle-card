@@ -45,7 +45,7 @@ test('all year profiles load in the card editor without errors',()=>{
    editor.setConfig({prefix:'my_xpeng',model:p.model,year:p.year,color:p.paint_options[0],interior:p.interior_options[0]});
    assert.match(editor.shadowRoot.innerHTML,/data-key="model"/);
    assert.match(editor.shadowRoot.innerHTML,/data-key="interior"/);
-   assert.match(editor.shadowRoot.innerHTML,/Manual sensor mapping/);
+   assert.match(editor.shadowRoot.innerHTML,/data-key="sensor_mapping_mode"/);
    assert.equal(editor._cfg.model,p.model,p.display_name);
    assert.equal(editor._cfg.year,p.year,p.display_name);
    card.setConfig({prefix:'my_xpeng',model:p.model,year:p.year,trim:p.trims[0],color:p.paint_options[0],interior:p.interior_options[0]});
@@ -135,7 +135,7 @@ test('card editor remains appearance-only and dashboard does not add new screens
  assert.match(editor.shadowRoot.innerHTML,/data-key="year"/);
  assert.match(editor.shadowRoot.innerHTML,/data-key="model"/);
  assert.match(editor.shadowRoot.innerHTML,/data-key="interior"/);
- assert.match(editor.shadowRoot.innerHTML,/Manual sensor mapping/);
+ assert.match(editor.shadowRoot.innerHTML,/data-key="sensor_mapping_mode"/);
  card.setConfig({...editor._cfg});
  assert.equal(card.appearance().model,'G9');
  assert.doesNotMatch(card.shadowRoot.innerHTML,/data-key="year"|Manual sensor mapping/);
@@ -195,8 +195,8 @@ test('model or paint changes never retain an unrelated manual vehicle/cabin imag
  const editor=new Editor();
  editor.setConfig({model:'G6',year:'2026',trim:'core_plus_rwd',color:'arctic_white',
   interior:'light_gray',image:'/local/car-exact.webp',interior_image:'/local/cabin-exact.webp'});
- assert.match(editor.shadowRoot.innerHTML,/data-key="image"/);
- assert.match(editor.shadowRoot.innerHTML,/data-key="interior_image"/);
+ assert.doesNotMatch(editor.shadowRoot.innerHTML,/data-key="image"/);
+ assert.doesNotMatch(editor.shadowRoot.innerHTML,/data-key="interior_image"/);
  const simulate=(key,value)=>{
   const ctrl={dataset:{key},value,hasAttribute:()=>false,setCustomValidity(){},reportValidity(){}};
   editor.shadowRoot.handlers.change({target:{closest:()=>ctrl}});
@@ -237,7 +237,7 @@ test('a charging/rear image is selected by charging state without ever changing 
  const editor=new Editor();
  editor.setConfig({model:'G6',year:'2026',trim:'core_plus_rwd',color:'arctic_white',
      image:'/local/front-g6.webp',charging_image:'/local/rear-g6.webp'});
- assert.match(editor.shadowRoot.innerHTML,/data-key="charging_image"/);
+ assert.doesNotMatch(editor.shadowRoot.innerHTML,/data-key="charging_image"/);
  const ctrl={dataset:{key:'color'},value:'graphite_gray',hasAttribute:()=>false,
      setCustomValidity(){},reportValidity(){}};
  editor.shadowRoot.handlers.change({target:{closest:()=>ctrl}});

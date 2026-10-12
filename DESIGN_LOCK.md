@@ -17,6 +17,8 @@
 - Every supported year/trim of that model uses one highest-available-trim preview for its paint.
 - Model year only filters the list of trim names in the card editor. Selected trim is informational only; changing year/trim must **not** alter the displayed car, any custom cutout URL, paint, cabin finish or telemetry.
 - All appearance selectors are editor/YAML only, not visible on the dashboard.
+- The editor has no `Data source` image/background/path inputs or automatic prefix input; artwork is bundled, with legacy YAML image overrides supported but hidden.
+- A single `Sensor mapping` dropdown defaults to Automatic (integration-prefix lookup, no per-sensor fields visible). Manual reveals all 15 Home Assistant fields. Manual entries persist when switching back to Automatic, but automatic lookup must take precedence until Manual is selected again. Older `entities:` configs without an explicit mode remain Manual.
 - `model-artwork.json` is the current model+paint inventory; `vehicle-art-inventory.json` is a historical filename inventory, not a runtime per-year selector.
 - G6 currently uses existing `core_performance_awd` preview images; G9 uses `performance_awd`. Other models use best available model+paint family imagery. All unverified visuals remain explicitly labelled illustrative. Do not claim photography or a factory highest trim is verified without evidence.
 - Manufacturer-accurate rear/overhead cutouts remain pending; the charged view may explicitly reuse front art as a fallback, and TPMS uses an acknowledged colour-matched overhead illustration.
