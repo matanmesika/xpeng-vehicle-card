@@ -450,6 +450,12 @@ class XpengVehicleCard extends HTMLElement{
   }
   interiorPreview(){
     const a=this.appearance(),finish=XP_INTERIORS.find(x=>x.id===a.interior)||XP_INTERIORS[0];
+    // Model/year/trim/cabin custom imagery stays independent of the background.
+    // If no matching art is provided, the colour-accurate schematic remains honest.
+    const interiorImg=this.vehicle()?.interior_image||this._config.interior_image;
+    if(xpLocalArtworkPath(interiorImg))
+      return `<img class="xp-cabin-mini" src="${xpEsc(interiorImg)}"
+        alt="${xpEsc(a.model+' '+a.year+' '+finish.label+' interior (user-supplied artwork)')}" loading="lazy">`;
     const colour=xpEsc(finish.hex),shade=xpEsc(finish.secondary);
     return `<svg class="xp-cabin-mini" viewBox="0 0 350 155" role="img"
       aria-label="${xpEsc(a.model+' '+a.year+' cabin, '+finish.label)}">
@@ -537,12 +543,13 @@ class XpengVehicleCardEditor extends HTMLElement{
    }
    const key=el.dataset.key;
    let cfg={...this._cfg,[key]:el.value};
-   if(key==='image'&&el.value&&!xpLocalArtworkPath(el.value)){
+   if((key==='image'||key==='interior_image')&&el.value&&!xpLocalArtworkPath(el.value)){
      el.setCustomValidity('Use a local /local/... or /hacsfiles/... image URL');
      el.reportValidity();return;
    }
    // A previous manual photo belongs to the old model/year/paint, not a new one.
    if(['model','year','trim','color'].includes(key))delete cfg.image;
+   if(['model','year','trim','interior'].includes(key))delete cfg.interior_image;
    if(cfg.prefix&&!/^[a-z0-9_]+$/.test(cfg.prefix))return;
    if(key==='year'&&!xpAllowedModels(cfg.year).some(x=>x.id===cfg.model))cfg.model=xpAllowedModels(cfg.year)[0]?.id||'Other';
    if(key==='year'||key==='model'){cfg.trim=xpAllowedTrims(cfg.model,cfg.year)[0].id;cfg.color=xpAllowedPaints(cfg.model,cfg.year,cfg.trim)[0].id;cfg.interior=xpAllowedInteriors(cfg.model,cfg.year,cfg.trim)[0].id;}
@@ -588,7 +595,9 @@ class XpengVehicleCardEditor extends HTMLElement{
      ${select('interior','Interior finish',xpAllowedInteriors(v.model,v.year,v.trim))}
      <p>${xpIsVerifiedPalette(v.model,v.year)?'Published colour palette; availability differs by market and trim.':'Illustrative colours for this model year; manufacturer availability is not verified.'}</p>
     <h3>Data source</h3><p>Every measurement supports automatic matching by prefix or optional manual entity assignment, including from any Home Assistant integration. Charging activates the charging screen only while charging is reported as active.</p>
-     <label>Optional exact vehicle image URL (when this profile has no bundled year-specific photo)<input data-key="image" value="${xpEsc(v.image||'')}" placeholder="/local/my_xpeng/cars/g6-2026-white.webp"></label>
+     <label>Optional cabin photo for this selected model, year, trim and interior colour<input data-key="interior_image" value="${xpEsc(v.interior_image||'')}" placeholder="/local/my_xpeng/interiors/g6-2026-light-gray.webp"></label>
+    <p>Choosing another model/year/trim or interior finish clears the previous custom cabin photo so a different model is never shown by mistake. Without photography the compact information popup shows a colour-matched cabin illustration.</p>
+    <label>Optional exact vehicle image URL (when this profile has no bundled year-specific photo)<input data-key="image" value="${xpEsc(v.image||'')}" placeholder="/local/my_xpeng/cars/g6-2026-white.webp"></label>
     <p>Background is stored separately and stays the same in both screens. The car image changes by your manual model/year/trim/exterior colour selection. 2026 G6/G9 have exact-path bundled previews; older/other models use clearly labelled illustrations unless you specify your own exact photo.</p>
     <label>Image assets directory<input data-key="image_path" value="${xpEsc(v.image_path||'/hacsfiles/xpeng-vehicle-card/assets')}"></label>
     <details data-mappings ${expanded?'open':''}><summary>Manual sensor mapping · ${XP_MAPPABLE_FIELDS.length} fields</summary>
