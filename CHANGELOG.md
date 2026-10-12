@@ -1,5 +1,15 @@
 # XPENG Dashboard changelog
 
+## Unreleased — full model/year-group catalog
+
+- Added `vehicle-catalog.json` as the canonical model, year-group, trim-title and exterior-colour catalog.
+- The card editor now exposes Model, Model years, Trim (display only), Exterior paint and Interior finish.
+- Artwork selection is strictly `model + year-group + exterior colour`; trim never changes an image path.
+- Consecutive years with the same exterior generation use one range key such as `2023-2025`.
+- Prepared the folder convention `assets/vehicles/{model}/{year-group}/{color}/{front,charging,top}.webp`.
+- G6 2026 is mapped for Arctic White, Graphite Gray, Midnight Black, Silver Frost, Stellar Purple and Black Edition; Black Edition artwork is still pending a dedicated approved render.
+- Historic/market-specific catalog entries that are not fully verified are labelled market-dependent instead of inventing trim claims.
+
 ## v1.0.0-beta.2 — model/year/color artwork hierarchy (2026-10-12)
 
 - Standardize vehicle artwork paths as `assets/vehicles/{model}/{year}/{color}/{front,charging,top}.webp`.
