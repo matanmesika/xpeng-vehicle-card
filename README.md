@@ -143,7 +143,7 @@ entities:
   charging: binary_sensor.vehicle_actually_charging
 ```
 
-**Transparent foreground verification (2026-10-12):** An initial audit found 26 usable alpha assets and 91 opaque studio images. The `tools/build_transparent_vehicle_previews.py` build generated independent, model-family-specific foreground masks and committed transparent versions to both `assets/` and `dist/assets/`. The follow-up transparency audit completed successfully for all **117** listed car files. These are preview assets and still require human review for silhouette accuracy and real model-year styling; a transparent picture is not by itself an official XPENG render.
+**Transparent foreground verification (2026-10-12):** An initial audit found 26 usable alpha assets and 91 opaque studio images. The `tools/build_transparent_vehicle_previews.py` build generates per-model foreground masks from the unmodified original studio images (never from previously cropped cutouts), preserving headlights, front bodywork and wheels more faithfully. Both `assets/` and `dist/assets/` contain the generated alpha previews. Real browser screenshots of representative years/models are included in the frontend CI artifacts for visual inspection. The follow-up transparency audit completed successfully for all **117** listed car files. These are preview assets and still require human review for silhouette accuracy and real model-year styling; a transparent picture is not by itself an official XPENG render.
 
 The artwork and interior options are **visual selections**, not sensor data or confirmation of factory orderability by market. Live telemetry remains independently mapped through Home Assistant and is never embedded into artwork.
 
