@@ -79,27 +79,12 @@ function xpParseEntityMapping(value){
   return {id:match[1],attribute:match[2]||null};
 }
 function xpPercent(v){if(v===null||v===undefined||v===''||!Number.isFinite(Number(v)))return null;return Math.max(0,Math.min(100,Number(v)));}
-const XP_CATALOG = Object.freeze({"models":[{"id":"G3","name":"G3","start":2018,"end":2021,"shape":"crossover","trim":"none"},{"id":"G3i","name":"G3i","start":2021,"end":2023,"shape":"crossover","trim":"none"},{"id":"P5","name":"P5","start":2021,"end":2024,"shape":"compact_sedan","trim":"none"},{"id":"P7","name":"P7 (Original)","start":2020,"end":2024,"shape":"fastback","trim":"none"},{"id":"P7i","name":"P7i","start":2023,"end":2025,"shape":"fastback","trim":"none"},{"id":"Next P7","name":"Next P7","start":2025,"end":2026,"shape":"fastback","trim":"none"},{"id":"P7+","name":"P7+","start":2024,"end":2026,"shape":"fastback","trim":"none"},{"id":"G6","name":"G6","start":2023,"end":2026,"shape":"g6","trim":"g6"},{"id":"G7","name":"G7","start":2025,"end":2026,"shape":"crossover","trim":"none"},{"id":"G9","name":"G9","start":2022,"end":2026,"shape":"suv","trim":"g9"},{"id":"G9L","name":"G9L","start":2026,"end":2026,"shape":"suv","trim":"none"},{"id":"X9","name":"X9","start":2024,"end":2026,"shape":"mpv","trim":"x9"},{"id":"MONA M03","name":"MONA M03","start":2024,"end":2026,"shape":"compact_sedan","trim":"none"},{"id":"L03","name":"L03","start":2026,"end":2026,"shape":"fastback","trim":"none"},{"id":"GX","name":"GX (fleet/research)","start":2026,"end":2026,"shape":"suv","trim":"none","research":true},{"id":"Other","name":"Other / Future XPENG","start":2018,"end":2026,"shape":"suv","trim":"none","other":true}],"paints":[{"id":"arctic_white","label":"Arctic White","hex":"#F2F4F2"},{"id":"graphite_gray","label":"Graphite Gray","hex":"#66717B"},{"id":"midnight_black","label":"Midnight Black","hex":"#15191F"},{"id":"silver_frost","label":"Silver Frost","hex":"#BCC4C9"},{"id":"stellar_purple","label":"Stellar Purple","hex":"#867592"},{"id":"kaitoke_green_matte","label":"Kaitoke Green Matte","hex":"#526F64"}],"trims":{"default":[{"id":"unspecified","label":"Trim not specified (market-dependent)"}],"G6:2026":[{"id":"core_rwd","label":"Core RWD"},{"id":"core_plus_rwd","label":"Core+ RWD"},{"id":"core_performance_awd","label":"Core Performance AWD"},{"id":"black_edition","label":"Core Performance AWD Black Edition"},{"id":"unspecified","label":"Other configuration / region"}],"G6:2023-2025":[{"id":"unspecified","label":"Trim not specified"},{"id":"standard_range_rwd","label":"Standard Range RWD"},{"id":"long_range_rwd","label":"Long Range RWD"},{"id":"performance_awd","label":"Performance AWD"}],"G9:2022-2026":[{"id":"unspecified","label":"Trim not specified"},{"id":"standard_range_rwd","label":"Standard Range RWD"},{"id":"long_range_rwd","label":"Long Range RWD"},{"id":"performance_awd","label":"Performance AWD"}],"X9:2024-2026":[{"id":"unspecified","label":"Trim not specified"},{"id":"fwd_long_range","label":"FWD Long Range"}]}});
-const XP_YEARS = Object.freeze(Array.from({length:9},(_,i)=>String(2026-i)));
+const XP_CATALOG = Object.freeze({"models":[{"id":"G3","name":"G3","start":2018,"end":2021,"shape":"crossover","trim":"catalog"},{"id":"G3i","name":"G3i","start":2021,"end":2023,"shape":"crossover","trim":"catalog"},{"id":"P5","name":"P5","start":2021,"end":2024,"shape":"compact_sedan","trim":"catalog"},{"id":"P7","name":"P7 (Original)","start":2020,"end":2022,"shape":"fastback","trim":"catalog"},{"id":"P7i","name":"P7i","start":2023,"end":2025,"shape":"fastback","trim":"catalog"},{"id":"Next P7","name":"Next P7","start":2025,"end":2026,"shape":"fastback","trim":"catalog"},{"id":"P7+","name":"P7+","start":2024,"end":2026,"shape":"fastback","trim":"catalog"},{"id":"G6","name":"G6","start":2023,"end":2026,"shape":"g6","trim":"catalog"},{"id":"G7","name":"G7","start":2025,"end":2026,"shape":"crossover","trim":"catalog"},{"id":"G9","name":"G9","start":2022,"end":2026,"shape":"suv","trim":"catalog"},{"id":"G9L","name":"G9L","start":2026,"end":2026,"shape":"suv","trim":"catalog"},{"id":"X9","name":"X9","start":2024,"end":2026,"shape":"mpv","trim":"catalog"},{"id":"MONA M03","name":"MONA M03","start":2024,"end":2026,"shape":"compact_sedan","trim":"catalog"},{"id":"L03","name":"L03","start":2026,"end":2026,"shape":"fastback","trim":"catalog"},{"id":"GX","name":"GX","start":2026,"end":2026,"shape":"suv","trim":"catalog"}],"paints":[{"id":"arctic_white","label":"Arctic White","hex":"#F2F4F2"},{"id":"graphite_gray","label":"Graphite Gray","hex":"#66717B"},{"id":"midnight_black","label":"Midnight Black","hex":"#15191F"},{"id":"silver_frost","label":"Silver Frost","hex":"#BCC4C9"},{"id":"stellar_purple","label":"Stellar Purple","hex":"#867592"},{"id":"fiery_orange","label":"Fiery Orange","hex":"#C95D2A"},{"id":"kaitoke_green_matte","label":"Kaitoke Green Matte","hex":"#526F64"},{"id":"jet_black","label":"Jet Black","hex":"#111316"},{"id":"space_gray","label":"Space Gray","hex":"#727A82"},{"id":"lambent_cyan","label":"Lambent Cyan","hex":"#7BAFB2"},{"id":"polar_violet","label":"Polar Violet","hex":"#8D7F9D"},{"id":"matte_gray","label":"Matte Gray","hex":"#777B7E"},{"id":"phantom_purple","label":"Phantom Purple","hex":"#77637F"},{"id":"rock_gray","label":"Rock Gray","hex":"#6F7375"},{"id":"black_edition","label":"Black Edition","hex":"#0D1013"},{"id":"diamond_black","label":"Diamond Black","hex":"#111214"},{"id":"mirror_gray","label":"Mirror Gray","hex":"#8C9194"},{"id":"waving_green","label":"Waving Green","hex":"#667C70"},{"id":"everest_white","label":"Everest White","hex":"#F4F4F1"},{"id":"matte_desert_gold","label":"Matte Desert Gold","hex":"#B5A083"},{"id":"two_tone_gray_silver","label":"Two Tone Grey & Silver","hex":"#8A9298"},{"id":"coral_green","label":"Coral Green","hex":"#75A49C"},{"id":"red","label":"Red","hex":"#A72C35"},{"id":"green","label":"Green","hex":"#476B5C"}]});
 const XP_MODELS = XP_CATALOG.models;
 const XP_PAINTS = XP_CATALOG.paints;
-const XP_DEFAULT_TRIM = XP_CATALOG.trims.default;
-// 2026 facelift cabin colours verified against official XPENG New G6 sources.
-// Display-only preset: real materials and option combinations vary by market.
-const XP_INTERIORS=Object.freeze([
-{id:'dark_gray',label:'Dark Gray',hex:'#40454b',secondary:'#252a30'},
-{id:'light_gray',label:'Light Gray',hex:'#d8d9d4',secondary:'#aeb1b4'},
-{id:'coffee',label:'Coffee',hex:'#93725b',secondary:'#574338'},
-{id:'saddle',label:'Saddle',hex:'#aa704d',secondary:'#724934'}]);
-const XP_VERIFIED_PAINTS=Object.freeze({
- 'G6:2026':['arctic_white','graphite_gray','midnight_black','silver_frost','stellar_purple'],
- 'G9:2026':['arctic_white','graphite_gray','midnight_black','silver_frost','kaitoke_green_matte']});
-const XP_VERIFIED_INTERIORS=Object.freeze({
- 'G6:2026':['dark_gray','light_gray'],
- 'G9:2026':['dark_gray','coffee','saddle','light_gray']});
-const XP_ALIASES={space_grey:'graphite_gray',space_gray:'graphite_gray',
- graphite_grey:'graphite_gray',jet_black:'midnight_black',
- black:'dark_gray',dark:'dark_gray',light_grey:'light_gray',white:'light_gray'};
+const XP_INTERIORS = Object.freeze([{"id":"dark_gray","label":"Dark Gray","hex":"#40454b","secondary":"#252a30"},{"id":"light_gray","label":"Light Gray","hex":"#d8d9d4","secondary":"#aeb1b4"},{"id":"coffee","label":"Coffee","hex":"#93725b","secondary":"#574338"},{"id":"saddle","label":"Saddle","hex":"#aa704d","secondary":"#724934"},{"id":"meteorite_black","label":"Meteorite Black","hex":"#25272b","secondary":"#121417"},{"id":"tangerine","label":"Tangerine","hex":"#a96a46","secondary":"#6c432d"}]);
+const XP_YEAR_GROUPS = Object.freeze({"G3":[{"id":"2018-2021","label":"2018-2021","years":[2018,2019,2020,2021],"trims":[{"id":"long_range","label":"Long Range"},{"id":"market_dependent","label":"Other / market-dependent"}],"colors":["arctic_white","graphite_gray","midnight_black"],"catalog_status":"historic_market_dependent"}],"G3i":[{"id":"2021-2023","label":"2021-2023","years":[2021,2022,2023],"trims":[{"id":"long_range","label":"Long Range"},{"id":"market_dependent","label":"Other / market-dependent"}],"colors":["arctic_white","graphite_gray","midnight_black","coral_green"],"catalog_status":"historic_market_dependent"}],"P5":[{"id":"2021-2024","label":"2021-2024","years":[2021,2022,2023,2024],"trims":[{"id":"standard","label":"Standard / market-dependent"},{"id":"max","label":"Max / market-dependent"}],"colors":["arctic_white","graphite_gray","midnight_black"],"catalog_status":"historic_market_dependent"}],"P7":[{"id":"2020-2022","label":"2020-2022","years":[2020,2021,2022],"trims":[{"id":"rwd_super_long_range","label":"RWD Super Long Range"},{"id":"awd_high_performance","label":"4WD High Performance"},{"id":"wing_edition","label":"Wing Edition"}],"colors":["arctic_white","jet_black","space_gray","red","green"],"catalog_status":"official_global"}],"P7i":[{"id":"2023-2025","label":"2023-2025","years":[2023,2024,2025],"trims":[{"id":"rwd_long_range","label":"RWD Long Range"},{"id":"awd_performance","label":"AWD Performance"},{"id":"wing_edition","label":"Wing Edition / market-dependent"}],"colors":["arctic_white","jet_black","space_gray","silver_frost","kaitoke_green_matte"],"catalog_status":"official_global"}],"Next P7":[{"id":"2025-2026","label":"2025-2026","years":[2025,2026],"trims":[{"id":"market_dependent","label":"Variant / market-dependent"}],"colors":["arctic_white","graphite_gray","midnight_black","silver_frost"],"catalog_status":"catalog_pending"}],"P7+":[{"id":"2024-2026","label":"2024-2026","years":[2024,2025,2026],"trims":[{"id":"rwd_standard_range","label":"RWD Standard Range"},{"id":"rwd_long_range","label":"RWD Long Range"},{"id":"awd_performance","label":"AWD Performance"}],"colors":["arctic_white","graphite_gray","midnight_black","silver_frost","stellar_purple"],"catalog_status":"official_global"}],"G6":[{"id":"2023-2025","label":"2023-2025","years":[2023,2024,2025],"trims":[{"id":"rwd_standard_range","label":"RWD Standard Range"},{"id":"rwd_long_range","label":"RWD Long Range"},{"id":"awd_performance","label":"AWD Performance"}],"colors":["arctic_white","graphite_gray","midnight_black","silver_frost","fiery_orange"],"interiors":["dark_gray","light_gray"],"catalog_status":"official_global"},{"id":"2026","label":"2026","years":[2026],"trims":[{"id":"core_rwd","label":"Core RWD / RWD Standard Range"},{"id":"core_plus_rwd","label":"Core+ RWD / RWD Long Range"},{"id":"core_performance_awd","label":"Core Performance AWD / AWD Performance"},{"id":"black_edition","label":"Black Edition"}],"colors":["arctic_white","graphite_gray","midnight_black","silver_frost","stellar_purple","black_edition"],"interiors":["dark_gray","light_gray"],"catalog_status":"official_global"}],"G7":[{"id":"2025-2026","label":"2025-2026","years":[2025,2026],"trims":[{"id":"market_dependent","label":"Variant / market-dependent"}],"colors":["arctic_white","graphite_gray","midnight_black","silver_frost"],"catalog_status":"catalog_pending"}],"G9":[{"id":"2022-2024","label":"2022-2024","years":[2022,2023,2024],"trims":[{"id":"rwd_standard_range","label":"RWD Standard Range"},{"id":"rwd_long_range","label":"RWD Long Range"},{"id":"awd_performance","label":"AWD Performance"}],"colors":["arctic_white","graphite_gray","midnight_black","silver_frost","kaitoke_green_matte"],"catalog_status":"official_global"},{"id":"2025-2026","label":"2025-2026","years":[2025,2026],"trims":[{"id":"rwd_standard_range","label":"RWD Standard Range"},{"id":"rwd_long_range","label":"RWD Long Range"},{"id":"awd_performance","label":"AWD Performance"},{"id":"black_edition","label":"Black Edition"}],"colors":["arctic_white","graphite_gray","midnight_black","silver_frost","kaitoke_green_matte","black_edition"],"interiors":["dark_gray","coffee","saddle","light_gray"],"catalog_status":"official_global"}],"G9L":[{"id":"2026","label":"2026","years":[2026],"trims":[{"id":"awd_performance_ultra_6","label":"6-seater AWD Performance Ultra"},{"id":"rwd_long_range_ultra_7","label":"7-seater RWD Long Range Ultra"},{"id":"awd_performance_ultra_7","label":"7-seater AWD Performance Ultra"}],"colors":["arctic_white","diamond_black","mirror_gray","waving_green"],"interiors":["meteorite_black","tangerine"],"catalog_status":"official_global"}],"X9":[{"id":"2024-2025","label":"2024-2025","years":[2024,2025],"trims":[{"id":"fwd_long_range","label":"FWD Long Range"},{"id":"awd_performance","label":"AWD Performance"}],"colors":["arctic_white","midnight_black","silver_frost","matte_gray"],"catalog_status":"official_global"},{"id":"2026","label":"2026","years":[2026],"trims":[{"id":"fwd_standard_range","label":"FWD Standard Range"},{"id":"fwd_long_range","label":"FWD Long Range"},{"id":"awd_performance","label":"AWD Performance"}],"colors":["arctic_white","midnight_black","silver_frost","matte_gray","lambent_cyan","polar_violet"],"interiors":["meteorite_black","coffee"],"catalog_status":"official_global"}],"MONA M03":[{"id":"2024-2026","label":"2024-2026","years":[2024,2025,2026],"trims":[{"id":"m03","label":"M03"},{"id":"m03_max","label":"M03 Max"},{"id":"market_dependent","label":"Other / market-dependent"}],"colors":["arctic_white","graphite_gray","midnight_black"],"catalog_status":"catalog_pending"}],"L03":[{"id":"2026","label":"2026","years":[2026],"trims":[{"id":"rwd_standard_range","label":"RWD Standard Range"},{"id":"rwd_long_range","label":"RWD Long Range"},{"id":"awd_performance","label":"AWD Performance"},{"id":"awd_performance_ultra","label":"AWD Performance Ultra"},{"id":"reev","label":"REEV / Range Extender"}],"colors":["arctic_white","midnight_black","silver_frost","rock_gray","phantom_purple","black_edition"],"interiors":["dark_gray","light_gray"],"catalog_status":"official_global"}],"GX":[{"id":"2026","label":"2026","years":[2026],"trims":[{"id":"preorder","label":"Pre-order / market-dependent"}],"colors":["diamond_black","everest_white","matte_desert_gold","graphite_gray","two_tone_gray_silver"],"catalog_status":"official_regional"}]});
+const XP_ALIASES={space_grey:'space_gray',space_gray:'space_gray',graphite_grey:'graphite_gray',jet_black:'jet_black',black:'dark_gray',dark:'dark_gray',light_grey:'light_gray',white:'light_gray'};
 function xpAppearanceId(v,kind='color'){
  const k=String(v??'').trim().toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');
  if(kind==='interior'&&k==='black')return 'dark_gray';
@@ -108,50 +93,44 @@ function xpAppearanceId(v,kind='color'){
  if(kind==='color'&&k==='white')return 'arctic_white';
  return XP_ALIASES[k]||k;
 }
-function xpAllowedInteriors(model,year,trim){
- const palette=XP_VERIFIED_INTERIORS[model+':2026']||['dark_gray','light_gray'];
- return XP_INTERIORS.filter(p=>palette.includes(p.id));
+function xpModel(model){return XP_MODELS.find(m=>m.id===model)||XP_MODELS.find(m=>m.id==='G6');}
+function xpAllowedModels(){return XP_MODELS;}
+function xpAllowedYearGroups(model){return XP_YEAR_GROUPS[String(model)]||[];}
+function xpYearGroupFor(model,value){
+ const groups=xpAllowedYearGroups(model);if(!groups.length)return null;
+ const raw=String(value??'').trim();
+ return groups.find(g=>g.id===raw)||groups.find(g=>g.years.includes(Number(raw)))||groups[groups.length-1];
 }
-function xpIsVerifiedPalette(model,year){return Boolean(XP_VERIFIED_PAINTS[model+':2026']);}
-function xpAllowedModels(year){const y=Number(year);return XP_MODELS.filter(m=>y>=m.start&&y<=m.end);}
-function xpAllowedYears(model){const m=xpModel(model);return XP_YEARS.filter(y=>Number(y)>=m.start&&Number(y)<=m.end);}
-function xpModel(model){return XP_MODELS.find(m=>m.id===model)||XP_MODELS.find(m=>m.id==='Other');}
-function xpAllowedTrims(model,year){const y=Number(year), x=String(model);
- if(x==='G6')return y===2026?XP_CATALOG.trims['G6:2026']:XP_CATALOG.trims['G6:2023-2025'];
- if(x==='G9')return XP_CATALOG.trims['G9:2022-2026'];
- if(x==='X9')return y>=2025?[...XP_CATALOG.trims['X9:2024-2026'],{id:'reev_unspecified',label:'REEV / range extender (market-dependent)'}]:XP_CATALOG.trims['X9:2024-2026'];
- if(y===2026&&['G7','P7+','G9L'].includes(x))return [{id:'unspecified',label:'Variant unspecified'},{id:'reev_unspecified',label:'REEV / range extender (market-dependent)'}];
- return XP_DEFAULT_TRIM;
+function xpAllowedYears(model){return xpAllowedYearGroups(model).map(g=>g.id);}
+function xpAllowedTrims(model,year){return xpYearGroupFor(model,year)?.trims||[{id:'market_dependent',label:'Variant / market-dependent'}];}
+function xpAllowedPaints(model,year){
+ const ids=xpYearGroupFor(model,year)?.colors||[];
+ return ids.map(id=>XP_PAINTS.find(p=>p.id===id)).filter(Boolean);
 }
-function xpAllowedPaints(model,year,trim){
- // Paint choices are scoped to model and year, never to the selected trim.
- const list=XP_VERIFIED_PAINTS[model+':'+year]||XP_PAINTS.map(p=>p.id);
- return XP_PAINTS.filter(p=>list.includes(p.id));
+function xpAllowedInteriors(model,year){
+ const ids=xpYearGroupFor(model,year)?.interiors||['dark_gray','light_gray'];
+ return ids.map(id=>XP_INTERIORS.find(p=>p.id===id)).filter(Boolean);
 }
-function xpNormalizeAppearance(value){const v=value||{};
- const incoming=String(v.model??'').replace(/^XPENG\s+/i,'').trim();
- const mdl='G6'; // Single supported artwork model; legacy model selections are ignored.
- const years=xpAllowedYears(mdl);
- const yr='2026'; // Fixed internal artwork reference; no year selector in the UI.
- const options=xpAllowedTrims(mdl,yr);
- const trim=options.some(x=>x.id===v.trim)?v.trim:options[0].id;
- const paints=xpAllowedPaints(mdl,yr,trim),requestedPaint=xpAppearanceId(v.color);
- const color='graphite_gray'; // Only approved paint in the current artwork library.
- const interiors=xpAllowedInteriors(mdl,yr,trim),requestedInterior=xpAppearanceId(v.interior,'interior');
- const interior=interiors.some(x=>x.id===requestedInterior)?requestedInterior:interiors[0].id;
+function xpIsVerifiedPalette(model,year){return Boolean(xpYearGroupFor(model,year)?.catalog_status?.startsWith('official'));}
+function xpNormalizeAppearance(value){
+ const v=value||{};
+ const incoming=String(v.model??'G6').replace(/^XPENG\s+/i,'').trim();
+ const mdl=XP_MODELS.some(m=>m.id===incoming)?incoming:'G6';
+ const group=xpYearGroupFor(mdl,v.year)||xpAllowedYearGroups(mdl)[0];
+ const yr=group?.id||String(v.year||'2026');
+ const trims=xpAllowedTrims(mdl,yr),requestedTrim=String(v.trim??'');
+ const trim=trims.some(x=>x.id===requestedTrim)?requestedTrim:(trims[0]?.id||'market_dependent');
+ const paints=xpAllowedPaints(mdl,yr),requestedPaint=xpAppearanceId(v.color);
+ const color=paints.some(x=>x.id===requestedPaint)?requestedPaint:(paints[0]?.id||'arctic_white');
+ const interiors=xpAllowedInteriors(mdl,yr),requestedInterior=xpAppearanceId(v.interior,'interior');
+ const interior=interiors.some(x=>x.id===requestedInterior)?requestedInterior:(interiors[0]?.id||'dark_gray');
  return {...v,year:yr,model:mdl,trim,color,interior};
 }
-
 function xpAssetModel(model){return String(model).toLowerCase().replace(/\s+/g,'_').replace(/\+/g,'_plus').replace(/[^a-z0-9_]/g,'');}
-// Build-time inventory: each entry corresponds to an existing packaged file.
-const XP_ARTWORK_INDEX = Object.freeze({
-  exact:new Set(['vehicles/g6/2026/graphite_gray/front.webp','vehicles/g6/2026/graphite_gray/charging.webp','vehicles/g6/2026/graphite_gray/top.webp']) // G6 artwork is organized by model/year/paint; trim never selects artwork.
-});
+const XP_ARTWORK_INDEX = Object.freeze({exact:{has:(relative)=>/^vehicles\/[a-z0-9_]+\/[0-9]{4}(?:-[0-9]{4})?\/[a-z0-9_]+\/(?:front|charging|top)\.webp$/.test(relative)}});
 const XP_SCENE_BACKGROUND = 'https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/assets/xpeng-approved-lakeside-background.webp';
-// HACS installs files directly under dist/; nested folders are not reliably copied.
-// Keep every runtime file as a *direct child* of dist/ with a collision-free name.
 const XP_HACS_BASE='/hacsfiles/xpeng-vehicle-card/';
-function xpPackagedUrl(relative){if(XP_ARTWORK_INDEX.exact.has(relative))return 'https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/assets/'+relative;return XP_HACS_BASE+'xpeng-asset-'+relative.replaceAll('/','-');}
+function xpPackagedUrl(relative){return 'https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/assets/'+relative;}
 function xpLocalArtworkPath(value){return typeof value==='string'&&/^\/(?:local|hacsfiles)\/[a-zA-Z0-9/_\-.]+$/.test(value);}
 const XP_CSS = `
 :host{display:block;color:#fff;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;--xp-mint:#00efbe;--xp-sky:#6aaaff}
@@ -607,7 +586,7 @@ const XP_MAPPABLE_FIELDS = Object.freeze([{"key":"charging","label":"Charging st
 class XpengVehicleCardEditor extends HTMLElement{
  constructor(){
   super();this.attachShadow({mode:'open'});
-  this._cfg=xpNormalizeAppearance({prefix:'my_xpeng',year:'2026',model:'G6',trim:'core_plus_rwd',color:'arctic_white',interior:'dark_gray'});this._hass=null;this._entitySignature='';
+  this._cfg=xpNormalizeAppearance({prefix:'my_xpeng',year:'2026',model:'G6',trim:'core_plus_rwd',color:'graphite_gray',interior:'dark_gray'});this._hass=null;this._entitySignature='';
   this.shadowRoot.addEventListener('change',e=>{
    const el=e.target.closest('[data-key],[data-entity]');if(!el)return;
    if(el.hasAttribute('data-entity'))el.setCustomValidity('');
@@ -632,12 +611,16 @@ class XpengVehicleCardEditor extends HTMLElement{
    if(['model','interior'].includes(key))delete cfg.interior_image;
    if(cfg.prefix&&!/^[a-z0-9_]+$/.test(cfg.prefix))return;
    if(key==='model'){
-     cfg.year=xpAllowedYears(cfg.model)[0]||cfg.year;
-     cfg.trim=xpAllowedTrims(cfg.model,cfg.year)[0].id;
-     cfg.color=xpAllowedPaints(cfg.model,cfg.year,cfg.trim)[0].id;
-     cfg.interior=xpAllowedInteriors(cfg.model,cfg.year,cfg.trim)[0].id;
+     cfg.year=xpAllowedYearGroups(cfg.model)[0]?.id||cfg.year;
+     cfg.trim=xpAllowedTrims(cfg.model,cfg.year)[0]?.id||cfg.trim;
+     cfg.color=xpAllowedPaints(cfg.model,cfg.year)[0]?.id||cfg.color;
+     cfg.interior=xpAllowedInteriors(cfg.model,cfg.year)[0]?.id||cfg.interior;
    }
-   if(key==='year')cfg.trim=xpAllowedTrims(cfg.model,cfg.year)[0].id;
+   if(key==='year'){
+     cfg.trim=xpAllowedTrims(cfg.model,cfg.year)[0]?.id||cfg.trim;
+     cfg.color=xpAllowedPaints(cfg.model,cfg.year)[0]?.id||cfg.color;
+     cfg.interior=xpAllowedInteriors(cfg.model,cfg.year)[0]?.id||cfg.interior;
+   }
    this._cfg=xpNormalizeAppearance(cfg);this.render();
    this.dispatchEvent(new CustomEvent('config-changed',{detail:{config:this._cfg},bubbles:true,composed:true}));
   });
@@ -670,14 +653,13 @@ class XpengVehicleCardEditor extends HTMLElement{
    .xp-map-row input{font-size:12px}
    @media(max-width:460px){.xp-map-row{grid-template-columns:1fr}}
    </style><section>
-    <h3>Vehicle appearance</h3><p>G6 · Graphite Gray. Model and year are fixed for the artwork library.</p>
-     
-    
-    
-    
-    
-     ${select('interior','Interior finish',xpAllowedInteriors(v.model,v.year,v.trim))}
-     <p>Additional model and paint artwork will be added after approval.</p>
+    <h3>Vehicle appearance</h3>
+     ${select('model','Model',xpAllowedModels().map(m=>({id:m.id,label:m.name})))}
+     ${select('year','Model years',xpAllowedYearGroups(v.model))}
+     ${select('trim','Trim · display only',xpAllowedTrims(v.model,v.year))}
+     ${select('color','Exterior paint',xpAllowedPaints(v.model,v.year))}
+     ${select('interior','Interior finish',xpAllowedInteriors(v.model,v.year))}
+     <p>Trim is informational only. Artwork is selected only by model, model-year group and exterior paint.</p>
     <h3>Sensor mapping</h3>
      <label>Mapping mode<select data-key="sensor_mapping_mode">
        <option value="auto" ${mappingMode==='auto'?'selected':''}>Automatic · XPENG integration</option>
