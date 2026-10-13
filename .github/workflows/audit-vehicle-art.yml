@@ -20,6 +20,8 @@ jobs:
         run: python tools/sync_vehicle_artwork.py --check
       - name: Inspect uploaded overlays for actual transparency
         run: python tools/audit_vehicle_art.py
+      - name: Verify provenance of every available vehicle image
+        run: python tools/audit_vehicle_provenance.py
       - name: Publish artwork mapping as workflow artifact
         uses: actions/upload-artifact@v4
         with:
