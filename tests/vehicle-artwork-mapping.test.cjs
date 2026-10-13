@@ -37,7 +37,10 @@ test('source/dist parity, 15-model mapped catalogue and no trim path key', () =>
 test('all catalogued model/year-group/paint selections resolve to a model-specific canonical path', () => {
  for (const e of artMap.entries) {
    for (const view of ['front','charging','top']) {
-     const a = api.xpNormalizeAppearance({model:e.model,year:e.year_group,color:e.exterior_color});
+     const group = catalog.models.find(m=>m.id===e.model).groups.find(g=>g.id===e.year_group);
+   const validYear = group.years.find(y=>group.colors_by_year[String(y)].includes(e.exterior_color));
+   assert.ok(validYear,e.model+' '+e.year_group+' '+e.exterior_color);
+   const a = api.xpNormalizeAppearance({model:e.model,year:String(validYear),color:e.exterior_color});
      const candidate = api.xpVehicleAssetPath(a, view);
      assert.equal(candidate, e.views[view].path);
      const expected = e.views[view].status==='available';
