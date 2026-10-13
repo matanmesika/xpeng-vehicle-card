@@ -209,7 +209,6 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-charge .xp-title{left:5.3%;top:17%}
 .xp-station{position:absolute;z-index:2;right:3%;bottom:30%;width:5.3%;height:23%;min-width:45px;border:2px solid #55c8fb;border-radius:13px 13px 6px 6px;background:linear-gradient(90deg,#013861,#041b32 55%,#0b3150);box-shadow:0 0 18px #00c6ff85,inset 0 0 13px #08cafa74;display:grid;place-items:start center;padding-top:25px;font-size:26px;color:#e1f7ff}
 .xp-station:before{content:"";position:absolute;bottom:-5px;width:110%;height:7px;background:#03d7cf;filter:blur(4px)}
-.xp-cable{position:absolute;z-index:2;inset:0;width:100%;height:100%;pointer-events:none}
 :host([data-expanded]){position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;z-index:2147483100!important;background:#020b15!important;overflow:auto!important}
 :host([data-expanded]) ha-card,:host([data-expanded]) .xp-scene{width:100%!important;height:100dvh!important;min-height:550px!important;aspect-ratio:auto!important}
 @media(max-width:850px){
@@ -571,8 +570,6 @@ class XpengVehicleCard extends HTMLElement{
  }
  charging(){
   return `${this.title()}
-    <svg class="xp-cable" viewBox="0 0 1500 850" preserveAspectRatio="none" aria-hidden="true"><path d="M1282 444 Q1329 474 1366 569T1453 566" fill="none" stroke="#00e8b9" stroke-width="13" stroke-linecap="round" opacity=".29"/>
-    <path d="M1282 444 Q1329 474 1366 569T1453 566" fill="none" stroke="#2efad2" stroke-width="5" stroke-linecap="round"/></svg>
     <div class="xp-station" aria-hidden="true">✕</div>${this.carArt()}
     <section class="xp-charge-card" aria-label="Charging information">
        <div class="xp-charge-heading">${xpIcon('bolt',42)}<span>${xpEsc(this.chargeStatus())}</span></div>
