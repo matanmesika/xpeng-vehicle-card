@@ -10,7 +10,8 @@ REGISTER = json.loads((ROOT / "sources/vehicle-photo-candidates.json").read_text
 MAP = json.loads((ROOT / "vehicle-art-map.json").read_text(encoding="utf-8"))
 assert REGISTER["auto_publish"] is False, "No automatic publishing of photos"
 options = {(m["id"],g["id"]): set(g["colors"]) for m in CAT["models"] for g in m["groups"]}
-pending = {(e["model"],e["year_group"],e["exterior_color"]):e["views"] for e in MAP["entries"]}
+mapped = {(e["model"],e["year_group"],e["exterior_color"]):e["views"] for e in MAP["entries"]}
+AI_PREVIEWS = set(json.loads((ROOT / "sources/ai-generated-vehicle-art.json").read_text(encoding="utf-8"))["paths"])
 ids = set()
 for source in REGISTER["sources"]:
     assert source["id"] not in ids, "Duplicate candidate ID"
@@ -28,5 +29,8 @@ for source in REGISTER["sources"]:
     assert source["photo_name"].strip()
     assert source["asset_ready"] is False, "Curation alone must not mark a file ready"
     if colour and source["view"]:
-        assert pending[(source["model"],source["year_group"],colour)][source["view"]]["status"] == "pending", "Already has an active mapped image"
+        record = mapped[(source["model"],source["year_group"],colour)][source["view"]]
+        if record["status"] == "available":
+            assert record["path"] in AI_PREVIEWS, "A photographic candidate was published without provenance"
+            # Existing AI-generated preview is independent of this unapproved source photograph.
 print("PASS:",len(ids),"licensed photograph leads; none falsely published as a transparent car view")
