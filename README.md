@@ -1,5 +1,7 @@
 # XPENG Dashboard — Home Assistant vehicle card
 
+**[📊 Artwork progress dashboard](docs/ARTWORK_STATUS.md)** — current completion by XPENG model and generation, missing views, and verified checks. Counts update when new assets are committed; this is not a live rendering indicator.
+
 A standalone, **read-only Home Assistant dashboard card** for XPENG vehicles. This repository contains **frontend/UI only**; the XPENG Home Assistant integration is a separate project and is not modified here.
 
 **Updates and release history:** [CHANGELOG.md](CHANGELOG.md) is the single canonical history for this project. Obsolete per-release note files were removed; installable versions are published separately under [GitHub Releases](https://github.com/matanmesika/xpeng-vehicle-card/releases).

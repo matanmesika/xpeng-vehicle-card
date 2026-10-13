@@ -42,6 +42,7 @@ jobs:
           python tools/export_vehicle_artwork_backlog.py --check
           python tools/sync_year_palettes.py --check
           python tools/sync_master_view_queue.py --check
+          node tools/render_artwork_status.mjs --check
           node --test tests/vehicle-artwork-mapping.test.cjs
           python tools/check_photo_candidates.py
           python tools/audit_vehicle_provenance.py

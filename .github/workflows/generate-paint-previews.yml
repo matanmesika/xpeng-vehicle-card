@@ -35,6 +35,8 @@ jobs:
         run: |
           python tools/sync_vehicle_artwork.py
           python tools/export_vehicle_artwork_backlog.py
+          python tools/sync_master_view_queue.py
+          node tools/render_artwork_status.mjs
           python tools/sync_year_palettes.py --check
       - name: Verify images, transparency and model-year trim invariants
         run: |
@@ -44,13 +46,15 @@ jobs:
           node --test tests/vehicle-artwork-mapping.test.cjs
           python tools/sync_vehicle_artwork.py --check
           python tools/export_vehicle_artwork_backlog.py --check
+          python tools/sync_master_view_queue.py --check
+          node tools/render_artwork_status.mjs --check
           python tools/audit_vehicle_art.py
       - name: Commit only newly derived, clearly labelled image previews
         shell: bash
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add assets/vehicles/ sources/ai-generated-vehicle-art.json sources/derived-paint-views.json vehicle-art-map.json vehicle-art-inventory.json src/xpeng-vehicle-card.js dist/xpeng-vehicle-card.js artwork-backlog.csv
+          git add assets/vehicles/ sources/ai-generated-vehicle-art.json sources/derived-paint-views.json vehicle-art-map.json vehicle-art-inventory.json src/xpeng-vehicle-card.js dist/xpeng-vehicle-card.js artwork-backlog.csv master-view-queue.json artwork-status.json docs/ARTWORK_STATUS.md
           if ! git diff --cached --quiet; then
             git commit -m 'art: create transparent model-specific AI paint preview variants'
             git push origin HEAD:feature/full-model-year-paint-artwork-map-20261012
