@@ -6,6 +6,7 @@ on:
     paths:
       - tools/recolor_vehicle_assets.py
       - .github/workflows/generate-paint-previews.yml
+      - assets/vehicles/**/*.webp
   workflow_dispatch:
 permissions:
   contents: write
