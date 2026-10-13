@@ -42,7 +42,7 @@ def run():
         assert dest in ai_paths, f"Derived preview missing AI classification: {dest}"
         assert source in exact, f"Missing base artwork for paint preview: {source}"
         d=Path(dest).parts;s=Path(source).parts
-        assert len(d)==6 and len(s)==6, f"Bad paint source path: {dest}"
+        assert len(d)==5 and len(s)==5, f"Bad paint source path: {dest}"
         assert d[:3]==s[:3] and d[-1]==s[-1], f"Cross-generation or cross-view substitution: {dest} <- {source}"
         assert item["manufacturer_verified"] is False
         if "matte" in d[-2] or "black_edition" in d[-2] or "two_tone" in d[-2]:
