@@ -46,7 +46,7 @@ def build():
         "entries": entries,
     }
     inventory = {
-        "schema_version": 3, "as_of": "2026-10-12", "catalog": "vehicle-catalog.json",
+        "schema_version": 3, "as_of": "2026-10-13", "catalog": "vehicle-catalog.json",
         "artwork_map": "vehicle-art-map.json",
         "path_pattern": "vehicles/{model}/{year_group}/{exterior_color}/{front,charging,top}.webp",
         "backdrop": "xpeng-approved-lakeside-background.webp", "backdrop_is_common": True,
