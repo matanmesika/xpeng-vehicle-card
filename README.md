@@ -100,3 +100,8 @@ The [artwork map](vehicle-art-map.json) covers all current catalog combinations 
 ### G6 original generation artwork
 
 A first pack for G6 **2023–2025** adds five exterior paints × front, charging/rear and top views (15 WebPs). These are **AI-generated illustrative cutouts**, not manufacturer-confirmed photographs, and must be treated as previews. See `sources/ai-generated-vehicle-art.json` and `docs/ARTWORK_MAPPING.md`. Runtime raw GitHub URLs point to `main`, so PR-only uploads become live after merging.
+
+
+## Complete multi-model artwork matrix
+
+[Final 15-model year/paint artwork matrix](docs/FULL_MODEL_COVERAGE.md) tracks all 15 catalogue models, 21 year groups, 111 exterior paint choices and three independent image slots per combination. The [CSV build backlog](artwork-backlog.csv) identifies pending versus uploaded real files. Some historical/region-specific paint lists remain provisional; see source notes. Only 33 actual WebP assets are currently uploaded — the remaining slots **are not pictures**. Model/year/paint choose the asset; trim is display-only and never affects artwork or telemetry. Run `python tools/export_vehicle_artwork_backlog.py --check` to verify the CSV before merging.

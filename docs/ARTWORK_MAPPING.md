@@ -21,7 +21,7 @@ assets/vehicles/<model-slug>/<year-group>/<exterior-colour>/
 
 The canonical catalog is `vehicle-catalog.json`. `vehicle-art-map.json` contains every known model/year-group/paint combination, with one explicit path and status (`available` or `pending`) for each view. `vehicle-art-inventory.json` lists only files present on disk; `model-artwork.json` describes selection semantics.
 
-The initial inventory spans **15 catalogue models, 18 generation groups, and 83 exterior-paint combinations**. Five 2026 G6 paint variants have 15 previously existing WebP images, and five 2023-2025 G6 paint variants now have 15 AI-generated illustrative transparent cutouts. The other 73 combinations have named folders and `.gitkeep` files; generated previews are not official photographs. A missing view displays a clearly labelled colour-matched illustration, never a picture from a different model/year group/colour, and never a front shot pretending to be the rear or overhead view.
+The current catalogue has **15 models, 21 year groups and 111 model/year/paint combinations**; see [the complete coverage matrix](FULL_MODEL_COVERAGE.md). There are 33 uploaded WebP images: 30 for G6 and three for G7 2025. The remaining 300 view slots are pending. Existing 2026 G6 cutouts and newer AI-generated G6/G7 previews are not a guarantee of manufacturer fidelity. Pending combinations have named `.gitkeep` folders, not fabricated pictures. A missing view displays a clearly labelled colour-matched illustration, never a picture from a different model/year group/colour, and never a front shot pretending to be the rear or overhead view.
 
 ## Add new photos without editing JavaScript
 

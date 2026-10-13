@@ -56,9 +56,10 @@ def build():
         "paint_combination_count": len(entries), "pending_combination_count": pending,
         "caveats": [
             "Available means a WebP file exists, not that it has manufacturer-verified provenance or accuracy.",
-            "2023-2025 G6 images are AI-generated illustrative renders, not official manufacturer photography; see sources/ai-generated-vehicle-art.json.",
+            "2023-2025 G6 and G7 2025 are AI-generated illustrations, not official manufacturer photography; see sources/ai-generated-vehicle-art.json.",
             "Missing combinations display a labelled color-matched fallback, never images borrowed from other model/year/paint.",
             "Runtime default artwork uses GitHub main branch URLs after merging and needs internet access.",
+            "Color palette HEX values are approximations for the UI, not manufacturer-certified paint codes; color availability differs by market.",
         ],
     }
     return art_map, inventory, exact

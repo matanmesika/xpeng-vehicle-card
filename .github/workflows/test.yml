@@ -39,6 +39,7 @@ jobs:
       - name: Verify full model/year/colour artwork map and trim invariance
         run: |
           python tools/sync_vehicle_artwork.py --check
+          python tools/export_vehicle_artwork_backlog.py --check
           node --test tests/vehicle-artwork-mapping.test.cjs
           python tools/check_photo_candidates.py
 

@@ -1,4 +1,4 @@
-model,year_group,exterior_color,view,path,status,catalog_status,market
+"model","year_group","exterior_color","view","path","status","catalog_status","market"
 "G3","2018-2021","arctic_white","front","vehicles/g3/2018-2021/arctic_white/front.webp","pending","historic_market_dependent","varies"
 "G3","2018-2021","arctic_white","charging","vehicles/g3/2018-2021/arctic_white/charging.webp","pending","historic_market_dependent","varies"
 "G3","2018-2021","arctic_white","top","vehicles/g3/2018-2021/arctic_white/top.webp","pending","historic_market_dependent","varies"

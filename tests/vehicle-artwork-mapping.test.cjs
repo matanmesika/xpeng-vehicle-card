@@ -167,7 +167,7 @@ test('every single model year resolves to one group; no missing view may borrow 
     assert.equal(normalized.year,group.id,model.id+' '+year);
     for(const view of ['front','charging','top']){
      assert.equal(api.xpVehicleAssetPath(normalized,view),
-       'vehicles/'+model.id.toLowerCase().replace(/\\+/g,'_plus').replace(/ /g,'_')+'/'+group.id+'/'+group.colors[0]+'/'+view+'.webp');
+       'vehicles/'+model.id.toLowerCase().replace(/\+/g,'_plus').replace(/ /g,'_')+'/'+group.id+'/'+group.colors[0]+'/'+view+'.webp');
     }
    }
   }
