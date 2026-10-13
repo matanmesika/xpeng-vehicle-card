@@ -105,3 +105,8 @@ A first pack for G6 **2023–2025** adds five exterior paints × front, charging
 ## Complete multi-model artwork matrix
 
 [Final 15-model year/paint artwork matrix](docs/FULL_MODEL_COVERAGE.md) tracks all 15 catalogue models, 21 year groups, 113 exterior paint choices and three independent image slots per combination. The [CSV build backlog](artwork-backlog.csv) identifies pending versus uploaded real files. Some historical/region-specific paint lists remain provisional; see source notes. 43 actual WebP assets are currently uploaded — the remaining slots **are not pictures**. Model/year/paint choose the asset; trim is display-only and never affects artwork or telemetry. Run `python tools/export_vehicle_artwork_backlog.py --check` to verify the CSV before merging.
+
+
+## Remaining model-specific camera angles
+
+The [master-view work queue](master-view-queue.json) tracks missing independent front, rear/charging and vertical-overhead photos for all 21 body-generation groups. [Build order](docs/ARTWORK_MASTER_PLAN.md). Generating correctly shaped master trios precedes any mass colour derivation; a missing camera view is never replaced with an alternate angle.

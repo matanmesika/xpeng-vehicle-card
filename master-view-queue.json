@@ -1,0 +1,790 @@
+{
+  "schema_version": 1,
+  "as_of": "2026-10-13",
+  "catalog": "vehicle-catalog.json",
+  "selection_rules": {
+    "image_selectors": [
+      "model",
+      "year_group",
+      "exterior_color"
+    ],
+    "year_selects_palette": true,
+    "trim_affects_anything": false,
+    "views": [
+      "front",
+      "charging",
+      "top"
+    ],
+    "master_must_match_model_and_generation": true,
+    "never_substitute_angle": true
+  },
+  "summary": {
+    "models": 15,
+    "year_groups": 21,
+    "complete_master_groups": 4,
+    "incomplete_master_groups": 17,
+    "missing_master_views": 50
+  },
+  "masters": [
+    {
+      "model": "G3",
+      "year_group": "2018-2021",
+      "years": [
+        2018,
+        2019,
+        2020,
+        2021
+      ],
+      "body_shape": "crossover",
+      "master_color": "arctic_white",
+      "manufacturer_verified": false,
+      "source_url": null,
+      "views": {
+        "front": {
+          "path": "assets/vehicles/g3/2018-2021/arctic_white/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "assets/vehicles/g3/2018-2021/arctic_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "assets/vehicles/g3/2018-2021/arctic_white/top.webp",
+          "status": "pending"
+        }
+      },
+      "pending_views": [
+        "front",
+        "charging",
+        "top"
+      ],
+      "prompt_guidance": {
+        "front": "A SINGLE real-world G3 (2018-2021) body, arctic_white, front three-quarter shot, isolated transparent cutout. Correct G3 generation and vehicle proportions. No collage, titles, other cars, backdrop or shadow; never replace with another model.",
+        "charging": "A SINGLE real-world G3 (2018-2021) body, arctic_white, REAR three-quarter shot with visible tail lights, rear hatch/trunk and rear wheels, isolated transparent cutout. Same design and paint as front master. No front fascia, collage, labels, scene or alternate model.",
+        "top": "A SINGLE real-world G3 (2018-2021) body, arctic_white, VERTICAL 90-degree OVERHEAD top-down shot, complete car and roof visible, isolated transparent cutout. Same generation/paint. No side-perspective, collage, typography or background."
+      },
+      "geometry_review": "pending_manual_comparison_to_real_manufacturer_references"
+    },
+    {
+      "model": "G3i",
+      "year_group": "2021-2023",
+      "years": [
+        2021,
+        2022,
+        2023
+      ],
+      "body_shape": "crossover",
+      "master_color": "arctic_white",
+      "manufacturer_verified": false,
+      "source_url": null,
+      "views": {
+        "front": {
+          "path": "assets/vehicles/g3i/2021-2023/arctic_white/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "assets/vehicles/g3i/2021-2023/arctic_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "assets/vehicles/g3i/2021-2023/arctic_white/top.webp",
+          "status": "pending"
+        }
+      },
+      "pending_views": [
+        "front",
+        "charging",
+        "top"
+      ],
+      "prompt_guidance": {
+        "front": "A SINGLE real-world G3i (2021-2023) body, arctic_white, front three-quarter shot, isolated transparent cutout. Correct G3i generation and vehicle proportions. No collage, titles, other cars, backdrop or shadow; never replace with another model.",
+        "charging": "A SINGLE real-world G3i (2021-2023) body, arctic_white, REAR three-quarter shot with visible tail lights, rear hatch/trunk and rear wheels, isolated transparent cutout. Same design and paint as front master. No front fascia, collage, labels, scene or alternate model.",
+        "top": "A SINGLE real-world G3i (2021-2023) body, arctic_white, VERTICAL 90-degree OVERHEAD top-down shot, complete car and roof visible, isolated transparent cutout. Same generation/paint. No side-perspective, collage, typography or background."
+      },
+      "geometry_review": "pending_manual_comparison_to_real_manufacturer_references"
+    },
+    {
+      "model": "P5",
+      "year_group": "2021-2024",
+      "years": [
+        2021,
+        2022,
+        2023,
+        2024
+      ],
+      "body_shape": "compact_sedan",
+      "master_color": "arctic_white",
+      "manufacturer_verified": false,
+      "source_url": null,
+      "views": {
+        "front": {
+          "path": "assets/vehicles/p5/2021-2024/arctic_white/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "assets/vehicles/p5/2021-2024/arctic_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "assets/vehicles/p5/2021-2024/arctic_white/top.webp",
+          "status": "pending"
+        }
+      },
+      "pending_views": [
+        "front",
+        "charging",
+        "top"
+      ],
+      "prompt_guidance": {
+        "front": "A SINGLE real-world P5 (2021-2024) body, arctic_white, front three-quarter shot, isolated transparent cutout. Correct P5 generation and vehicle proportions. No collage, titles, other cars, backdrop or shadow; never replace with another model.",
+        "charging": "A SINGLE real-world P5 (2021-2024) body, arctic_white, REAR three-quarter shot with visible tail lights, rear hatch/trunk and rear wheels, isolated transparent cutout. Same design and paint as front master. No front fascia, collage, labels, scene or alternate model.",
+        "top": "A SINGLE real-world P5 (2021-2024) body, arctic_white, VERTICAL 90-degree OVERHEAD top-down shot, complete car and roof visible, isolated transparent cutout. Same generation/paint. No side-perspective, collage, typography or background."
+      },
+      "geometry_review": "pending_manual_comparison_to_real_manufacturer_references"
+    },
+    {
+      "model": "P7",
+      "year_group": "2020-2022",
+      "years": [
+        2020,
+        2021,
+        2022
+      ],
+      "body_shape": "fastback",
+      "master_color": "arctic_white",
+      "manufacturer_verified": false,
+      "source_url": null,
+      "views": {
+        "front": {
+          "path": "assets/vehicles/p7/2020-2022/arctic_white/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "assets/vehicles/p7/2020-2022/arctic_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "assets/vehicles/p7/2020-2022/arctic_white/top.webp",
+          "status": "pending"
+        }
+      },
+      "pending_views": [
+        "front",
+        "charging",
+        "top"
+      ],
+      "prompt_guidance": {
+        "front": "A SINGLE real-world P7 (2020-2022) body, arctic_white, front three-quarter shot, isolated transparent cutout. Correct P7 generation and vehicle proportions. No collage, titles, other cars, backdrop or shadow; never replace with another model.",
+        "charging": "A SINGLE real-world P7 (2020-2022) body, arctic_white, REAR three-quarter shot with visible tail lights, rear hatch/trunk and rear wheels, isolated transparent cutout. Same design and paint as front master. No front fascia, collage, labels, scene or alternate model.",
+        "top": "A SINGLE real-world P7 (2020-2022) body, arctic_white, VERTICAL 90-degree OVERHEAD top-down shot, complete car and roof visible, isolated transparent cutout. Same generation/paint. No side-perspective, collage, typography or background."
+      },
+      "geometry_review": "pending_manual_comparison_to_real_manufacturer_references"
+    },
+    {
+      "model": "P7i",
+      "year_group": "2023-2025",
+      "years": [
+        2023,
+        2024,
+        2025
+      ],
+      "body_shape": "fastback",
+      "master_color": "arctic_white",
+      "manufacturer_verified": false,
+      "source_url": null,
+      "views": {
+        "front": {
+          "path": "assets/vehicles/p7i/2023-2025/arctic_white/front.webp",
+          "status": "available"
+        },
+        "charging": {
+          "path": "assets/vehicles/p7i/2023-2025/arctic_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "assets/vehicles/p7i/2023-2025/arctic_white/top.webp",
+          "status": "pending"
+        }
+      },
+      "pending_views": [
+        "charging",
+        "top"
+      ],
+      "prompt_guidance": {
+        "front": "A SINGLE real-world P7i (2023-2025) body, arctic_white, front three-quarter shot, isolated transparent cutout. Correct P7i generation and vehicle proportions. No collage, titles, other cars, backdrop or shadow; never replace with another model.",
+        "charging": "A SINGLE real-world P7i (2023-2025) body, arctic_white, REAR three-quarter shot with visible tail lights, rear hatch/trunk and rear wheels, isolated transparent cutout. Same design and paint as front master. No front fascia, collage, labels, scene or alternate model.",
+        "top": "A SINGLE real-world P7i (2023-2025) body, arctic_white, VERTICAL 90-degree OVERHEAD top-down shot, complete car and roof visible, isolated transparent cutout. Same generation/paint. No side-perspective, collage, typography or background."
+      },
+      "geometry_review": "pending_manual_comparison_to_real_manufacturer_references"
+    },
+    {
+      "model": "Next P7",
+      "year_group": "2025",
+      "years": [
+        2025
+      ],
+      "body_shape": "fastback",
+      "master_color": "new_moon_silver",
+      "manufacturer_verified": false,
+      "source_url": "https://www.xiaopeng.com/news/company_news/5489.html",
+      "views": {
+        "front": {
+          "path": "assets/vehicles/next_p7/2025/new_moon_silver/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "assets/vehicles/next_p7/2025/new_moon_silver/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "assets/vehicles/next_p7/2025/new_moon_silver/top.webp",
+          "status": "pending"
+        }
+      },
+      "pending_views": [
+        "front",
+        "charging",
+        "top"
+      ],
+      "prompt_guidance": {
+        "front": "A SINGLE real-world Next P7 (2025) body, new_moon_silver, front three-quarter shot, isolated transparent cutout. Correct Next P7 generation and vehicle proportions. No collage, titles, other cars, backdrop or shadow; never replace with another model.",
+        "charging": "A SINGLE real-world Next P7 (2025) body, new_moon_silver, REAR three-quarter shot with visible tail lights, rear hatch/trunk and rear wheels, isolated transparent cutout. Same design and paint as front master. No front fascia, collage, labels, scene or alternate model.",
+        "top": "A SINGLE real-world Next P7 (2025) body, new_moon_silver, VERTICAL 90-degree OVERHEAD top-down shot, complete car and roof visible, isolated transparent cutout. Same generation/paint. No side-perspective, collage, typography or background."
+      },
+      "geometry_review": "pending_manual_comparison_to_real_manufacturer_references"
+    },
+    {
+      "model": "Next P7",
+      "year_group": "2026",
+      "years": [
+        2026
+      ],
+      "body_shape": "fastback",
+      "master_color": "nebula_white",
+      "manufacturer_verified": false,
+      "source_url": "https://www.xiaopeng.com/p7n/configuration.html",
+      "views": {
+        "front": {
+          "path": "assets/vehicles/next_p7/2026/nebula_white/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "assets/vehicles/next_p7/2026/nebula_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "assets/vehicles/next_p7/2026/nebula_white/top.webp",
+          "status": "pending"
+        }
+      },
+      "pending_views": [
+        "front",
+        "charging",
+        "top"
+      ],
+      "prompt_guidance": {
+        "front": "A SINGLE real-world Next P7 (2026) body, nebula_white, front three-quarter shot, isolated transparent cutout. Correct Next P7 generation and vehicle proportions. No collage, titles, other cars, backdrop or shadow; never replace with another model.",
+        "charging": "A SINGLE real-world Next P7 (2026) body, nebula_white, REAR three-quarter shot with visible tail lights, rear hatch/trunk and rear wheels, isolated transparent cutout. Same design and paint as front master. No front fascia, collage, labels, scene or alternate model.",
+        "top": "A SINGLE real-world Next P7 (2026) body, nebula_white, VERTICAL 90-degree OVERHEAD top-down shot, complete car and roof visible, isolated transparent cutout. Same generation/paint. No side-perspective, collage, typography or background."
+      },
+      "geometry_review": "pending_manual_comparison_to_real_manufacturer_references"
+    },
+    {
+      "model": "P7+",
+      "year_group": "2024-2026",
+      "years": [
+        2024,
+        2025,
+        2026
+      ],
+      "body_shape": "fastback",
+      "master_color": "arctic_white",
+      "manufacturer_verified": false,
+      "source_url": null,
+      "views": {
+        "front": {
+          "path": "assets/vehicles/p7_plus/2024-2026/arctic_white/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "assets/vehicles/p7_plus/2024-2026/arctic_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "assets/vehicles/p7_plus/2024-2026/arctic_white/top.webp",
+          "status": "pending"
+        }
+      },
+      "pending_views": [
+        "front",
+        "charging",
+        "top"
+      ],
+      "prompt_guidance": {
+        "front": "A SINGLE real-world P7+ (2024-2026) body, arctic_white, front three-quarter shot, isolated transparent cutout. Correct P7+ generation and vehicle proportions. No collage, titles, other cars, backdrop or shadow; never replace with another model.",
+        "charging": "A SINGLE real-world P7+ (2024-2026) body, arctic_white, REAR three-quarter shot with visible tail lights, rear hatch/trunk and rear wheels, isolated transparent cutout. Same design and paint as front master. No front fascia, collage, labels, scene or alternate model.",
+        "top": "A SINGLE real-world P7+ (2024-2026) body, arctic_white, VERTICAL 90-degree OVERHEAD top-down shot, complete car and roof visible, isolated transparent cutout. Same generation/paint. No side-perspective, collage, typography or background."
+      },
+      "geometry_review": "pending_manual_comparison_to_real_manufacturer_references"
+    },
+    {
+      "model": "G6",
+      "year_group": "2023-2025",
+      "years": [
+        2023,
+        2024,
+        2025
+      ],
+      "body_shape": "g6",
+      "master_color": "arctic_white",
+      "manufacturer_verified": false,
+      "source_url": null,
+      "views": {
+        "front": {
+          "path": "assets/vehicles/g6/2023-2025/arctic_white/front.webp",
+          "status": "available"
+        },
+        "charging": {
+          "path": "assets/vehicles/g6/2023-2025/arctic_white/charging.webp",
+          "status": "available"
+        },
+        "top": {
+          "path": "assets/vehicles/g6/2023-2025/arctic_white/top.webp",
+          "status": "available"
+        }
+      },
+      "pending_views": [],
+      "prompt_guidance": {
+        "front": "A SINGLE real-world G6 (2023-2025) body, arctic_white, front three-quarter shot, isolated transparent cutout. Correct G6 generation and vehicle proportions. No collage, titles, other cars, backdrop or shadow; never replace with another model.",
+        "charging": "A SINGLE real-world G6 (2023-2025) body, arctic_white, REAR three-quarter shot with visible tail lights, rear hatch/trunk and rear wheels, isolated transparent cutout. Same design and paint as front master. No front fascia, collage, labels, scene or alternate model.",
+        "top": "A SINGLE real-world G6 (2023-2025) body, arctic_white, VERTICAL 90-degree OVERHEAD top-down shot, complete car and roof visible, isolated transparent cutout. Same generation/paint. No side-perspective, collage, typography or background."
+      },
+      "geometry_review": "pending_manual_comparison_to_real_manufacturer_references"
+    },
+    {
+      "model": "G6",
+      "year_group": "2026",
+      "years": [
+        2026
+      ],
+      "body_shape": "g6",
+      "master_color": "arctic_white",
+      "manufacturer_verified": false,
+      "source_url": null,
+      "views": {
+        "front": {
+          "path": "assets/vehicles/g6/2026/arctic_white/front.webp",
+          "status": "available"
+        },
+        "charging": {
+          "path": "assets/vehicles/g6/2026/arctic_white/charging.webp",
+          "status": "available"
+        },
+        "top": {
+          "path": "assets/vehicles/g6/2026/arctic_white/top.webp",
+          "status": "available"
+        }
+      },
+      "pending_views": [],
+      "prompt_guidance": {
+        "front": "A SINGLE real-world G6 (2026) body, arctic_white, front three-quarter shot, isolated transparent cutout. Correct G6 generation and vehicle proportions. No collage, titles, other cars, backdrop or shadow; never replace with another model.",
+        "charging": "A SINGLE real-world G6 (2026) body, arctic_white, REAR three-quarter shot with visible tail lights, rear hatch/trunk and rear wheels, isolated transparent cutout. Same design and paint as front master. No front fascia, collage, labels, scene or alternate model.",
+        "top": "A SINGLE real-world G6 (2026) body, arctic_white, VERTICAL 90-degree OVERHEAD top-down shot, complete car and roof visible, isolated transparent cutout. Same generation/paint. No side-perspective, collage, typography or background."
+      },
+      "geometry_review": "pending_manual_comparison_to_real_manufacturer_references"
+    },
+    {
+      "model": "G7",
+      "year_group": "2025",
+      "years": [
+        2025
+      ],
+      "body_shape": "crossover",
+      "master_color": "nebula_white",
+      "manufacturer_verified": false,
+      "source_url": null,
+      "views": {
+        "front": {
+          "path": "assets/vehicles/g7/2025/nebula_white/front.webp",
+          "status": "available"
+        },
+        "charging": {
+          "path": "assets/vehicles/g7/2025/nebula_white/charging.webp",
+          "status": "available"
+        },
+        "top": {
+          "path": "assets/vehicles/g7/2025/nebula_white/top.webp",
+          "status": "available"
+        }
+      },
+      "pending_views": [],
+      "prompt_guidance": {
+        "front": "A SINGLE real-world G7 (2025) body, nebula_white, front three-quarter shot, isolated transparent cutout. Correct G7 generation and vehicle proportions. No collage, titles, other cars, backdrop or shadow; never replace with another model.",
+        "charging": "A SINGLE real-world G7 (2025) body, nebula_white, REAR three-quarter shot with visible tail lights, rear hatch/trunk and rear wheels, isolated transparent cutout. Same design and paint as front master. No front fascia, collage, labels, scene or alternate model.",
+        "top": "A SINGLE real-world G7 (2025) body, nebula_white, VERTICAL 90-degree OVERHEAD top-down shot, complete car and roof visible, isolated transparent cutout. Same generation/paint. No side-perspective, collage, typography or background."
+      },
+      "geometry_review": "pending_manual_comparison_to_real_manufacturer_references"
+    },
+    {
+      "model": "G7",
+      "year_group": "2026",
+      "years": [
+        2026
+      ],
+      "body_shape": "crossover",
+      "master_color": "nebula_white",
+      "manufacturer_verified": false,
+      "source_url": null,
+      "views": {
+        "front": {
+          "path": "assets/vehicles/g7/2026/nebula_white/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "assets/vehicles/g7/2026/nebula_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "assets/vehicles/g7/2026/nebula_white/top.webp",
+          "status": "pending"
+        }
+      },
+      "pending_views": [
+        "front",
+        "charging",
+        "top"
+      ],
+      "prompt_guidance": {
+        "front": "A SINGLE real-world G7 (2026) body, nebula_white, front three-quarter shot, isolated transparent cutout. Correct G7 generation and vehicle proportions. No collage, titles, other cars, backdrop or shadow; never replace with another model.",
+        "charging": "A SINGLE real-world G7 (2026) body, nebula_white, REAR three-quarter shot with visible tail lights, rear hatch/trunk and rear wheels, isolated transparent cutout. Same design and paint as front master. No front fascia, collage, labels, scene or alternate model.",
+        "top": "A SINGLE real-world G7 (2026) body, nebula_white, VERTICAL 90-degree OVERHEAD top-down shot, complete car and roof visible, isolated transparent cutout. Same generation/paint. No side-perspective, collage, typography or background."
+      },
+      "geometry_review": "pending_manual_comparison_to_real_manufacturer_references"
+    },
+    {
+      "model": "G9",
+      "year_group": "2022-2024",
+      "years": [
+        2022,
+        2023,
+        2024
+      ],
+      "body_shape": "suv",
+      "master_color": "arctic_white",
+      "manufacturer_verified": false,
+      "source_url": null,
+      "views": {
+        "front": {
+          "path": "assets/vehicles/g9/2022-2024/arctic_white/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "assets/vehicles/g9/2022-2024/arctic_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "assets/vehicles/g9/2022-2024/arctic_white/top.webp",
+          "status": "pending"
+        }
+      },
+      "pending_views": [
+        "front",
+        "charging",
+        "top"
+      ],
+      "prompt_guidance": {
+        "front": "A SINGLE real-world G9 (2022-2024) body, arctic_white, front three-quarter shot, isolated transparent cutout. Correct G9 generation and vehicle proportions. No collage, titles, other cars, backdrop or shadow; never replace with another model.",
+        "charging": "A SINGLE real-world G9 (2022-2024) body, arctic_white, REAR three-quarter shot with visible tail lights, rear hatch/trunk and rear wheels, isolated transparent cutout. Same design and paint as front master. No front fascia, collage, labels, scene or alternate model.",
+        "top": "A SINGLE real-world G9 (2022-2024) body, arctic_white, VERTICAL 90-degree OVERHEAD top-down shot, complete car and roof visible, isolated transparent cutout. Same generation/paint. No side-perspective, collage, typography or background."
+      },
+      "geometry_review": "pending_manual_comparison_to_real_manufacturer_references"
+    },
+    {
+      "model": "G9",
+      "year_group": "2025-2026",
+      "years": [
+        2025,
+        2026
+      ],
+      "body_shape": "suv",
+      "master_color": "arctic_white",
+      "manufacturer_verified": false,
+      "source_url": null,
+      "views": {
+        "front": {
+          "path": "assets/vehicles/g9/2025-2026/arctic_white/front.webp",
+          "status": "available"
+        },
+        "charging": {
+          "path": "assets/vehicles/g9/2025-2026/arctic_white/charging.webp",
+          "status": "available"
+        },
+        "top": {
+          "path": "assets/vehicles/g9/2025-2026/arctic_white/top.webp",
+          "status": "available"
+        }
+      },
+      "pending_views": [],
+      "prompt_guidance": {
+        "front": "A SINGLE real-world G9 (2025-2026) body, arctic_white, front three-quarter shot, isolated transparent cutout. Correct G9 generation and vehicle proportions. No collage, titles, other cars, backdrop or shadow; never replace with another model.",
+        "charging": "A SINGLE real-world G9 (2025-2026) body, arctic_white, REAR three-quarter shot with visible tail lights, rear hatch/trunk and rear wheels, isolated transparent cutout. Same design and paint as front master. No front fascia, collage, labels, scene or alternate model.",
+        "top": "A SINGLE real-world G9 (2025-2026) body, arctic_white, VERTICAL 90-degree OVERHEAD top-down shot, complete car and roof visible, isolated transparent cutout. Same generation/paint. No side-perspective, collage, typography or background."
+      },
+      "geometry_review": "pending_manual_comparison_to_real_manufacturer_references"
+    },
+    {
+      "model": "G9L",
+      "year_group": "2026",
+      "years": [
+        2026
+      ],
+      "body_shape": "suv",
+      "master_color": "arctic_white",
+      "manufacturer_verified": false,
+      "source_url": null,
+      "views": {
+        "front": {
+          "path": "assets/vehicles/g9l/2026/arctic_white/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "assets/vehicles/g9l/2026/arctic_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "assets/vehicles/g9l/2026/arctic_white/top.webp",
+          "status": "pending"
+        }
+      },
+      "pending_views": [
+        "front",
+        "charging",
+        "top"
+      ],
+      "prompt_guidance": {
+        "front": "A SINGLE real-world G9L (2026) body, arctic_white, front three-quarter shot, isolated transparent cutout. Correct G9L generation and vehicle proportions. No collage, titles, other cars, backdrop or shadow; never replace with another model.",
+        "charging": "A SINGLE real-world G9L (2026) body, arctic_white, REAR three-quarter shot with visible tail lights, rear hatch/trunk and rear wheels, isolated transparent cutout. Same design and paint as front master. No front fascia, collage, labels, scene or alternate model.",
+        "top": "A SINGLE real-world G9L (2026) body, arctic_white, VERTICAL 90-degree OVERHEAD top-down shot, complete car and roof visible, isolated transparent cutout. Same generation/paint. No side-perspective, collage, typography or background."
+      },
+      "geometry_review": "pending_manual_comparison_to_real_manufacturer_references"
+    },
+    {
+      "model": "X9",
+      "year_group": "2024-2025",
+      "years": [
+        2024,
+        2025
+      ],
+      "body_shape": "mpv",
+      "master_color": "arctic_white",
+      "manufacturer_verified": false,
+      "source_url": null,
+      "views": {
+        "front": {
+          "path": "assets/vehicles/x9/2024-2025/arctic_white/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "assets/vehicles/x9/2024-2025/arctic_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "assets/vehicles/x9/2024-2025/arctic_white/top.webp",
+          "status": "pending"
+        }
+      },
+      "pending_views": [
+        "front",
+        "charging",
+        "top"
+      ],
+      "prompt_guidance": {
+        "front": "A SINGLE real-world X9 (2024-2025) body, arctic_white, front three-quarter shot, isolated transparent cutout. Correct X9 generation and vehicle proportions. No collage, titles, other cars, backdrop or shadow; never replace with another model.",
+        "charging": "A SINGLE real-world X9 (2024-2025) body, arctic_white, REAR three-quarter shot with visible tail lights, rear hatch/trunk and rear wheels, isolated transparent cutout. Same design and paint as front master. No front fascia, collage, labels, scene or alternate model.",
+        "top": "A SINGLE real-world X9 (2024-2025) body, arctic_white, VERTICAL 90-degree OVERHEAD top-down shot, complete car and roof visible, isolated transparent cutout. Same generation/paint. No side-perspective, collage, typography or background."
+      },
+      "geometry_review": "pending_manual_comparison_to_real_manufacturer_references"
+    },
+    {
+      "model": "X9",
+      "year_group": "2026",
+      "years": [
+        2026
+      ],
+      "body_shape": "mpv",
+      "master_color": "arctic_white",
+      "manufacturer_verified": false,
+      "source_url": null,
+      "views": {
+        "front": {
+          "path": "assets/vehicles/x9/2026/arctic_white/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "assets/vehicles/x9/2026/arctic_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "assets/vehicles/x9/2026/arctic_white/top.webp",
+          "status": "pending"
+        }
+      },
+      "pending_views": [
+        "front",
+        "charging",
+        "top"
+      ],
+      "prompt_guidance": {
+        "front": "A SINGLE real-world X9 (2026) body, arctic_white, front three-quarter shot, isolated transparent cutout. Correct X9 generation and vehicle proportions. No collage, titles, other cars, backdrop or shadow; never replace with another model.",
+        "charging": "A SINGLE real-world X9 (2026) body, arctic_white, REAR three-quarter shot with visible tail lights, rear hatch/trunk and rear wheels, isolated transparent cutout. Same design and paint as front master. No front fascia, collage, labels, scene or alternate model.",
+        "top": "A SINGLE real-world X9 (2026) body, arctic_white, VERTICAL 90-degree OVERHEAD top-down shot, complete car and roof visible, isolated transparent cutout. Same generation/paint. No side-perspective, collage, typography or background."
+      },
+      "geometry_review": "pending_manual_comparison_to_real_manufacturer_references"
+    },
+    {
+      "model": "MONA M03",
+      "year_group": "2024-2025",
+      "years": [
+        2024,
+        2025
+      ],
+      "body_shape": "compact_sedan",
+      "master_color": "nebula_white",
+      "manufacturer_verified": false,
+      "source_url": "https://bbs.xiaopeng.com/article/2764153",
+      "views": {
+        "front": {
+          "path": "assets/vehicles/mona_m03/2024-2025/nebula_white/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "assets/vehicles/mona_m03/2024-2025/nebula_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "assets/vehicles/mona_m03/2024-2025/nebula_white/top.webp",
+          "status": "pending"
+        }
+      },
+      "pending_views": [
+        "front",
+        "charging",
+        "top"
+      ],
+      "prompt_guidance": {
+        "front": "A SINGLE real-world MONA M03 (2024-2025) body, nebula_white, front three-quarter shot, isolated transparent cutout. Correct MONA M03 generation and vehicle proportions. No collage, titles, other cars, backdrop or shadow; never replace with another model.",
+        "charging": "A SINGLE real-world MONA M03 (2024-2025) body, nebula_white, REAR three-quarter shot with visible tail lights, rear hatch/trunk and rear wheels, isolated transparent cutout. Same design and paint as front master. No front fascia, collage, labels, scene or alternate model.",
+        "top": "A SINGLE real-world MONA M03 (2024-2025) body, nebula_white, VERTICAL 90-degree OVERHEAD top-down shot, complete car and roof visible, isolated transparent cutout. Same generation/paint. No side-perspective, collage, typography or background."
+      },
+      "geometry_review": "pending_manual_comparison_to_real_manufacturer_references"
+    },
+    {
+      "model": "MONA M03",
+      "year_group": "2026",
+      "years": [
+        2026
+      ],
+      "body_shape": "compact_sedan",
+      "master_color": "nebula_white",
+      "manufacturer_verified": false,
+      "source_url": "https://www.xiaopeng.com/m03_2026.html",
+      "views": {
+        "front": {
+          "path": "assets/vehicles/mona_m03/2026/nebula_white/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "assets/vehicles/mona_m03/2026/nebula_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "assets/vehicles/mona_m03/2026/nebula_white/top.webp",
+          "status": "pending"
+        }
+      },
+      "pending_views": [
+        "front",
+        "charging",
+        "top"
+      ],
+      "prompt_guidance": {
+        "front": "A SINGLE real-world MONA M03 (2026) body, nebula_white, front three-quarter shot, isolated transparent cutout. Correct MONA M03 generation and vehicle proportions. No collage, titles, other cars, backdrop or shadow; never replace with another model.",
+        "charging": "A SINGLE real-world MONA M03 (2026) body, nebula_white, REAR three-quarter shot with visible tail lights, rear hatch/trunk and rear wheels, isolated transparent cutout. Same design and paint as front master. No front fascia, collage, labels, scene or alternate model.",
+        "top": "A SINGLE real-world MONA M03 (2026) body, nebula_white, VERTICAL 90-degree OVERHEAD top-down shot, complete car and roof visible, isolated transparent cutout. Same generation/paint. No side-perspective, collage, typography or background."
+      },
+      "geometry_review": "pending_manual_comparison_to_real_manufacturer_references"
+    },
+    {
+      "model": "L03",
+      "year_group": "2026",
+      "years": [
+        2026
+      ],
+      "body_shape": "fastback",
+      "master_color": "arctic_white",
+      "manufacturer_verified": false,
+      "source_url": null,
+      "views": {
+        "front": {
+          "path": "assets/vehicles/l03/2026/arctic_white/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "assets/vehicles/l03/2026/arctic_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "assets/vehicles/l03/2026/arctic_white/top.webp",
+          "status": "pending"
+        }
+      },
+      "pending_views": [
+        "front",
+        "charging",
+        "top"
+      ],
+      "prompt_guidance": {
+        "front": "A SINGLE real-world L03 (2026) body, arctic_white, front three-quarter shot, isolated transparent cutout. Correct L03 generation and vehicle proportions. No collage, titles, other cars, backdrop or shadow; never replace with another model.",
+        "charging": "A SINGLE real-world L03 (2026) body, arctic_white, REAR three-quarter shot with visible tail lights, rear hatch/trunk and rear wheels, isolated transparent cutout. Same design and paint as front master. No front fascia, collage, labels, scene or alternate model.",
+        "top": "A SINGLE real-world L03 (2026) body, arctic_white, VERTICAL 90-degree OVERHEAD top-down shot, complete car and roof visible, isolated transparent cutout. Same generation/paint. No side-perspective, collage, typography or background."
+      },
+      "geometry_review": "pending_manual_comparison_to_real_manufacturer_references"
+    },
+    {
+      "model": "GX",
+      "year_group": "2026",
+      "years": [
+        2026
+      ],
+      "body_shape": "suv",
+      "master_color": "everest_white",
+      "manufacturer_verified": false,
+      "source_url": null,
+      "views": {
+        "front": {
+          "path": "assets/vehicles/gx/2026/everest_white/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "assets/vehicles/gx/2026/everest_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "assets/vehicles/gx/2026/everest_white/top.webp",
+          "status": "pending"
+        }
+      },
+      "pending_views": [
+        "front",
+        "charging",
+        "top"
+      ],
+      "prompt_guidance": {
+        "front": "A SINGLE real-world GX (2026) body, everest_white, front three-quarter shot, isolated transparent cutout. Correct GX generation and vehicle proportions. No collage, titles, other cars, backdrop or shadow; never replace with another model.",
+        "charging": "A SINGLE real-world GX (2026) body, everest_white, REAR three-quarter shot with visible tail lights, rear hatch/trunk and rear wheels, isolated transparent cutout. Same design and paint as front master. No front fascia, collage, labels, scene or alternate model.",
+        "top": "A SINGLE real-world GX (2026) body, everest_white, VERTICAL 90-degree OVERHEAD top-down shot, complete car and roof visible, isolated transparent cutout. Same generation/paint. No side-perspective, collage, typography or background."
+      },
+      "geometry_review": "pending_manual_comparison_to_real_manufacturer_references"
+    }
+  ]
+}
