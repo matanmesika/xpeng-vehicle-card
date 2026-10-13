@@ -18,7 +18,7 @@ const sandbox = {
  console, URL, CustomEvent: class {}
 };
 vm.runInNewContext(js, sandbox);
-const api = vm.runInNewContext('({xpNormalizeAppearance,xpVehicleAssetPath,xpAllowedTrims,xpAllowedPaints,XP_ARTWORK_INDEX})', sandbox);
+const api = vm.runInNewContext('({xpNormalizeAppearance,xpVehicleAssetPath,xpAllowedTrims,xpAllowedPaints,XP_ARTWORK_INDEX,XP_ILLUSTRATIVE_ARTWORK_INDEX})', sandbox);
 const Card = classes.get('xpeng-vehicle-card');
 function instance(cfg, charging=false) {
  const obj = Object.create(Card.prototype);
@@ -72,7 +72,8 @@ test('missing artwork is a labelled colour-matched silhouette, never another mod
      assert.ok(art.src.startsWith('data:image/svg+xml;'));
      assert.equal(art.illustrative,true);
    } else {
-     assert.equal(art.tier,'exact-view');
+     assert.equal(art.tier,api.XP_ILLUSTRATIVE_ARTWORK_INDEX.has(e.views.front.path)?'generated-preview':'exact-view');
+     assert.equal(art.illustrative,api.XP_ILLUSTRATIVE_ARTWORK_INDEX.has(e.views.front.path));
      assert.ok(art.src.endsWith(e.views.front.path));
    }
  }
@@ -94,4 +95,23 @@ test('front and charging require their own actual view; missing or broken URLs f
  assert.match(top.topCarArt(),/data-top-art/);
  top._failedArtwork.add(top.artworkUrl('vehicles/g6/2026/graphite_gray/top.webp'));
  assert.match(top.topCarArt(),/xp-top-car/);
+});
+
+test('G6 original five colours use explicit AI-generation provenance and independently mapped views',()=>{
+ const photos=JSON.parse(fs.readFileSync(path.join(ROOT,'sources/ai-generated-vehicle-art.json'),'utf8'));
+ assert.equal(photos.manufacturer_verified,false);
+ assert.equal(photos.paths.length,15);
+ const originals=artMap.entries.filter(e=>e.model==='G6'&&e.year_group==='2023-2025');
+ assert.equal(originals.length,5);
+ for(const item of originals){
+  const seen=new Set();
+  for(const view of ['front','charging','top']){
+   const path=item.views[view].path;
+   assert.equal(item.views[view].status,'available');
+   assert.ok(photos.paths.includes(path));
+   seen.add(path);
+  }
+  assert.equal(seen.size,3);
+  assert.equal(instance({model:'G6',year:'2023-2025',color:item.exterior_color}).assetSpec().view_status,'ai_generated_preview');
+ }
 });

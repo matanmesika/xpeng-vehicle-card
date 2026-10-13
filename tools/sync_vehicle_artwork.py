@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Rebuild repository artwork inventory and embedded frontend asset index.
 
-Run after adding real WebP files to assets/vehicles/ in the canonical folders.
+Run after adding correctly labelled WebP files to assets/vehicles/ in the canonical folders.
 Use --check in CI to detect out-of-date mapping artifacts.
 """
 from __future__ import annotations
@@ -39,10 +39,10 @@ def build():
         raise ValueError("Duplicate artwork asset path")
     pending = sum(any(v["status"] == "pending" for v in e["views"].values()) for e in entries)
     art_map = {
-        "schema_version": 1, "as_of": "2026-10-12", "catalog": "vehicle-catalog.json",
+        "schema_version": 1, "as_of": "2026-10-13", "catalog": "vehicle-catalog.json",
         "selection_key": ["model", "year_group", "exterior_color"], "trim_affects_artwork": False,
         "asset_root": "assets", "views": list(VIEWS),
-        "description": "Only paths with status available exist in the repository; pending paths are planned folders, not valid image URLs. No paint/year substitution.",
+        "description": "Only available paths exist in Git; generated previews are labelled in the provenance file. Pending images never borrow another model/year/color.",
         "entries": entries,
     }
     inventory = {
@@ -56,8 +56,9 @@ def build():
         "paint_combination_count": len(entries), "pending_combination_count": pending,
         "caveats": [
             "Available means a WebP file exists, not that it has manufacturer-verified provenance or accuracy.",
-            "Pending combinations show a labelled colour-matched illustration; they must not borrow another model, group, or paint.",
-            "Existing artwork continues to load through the official project GitHub raw asset URL; online access is required.",
+            "2023-2025 G6 images are AI-generated illustrative renders, not official manufacturer photography; see sources/ai-generated-vehicle-art.json.",
+            "Missing combinations display a labelled color-matched fallback, never images borrowed from other model/year/paint.",
+            "Runtime default artwork uses GitHub main branch URLs after merging and needs internet access.",
         ],
     }
     return art_map, inventory, exact
@@ -68,17 +69,25 @@ def main():
     p.add_argument("--check", action="store_true", help="Check generated metadata and JS without writing")
     args = p.parse_args()
     art_map, inventory, exact = build()
+    provenance = json.loads((ROOT / "sources/ai-generated-vehicle-art.json").read_text(encoding="utf-8"))
+    illustrative = sorted(provenance["paths"])
+    if len(illustrative) != len(set(illustrative)) or not set(illustrative).issubset(set(exact)):
+        raise ValueError("Provenance paths must be unique existing artwork paths")
     files = {
         ROOT / "vehicle-art-map.json": json.dumps(art_map, indent=2, ensure_ascii=False) + "\n",
         ROOT / "vehicle-art-inventory.json": json.dumps(inventory, indent=2, ensure_ascii=False) + "\n",
     }
     old = re.compile(r"^const XP_ARTWORK_INDEX = new Set\(.*\);$", re.M)
+    ai_pattern = re.compile(r"^const XP_ILLUSTRATIVE_ARTWORK_INDEX = new Set\(.*\);$", re.M)
     index = "const XP_ARTWORK_INDEX = new Set(" + json.dumps(exact, separators=(",", ":")) + ");"
+    ai_index = "const XP_ILLUSTRATIVE_ARTWORK_INDEX = new Set(" + json.dumps(illustrative, separators=(",", ":")) + ");"
     for path in (ROOT / "src/xpeng-vehicle-card.js", ROOT / "dist/xpeng-vehicle-card.js"):
         content = path.read_text(encoding="utf-8")
         if len(old.findall(content)) != 1:
             raise ValueError(f"Missing or repeated asset index in {path}")
-        files[path] = old.sub(lambda _: index, content)
+        if len(ai_pattern.findall(content)) != 1:
+            raise ValueError(f"Missing or repeated illustration index in {path}")
+        files[path] = ai_pattern.sub(lambda _: ai_index, old.sub(lambda _: index, content))
     for path, content in files.items():
         if args.check:
             if not path.exists() or path.read_text(encoding="utf-8") != content:

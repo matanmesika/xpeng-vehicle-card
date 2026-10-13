@@ -21,7 +21,7 @@ assets/vehicles/<model-slug>/<year-group>/<exterior-colour>/
 
 The canonical catalog is `vehicle-catalog.json`. `vehicle-art-map.json` contains every known model/year-group/paint combination, with one explicit path and status (`available` or `pending`) for each view. `vehicle-art-inventory.json` lists only files present on disk; `model-artwork.json` describes selection semantics.
 
-The initial inventory spans **15 catalogue models, 18 generation groups, and 83 exterior-paint combinations**. Only the five 2026 G6 colours already represented by 15 WebP assets have pictures on disk. The other combinations have named folders and `.gitkeep` files, not fabricated renders. A missing view displays a clearly labelled colour-matched illustration, never a picture from a different model/year group/colour, and never a front shot pretending to be the rear or overhead view.
+The initial inventory spans **15 catalogue models, 18 generation groups, and 83 exterior-paint combinations**. Five 2026 G6 paint variants have 15 previously existing WebP images, and five 2023-2025 G6 paint variants now have 15 AI-generated illustrative transparent cutouts. The other 73 combinations have named folders and `.gitkeep` files; generated previews are not official photographs. A missing view displays a clearly labelled colour-matched illustration, never a picture from a different model/year group/colour, and never a front shot pretending to be the rear or overhead view.
 
 ## Add new photos without editing JavaScript
 
@@ -40,3 +40,7 @@ The first set of third-party **photographs** is tracked in `sources/vehicle-phot
 Their status is `reference_found`. **No photographs were inserted into the live overlay slots**, because the sources are opaque JPEG photographs and cannot yet replace the transparent, angle-matched WebP cutouts. Visual colour verification, model-year/market checking, optional background removal, transparency inspection and attribution are required. Attribution and Share-Alike terms must be preserved on derivative cutouts.
 
 Run `python tools/check_photo_candidates.py` to check that no source record has been misreported as a live image. This register is intentionally independent of runtime loading and cannot change the dashboard layout/background.
+
+## G6 2023–2025 AI cutout upload (2026-10-13)
+
+Five paints now contain front, charging/rear and top WebP files (15 files). These are **AI-generated artistic approximations** rather than factory or photographic renders. The Silver Frost front image was corrected to show the front; no trims enter artwork filenames. Full disclosure and exact file list: `sources/ai-generated-vehicle-art.json`. These images are staged in PR #29 and default loader URLs become available after merge to `main`.

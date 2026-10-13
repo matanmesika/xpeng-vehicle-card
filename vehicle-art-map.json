@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "as_of": "2026-10-12",
+  "as_of": "2026-10-13",
   "catalog": "vehicle-catalog.json",
   "selection_key": [
     "model",
@@ -14,7 +14,7 @@
     "charging",
     "top"
   ],
-  "description": "Only paths with status available exist in the repository; pending paths are planned folders, not valid image URLs. No paint/year substitution.",
+  "description": "Only available paths exist in Git; generated previews are labelled in the provenance file. Pending images never borrow another model/year/color.",
   "entries": [
     {
       "model": "G3",
@@ -574,15 +574,15 @@
       "views": {
         "front": {
           "path": "vehicles/g6/2023-2025/arctic_white/front.webp",
-          "status": "pending"
+          "status": "available"
         },
         "charging": {
           "path": "vehicles/g6/2023-2025/arctic_white/charging.webp",
-          "status": "pending"
+          "status": "available"
         },
         "top": {
           "path": "vehicles/g6/2023-2025/arctic_white/top.webp",
-          "status": "pending"
+          "status": "available"
         }
       }
     },
@@ -593,15 +593,15 @@
       "views": {
         "front": {
           "path": "vehicles/g6/2023-2025/graphite_gray/front.webp",
-          "status": "pending"
+          "status": "available"
         },
         "charging": {
           "path": "vehicles/g6/2023-2025/graphite_gray/charging.webp",
-          "status": "pending"
+          "status": "available"
         },
         "top": {
           "path": "vehicles/g6/2023-2025/graphite_gray/top.webp",
-          "status": "pending"
+          "status": "available"
         }
       }
     },
@@ -612,15 +612,15 @@
       "views": {
         "front": {
           "path": "vehicles/g6/2023-2025/midnight_black/front.webp",
-          "status": "pending"
+          "status": "available"
         },
         "charging": {
           "path": "vehicles/g6/2023-2025/midnight_black/charging.webp",
-          "status": "pending"
+          "status": "available"
         },
         "top": {
           "path": "vehicles/g6/2023-2025/midnight_black/top.webp",
-          "status": "pending"
+          "status": "available"
         }
       }
     },
@@ -631,15 +631,15 @@
       "views": {
         "front": {
           "path": "vehicles/g6/2023-2025/silver_frost/front.webp",
-          "status": "pending"
+          "status": "available"
         },
         "charging": {
           "path": "vehicles/g6/2023-2025/silver_frost/charging.webp",
-          "status": "pending"
+          "status": "available"
         },
         "top": {
           "path": "vehicles/g6/2023-2025/silver_frost/top.webp",
-          "status": "pending"
+          "status": "available"
         }
       }
     },
@@ -650,15 +650,15 @@
       "views": {
         "front": {
           "path": "vehicles/g6/2023-2025/fiery_orange/front.webp",
-          "status": "pending"
+          "status": "available"
         },
         "charging": {
           "path": "vehicles/g6/2023-2025/fiery_orange/charging.webp",
-          "status": "pending"
+          "status": "available"
         },
         "top": {
           "path": "vehicles/g6/2023-2025/fiery_orange/top.webp",
-          "status": "pending"
+          "status": "available"
         }
       }
     },

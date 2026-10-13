@@ -127,7 +127,8 @@ function xpNormalizeAppearance(value){
  return {...v,year:yr,model:mdl,trim,color,interior};
 }
 function xpAssetModel(model){return String(model).toLowerCase().replace(/\s+/g,'_').replace(/\+/g,'_plus').replace(/[^a-z0-9_]/g,'');}
-const XP_ARTWORK_INDEX = new Set(["vehicles/g6/2026/arctic_white/charging.webp","vehicles/g6/2026/arctic_white/front.webp","vehicles/g6/2026/arctic_white/top.webp","vehicles/g6/2026/graphite_gray/charging.webp","vehicles/g6/2026/graphite_gray/front.webp","vehicles/g6/2026/graphite_gray/top.webp","vehicles/g6/2026/midnight_black/charging.webp","vehicles/g6/2026/midnight_black/front.webp","vehicles/g6/2026/midnight_black/top.webp","vehicles/g6/2026/silver_frost/charging.webp","vehicles/g6/2026/silver_frost/front.webp","vehicles/g6/2026/silver_frost/top.webp","vehicles/g6/2026/stellar_purple/charging.webp","vehicles/g6/2026/stellar_purple/front.webp","vehicles/g6/2026/stellar_purple/top.webp"]);
+const XP_ARTWORK_INDEX = new Set(["vehicles/g6/2023-2025/arctic_white/charging.webp","vehicles/g6/2023-2025/arctic_white/front.webp","vehicles/g6/2023-2025/arctic_white/top.webp","vehicles/g6/2023-2025/fiery_orange/charging.webp","vehicles/g6/2023-2025/fiery_orange/front.webp","vehicles/g6/2023-2025/fiery_orange/top.webp","vehicles/g6/2023-2025/graphite_gray/charging.webp","vehicles/g6/2023-2025/graphite_gray/front.webp","vehicles/g6/2023-2025/graphite_gray/top.webp","vehicles/g6/2023-2025/midnight_black/charging.webp","vehicles/g6/2023-2025/midnight_black/front.webp","vehicles/g6/2023-2025/midnight_black/top.webp","vehicles/g6/2023-2025/silver_frost/charging.webp","vehicles/g6/2023-2025/silver_frost/front.webp","vehicles/g6/2023-2025/silver_frost/top.webp","vehicles/g6/2026/arctic_white/charging.webp","vehicles/g6/2026/arctic_white/front.webp","vehicles/g6/2026/arctic_white/top.webp","vehicles/g6/2026/graphite_gray/charging.webp","vehicles/g6/2026/graphite_gray/front.webp","vehicles/g6/2026/graphite_gray/top.webp","vehicles/g6/2026/midnight_black/charging.webp","vehicles/g6/2026/midnight_black/front.webp","vehicles/g6/2026/midnight_black/top.webp","vehicles/g6/2026/silver_frost/charging.webp","vehicles/g6/2026/silver_frost/front.webp","vehicles/g6/2026/silver_frost/top.webp","vehicles/g6/2026/stellar_purple/charging.webp","vehicles/g6/2026/stellar_purple/front.webp","vehicles/g6/2026/stellar_purple/top.webp"]);
+const XP_ILLUSTRATIVE_ARTWORK_INDEX = new Set(["vehicles/g6/2023-2025/arctic_white/charging.webp","vehicles/g6/2023-2025/arctic_white/front.webp","vehicles/g6/2023-2025/arctic_white/top.webp","vehicles/g6/2023-2025/fiery_orange/charging.webp","vehicles/g6/2023-2025/fiery_orange/front.webp","vehicles/g6/2023-2025/fiery_orange/top.webp","vehicles/g6/2023-2025/graphite_gray/charging.webp","vehicles/g6/2023-2025/graphite_gray/front.webp","vehicles/g6/2023-2025/graphite_gray/top.webp","vehicles/g6/2023-2025/midnight_black/charging.webp","vehicles/g6/2023-2025/midnight_black/front.webp","vehicles/g6/2023-2025/midnight_black/top.webp","vehicles/g6/2023-2025/silver_frost/charging.webp","vehicles/g6/2023-2025/silver_frost/front.webp","vehicles/g6/2023-2025/silver_frost/top.webp"]);
 function xpVehicleAssetPath(a,view){
  if(!['front','charging','top'].includes(view))return null;
  const group=xpYearGroupFor(a.model,a.year);
@@ -377,9 +378,11 @@ class XpengVehicleCard extends HTMLElement{
     // Prefer separately packaged and verified three-view assets when present.
     // A view must never silently reuse a front render as a rear or overhead render.
     const candidate=xpVehicleAssetPath(a,view==='rear'?'charging':'front');
-    if(candidate&&XP_ARTWORK_INDEX.has(candidate)&&!this._failedArtwork.has(bundled(candidate)))
-      return {src:bundled(candidate),illustrative:false,studio:false,tier:'exact-view',view,
-        view_status:'matching_view',description:'Matched '+a.model+' '+a.year+' '+a.color+' '+view};
+    if(candidate&&XP_ARTWORK_INDEX.has(candidate)&&!this._failedArtwork.has(bundled(candidate))){
+      const generated=XP_ILLUSTRATIVE_ARTWORK_INDEX.has(candidate);
+      return {src:bundled(candidate),illustrative:generated,studio:false,tier:generated?'generated-preview':'exact-view',view,
+        view_status:generated?'ai_generated_preview':'matching_view',description:(generated?'AI-generated illustration (not official photography): ':'Matched ')+a.model+' '+a.year+' '+a.color+' '+view};
+    }
     return {src:this.placeholderArt(),illustrative:true,studio:false,tier:'silhouette',view,
       view_status:'image_pending',description:'Transparent model+paint preview pending for '+a.model+' '+a.color};
   }
@@ -517,7 +520,7 @@ class XpengVehicleCard extends HTMLElement{
     if(xpLocalArtworkPath(photo)&&!this._failedArtwork.has(photo))return `<img class="xp-top-cutout" data-top-art src="${xpEsc(photo)}" alt="${xpEsc('Top-down view of '+a.model)}" loading="eager">`;
     const candidate=xpVehicleAssetPath(a,'top');
     if(candidate&&XP_ARTWORK_INDEX.has(candidate)&&!this._failedArtwork.has(this.artworkUrl(candidate)))
-      return `<img class="xp-top-cutout" data-top-art src="${xpEsc(this.artworkUrl(candidate))}" alt="${xpEsc('Top-down view of '+a.model)}" loading="eager">`;
+      return `<img class="xp-top-cutout" data-top-art src="${xpEsc(this.artworkUrl(candidate))}" alt="${xpEsc((XP_ILLUSTRATIVE_ARTWORK_INDEX.has(candidate)?'AI-generated illustrative ':'')+'Top-down view of '+a.model)}" loading="eager">`;
     const paint=XP_PAINTS.find(p=>p.id===a.color)?.hex||'#f2f4f2';
     return `<svg class="xp-top-car" viewBox="0 0 300 600" role="img" aria-label="${xpEsc('Illustrative overhead view of '+a.model)}">
     <defs><linearGradient id="xp-top-body"><stop offset="0" stop-color="#647381"/><stop offset=".2" stop-color="${xpEsc(paint)}"/><stop offset=".8" stop-color="${xpEsc(paint)}"/><stop offset="1" stop-color="#546576"/></linearGradient>

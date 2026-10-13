@@ -95,3 +95,8 @@ The tested UI improvements originated in [PR #21](https://github.com/matanmesika
 ## Full model/year-group/paint image inventory
 
 The [artwork map](vehicle-art-map.json) covers all current catalog combinations and explicitly marks missing image views. Run `python tools/sync_vehicle_artwork.py` after adding correctly licensed WebP images to the corresponding folder; see [mapping instructions](docs/ARTWORK_MAPPING.md). Until the file is available, the dashboard displays a labelled illustration. No trim-specific photos or guessed vehicle/paint substitutions are used.
+
+
+### G6 original generation artwork
+
+A first pack for G6 **2023–2025** adds five exterior paints × front, charging/rear and top views (15 WebPs). These are **AI-generated illustrative cutouts**, not manufacturer-confirmed photographs, and must be treated as previews. See `sources/ai-generated-vehicle-art.json` and `docs/ARTWORK_MAPPING.md`. Runtime raw GitHub URLs point to `main`, so PR-only uploads become live after merging.
