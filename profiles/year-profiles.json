@@ -1,480 +1,493 @@
 {
-  "version": "0.1.1",
+  "version": "0.2.0",
   "kind": "frontend-visual-profiles",
-  "as_of": "2026-10-11",
-  "catalogue_source": "model-catalog.json",
+  "as_of": "2026-10-13",
+  "catalogue_source": "vehicle-catalog.json",
   "includes_official_market_guarantees": false,
-  "profile_count": 53,
-  "model_count": 16,
+  "profile_count": 42,
+  "model_count": 15,
+  "selection_key": [
+    "model",
+    "year_group",
+    "exterior_color"
+  ],
+  "trim_affects_artwork": false,
   "profiles": [
     {
       "model": "G3",
       "year": "2018",
+      "year_group": "2018-2021",
       "display_name": "G3 2018",
       "trims": [
-        "unspecified"
+        "long_range",
+        "market_dependent"
       ],
       "paint_options": [
         "arctic_white",
         "graphite_gray",
-        "midnight_black",
-        "silver_frost",
-        "stellar_purple"
+        "midnight_black"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "historic_market_dependent",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "G3",
       "year": "2019",
+      "year_group": "2018-2021",
       "display_name": "G3 2019",
       "trims": [
-        "unspecified"
+        "long_range",
+        "market_dependent"
       ],
       "paint_options": [
         "arctic_white",
         "graphite_gray",
-        "midnight_black",
-        "silver_frost",
-        "stellar_purple"
+        "midnight_black"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "historic_market_dependent",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "G3",
       "year": "2020",
+      "year_group": "2018-2021",
       "display_name": "G3 2020",
       "trims": [
-        "unspecified"
+        "long_range",
+        "market_dependent"
       ],
       "paint_options": [
         "arctic_white",
         "graphite_gray",
-        "midnight_black",
-        "silver_frost",
-        "stellar_purple"
+        "midnight_black"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "historic_market_dependent",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "G3",
       "year": "2021",
+      "year_group": "2018-2021",
       "display_name": "G3 2021",
       "trims": [
-        "unspecified"
+        "long_range",
+        "market_dependent"
       ],
       "paint_options": [
         "arctic_white",
         "graphite_gray",
-        "midnight_black",
-        "silver_frost",
-        "stellar_purple"
+        "midnight_black"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "historic_market_dependent",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "G3i",
       "year": "2021",
+      "year_group": "2021-2023",
       "display_name": "G3i 2021",
       "trims": [
-        "unspecified"
+        "long_range",
+        "market_dependent"
       ],
       "paint_options": [
         "arctic_white",
         "graphite_gray",
         "midnight_black",
-        "silver_frost",
-        "stellar_purple"
+        "coral_green"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "historic_market_dependent",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "G3i",
       "year": "2022",
+      "year_group": "2021-2023",
       "display_name": "G3i 2022",
       "trims": [
-        "unspecified"
+        "long_range",
+        "market_dependent"
       ],
       "paint_options": [
         "arctic_white",
         "graphite_gray",
         "midnight_black",
-        "silver_frost",
-        "stellar_purple"
+        "coral_green"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "historic_market_dependent",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "G3i",
       "year": "2023",
+      "year_group": "2021-2023",
       "display_name": "G3i 2023",
       "trims": [
-        "unspecified"
+        "long_range",
+        "market_dependent"
       ],
       "paint_options": [
         "arctic_white",
         "graphite_gray",
         "midnight_black",
-        "silver_frost",
-        "stellar_purple"
+        "coral_green"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "historic_market_dependent",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "P5",
       "year": "2021",
+      "year_group": "2021-2024",
       "display_name": "P5 2021",
       "trims": [
-        "unspecified"
+        "standard",
+        "max"
       ],
       "paint_options": [
         "arctic_white",
         "graphite_gray",
-        "midnight_black",
-        "silver_frost",
-        "stellar_purple"
+        "midnight_black"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "historic_market_dependent",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "P5",
       "year": "2022",
+      "year_group": "2021-2024",
       "display_name": "P5 2022",
       "trims": [
-        "unspecified"
+        "standard",
+        "max"
       ],
       "paint_options": [
         "arctic_white",
         "graphite_gray",
-        "midnight_black",
-        "silver_frost",
-        "stellar_purple"
+        "midnight_black"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "historic_market_dependent",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "P5",
       "year": "2023",
+      "year_group": "2021-2024",
       "display_name": "P5 2023",
       "trims": [
-        "unspecified"
+        "standard",
+        "max"
       ],
       "paint_options": [
         "arctic_white",
         "graphite_gray",
-        "midnight_black",
-        "silver_frost",
-        "stellar_purple"
+        "midnight_black"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "historic_market_dependent",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "P5",
       "year": "2024",
+      "year_group": "2021-2024",
       "display_name": "P5 2024",
       "trims": [
-        "unspecified"
+        "standard",
+        "max"
       ],
       "paint_options": [
         "arctic_white",
         "graphite_gray",
-        "midnight_black",
-        "silver_frost",
-        "stellar_purple"
+        "midnight_black"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "historic_market_dependent",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "P7",
       "year": "2020",
+      "year_group": "2020-2022",
       "display_name": "P7 (Original) 2020",
       "trims": [
-        "unspecified"
+        "rwd_super_long_range",
+        "awd_high_performance",
+        "wing_edition"
       ],
       "paint_options": [
         "arctic_white",
-        "graphite_gray",
-        "midnight_black",
-        "silver_frost",
-        "stellar_purple"
+        "jet_black",
+        "space_gray",
+        "red",
+        "green"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "official_global",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "P7",
       "year": "2021",
+      "year_group": "2020-2022",
       "display_name": "P7 (Original) 2021",
       "trims": [
-        "unspecified"
+        "rwd_super_long_range",
+        "awd_high_performance",
+        "wing_edition"
       ],
       "paint_options": [
         "arctic_white",
-        "graphite_gray",
-        "midnight_black",
-        "silver_frost",
-        "stellar_purple"
+        "jet_black",
+        "space_gray",
+        "red",
+        "green"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "official_global",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "P7",
       "year": "2022",
+      "year_group": "2020-2022",
       "display_name": "P7 (Original) 2022",
       "trims": [
-        "unspecified"
+        "rwd_super_long_range",
+        "awd_high_performance",
+        "wing_edition"
       ],
       "paint_options": [
         "arctic_white",
-        "graphite_gray",
-        "midnight_black",
-        "silver_frost",
-        "stellar_purple"
+        "jet_black",
+        "space_gray",
+        "red",
+        "green"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
-    },
-    {
-      "model": "P7",
-      "year": "2023",
-      "display_name": "P7 (Original) 2023",
-      "trims": [
-        "unspecified"
-      ],
-      "paint_options": [
-        "arctic_white",
-        "graphite_gray",
-        "midnight_black",
-        "silver_frost",
-        "stellar_purple"
-      ],
-      "interior_options": [
-        "dark_gray",
-        "light_gray"
-      ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
-    },
-    {
-      "model": "P7",
-      "year": "2024",
-      "display_name": "P7 (Original) 2024",
-      "trims": [
-        "unspecified"
-      ],
-      "paint_options": [
-        "arctic_white",
-        "graphite_gray",
-        "midnight_black",
-        "silver_frost",
-        "stellar_purple"
-      ],
-      "interior_options": [
-        "dark_gray",
-        "light_gray"
-      ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "official_global",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "P7i",
       "year": "2023",
+      "year_group": "2023-2025",
       "display_name": "P7i 2023",
       "trims": [
-        "unspecified"
+        "rwd_long_range",
+        "awd_performance",
+        "wing_edition"
       ],
       "paint_options": [
         "arctic_white",
-        "graphite_gray",
-        "midnight_black",
+        "jet_black",
+        "space_gray",
         "silver_frost",
-        "stellar_purple"
+        "kaitoke_green_matte"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "official_global",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "P7i",
       "year": "2024",
+      "year_group": "2023-2025",
       "display_name": "P7i 2024",
       "trims": [
-        "unspecified"
+        "rwd_long_range",
+        "awd_performance",
+        "wing_edition"
       ],
       "paint_options": [
         "arctic_white",
-        "graphite_gray",
-        "midnight_black",
+        "jet_black",
+        "space_gray",
         "silver_frost",
-        "stellar_purple"
+        "kaitoke_green_matte"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "official_global",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "P7i",
       "year": "2025",
+      "year_group": "2023-2025",
       "display_name": "P7i 2025",
       "trims": [
-        "unspecified"
+        "rwd_long_range",
+        "awd_performance",
+        "wing_edition"
       ],
       "paint_options": [
         "arctic_white",
-        "graphite_gray",
-        "midnight_black",
+        "jet_black",
+        "space_gray",
         "silver_frost",
-        "stellar_purple"
+        "kaitoke_green_matte"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "official_global",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "Next P7",
       "year": "2025",
+      "year_group": "2025",
       "display_name": "Next P7 2025",
       "trims": [
-        "unspecified"
+        "market_dependent"
       ],
       "paint_options": [
-        "arctic_white",
-        "graphite_gray",
-        "midnight_black",
-        "silver_frost",
-        "stellar_purple"
+        "new_moon_silver",
+        "rhythm_yellow",
+        "stellar_green",
+        "dusk_purple",
+        "micro_star_gray",
+        "starburst_blue"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "official_cn_launch",
+      "market": "China",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "Next P7",
       "year": "2026",
+      "year_group": "2026",
       "display_name": "Next P7 2026",
       "trims": [
-        "unspecified"
+        "market_dependent"
       ],
       "paint_options": [
-        "arctic_white",
-        "graphite_gray",
-        "midnight_black",
-        "silver_frost",
-        "stellar_purple"
+        "new_moon_silver",
+        "rhythm_yellow",
+        "stellar_green",
+        "dusk_purple",
+        "micro_star_gray",
+        "starburst_blue",
+        "night_black",
+        "nebula_white",
+        "star_red",
+        "matte_new_moon_silver"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "official_cn_configurator",
+      "market": "China",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "P7+",
       "year": "2024",
+      "year_group": "2024-2026",
       "display_name": "P7+ 2024",
       "trims": [
-        "unspecified"
+        "rwd_standard_range",
+        "rwd_long_range",
+        "awd_performance"
       ],
       "paint_options": [
         "arctic_white",
@@ -487,16 +500,20 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "official_global",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "P7+",
       "year": "2025",
+      "year_group": "2024-2026",
       "display_name": "P7+ 2025",
       "trims": [
-        "unspecified"
+        "rwd_standard_range",
+        "rwd_long_range",
+        "awd_performance"
       ],
       "paint_options": [
         "arctic_white",
@@ -509,16 +526,20 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "official_global",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "P7+",
       "year": "2026",
+      "year_group": "2024-2026",
       "display_name": "P7+ 2026",
       "trims": [
-        "unspecified"
+        "rwd_standard_range",
+        "rwd_long_range",
+        "awd_performance"
       ],
       "paint_options": [
         "arctic_white",
@@ -531,164 +552,175 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "official_global",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "G6",
       "year": "2023",
+      "year_group": "2023-2025",
       "display_name": "G6 2023",
       "trims": [
-        "unspecified",
-        "standard_range_rwd",
-        "long_range_rwd",
-        "performance_awd"
+        "rwd_standard_range",
+        "rwd_long_range",
+        "awd_performance"
       ],
       "paint_options": [
         "arctic_white",
         "graphite_gray",
         "midnight_black",
         "silver_frost",
-        "stellar_purple"
+        "fiery_orange"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "highest-available-trim-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "official_global",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "G6",
       "year": "2024",
+      "year_group": "2023-2025",
       "display_name": "G6 2024",
       "trims": [
-        "unspecified",
-        "standard_range_rwd",
-        "long_range_rwd",
-        "performance_awd"
+        "rwd_standard_range",
+        "rwd_long_range",
+        "awd_performance"
       ],
       "paint_options": [
         "arctic_white",
         "graphite_gray",
         "midnight_black",
         "silver_frost",
-        "stellar_purple"
+        "fiery_orange"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "highest-available-trim-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "official_global",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "G6",
       "year": "2025",
+      "year_group": "2023-2025",
       "display_name": "G6 2025",
       "trims": [
-        "unspecified",
-        "standard_range_rwd",
-        "long_range_rwd",
-        "performance_awd"
+        "rwd_standard_range",
+        "rwd_long_range",
+        "awd_performance"
       ],
       "paint_options": [
         "arctic_white",
         "graphite_gray",
         "midnight_black",
         "silver_frost",
-        "stellar_purple"
+        "fiery_orange"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "highest-available-trim-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "official_global",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "G6",
       "year": "2026",
+      "year_group": "2026",
       "display_name": "G6 2026",
       "trims": [
         "core_rwd",
         "core_plus_rwd",
         "core_performance_awd",
-        "black_edition",
-        "unspecified"
+        "black_edition"
       ],
       "paint_options": [
         "arctic_white",
         "graphite_gray",
         "midnight_black",
         "silver_frost",
-        "stellar_purple"
+        "stellar_purple",
+        "black_edition"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "manufacturer-model-page; market/trim unconfirmed",
-      "art_status": "highest-available-trim-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "official_global",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "G7",
       "year": "2025",
+      "year_group": "2025",
       "display_name": "G7 2025",
       "trims": [
-        "unspecified"
+        "market_dependent"
       ],
       "paint_options": [
-        "arctic_white",
-        "graphite_gray",
-        "midnight_black",
-        "silver_frost",
-        "stellar_purple"
+        "starday_gray",
+        "crescent_silver",
+        "cloud_beige",
+        "interstellar_green",
+        "night_black",
+        "nebula_white"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "official_cn",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "G7",
       "year": "2026",
+      "year_group": "2026",
       "display_name": "G7 2026",
       "trims": [
-        "unspecified"
+        "market_dependent"
       ],
       "paint_options": [
-        "arctic_white",
-        "graphite_gray",
-        "midnight_black",
-        "silver_frost",
-        "stellar_purple"
+        "twilight_purple",
+        "starday_gray",
+        "crescent_silver",
+        "night_black",
+        "nebula_white"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "official_cn",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "G9",
       "year": "2022",
+      "year_group": "2022-2024",
       "display_name": "G9 2022",
       "trims": [
-        "unspecified",
-        "standard_range_rwd",
-        "long_range_rwd",
-        "performance_awd"
+        "rwd_standard_range",
+        "rwd_long_range",
+        "awd_performance"
       ],
       "paint_options": [
         "arctic_white",
@@ -699,23 +731,22 @@
       ],
       "interior_options": [
         "dark_gray",
-        "coffee",
-        "saddle",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "highest-available-trim-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "official_global",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "G9",
       "year": "2023",
+      "year_group": "2022-2024",
       "display_name": "G9 2023",
       "trims": [
-        "unspecified",
-        "standard_range_rwd",
-        "long_range_rwd",
-        "performance_awd"
+        "rwd_standard_range",
+        "rwd_long_range",
+        "awd_performance"
       ],
       "paint_options": [
         "arctic_white",
@@ -726,23 +757,22 @@
       ],
       "interior_options": [
         "dark_gray",
-        "coffee",
-        "saddle",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "highest-available-trim-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "official_global",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "G9",
       "year": "2024",
+      "year_group": "2022-2024",
       "display_name": "G9 2024",
       "trims": [
-        "unspecified",
-        "standard_range_rwd",
-        "long_range_rwd",
-        "performance_awd"
+        "rwd_standard_range",
+        "rwd_long_range",
+        "awd_performance"
       ],
       "paint_options": [
         "arctic_white",
@@ -753,30 +783,31 @@
       ],
       "interior_options": [
         "dark_gray",
-        "coffee",
-        "saddle",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "highest-available-trim-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "official_global",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "G9",
       "year": "2025",
+      "year_group": "2025-2026",
       "display_name": "G9 2025",
       "trims": [
-        "unspecified",
-        "standard_range_rwd",
-        "long_range_rwd",
-        "performance_awd"
+        "rwd_standard_range",
+        "rwd_long_range",
+        "awd_performance",
+        "black_edition"
       ],
       "paint_options": [
         "arctic_white",
         "graphite_gray",
         "midnight_black",
         "silver_frost",
-        "kaitoke_green_matte"
+        "kaitoke_green_matte",
+        "black_edition"
       ],
       "interior_options": [
         "dark_gray",
@@ -784,26 +815,29 @@
         "saddle",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "highest-available-trim-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "official_global",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "G9",
       "year": "2026",
+      "year_group": "2025-2026",
       "display_name": "G9 2026",
       "trims": [
-        "unspecified",
-        "standard_range_rwd",
-        "long_range_rwd",
-        "performance_awd"
+        "rwd_standard_range",
+        "rwd_long_range",
+        "awd_performance",
+        "black_edition"
       ],
       "paint_options": [
         "arctic_white",
         "graphite_gray",
         "midnight_black",
         "silver_frost",
-        "kaitoke_green_matte"
+        "kaitoke_green_matte",
+        "black_edition"
       ],
       "interior_options": [
         "dark_gray",
@@ -811,408 +845,237 @@
         "saddle",
         "light_gray"
       ],
-      "exterior_catalogue_status": "manufacturer-model-page; market/trim unconfirmed",
-      "art_status": "highest-available-trim-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "official_global",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "G9L",
       "year": "2026",
+      "year_group": "2026",
       "display_name": "G9L 2026",
       "trims": [
-        "unspecified"
+        "awd_performance_ultra_6",
+        "rwd_long_range_ultra_7",
+        "awd_performance_ultra_7"
       ],
       "paint_options": [
         "arctic_white",
-        "graphite_gray",
-        "midnight_black",
-        "silver_frost",
-        "stellar_purple"
+        "diamond_black",
+        "mirror_gray",
+        "waving_green"
       ],
       "interior_options": [
-        "dark_gray",
-        "light_gray"
+        "meteorite_black",
+        "tangerine"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "official_global",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "X9",
       "year": "2024",
+      "year_group": "2024-2025",
       "display_name": "X9 2024",
       "trims": [
-        "unspecified",
-        "fwd_long_range"
+        "fwd_long_range",
+        "awd_performance"
       ],
       "paint_options": [
         "arctic_white",
-        "graphite_gray",
         "midnight_black",
         "silver_frost",
-        "stellar_purple"
+        "matte_gray"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "official_global",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "X9",
       "year": "2025",
+      "year_group": "2024-2025",
       "display_name": "X9 2025",
       "trims": [
-        "unspecified",
-        "fwd_long_range"
+        "fwd_long_range",
+        "awd_performance"
       ],
       "paint_options": [
         "arctic_white",
-        "graphite_gray",
         "midnight_black",
         "silver_frost",
-        "stellar_purple"
+        "matte_gray"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "official_global",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "X9",
       "year": "2026",
+      "year_group": "2026",
       "display_name": "X9 2026",
       "trims": [
-        "unspecified",
-        "fwd_long_range"
+        "fwd_standard_range",
+        "fwd_long_range",
+        "awd_performance"
       ],
       "paint_options": [
         "arctic_white",
-        "graphite_gray",
         "midnight_black",
         "silver_frost",
-        "stellar_purple"
+        "matte_gray",
+        "lambent_cyan",
+        "polar_violet"
       ],
       "interior_options": [
-        "dark_gray",
-        "light_gray"
+        "meteorite_black",
+        "coffee"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "official_global",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "MONA M03",
       "year": "2024",
+      "year_group": "2024-2025",
       "display_name": "MONA M03 2024",
       "trims": [
-        "unspecified"
+        "market_dependent"
       ],
       "paint_options": [
-        "arctic_white",
-        "graphite_gray",
-        "midnight_black",
-        "silver_frost",
-        "stellar_purple"
+        "night_black",
+        "nebula_white",
+        "star_gray",
+        "starlight_beige",
+        "star_blue"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "official_cn_launch_baseline",
+      "market": "China",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "MONA M03",
       "year": "2025",
+      "year_group": "2024-2025",
       "display_name": "MONA M03 2025",
       "trims": [
-        "unspecified"
+        "market_dependent"
       ],
       "paint_options": [
-        "arctic_white",
-        "graphite_gray",
-        "midnight_black",
-        "silver_frost",
-        "stellar_purple"
+        "night_black",
+        "nebula_white",
+        "star_gray",
+        "starlight_beige",
+        "star_blue"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "official_cn_launch_baseline",
+      "market": "China",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "MONA M03",
       "year": "2026",
+      "year_group": "2026",
       "display_name": "MONA M03 2026",
       "trims": [
-        "unspecified"
+        "market_dependent"
       ],
       "paint_options": [
-        "arctic_white",
-        "graphite_gray",
-        "midnight_black",
-        "silver_frost",
-        "stellar_purple"
+        "roland_purple",
+        "avocado_green",
+        "micro_moon_gray",
+        "night_black",
+        "nebula_white",
+        "starlight_beige",
+        "cherry_pink"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "official_cn_configurator",
+      "market": "China",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "L03",
       "year": "2026",
+      "year_group": "2026",
       "display_name": "L03 2026",
       "trims": [
-        "unspecified"
+        "rwd_standard_range",
+        "rwd_long_range",
+        "awd_performance",
+        "awd_performance_ultra",
+        "reev"
       ],
       "paint_options": [
         "arctic_white",
-        "graphite_gray",
         "midnight_black",
         "silver_frost",
-        "stellar_purple"
+        "rock_gray",
+        "phantom_purple",
+        "black_edition"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "official_global",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     },
     {
       "model": "GX",
       "year": "2026",
-      "display_name": "GX (fleet/research) 2026",
+      "year_group": "2026",
+      "display_name": "GX 2026",
       "trims": [
-        "unspecified"
+        "preorder"
       ],
       "paint_options": [
-        "arctic_white",
+        "diamond_black",
+        "everest_white",
+        "matte_desert_gold",
         "graphite_gray",
-        "midnight_black",
-        "silver_frost",
-        "stellar_purple"
+        "two_tone_gray_silver"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
-    },
-    {
-      "model": "Other",
-      "year": "2018",
-      "display_name": "Other / Future XPENG 2018",
-      "trims": [
-        "unspecified"
-      ],
-      "paint_options": [
-        "arctic_white",
-        "graphite_gray",
-        "midnight_black",
-        "silver_frost",
-        "stellar_purple"
-      ],
-      "interior_options": [
-        "dark_gray",
-        "light_gray"
-      ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
-    },
-    {
-      "model": "Other",
-      "year": "2019",
-      "display_name": "Other / Future XPENG 2019",
-      "trims": [
-        "unspecified"
-      ],
-      "paint_options": [
-        "arctic_white",
-        "graphite_gray",
-        "midnight_black",
-        "silver_frost",
-        "stellar_purple"
-      ],
-      "interior_options": [
-        "dark_gray",
-        "light_gray"
-      ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
-    },
-    {
-      "model": "Other",
-      "year": "2020",
-      "display_name": "Other / Future XPENG 2020",
-      "trims": [
-        "unspecified"
-      ],
-      "paint_options": [
-        "arctic_white",
-        "graphite_gray",
-        "midnight_black",
-        "silver_frost",
-        "stellar_purple"
-      ],
-      "interior_options": [
-        "dark_gray",
-        "light_gray"
-      ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
-    },
-    {
-      "model": "Other",
-      "year": "2021",
-      "display_name": "Other / Future XPENG 2021",
-      "trims": [
-        "unspecified"
-      ],
-      "paint_options": [
-        "arctic_white",
-        "graphite_gray",
-        "midnight_black",
-        "silver_frost",
-        "stellar_purple"
-      ],
-      "interior_options": [
-        "dark_gray",
-        "light_gray"
-      ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
-    },
-    {
-      "model": "Other",
-      "year": "2022",
-      "display_name": "Other / Future XPENG 2022",
-      "trims": [
-        "unspecified"
-      ],
-      "paint_options": [
-        "arctic_white",
-        "graphite_gray",
-        "midnight_black",
-        "silver_frost",
-        "stellar_purple"
-      ],
-      "interior_options": [
-        "dark_gray",
-        "light_gray"
-      ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
-    },
-    {
-      "model": "Other",
-      "year": "2023",
-      "display_name": "Other / Future XPENG 2023",
-      "trims": [
-        "unspecified"
-      ],
-      "paint_options": [
-        "arctic_white",
-        "graphite_gray",
-        "midnight_black",
-        "silver_frost",
-        "stellar_purple"
-      ],
-      "interior_options": [
-        "dark_gray",
-        "light_gray"
-      ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
-    },
-    {
-      "model": "Other",
-      "year": "2024",
-      "display_name": "Other / Future XPENG 2024",
-      "trims": [
-        "unspecified"
-      ],
-      "paint_options": [
-        "arctic_white",
-        "graphite_gray",
-        "midnight_black",
-        "silver_frost",
-        "stellar_purple"
-      ],
-      "interior_options": [
-        "dark_gray",
-        "light_gray"
-      ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
-    },
-    {
-      "model": "Other",
-      "year": "2025",
-      "display_name": "Other / Future XPENG 2025",
-      "trims": [
-        "unspecified"
-      ],
-      "paint_options": [
-        "arctic_white",
-        "graphite_gray",
-        "midnight_black",
-        "silver_frost",
-        "stellar_purple"
-      ],
-      "interior_options": [
-        "dark_gray",
-        "light_gray"
-      ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
-    },
-    {
-      "model": "Other",
-      "year": "2026",
-      "display_name": "Other / Future XPENG 2026",
-      "trims": [
-        "unspecified"
-      ],
-      "paint_options": [
-        "arctic_white",
-        "graphite_gray",
-        "midnight_black",
-        "silver_frost",
-        "stellar_purple"
-      ],
-      "interior_options": [
-        "dark_gray",
-        "light_gray"
-      ],
-      "exterior_catalogue_status": "illustrative-unverified",
-      "art_status": "model-family-preview-shared-all-years",
-      "art_note": "Only MODEL and EXTERIOR PAINT select a vehicle asset. Year controls trim LABELS only; trim has no visual effect. Images are illustrative until manufacturer verified."
+      "exterior_catalogue_status": "official_regional",
+      "market": "varies by region",
+      "art_status": "exact-model-year-group-paint-views-only",
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
     }
   ]
 }

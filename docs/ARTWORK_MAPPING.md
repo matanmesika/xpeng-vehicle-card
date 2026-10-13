@@ -54,3 +54,7 @@ Five paints now contain front, charging/rear and top WebP files (15 files). Thes
 - The 2025 China-market G7 has six official exterior colour *names*; the 2026 domestic range lists five. Colour values in the general palette are illustrative UI HEX, not official factory paint codes. Source: https://www.xiaopeng.com/news/company_news/5481.html and https://www.xiaopeng.com/g7_2026.html .
 - G7 year groups are now separate: `2025` and `2026`. Trims remain informational; the file selection is **model + year + exterior colour only**.
 - All other G7 colours are still **pending** and will render labelled fallback until actual art is reviewed and uploaded. Do not reuse G6 renderings or rename 2025 images as 2026.
+
+## Final catalogue matrix expansion — 2026-10-13
+
+All 15 models, 21 year groups and 111 paint combinations now appear in [the full model coverage report](FULL_MODEL_COVERAGE.md) and the machine-readable [artwork backlog](../artwork-backlog.csv). The MONA M03 and Next P7 ranges were expanded with official Chinese market year-specific palettes. An exterior paint is a visual selector even where the factory sells it as an edition package; selected trim remains a text-only label. Missing artwork is kept pending.

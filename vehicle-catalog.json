@@ -162,6 +162,81 @@
       "id": "twilight_purple",
       "label": "G7 Twilight Purple (2026)",
       "hex": "#827690"
+    },
+    {
+      "id": "new_moon_silver",
+      "label": "New Moon Silver",
+      "hex": "#B3B8BC"
+    },
+    {
+      "id": "rhythm_yellow",
+      "label": "Rhythm Yellow",
+      "hex": "#E3C449"
+    },
+    {
+      "id": "stellar_green",
+      "label": "Stellar Green",
+      "hex": "#6A8072"
+    },
+    {
+      "id": "dusk_purple",
+      "label": "Dusk Purple",
+      "hex": "#86778B"
+    },
+    {
+      "id": "micro_star_gray",
+      "label": "Micro Star Gray",
+      "hex": "#777D83"
+    },
+    {
+      "id": "starburst_blue",
+      "label": "Starburst Blue",
+      "hex": "#456B8D"
+    },
+    {
+      "id": "star_red",
+      "label": "Star Red",
+      "hex": "#A73F40"
+    },
+    {
+      "id": "matte_new_moon_silver",
+      "label": "Matte New Moon Silver",
+      "hex": "#A7AAAB"
+    },
+    {
+      "id": "star_gray",
+      "label": "Star Gray",
+      "hex": "#82868A"
+    },
+    {
+      "id": "starlight_beige",
+      "label": "Starlight Beige",
+      "hex": "#CCBFAA"
+    },
+    {
+      "id": "star_blue",
+      "label": "Star Blue",
+      "hex": "#6792AC"
+    },
+    {
+      "id": "roland_purple",
+      "label": "Roland Purple",
+      "hex": "#8C7A99"
+    },
+    {
+      "id": "avocado_green",
+      "label": "Avocado Green",
+      "hex": "#95B39D"
+    },
+    {
+      "id": "micro_moon_gray",
+      "label": "Micro Moon Gray",
+      "hex": "#909497"
+    },
+    {
+      "id": "cherry_pink",
+      "label": "Cherry Pink",
+      "hex": "#E5A6B4"
     }
   ],
   "interiors": [
@@ -372,10 +447,34 @@
       "shape": "fastback",
       "groups": [
         {
-          "id": "2025-2026",
-          "label": "2025-2026",
+          "id": "2025",
+          "label": "2025",
           "years": [
-            2025,
+            2025
+          ],
+          "trims": [
+            {
+              "id": "market_dependent",
+              "label": "Variant / market-dependent"
+            }
+          ],
+          "colors": [
+            "new_moon_silver",
+            "rhythm_yellow",
+            "stellar_green",
+            "dusk_purple",
+            "micro_star_gray",
+            "starburst_blue"
+          ],
+          "catalog_status": "official_cn_launch",
+          "source_url": "https://www.xiaopeng.com/news/company_news/5489.html",
+          "market": "China",
+          "artwork_status": "pending_model_specific_views"
+        },
+        {
+          "id": "2026",
+          "label": "2026",
+          "years": [
             2026
           ],
           "trims": [
@@ -385,12 +484,21 @@
             }
           ],
           "colors": [
-            "arctic_white",
-            "graphite_gray",
-            "midnight_black",
-            "silver_frost"
+            "new_moon_silver",
+            "rhythm_yellow",
+            "stellar_green",
+            "dusk_purple",
+            "micro_star_gray",
+            "starburst_blue",
+            "night_black",
+            "nebula_white",
+            "star_red",
+            "matte_new_moon_silver"
           ],
-          "catalog_status": "catalog_pending"
+          "catalog_status": "official_cn_configurator",
+          "source_url": "https://www.xiaopeng.com/p7n/configuration.html",
+          "market": "China",
+          "artwork_status": "pending_model_specific_views"
         }
       ]
     },
@@ -752,33 +860,55 @@
       "shape": "compact_sedan",
       "groups": [
         {
-          "id": "2024-2026",
-          "label": "2024-2026",
+          "id": "2024-2025",
+          "label": "2024-2025",
           "years": [
             2024,
-            2025,
+            2025
+          ],
+          "trims": [
+            {
+              "id": "market_dependent",
+              "label": "Variant / market-dependent"
+            }
+          ],
+          "colors": [
+            "night_black",
+            "nebula_white",
+            "star_gray",
+            "starlight_beige",
+            "star_blue"
+          ],
+          "catalog_status": "official_cn_launch_baseline",
+          "source_url": "https://bbs.xiaopeng.com/article/2764153",
+          "market": "China",
+          "artwork_status": "pending_model_specific_views"
+        },
+        {
+          "id": "2026",
+          "label": "2026",
+          "years": [
             2026
           ],
           "trims": [
             {
-              "id": "m03",
-              "label": "M03"
-            },
-            {
-              "id": "m03_max",
-              "label": "M03 Max"
-            },
-            {
               "id": "market_dependent",
-              "label": "Other / market-dependent"
+              "label": "Variant / market-dependent"
             }
           ],
           "colors": [
-            "arctic_white",
-            "graphite_gray",
-            "midnight_black"
+            "roland_purple",
+            "avocado_green",
+            "micro_moon_gray",
+            "night_black",
+            "nebula_white",
+            "starlight_beige",
+            "cherry_pink"
           ],
-          "catalog_status": "catalog_pending"
+          "catalog_status": "official_cn_configurator",
+          "source_url": "https://www.xiaopeng.com/m03_2026.html",
+          "market": "China",
+          "artwork_status": "pending_model_specific_views"
         }
       ]
     },

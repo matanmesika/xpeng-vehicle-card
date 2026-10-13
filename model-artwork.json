@@ -14,8 +14,12 @@
   "target_asset_layout": "assets/vehicles/{model}/{year_group}/{exterior_color}/{front,charging,top}.webp",
   "available_image_count": 33,
   "available_combinations": 11,
-  "pending_combinations": 79,
+  "pending_combinations": 100,
   "missing_asset_policy": "Labelled colour-matched silhouette only; never substitute wrong model/year-group/color or silently reuse front for charging/top.",
   "provenance_policy": "G6 2023-2025 and G7 2025 WebP images are AI-generated illustrations; see sources/ai-generated-vehicle-art.json. Do not claim factory-verified imagery.",
-  "ai_artwork_index": "sources/ai-generated-vehicle-art.json"
+  "ai_artwork_index": "sources/ai-generated-vehicle-art.json",
+  "year_group_count": 21,
+  "paint_combination_count": 111,
+  "model_count": 15,
+  "market_note": "Catalogue groups are market/year specific where documented; Chinese colors are not asserted as exported-market options. All paint HEX values are approximate visual swatches."
 }

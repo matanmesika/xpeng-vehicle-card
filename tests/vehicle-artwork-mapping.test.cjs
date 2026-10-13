@@ -136,3 +136,40 @@ test('G7 2025 and 2026 expose distinct verified China-market palettes without ch
  assert.equal(api.xpVehicleAssetPath(b,'front'),'vehicles/g7/2026/twilight_purple/front.webp');
  assert.equal(instance(b).assetSpec().tier,'silhouette');
 });
+
+test('2025/2026 MONA and Next P7 use distinct colour palettes, selected trims stay inert',()=>{
+ const sample=[
+   ['MONA M03','2024',5,['star_blue'],['roland_purple']],
+   ['MONA M03','2026',7,['roland_purple','avocado_green','cherry_pink'],['star_blue']],
+   ['Next P7','2025',6,['rhythm_yellow','stellar_green'],['night_black']],
+   ['Next P7','2026',10,['night_black','star_red','matte_new_moon_silver'],[]]
+ ];
+ for(const [model,year,count,must,not] of sample){
+   const palette=Array.from(api.xpAllowedPaints(model,year),p=>p.id);
+   assert.equal(palette.length,count,model+' '+year);
+   for(const c of must)assert.ok(palette.includes(c),model+' '+year+' '+c);
+   for(const c of not)assert.ok(!palette.includes(c),model+' '+year+' '+c);
+ }
+ const old=api.xpNormalizeAppearance({model:'Next P7',year:'2025',color:'rhythm_yellow'});
+ const newer=api.xpNormalizeAppearance({model:'Next P7',year:'2026',color:'rhythm_yellow'});
+ assert.notEqual(api.xpVehicleAssetPath(old,'front'),api.xpVehicleAssetPath(newer,'front'));
+ const trims=api.xpAllowedTrims('Next P7','2026');
+ assert.equal(instance({...newer,trim:trims[0].id}).assetSpec().src,instance({...newer,trim:'bogus'}).assetSpec().src);
+});
+test('every single model year resolves to one group; no missing view may borrow a picture',()=>{
+ for(const model of catalog.models){
+  const visited=new Set();
+  for(const group of model.groups){
+   for(const year of group.years){
+    assert.ok(!visited.has(year),model.id+' year '+year);
+    visited.add(year);
+    const normalized=api.xpNormalizeAppearance({model:model.id,year:String(year),color:group.colors[0]});
+    assert.equal(normalized.year,group.id,model.id+' '+year);
+    for(const view of ['front','charging','top']){
+     assert.equal(api.xpVehicleAssetPath(normalized,view),
+       'vehicles/'+model.id.toLowerCase().replace(/\\+/g,'_plus').replace(/ /g,'_')+'/'+group.id+'/'+group.colors[0]+'/'+view+'.webp');
+    }
+   }
+  }
+ }
+});

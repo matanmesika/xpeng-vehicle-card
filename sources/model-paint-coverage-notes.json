@@ -1,0 +1,23 @@
+{
+  "source": "vehicle-catalog.json",
+  "known_models": [
+    "G3",
+    "G3i",
+    "P5",
+    "P7",
+    "P7i",
+    "Next P7",
+    "P7+",
+    "G6",
+    "G7",
+    "G9",
+    "G9L",
+    "X9",
+    "MONA M03",
+    "L03",
+    "GX"
+  ],
+  "version": "2026-10-13",
+  "visual_palette_hex_certified": false,
+  "includes_all_markets": false
+}
