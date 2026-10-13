@@ -1049,15 +1049,15 @@
       "views": {
         "front": {
           "path": "vehicles/g7/2025/starday_gray/front.webp",
-          "status": "pending"
+          "status": "available"
         },
         "charging": {
           "path": "vehicles/g7/2025/starday_gray/charging.webp",
-          "status": "pending"
+          "status": "available"
         },
         "top": {
           "path": "vehicles/g7/2025/starday_gray/top.webp",
-          "status": "pending"
+          "status": "available"
         }
       }
     },
@@ -1068,15 +1068,15 @@
       "views": {
         "front": {
           "path": "vehicles/g7/2025/crescent_silver/front.webp",
-          "status": "pending"
+          "status": "available"
         },
         "charging": {
           "path": "vehicles/g7/2025/crescent_silver/charging.webp",
-          "status": "pending"
+          "status": "available"
         },
         "top": {
           "path": "vehicles/g7/2025/crescent_silver/top.webp",
-          "status": "pending"
+          "status": "available"
         }
       }
     },
@@ -1087,15 +1087,15 @@
       "views": {
         "front": {
           "path": "vehicles/g7/2025/cloud_beige/front.webp",
-          "status": "pending"
+          "status": "available"
         },
         "charging": {
           "path": "vehicles/g7/2025/cloud_beige/charging.webp",
-          "status": "pending"
+          "status": "available"
         },
         "top": {
           "path": "vehicles/g7/2025/cloud_beige/top.webp",
-          "status": "pending"
+          "status": "available"
         }
       }
     },
@@ -1106,15 +1106,15 @@
       "views": {
         "front": {
           "path": "vehicles/g7/2025/interstellar_green/front.webp",
-          "status": "pending"
+          "status": "available"
         },
         "charging": {
           "path": "vehicles/g7/2025/interstellar_green/charging.webp",
-          "status": "pending"
+          "status": "available"
         },
         "top": {
           "path": "vehicles/g7/2025/interstellar_green/top.webp",
-          "status": "pending"
+          "status": "available"
         }
       }
     },
@@ -1125,15 +1125,15 @@
       "views": {
         "front": {
           "path": "vehicles/g7/2025/night_black/front.webp",
-          "status": "pending"
+          "status": "available"
         },
         "charging": {
           "path": "vehicles/g7/2025/night_black/charging.webp",
-          "status": "pending"
+          "status": "available"
         },
         "top": {
           "path": "vehicles/g7/2025/night_black/top.webp",
-          "status": "pending"
+          "status": "available"
         }
       }
     },
@@ -1410,15 +1410,15 @@
       "views": {
         "front": {
           "path": "vehicles/g9/2025-2026/silver_frost/front.webp",
-          "status": "pending"
+          "status": "available"
         },
         "charging": {
           "path": "vehicles/g9/2025-2026/silver_frost/charging.webp",
-          "status": "pending"
+          "status": "available"
         },
         "top": {
           "path": "vehicles/g9/2025-2026/silver_frost/top.webp",
-          "status": "pending"
+          "status": "available"
         }
       }
     },
@@ -1429,15 +1429,15 @@
       "views": {
         "front": {
           "path": "vehicles/g9/2025-2026/kaitoke_green_matte/front.webp",
-          "status": "pending"
+          "status": "available"
         },
         "charging": {
           "path": "vehicles/g9/2025-2026/kaitoke_green_matte/charging.webp",
-          "status": "pending"
+          "status": "available"
         },
         "top": {
           "path": "vehicles/g9/2025-2026/kaitoke_green_matte/top.webp",
-          "status": "pending"
+          "status": "available"
         }
       }
     },
