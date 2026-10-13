@@ -1,0 +1,33 @@
+name: Export XPENG review ZIP
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/export-review-archive.yml
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Archive all tracked repository files
+        shell: bash
+        run: |
+          mkdir -p review-export
+          git archive --format=zip --prefix=xpeng-vehicle-card/ --output=review-export/xpeng-vehicle-card-full-review.zip HEAD
+          unzip -t review-export/xpeng-vehicle-card-full-review.zip | tail -1
+          unzip -l review-export/xpeng-vehicle-card-full-review.zip | tail -1
+      - name: Upload complete review ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: xpeng-vehicle-card-full-review
+          path: review-export/xpeng-vehicle-card-full-review.zip
+          if-no-files-found: error
+          retention-days: 30
