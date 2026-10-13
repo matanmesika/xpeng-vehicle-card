@@ -2,7 +2,7 @@
 
 This is a truthful **catalogue and image-slot matrix**, not a claim that all 333 pictures exist.
 
-The model catalogue contains **15 models**, **21 model-year groups**, and **111 exterior paint combinations**. Each combination has exactly three distinct **slot names**: `front.webp`, `charging.webp`, and `top.webp`. Currently **33 actual WebP images** are present (**11 fully occupied combinations**); **300 individual image views** are pending. AI renders are not official manufacturer photography.
+The model catalogue contains **15 models**, **21 model-year groups**, and **111 exterior paint combinations**. Each combination has exactly three distinct **slot names**: `front.webp`, `charging.webp`, and `top.webp`. Currently **42 actual WebP images** are present (**14 fully occupied combinations**); **291 individual image views** are pending. AI renders are not official manufacturer photography.
 
 | Model | Year groups | Paint combinations | Existing WebP | Missing WebP |
 |---|---|---:|---:|---:|
@@ -15,7 +15,7 @@ The model catalogue contains **15 models**, **21 model-year groups**, and **111 
 | P7+ | 2024-2026 | 5 | 0 | 15 |
 | G6 | 2023-2025, 2026 | 11 | 30 | 3 |
 | G7 | 2025, 2026 | 11 | 3 | 30 |
-| G9 | 2022-2024, 2025-2026 | 11 | 0 | 33 |
+| G9 | 2022-2024, 2025-2026 | 11 | 9 | 24 |
 | G9L | 2026 | 4 | 0 | 12 |
 | X9 | 2024-2025, 2026 | 10 | 0 | 30 |
 | MONA M03 | 2024-2025, 2026 | 12 | 0 | 36 |
@@ -42,3 +42,7 @@ The model catalogue contains **15 models**, **21 model-year groups**, and **111 
 Put an approved transparent WebP in `assets/vehicles/<slug>/<year-group>/<paint>/{front,charging,top}.webp`. Run `python tools/sync_vehicle_artwork.py`; validate `python tools/sync_vehicle_artwork.py --check` plus `node --test tests/vehicle-artwork-mapping.test.cjs`. The actual `assets/` files must be present for the mapped entry to become `available`. Code under `src/` and `dist/` must stay identical. The approved background is never changed.
 
 Use `artwork-backlog.csv` as a sortable build queue and `tools/export_vehicle_artwork_backlog.py` to rebuild it.
+
+## G9 image batch 1
+
+For the G9 2025–2026 year-group, Arctic White, Graphite Gray and Midnight Black each have separate `front.webp`, `charging.webp` (rear three-quarter) and `top.webp` (overhead) AI-generated transparent WebP files. Manufacturer accuracy still requires visual review. Remaining G9 colours and the earlier generation remain pending.

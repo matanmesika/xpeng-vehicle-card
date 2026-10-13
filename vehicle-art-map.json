@@ -1315,15 +1315,15 @@
       "views": {
         "front": {
           "path": "vehicles/g9/2025-2026/arctic_white/front.webp",
-          "status": "pending"
+          "status": "available"
         },
         "charging": {
           "path": "vehicles/g9/2025-2026/arctic_white/charging.webp",
-          "status": "pending"
+          "status": "available"
         },
         "top": {
           "path": "vehicles/g9/2025-2026/arctic_white/top.webp",
-          "status": "pending"
+          "status": "available"
         }
       }
     },
@@ -1334,15 +1334,15 @@
       "views": {
         "front": {
           "path": "vehicles/g9/2025-2026/graphite_gray/front.webp",
-          "status": "pending"
+          "status": "available"
         },
         "charging": {
           "path": "vehicles/g9/2025-2026/graphite_gray/charging.webp",
-          "status": "pending"
+          "status": "available"
         },
         "top": {
           "path": "vehicles/g9/2025-2026/graphite_gray/top.webp",
-          "status": "pending"
+          "status": "available"
         }
       }
     },
@@ -1353,15 +1353,15 @@
       "views": {
         "front": {
           "path": "vehicles/g9/2025-2026/midnight_black/front.webp",
-          "status": "pending"
+          "status": "available"
         },
         "charging": {
           "path": "vehicles/g9/2025-2026/midnight_black/charging.webp",
-          "status": "pending"
+          "status": "available"
         },
         "top": {
           "path": "vehicles/g9/2025-2026/midnight_black/top.webp",
-          "status": "pending"
+          "status": "available"
         }
       }
     },

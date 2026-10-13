@@ -40,7 +40,16 @@
     "vehicles/g6/2026/stellar_purple/top.webp",
     "vehicles/g7/2025/nebula_white/charging.webp",
     "vehicles/g7/2025/nebula_white/front.webp",
-    "vehicles/g7/2025/nebula_white/top.webp"
+    "vehicles/g7/2025/nebula_white/top.webp",
+    "vehicles/g9/2025-2026/arctic_white/charging.webp",
+    "vehicles/g9/2025-2026/arctic_white/front.webp",
+    "vehicles/g9/2025-2026/arctic_white/top.webp",
+    "vehicles/g9/2025-2026/graphite_gray/charging.webp",
+    "vehicles/g9/2025-2026/graphite_gray/front.webp",
+    "vehicles/g9/2025-2026/graphite_gray/top.webp",
+    "vehicles/g9/2025-2026/midnight_black/charging.webp",
+    "vehicles/g9/2025-2026/midnight_black/front.webp",
+    "vehicles/g9/2025-2026/midnight_black/top.webp"
   ],
   "model_family": [],
   "known_uploaded_now": [
@@ -76,15 +85,24 @@
     "vehicles/g6/2026/stellar_purple/top.webp",
     "vehicles/g7/2025/nebula_white/charging.webp",
     "vehicles/g7/2025/nebula_white/front.webp",
-    "vehicles/g7/2025/nebula_white/top.webp"
+    "vehicles/g7/2025/nebula_white/top.webp",
+    "vehicles/g9/2025-2026/arctic_white/charging.webp",
+    "vehicles/g9/2025-2026/arctic_white/front.webp",
+    "vehicles/g9/2025-2026/arctic_white/top.webp",
+    "vehicles/g9/2025-2026/graphite_gray/charging.webp",
+    "vehicles/g9/2025-2026/graphite_gray/front.webp",
+    "vehicles/g9/2025-2026/graphite_gray/top.webp",
+    "vehicles/g9/2025-2026/midnight_black/charging.webp",
+    "vehicles/g9/2025-2026/midnight_black/front.webp",
+    "vehicles/g9/2025-2026/midnight_black/top.webp"
   ],
   "model_count": 15,
   "year_group_count": 21,
   "paint_combination_count": 111,
-  "pending_combination_count": 100,
+  "pending_combination_count": 97,
   "caveats": [
     "Available means a WebP file exists, not that it has manufacturer-verified provenance or accuracy.",
-    "2023-2025 G6 and G7 2025 are AI-generated illustrations, not official manufacturer photography; see sources/ai-generated-vehicle-art.json.",
+    "G6 2023-2025, G7 2025 and G9 2025-2026 are AI-generated illustrations, not official manufacturer photography; see sources/ai-generated-vehicle-art.json.",
     "Missing combinations display a labelled color-matched fallback, never images borrowed from other model/year/paint.",
     "Runtime default artwork uses GitHub main branch URLs after merging and needs internet access.",
     "Color palette HEX values are approximations for the UI, not manufacturer-certified paint codes; color availability differs by market."

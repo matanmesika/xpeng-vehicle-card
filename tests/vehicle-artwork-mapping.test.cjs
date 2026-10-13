@@ -173,3 +173,17 @@ test('every single model year resolves to one group; no missing view may borrow 
   }
  }
 });
+
+test('G9 refreshed 2025-2026 first three paint sets are complete with independent images',()=>{
+ for(const paint of ['arctic_white','graphite_gray','midnight_black']){
+  const found=artMap.entries.find(e=>e.model==='G9'&&e.year_group==='2025-2026'&&e.exterior_color===paint);
+  assert.ok(found);
+  for(const view of ['front','charging','top']){
+    assert.equal(found.views[view].status,'available');
+    assert.ok(api.XP_ARTWORK_INDEX.has(found.views[view].path));
+    assert.ok(api.XP_ILLUSTRATIVE_ARTWORK_INDEX.has(found.views[view].path));
+  }
+  const app=api.xpNormalizeAppearance({model:'G9',year:'2026',color:paint});
+  assert.equal(instance(app).assetSpec().tier,'generated-preview');
+ }
+});

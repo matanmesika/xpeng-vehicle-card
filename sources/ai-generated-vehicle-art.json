@@ -30,7 +30,16 @@
     "vehicles/g6/2023-2025/silver_frost/top.webp",
     "vehicles/g7/2025/nebula_white/charging.webp",
     "vehicles/g7/2025/nebula_white/front.webp",
-    "vehicles/g7/2025/nebula_white/top.webp"
+    "vehicles/g7/2025/nebula_white/top.webp",
+    "vehicles/g9/2025-2026/arctic_white/charging.webp",
+    "vehicles/g9/2025-2026/arctic_white/front.webp",
+    "vehicles/g9/2025-2026/arctic_white/top.webp",
+    "vehicles/g9/2025-2026/graphite_gray/charging.webp",
+    "vehicles/g9/2025-2026/graphite_gray/front.webp",
+    "vehicles/g9/2025-2026/graphite_gray/top.webp",
+    "vehicles/g9/2025-2026/midnight_black/charging.webp",
+    "vehicles/g9/2025-2026/midnight_black/front.webp",
+    "vehicles/g9/2025-2026/midnight_black/top.webp"
   ],
   "notes": [
     "Created as visual approximations, not genuine manufacturer vehicle photographs.",
@@ -38,6 +47,7 @@
     "All paths are cutout WebP assets with alpha; front, charging/rear and top views have independent images for each paint.",
     "Corrected Silver Frost front from a duplicate rear render before upload.",
     "G7 2025 Nebula White views were created as AI illustrative assets. Rear and top were separately cut out from a generated three-view reference; not factory-authentic photos.",
-    "G7-specific year and paint labels follow official China-market choices; not all regions offer the same combinations."
+    "G7-specific year and paint labels follow official China-market choices; not all regions offer the same combinations.",
+    "G9 2025-2026 first batch: 3 distinct AI-generated camera views for Arctic White, Graphite Gray and Midnight Black; not official manufacturer photos."
   ]
 }
