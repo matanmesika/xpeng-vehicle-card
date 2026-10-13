@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "as_of": "2026-10-13",
+  "classification": "origin_unverified",
+  "manufacturer_verified": false,
+  "notes": [
+    "These files predate the AI-generation provenance ledger. The repository does not establish whether their source is AI, photography, or manufacturer material.",
+    "They are valid existing WebP assets but MUST NOT be advertised as official/manufacturer-verified. Confirm original generation and visual fidelity before release.",
+    "This is not a source licence or an authenticity certification."
+  ],
+  "paths": [
+    "vehicles/g6/2026/arctic_white/charging.webp",
+    "vehicles/g6/2026/arctic_white/front.webp",
+    "vehicles/g6/2026/arctic_white/top.webp",
+    "vehicles/g6/2026/graphite_gray/charging.webp",
+    "vehicles/g6/2026/graphite_gray/front.webp",
+    "vehicles/g6/2026/graphite_gray/top.webp",
+    "vehicles/g6/2026/midnight_black/charging.webp",
+    "vehicles/g6/2026/midnight_black/front.webp",
+    "vehicles/g6/2026/midnight_black/top.webp",
+    "vehicles/g6/2026/silver_frost/charging.webp",
+    "vehicles/g6/2026/silver_frost/front.webp",
+    "vehicles/g6/2026/silver_frost/top.webp",
+    "vehicles/g6/2026/stellar_purple/charging.webp",
+    "vehicles/g6/2026/stellar_purple/front.webp",
+    "vehicles/g6/2026/stellar_purple/top.webp"
+  ]
+}

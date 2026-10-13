@@ -7,7 +7,7 @@ This repository is the **frontend Lovelace XPENG dashboard only**. The companion
 - Two primary screens: Vehicle status and sensor-triggered Charging.
 - Approved nighttime landscape is one immutable shared background; actual car is a separate overlay.
 - Tire pressure opens a large top-down detail in the Vehicle status area, four live pressures around the wheels, with Back to vehicle.
-- **Image selection uses model + paint only**, always preferring the single highest-available-trim image for that model/paint. Year filters only trim names; selected trim does nothing visually or to telemetry. Model/paint changes may invalidate owner's manually supplied car art, but year/trim changes must not.
+- **Image selection uses model + year group + exterior paint**. Year-group selection filters allowed trim labels but trim is always informational and has zero effect on artwork or telemetry. Different generations MUST NOT reuse one another's images. Year/model/paint changes may invalidate manually supplied artwork; trim changes never do.
 - Connection indicator and info icon share the header row. **Only click on info opens** the transient popup with exactly Connection and Last vehicle update. No model/trim/cabin/image metadata in the popup.
 - No new climate/controls/doors/weather/navigation screens or dashboard appearance selectors.
 - Missing Home Assistant data must remain unavailable; no invented pressures, SOC or charging values.

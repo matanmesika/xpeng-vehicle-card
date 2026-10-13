@@ -1,29 +1,26 @@
 {
-  "schema_version": 3,
-  "as_of": "2026-10-12",
+  "schema_version": 4,
+  "as_of": "2026-10-13",
   "catalog": "vehicle-catalog.json",
+  "asset_index": "vehicle-art-map.json",
   "selection_key": [
     "model",
     "year_group",
     "exterior_color"
   ],
   "trim_affects_artwork": false,
-  "trim_policy": "display-only title; trim never changes image selection",
+  "trim_policy": "Trim is display-only, year_group filters offered trim labels. Trim never affects artwork, colors, cabin, telemetry or sensor mappings.",
   "backdrop": "xpeng-approved-lakeside-background.webp",
-  "target_asset_layout": "assets/vehicles/{model}/{year-group}/{color}/{front,charging,top}.webp",
-  "current_generated_assets": {
-    "model": "G6",
-    "year_group": "2026",
-    "colors": [
-      "graphite_gray",
-      "arctic_white",
-      "midnight_black",
-      "silver_frost",
-      "stellar_purple"
-    ],
-    "pending": [
-      "black_edition"
-    ]
-  },
-  "note": "The upload bundle contains placeholders for catalog combinations not yet replaced by approved/generated vehicle artwork."
+  "target_asset_layout": "assets/vehicles/{model}/{year_group}/{exterior_color}/{front,charging,top}.webp",
+  "available_image_count": 43,
+  "available_combinations": 14,
+  "pending_combinations": 99,
+  "missing_asset_policy": "Labelled colour-matched silhouette only; never substitute wrong model/year-group/color or silently reuse front for charging/top.",
+  "provenance_policy": "G6 2023-2025, G7 2025 and G9 2025-2026 artwork are illustrative AI-generated images; see sources/ai-generated-vehicle-art.json. Manufacturer geometry fidelity requires manual review.",
+  "ai_artwork_index": "sources/ai-generated-vehicle-art.json",
+  "year_group_count": 21,
+  "paint_combination_count": 113,
+  "model_count": 15,
+  "market_note": "Catalogue groups are market/year specific where documented; Chinese colors are not asserted as exported-market options. All paint HEX values are approximate visual swatches.",
+  "year_color_policy": "An exact model year filters paint choices. Year group identifies shared image geometry, and selected trim remains display-only."
 }

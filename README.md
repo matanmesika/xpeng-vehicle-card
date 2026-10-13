@@ -1,5 +1,7 @@
 # XPENG Dashboard — Home Assistant vehicle card
 
+**[📊 Artwork progress dashboard](docs/ARTWORK_STATUS.md)** — current completion by XPENG model and generation, missing views, and verified checks. Counts update when new assets are committed; this is not a live rendering indicator.
+
 A standalone, **read-only Home Assistant dashboard card** for XPENG vehicles. This repository contains **frontend/UI only**; the XPENG Home Assistant integration is a separate project and is not modified here.
 
 **Updates and release history:** [CHANGELOG.md](CHANGELOG.md) is the single canonical history for this project. Obsolete per-release note files were removed; installable versions are published separately under [GitHub Releases](https://github.com/matanmesika/xpeng-vehicle-card/releases).
@@ -21,10 +23,10 @@ A standalone, **read-only Home Assistant dashboard card** for XPENG vehicles. Th
 - **Model** changes vehicle artwork and its available selections.
 - **Exterior colour** changes the vehicle artwork (and any colour-matched preview).
 - **Model year** is part of the artwork storage key. The current approved G6 artwork is mapped under year `2026`.
-- **Trim** is informational only, with no visual or sensor effect. Older years deliberately display the same current model picture.
+- **Trim** is informational only. Each year group always selects its own geometry; no substitution of newer or older generations.
 - **Interior finish** is an editor-only future-facing visual setting; it does not appear in the information popup.
 
-The mapping is recorded in [model-artwork.json](model-artwork.json). The current approved G6 set is stored at `assets/vehicles/g6/2026/graphite_gray/` with `front.webp`, `charging.webp`, and `top.webp`. Trim names are not part of the filesystem path.
+The mapping is recorded in [model-artwork.json](model-artwork.json). The current G6 set covers five 2026 colours in separate `front.webp`, `charging.webp`, and `top.webp` files. Other model/year/paint folders are prepared but currently pending real artwork. Trim names are not part of the filesystem path. See [complete artwork mapping](docs/ARTWORK_MAPPING.md).
 
 See [artwork and tire view policy](docs/SHAPE_ASSETS_AND_TPMS.md) and [design lock](docs/DESIGN_LOCK.md).
 
@@ -90,3 +92,23 @@ The charging sensor determines the view; an available charging cable alone does 
 The tested UI improvements originated in [PR #21](https://github.com/matanmesika/xpeng-vehicle-card/pull/21); image research continues separately. See [release checklist](docs/RELEASE_CHECKLIST.md) and [changelog](CHANGELOG.md). Final real-vehicle photography, licence checks, owner visual sign-off, and installation testing in an actual Home Assistant instance remain separate release gates.
 
 *Independent community dashboard; not an official XPENG product.*
+
+
+## Full model/year-group/paint image inventory
+
+The [artwork map](vehicle-art-map.json) covers all current catalog combinations and explicitly marks missing image views. Run `python tools/sync_vehicle_artwork.py` after adding correctly licensed WebP images to the corresponding folder; see [mapping instructions](docs/ARTWORK_MAPPING.md). Until the file is available, the dashboard displays a labelled illustration. No trim-specific photos or guessed vehicle/paint substitutions are used.
+
+
+### G6 original generation artwork
+
+A first pack for G6 **2023–2025** adds five exterior paints × front, charging/rear and top views (15 WebPs). These are **AI-generated illustrative cutouts**, not manufacturer-confirmed photographs, and must be treated as previews. See `sources/ai-generated-vehicle-art.json` and `docs/ARTWORK_MAPPING.md`. Runtime raw GitHub URLs point to `main`, so PR-only uploads become live after merging.
+
+
+## Complete multi-model artwork matrix
+
+[Final 15-model year/paint artwork matrix](docs/FULL_MODEL_COVERAGE.md) tracks all 15 catalogue models, 21 year groups, 113 exterior paint choices and three independent image slots per combination. The [CSV build backlog](artwork-backlog.csv) identifies pending versus uploaded real files. Some historical/region-specific paint lists remain provisional; see source notes. 43 actual WebP assets are currently uploaded — the remaining slots **are not pictures**. Model/year/paint choose the asset; trim is display-only and never affects artwork or telemetry. Run `python tools/export_vehicle_artwork_backlog.py --check` to verify the CSV before merging.
+
+
+## Remaining model-specific camera angles
+
+The [master-view work queue](master-view-queue.json) tracks missing independent front, rear/charging and vertical-overhead photos for all 21 body-generation groups. [Build order](docs/ARTWORK_MASTER_PLAN.md). Generating correctly shaped master trios precedes any mass colour derivation; a missing camera view is never replaced with an alternate angle.

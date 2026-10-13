@@ -1,0 +1,152 @@
+{
+  "schema_version": 1,
+  "items": [
+    {
+      "path": "vehicles/g7/2025/cloud_beige/charging.webp",
+      "derived_from": "vehicles/g7/2025/nebula_white/charging.webp",
+      "method": "illustrative-white-master-paint-overlay",
+      "manufacturer_verified": false,
+      "design_review": "pending"
+    },
+    {
+      "path": "vehicles/g7/2025/cloud_beige/front.webp",
+      "derived_from": "vehicles/g7/2025/nebula_white/front.webp",
+      "method": "illustrative-white-master-paint-overlay",
+      "manufacturer_verified": false,
+      "design_review": "pending"
+    },
+    {
+      "path": "vehicles/g7/2025/cloud_beige/top.webp",
+      "derived_from": "vehicles/g7/2025/nebula_white/top.webp",
+      "method": "illustrative-white-master-paint-overlay",
+      "manufacturer_verified": false,
+      "design_review": "pending"
+    },
+    {
+      "path": "vehicles/g7/2025/crescent_silver/charging.webp",
+      "derived_from": "vehicles/g7/2025/nebula_white/charging.webp",
+      "method": "illustrative-white-master-paint-overlay",
+      "manufacturer_verified": false,
+      "design_review": "pending"
+    },
+    {
+      "path": "vehicles/g7/2025/crescent_silver/front.webp",
+      "derived_from": "vehicles/g7/2025/nebula_white/front.webp",
+      "method": "illustrative-white-master-paint-overlay",
+      "manufacturer_verified": false,
+      "design_review": "pending"
+    },
+    {
+      "path": "vehicles/g7/2025/crescent_silver/top.webp",
+      "derived_from": "vehicles/g7/2025/nebula_white/top.webp",
+      "method": "illustrative-white-master-paint-overlay",
+      "manufacturer_verified": false,
+      "design_review": "pending"
+    },
+    {
+      "path": "vehicles/g7/2025/interstellar_green/charging.webp",
+      "derived_from": "vehicles/g7/2025/nebula_white/charging.webp",
+      "method": "illustrative-white-master-paint-overlay",
+      "manufacturer_verified": false,
+      "design_review": "pending"
+    },
+    {
+      "path": "vehicles/g7/2025/interstellar_green/front.webp",
+      "derived_from": "vehicles/g7/2025/nebula_white/front.webp",
+      "method": "illustrative-white-master-paint-overlay",
+      "manufacturer_verified": false,
+      "design_review": "pending"
+    },
+    {
+      "path": "vehicles/g7/2025/interstellar_green/top.webp",
+      "derived_from": "vehicles/g7/2025/nebula_white/top.webp",
+      "method": "illustrative-white-master-paint-overlay",
+      "manufacturer_verified": false,
+      "design_review": "pending"
+    },
+    {
+      "path": "vehicles/g7/2025/night_black/charging.webp",
+      "derived_from": "vehicles/g7/2025/nebula_white/charging.webp",
+      "method": "illustrative-white-master-paint-overlay",
+      "manufacturer_verified": false,
+      "design_review": "pending"
+    },
+    {
+      "path": "vehicles/g7/2025/night_black/front.webp",
+      "derived_from": "vehicles/g7/2025/nebula_white/front.webp",
+      "method": "illustrative-white-master-paint-overlay",
+      "manufacturer_verified": false,
+      "design_review": "pending"
+    },
+    {
+      "path": "vehicles/g7/2025/night_black/top.webp",
+      "derived_from": "vehicles/g7/2025/nebula_white/top.webp",
+      "method": "illustrative-white-master-paint-overlay",
+      "manufacturer_verified": false,
+      "design_review": "pending"
+    },
+    {
+      "path": "vehicles/g7/2025/starday_gray/charging.webp",
+      "derived_from": "vehicles/g7/2025/nebula_white/charging.webp",
+      "method": "illustrative-white-master-paint-overlay",
+      "manufacturer_verified": false,
+      "design_review": "pending"
+    },
+    {
+      "path": "vehicles/g7/2025/starday_gray/front.webp",
+      "derived_from": "vehicles/g7/2025/nebula_white/front.webp",
+      "method": "illustrative-white-master-paint-overlay",
+      "manufacturer_verified": false,
+      "design_review": "pending"
+    },
+    {
+      "path": "vehicles/g7/2025/starday_gray/top.webp",
+      "derived_from": "vehicles/g7/2025/nebula_white/top.webp",
+      "method": "illustrative-white-master-paint-overlay",
+      "manufacturer_verified": false,
+      "design_review": "pending"
+    },
+    {
+      "path": "vehicles/g9/2025-2026/kaitoke_green_matte/charging.webp",
+      "derived_from": "vehicles/g9/2025-2026/arctic_white/charging.webp",
+      "method": "illustrative-white-master-paint-overlay",
+      "manufacturer_verified": false,
+      "design_review": "pending"
+    },
+    {
+      "path": "vehicles/g9/2025-2026/kaitoke_green_matte/front.webp",
+      "derived_from": "vehicles/g9/2025-2026/arctic_white/front.webp",
+      "method": "illustrative-white-master-paint-overlay",
+      "manufacturer_verified": false,
+      "design_review": "pending"
+    },
+    {
+      "path": "vehicles/g9/2025-2026/kaitoke_green_matte/top.webp",
+      "derived_from": "vehicles/g9/2025-2026/arctic_white/top.webp",
+      "method": "illustrative-white-master-paint-overlay",
+      "manufacturer_verified": false,
+      "design_review": "pending"
+    },
+    {
+      "path": "vehicles/g9/2025-2026/silver_frost/charging.webp",
+      "derived_from": "vehicles/g9/2025-2026/arctic_white/charging.webp",
+      "method": "illustrative-white-master-paint-overlay",
+      "manufacturer_verified": false,
+      "design_review": "pending"
+    },
+    {
+      "path": "vehicles/g9/2025-2026/silver_frost/front.webp",
+      "derived_from": "vehicles/g9/2025-2026/arctic_white/front.webp",
+      "method": "illustrative-white-master-paint-overlay",
+      "manufacturer_verified": false,
+      "design_review": "pending"
+    },
+    {
+      "path": "vehicles/g9/2025-2026/silver_frost/top.webp",
+      "derived_from": "vehicles/g9/2025-2026/arctic_white/top.webp",
+      "method": "illustrative-white-master-paint-overlay",
+      "manufacturer_verified": false,
+      "design_review": "pending"
+    }
+  ]
+}

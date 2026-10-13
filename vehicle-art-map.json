@@ -1,0 +1,2167 @@
+{
+  "schema_version": 1,
+  "as_of": "2026-10-13",
+  "catalog": "vehicle-catalog.json",
+  "selection_key": [
+    "model",
+    "year_group",
+    "exterior_color"
+  ],
+  "trim_affects_artwork": false,
+  "asset_root": "assets",
+  "views": [
+    "front",
+    "charging",
+    "top"
+  ],
+  "description": "Model year filters paints, shared body-generation groups select assets; missing views are pending.",
+  "entries": [
+    {
+      "model": "G3",
+      "year_group": "2018-2021",
+      "exterior_color": "arctic_white",
+      "views": {
+        "front": {
+          "path": "vehicles/g3/2018-2021/arctic_white/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/g3/2018-2021/arctic_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/g3/2018-2021/arctic_white/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "G3",
+      "year_group": "2018-2021",
+      "exterior_color": "graphite_gray",
+      "views": {
+        "front": {
+          "path": "vehicles/g3/2018-2021/graphite_gray/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/g3/2018-2021/graphite_gray/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/g3/2018-2021/graphite_gray/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "G3",
+      "year_group": "2018-2021",
+      "exterior_color": "midnight_black",
+      "views": {
+        "front": {
+          "path": "vehicles/g3/2018-2021/midnight_black/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/g3/2018-2021/midnight_black/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/g3/2018-2021/midnight_black/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "G3i",
+      "year_group": "2021-2023",
+      "exterior_color": "arctic_white",
+      "views": {
+        "front": {
+          "path": "vehicles/g3i/2021-2023/arctic_white/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/g3i/2021-2023/arctic_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/g3i/2021-2023/arctic_white/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "G3i",
+      "year_group": "2021-2023",
+      "exterior_color": "graphite_gray",
+      "views": {
+        "front": {
+          "path": "vehicles/g3i/2021-2023/graphite_gray/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/g3i/2021-2023/graphite_gray/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/g3i/2021-2023/graphite_gray/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "G3i",
+      "year_group": "2021-2023",
+      "exterior_color": "midnight_black",
+      "views": {
+        "front": {
+          "path": "vehicles/g3i/2021-2023/midnight_black/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/g3i/2021-2023/midnight_black/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/g3i/2021-2023/midnight_black/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "G3i",
+      "year_group": "2021-2023",
+      "exterior_color": "coral_green",
+      "views": {
+        "front": {
+          "path": "vehicles/g3i/2021-2023/coral_green/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/g3i/2021-2023/coral_green/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/g3i/2021-2023/coral_green/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "P5",
+      "year_group": "2021-2024",
+      "exterior_color": "arctic_white",
+      "views": {
+        "front": {
+          "path": "vehicles/p5/2021-2024/arctic_white/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/p5/2021-2024/arctic_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/p5/2021-2024/arctic_white/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "P5",
+      "year_group": "2021-2024",
+      "exterior_color": "graphite_gray",
+      "views": {
+        "front": {
+          "path": "vehicles/p5/2021-2024/graphite_gray/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/p5/2021-2024/graphite_gray/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/p5/2021-2024/graphite_gray/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "P5",
+      "year_group": "2021-2024",
+      "exterior_color": "midnight_black",
+      "views": {
+        "front": {
+          "path": "vehicles/p5/2021-2024/midnight_black/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/p5/2021-2024/midnight_black/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/p5/2021-2024/midnight_black/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "P7",
+      "year_group": "2020-2022",
+      "exterior_color": "arctic_white",
+      "views": {
+        "front": {
+          "path": "vehicles/p7/2020-2022/arctic_white/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/p7/2020-2022/arctic_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/p7/2020-2022/arctic_white/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "P7",
+      "year_group": "2020-2022",
+      "exterior_color": "jet_black",
+      "views": {
+        "front": {
+          "path": "vehicles/p7/2020-2022/jet_black/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/p7/2020-2022/jet_black/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/p7/2020-2022/jet_black/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "P7",
+      "year_group": "2020-2022",
+      "exterior_color": "space_gray",
+      "views": {
+        "front": {
+          "path": "vehicles/p7/2020-2022/space_gray/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/p7/2020-2022/space_gray/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/p7/2020-2022/space_gray/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "P7",
+      "year_group": "2020-2022",
+      "exterior_color": "red",
+      "views": {
+        "front": {
+          "path": "vehicles/p7/2020-2022/red/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/p7/2020-2022/red/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/p7/2020-2022/red/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "P7",
+      "year_group": "2020-2022",
+      "exterior_color": "green",
+      "views": {
+        "front": {
+          "path": "vehicles/p7/2020-2022/green/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/p7/2020-2022/green/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/p7/2020-2022/green/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "P7i",
+      "year_group": "2023-2025",
+      "exterior_color": "arctic_white",
+      "views": {
+        "front": {
+          "path": "vehicles/p7i/2023-2025/arctic_white/front.webp",
+          "status": "available"
+        },
+        "charging": {
+          "path": "vehicles/p7i/2023-2025/arctic_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/p7i/2023-2025/arctic_white/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "P7i",
+      "year_group": "2023-2025",
+      "exterior_color": "jet_black",
+      "views": {
+        "front": {
+          "path": "vehicles/p7i/2023-2025/jet_black/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/p7i/2023-2025/jet_black/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/p7i/2023-2025/jet_black/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "P7i",
+      "year_group": "2023-2025",
+      "exterior_color": "space_gray",
+      "views": {
+        "front": {
+          "path": "vehicles/p7i/2023-2025/space_gray/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/p7i/2023-2025/space_gray/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/p7i/2023-2025/space_gray/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "P7i",
+      "year_group": "2023-2025",
+      "exterior_color": "silver_frost",
+      "views": {
+        "front": {
+          "path": "vehicles/p7i/2023-2025/silver_frost/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/p7i/2023-2025/silver_frost/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/p7i/2023-2025/silver_frost/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "P7i",
+      "year_group": "2023-2025",
+      "exterior_color": "kaitoke_green_matte",
+      "views": {
+        "front": {
+          "path": "vehicles/p7i/2023-2025/kaitoke_green_matte/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/p7i/2023-2025/kaitoke_green_matte/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/p7i/2023-2025/kaitoke_green_matte/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "P7i",
+      "year_group": "2023-2025",
+      "exterior_color": "starry_dusk_purple",
+      "views": {
+        "front": {
+          "path": "vehicles/p7i/2023-2025/starry_dusk_purple/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/p7i/2023-2025/starry_dusk_purple/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/p7i/2023-2025/starry_dusk_purple/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "P7i",
+      "year_group": "2023-2025",
+      "exterior_color": "star_blue",
+      "views": {
+        "front": {
+          "path": "vehicles/p7i/2023-2025/star_blue/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/p7i/2023-2025/star_blue/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/p7i/2023-2025/star_blue/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "Next P7",
+      "year_group": "2025",
+      "exterior_color": "new_moon_silver",
+      "views": {
+        "front": {
+          "path": "vehicles/next_p7/2025/new_moon_silver/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/next_p7/2025/new_moon_silver/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/next_p7/2025/new_moon_silver/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "Next P7",
+      "year_group": "2025",
+      "exterior_color": "rhythm_yellow",
+      "views": {
+        "front": {
+          "path": "vehicles/next_p7/2025/rhythm_yellow/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/next_p7/2025/rhythm_yellow/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/next_p7/2025/rhythm_yellow/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "Next P7",
+      "year_group": "2025",
+      "exterior_color": "stellar_green",
+      "views": {
+        "front": {
+          "path": "vehicles/next_p7/2025/stellar_green/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/next_p7/2025/stellar_green/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/next_p7/2025/stellar_green/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "Next P7",
+      "year_group": "2025",
+      "exterior_color": "dusk_purple",
+      "views": {
+        "front": {
+          "path": "vehicles/next_p7/2025/dusk_purple/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/next_p7/2025/dusk_purple/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/next_p7/2025/dusk_purple/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "Next P7",
+      "year_group": "2025",
+      "exterior_color": "micro_star_gray",
+      "views": {
+        "front": {
+          "path": "vehicles/next_p7/2025/micro_star_gray/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/next_p7/2025/micro_star_gray/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/next_p7/2025/micro_star_gray/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "Next P7",
+      "year_group": "2025",
+      "exterior_color": "starburst_blue",
+      "views": {
+        "front": {
+          "path": "vehicles/next_p7/2025/starburst_blue/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/next_p7/2025/starburst_blue/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/next_p7/2025/starburst_blue/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "Next P7",
+      "year_group": "2026",
+      "exterior_color": "new_moon_silver",
+      "views": {
+        "front": {
+          "path": "vehicles/next_p7/2026/new_moon_silver/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/next_p7/2026/new_moon_silver/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/next_p7/2026/new_moon_silver/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "Next P7",
+      "year_group": "2026",
+      "exterior_color": "rhythm_yellow",
+      "views": {
+        "front": {
+          "path": "vehicles/next_p7/2026/rhythm_yellow/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/next_p7/2026/rhythm_yellow/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/next_p7/2026/rhythm_yellow/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "Next P7",
+      "year_group": "2026",
+      "exterior_color": "stellar_green",
+      "views": {
+        "front": {
+          "path": "vehicles/next_p7/2026/stellar_green/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/next_p7/2026/stellar_green/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/next_p7/2026/stellar_green/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "Next P7",
+      "year_group": "2026",
+      "exterior_color": "dusk_purple",
+      "views": {
+        "front": {
+          "path": "vehicles/next_p7/2026/dusk_purple/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/next_p7/2026/dusk_purple/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/next_p7/2026/dusk_purple/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "Next P7",
+      "year_group": "2026",
+      "exterior_color": "micro_star_gray",
+      "views": {
+        "front": {
+          "path": "vehicles/next_p7/2026/micro_star_gray/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/next_p7/2026/micro_star_gray/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/next_p7/2026/micro_star_gray/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "Next P7",
+      "year_group": "2026",
+      "exterior_color": "starburst_blue",
+      "views": {
+        "front": {
+          "path": "vehicles/next_p7/2026/starburst_blue/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/next_p7/2026/starburst_blue/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/next_p7/2026/starburst_blue/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "Next P7",
+      "year_group": "2026",
+      "exterior_color": "night_black",
+      "views": {
+        "front": {
+          "path": "vehicles/next_p7/2026/night_black/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/next_p7/2026/night_black/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/next_p7/2026/night_black/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "Next P7",
+      "year_group": "2026",
+      "exterior_color": "nebula_white",
+      "views": {
+        "front": {
+          "path": "vehicles/next_p7/2026/nebula_white/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/next_p7/2026/nebula_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/next_p7/2026/nebula_white/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "Next P7",
+      "year_group": "2026",
+      "exterior_color": "star_red",
+      "views": {
+        "front": {
+          "path": "vehicles/next_p7/2026/star_red/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/next_p7/2026/star_red/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/next_p7/2026/star_red/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "Next P7",
+      "year_group": "2026",
+      "exterior_color": "matte_new_moon_silver",
+      "views": {
+        "front": {
+          "path": "vehicles/next_p7/2026/matte_new_moon_silver/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/next_p7/2026/matte_new_moon_silver/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/next_p7/2026/matte_new_moon_silver/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "P7+",
+      "year_group": "2024-2026",
+      "exterior_color": "arctic_white",
+      "views": {
+        "front": {
+          "path": "vehicles/p7_plus/2024-2026/arctic_white/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/p7_plus/2024-2026/arctic_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/p7_plus/2024-2026/arctic_white/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "P7+",
+      "year_group": "2024-2026",
+      "exterior_color": "graphite_gray",
+      "views": {
+        "front": {
+          "path": "vehicles/p7_plus/2024-2026/graphite_gray/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/p7_plus/2024-2026/graphite_gray/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/p7_plus/2024-2026/graphite_gray/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "P7+",
+      "year_group": "2024-2026",
+      "exterior_color": "midnight_black",
+      "views": {
+        "front": {
+          "path": "vehicles/p7_plus/2024-2026/midnight_black/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/p7_plus/2024-2026/midnight_black/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/p7_plus/2024-2026/midnight_black/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "P7+",
+      "year_group": "2024-2026",
+      "exterior_color": "silver_frost",
+      "views": {
+        "front": {
+          "path": "vehicles/p7_plus/2024-2026/silver_frost/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/p7_plus/2024-2026/silver_frost/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/p7_plus/2024-2026/silver_frost/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "P7+",
+      "year_group": "2024-2026",
+      "exterior_color": "stellar_purple",
+      "views": {
+        "front": {
+          "path": "vehicles/p7_plus/2024-2026/stellar_purple/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/p7_plus/2024-2026/stellar_purple/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/p7_plus/2024-2026/stellar_purple/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "G6",
+      "year_group": "2023-2025",
+      "exterior_color": "arctic_white",
+      "views": {
+        "front": {
+          "path": "vehicles/g6/2023-2025/arctic_white/front.webp",
+          "status": "available"
+        },
+        "charging": {
+          "path": "vehicles/g6/2023-2025/arctic_white/charging.webp",
+          "status": "available"
+        },
+        "top": {
+          "path": "vehicles/g6/2023-2025/arctic_white/top.webp",
+          "status": "available"
+        }
+      }
+    },
+    {
+      "model": "G6",
+      "year_group": "2023-2025",
+      "exterior_color": "graphite_gray",
+      "views": {
+        "front": {
+          "path": "vehicles/g6/2023-2025/graphite_gray/front.webp",
+          "status": "available"
+        },
+        "charging": {
+          "path": "vehicles/g6/2023-2025/graphite_gray/charging.webp",
+          "status": "available"
+        },
+        "top": {
+          "path": "vehicles/g6/2023-2025/graphite_gray/top.webp",
+          "status": "available"
+        }
+      }
+    },
+    {
+      "model": "G6",
+      "year_group": "2023-2025",
+      "exterior_color": "midnight_black",
+      "views": {
+        "front": {
+          "path": "vehicles/g6/2023-2025/midnight_black/front.webp",
+          "status": "available"
+        },
+        "charging": {
+          "path": "vehicles/g6/2023-2025/midnight_black/charging.webp",
+          "status": "available"
+        },
+        "top": {
+          "path": "vehicles/g6/2023-2025/midnight_black/top.webp",
+          "status": "available"
+        }
+      }
+    },
+    {
+      "model": "G6",
+      "year_group": "2023-2025",
+      "exterior_color": "silver_frost",
+      "views": {
+        "front": {
+          "path": "vehicles/g6/2023-2025/silver_frost/front.webp",
+          "status": "available"
+        },
+        "charging": {
+          "path": "vehicles/g6/2023-2025/silver_frost/charging.webp",
+          "status": "available"
+        },
+        "top": {
+          "path": "vehicles/g6/2023-2025/silver_frost/top.webp",
+          "status": "available"
+        }
+      }
+    },
+    {
+      "model": "G6",
+      "year_group": "2023-2025",
+      "exterior_color": "fiery_orange",
+      "views": {
+        "front": {
+          "path": "vehicles/g6/2023-2025/fiery_orange/front.webp",
+          "status": "available"
+        },
+        "charging": {
+          "path": "vehicles/g6/2023-2025/fiery_orange/charging.webp",
+          "status": "available"
+        },
+        "top": {
+          "path": "vehicles/g6/2023-2025/fiery_orange/top.webp",
+          "status": "available"
+        }
+      }
+    },
+    {
+      "model": "G6",
+      "year_group": "2026",
+      "exterior_color": "arctic_white",
+      "views": {
+        "front": {
+          "path": "vehicles/g6/2026/arctic_white/front.webp",
+          "status": "available"
+        },
+        "charging": {
+          "path": "vehicles/g6/2026/arctic_white/charging.webp",
+          "status": "available"
+        },
+        "top": {
+          "path": "vehicles/g6/2026/arctic_white/top.webp",
+          "status": "available"
+        }
+      }
+    },
+    {
+      "model": "G6",
+      "year_group": "2026",
+      "exterior_color": "graphite_gray",
+      "views": {
+        "front": {
+          "path": "vehicles/g6/2026/graphite_gray/front.webp",
+          "status": "available"
+        },
+        "charging": {
+          "path": "vehicles/g6/2026/graphite_gray/charging.webp",
+          "status": "available"
+        },
+        "top": {
+          "path": "vehicles/g6/2026/graphite_gray/top.webp",
+          "status": "available"
+        }
+      }
+    },
+    {
+      "model": "G6",
+      "year_group": "2026",
+      "exterior_color": "midnight_black",
+      "views": {
+        "front": {
+          "path": "vehicles/g6/2026/midnight_black/front.webp",
+          "status": "available"
+        },
+        "charging": {
+          "path": "vehicles/g6/2026/midnight_black/charging.webp",
+          "status": "available"
+        },
+        "top": {
+          "path": "vehicles/g6/2026/midnight_black/top.webp",
+          "status": "available"
+        }
+      }
+    },
+    {
+      "model": "G6",
+      "year_group": "2026",
+      "exterior_color": "silver_frost",
+      "views": {
+        "front": {
+          "path": "vehicles/g6/2026/silver_frost/front.webp",
+          "status": "available"
+        },
+        "charging": {
+          "path": "vehicles/g6/2026/silver_frost/charging.webp",
+          "status": "available"
+        },
+        "top": {
+          "path": "vehicles/g6/2026/silver_frost/top.webp",
+          "status": "available"
+        }
+      }
+    },
+    {
+      "model": "G6",
+      "year_group": "2026",
+      "exterior_color": "stellar_purple",
+      "views": {
+        "front": {
+          "path": "vehicles/g6/2026/stellar_purple/front.webp",
+          "status": "available"
+        },
+        "charging": {
+          "path": "vehicles/g6/2026/stellar_purple/charging.webp",
+          "status": "available"
+        },
+        "top": {
+          "path": "vehicles/g6/2026/stellar_purple/top.webp",
+          "status": "available"
+        }
+      }
+    },
+    {
+      "model": "G6",
+      "year_group": "2026",
+      "exterior_color": "black_edition",
+      "views": {
+        "front": {
+          "path": "vehicles/g6/2026/black_edition/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/g6/2026/black_edition/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/g6/2026/black_edition/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "G7",
+      "year_group": "2025",
+      "exterior_color": "starday_gray",
+      "views": {
+        "front": {
+          "path": "vehicles/g7/2025/starday_gray/front.webp",
+          "status": "available"
+        },
+        "charging": {
+          "path": "vehicles/g7/2025/starday_gray/charging.webp",
+          "status": "available"
+        },
+        "top": {
+          "path": "vehicles/g7/2025/starday_gray/top.webp",
+          "status": "available"
+        }
+      }
+    },
+    {
+      "model": "G7",
+      "year_group": "2025",
+      "exterior_color": "crescent_silver",
+      "views": {
+        "front": {
+          "path": "vehicles/g7/2025/crescent_silver/front.webp",
+          "status": "available"
+        },
+        "charging": {
+          "path": "vehicles/g7/2025/crescent_silver/charging.webp",
+          "status": "available"
+        },
+        "top": {
+          "path": "vehicles/g7/2025/crescent_silver/top.webp",
+          "status": "available"
+        }
+      }
+    },
+    {
+      "model": "G7",
+      "year_group": "2025",
+      "exterior_color": "cloud_beige",
+      "views": {
+        "front": {
+          "path": "vehicles/g7/2025/cloud_beige/front.webp",
+          "status": "available"
+        },
+        "charging": {
+          "path": "vehicles/g7/2025/cloud_beige/charging.webp",
+          "status": "available"
+        },
+        "top": {
+          "path": "vehicles/g7/2025/cloud_beige/top.webp",
+          "status": "available"
+        }
+      }
+    },
+    {
+      "model": "G7",
+      "year_group": "2025",
+      "exterior_color": "interstellar_green",
+      "views": {
+        "front": {
+          "path": "vehicles/g7/2025/interstellar_green/front.webp",
+          "status": "available"
+        },
+        "charging": {
+          "path": "vehicles/g7/2025/interstellar_green/charging.webp",
+          "status": "available"
+        },
+        "top": {
+          "path": "vehicles/g7/2025/interstellar_green/top.webp",
+          "status": "available"
+        }
+      }
+    },
+    {
+      "model": "G7",
+      "year_group": "2025",
+      "exterior_color": "night_black",
+      "views": {
+        "front": {
+          "path": "vehicles/g7/2025/night_black/front.webp",
+          "status": "available"
+        },
+        "charging": {
+          "path": "vehicles/g7/2025/night_black/charging.webp",
+          "status": "available"
+        },
+        "top": {
+          "path": "vehicles/g7/2025/night_black/top.webp",
+          "status": "available"
+        }
+      }
+    },
+    {
+      "model": "G7",
+      "year_group": "2025",
+      "exterior_color": "nebula_white",
+      "views": {
+        "front": {
+          "path": "vehicles/g7/2025/nebula_white/front.webp",
+          "status": "available"
+        },
+        "charging": {
+          "path": "vehicles/g7/2025/nebula_white/charging.webp",
+          "status": "available"
+        },
+        "top": {
+          "path": "vehicles/g7/2025/nebula_white/top.webp",
+          "status": "available"
+        }
+      }
+    },
+    {
+      "model": "G7",
+      "year_group": "2026",
+      "exterior_color": "twilight_purple",
+      "views": {
+        "front": {
+          "path": "vehicles/g7/2026/twilight_purple/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/g7/2026/twilight_purple/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/g7/2026/twilight_purple/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "G7",
+      "year_group": "2026",
+      "exterior_color": "starday_gray",
+      "views": {
+        "front": {
+          "path": "vehicles/g7/2026/starday_gray/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/g7/2026/starday_gray/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/g7/2026/starday_gray/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "G7",
+      "year_group": "2026",
+      "exterior_color": "crescent_silver",
+      "views": {
+        "front": {
+          "path": "vehicles/g7/2026/crescent_silver/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/g7/2026/crescent_silver/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/g7/2026/crescent_silver/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "G7",
+      "year_group": "2026",
+      "exterior_color": "night_black",
+      "views": {
+        "front": {
+          "path": "vehicles/g7/2026/night_black/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/g7/2026/night_black/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/g7/2026/night_black/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "G7",
+      "year_group": "2026",
+      "exterior_color": "nebula_white",
+      "views": {
+        "front": {
+          "path": "vehicles/g7/2026/nebula_white/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/g7/2026/nebula_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/g7/2026/nebula_white/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "G9",
+      "year_group": "2022-2024",
+      "exterior_color": "arctic_white",
+      "views": {
+        "front": {
+          "path": "vehicles/g9/2022-2024/arctic_white/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/g9/2022-2024/arctic_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/g9/2022-2024/arctic_white/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "G9",
+      "year_group": "2022-2024",
+      "exterior_color": "graphite_gray",
+      "views": {
+        "front": {
+          "path": "vehicles/g9/2022-2024/graphite_gray/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/g9/2022-2024/graphite_gray/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/g9/2022-2024/graphite_gray/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "G9",
+      "year_group": "2022-2024",
+      "exterior_color": "midnight_black",
+      "views": {
+        "front": {
+          "path": "vehicles/g9/2022-2024/midnight_black/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/g9/2022-2024/midnight_black/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/g9/2022-2024/midnight_black/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "G9",
+      "year_group": "2022-2024",
+      "exterior_color": "silver_frost",
+      "views": {
+        "front": {
+          "path": "vehicles/g9/2022-2024/silver_frost/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/g9/2022-2024/silver_frost/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/g9/2022-2024/silver_frost/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "G9",
+      "year_group": "2022-2024",
+      "exterior_color": "kaitoke_green_matte",
+      "views": {
+        "front": {
+          "path": "vehicles/g9/2022-2024/kaitoke_green_matte/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/g9/2022-2024/kaitoke_green_matte/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/g9/2022-2024/kaitoke_green_matte/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "G9",
+      "year_group": "2025-2026",
+      "exterior_color": "arctic_white",
+      "views": {
+        "front": {
+          "path": "vehicles/g9/2025-2026/arctic_white/front.webp",
+          "status": "available"
+        },
+        "charging": {
+          "path": "vehicles/g9/2025-2026/arctic_white/charging.webp",
+          "status": "available"
+        },
+        "top": {
+          "path": "vehicles/g9/2025-2026/arctic_white/top.webp",
+          "status": "available"
+        }
+      }
+    },
+    {
+      "model": "G9",
+      "year_group": "2025-2026",
+      "exterior_color": "graphite_gray",
+      "views": {
+        "front": {
+          "path": "vehicles/g9/2025-2026/graphite_gray/front.webp",
+          "status": "available"
+        },
+        "charging": {
+          "path": "vehicles/g9/2025-2026/graphite_gray/charging.webp",
+          "status": "available"
+        },
+        "top": {
+          "path": "vehicles/g9/2025-2026/graphite_gray/top.webp",
+          "status": "available"
+        }
+      }
+    },
+    {
+      "model": "G9",
+      "year_group": "2025-2026",
+      "exterior_color": "midnight_black",
+      "views": {
+        "front": {
+          "path": "vehicles/g9/2025-2026/midnight_black/front.webp",
+          "status": "available"
+        },
+        "charging": {
+          "path": "vehicles/g9/2025-2026/midnight_black/charging.webp",
+          "status": "available"
+        },
+        "top": {
+          "path": "vehicles/g9/2025-2026/midnight_black/top.webp",
+          "status": "available"
+        }
+      }
+    },
+    {
+      "model": "G9",
+      "year_group": "2025-2026",
+      "exterior_color": "silver_frost",
+      "views": {
+        "front": {
+          "path": "vehicles/g9/2025-2026/silver_frost/front.webp",
+          "status": "available"
+        },
+        "charging": {
+          "path": "vehicles/g9/2025-2026/silver_frost/charging.webp",
+          "status": "available"
+        },
+        "top": {
+          "path": "vehicles/g9/2025-2026/silver_frost/top.webp",
+          "status": "available"
+        }
+      }
+    },
+    {
+      "model": "G9",
+      "year_group": "2025-2026",
+      "exterior_color": "kaitoke_green_matte",
+      "views": {
+        "front": {
+          "path": "vehicles/g9/2025-2026/kaitoke_green_matte/front.webp",
+          "status": "available"
+        },
+        "charging": {
+          "path": "vehicles/g9/2025-2026/kaitoke_green_matte/charging.webp",
+          "status": "available"
+        },
+        "top": {
+          "path": "vehicles/g9/2025-2026/kaitoke_green_matte/top.webp",
+          "status": "available"
+        }
+      }
+    },
+    {
+      "model": "G9",
+      "year_group": "2025-2026",
+      "exterior_color": "black_edition",
+      "views": {
+        "front": {
+          "path": "vehicles/g9/2025-2026/black_edition/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/g9/2025-2026/black_edition/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/g9/2025-2026/black_edition/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "G9L",
+      "year_group": "2026",
+      "exterior_color": "arctic_white",
+      "views": {
+        "front": {
+          "path": "vehicles/g9l/2026/arctic_white/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/g9l/2026/arctic_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/g9l/2026/arctic_white/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "G9L",
+      "year_group": "2026",
+      "exterior_color": "diamond_black",
+      "views": {
+        "front": {
+          "path": "vehicles/g9l/2026/diamond_black/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/g9l/2026/diamond_black/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/g9l/2026/diamond_black/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "G9L",
+      "year_group": "2026",
+      "exterior_color": "mirror_gray",
+      "views": {
+        "front": {
+          "path": "vehicles/g9l/2026/mirror_gray/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/g9l/2026/mirror_gray/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/g9l/2026/mirror_gray/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "G9L",
+      "year_group": "2026",
+      "exterior_color": "waving_green",
+      "views": {
+        "front": {
+          "path": "vehicles/g9l/2026/waving_green/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/g9l/2026/waving_green/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/g9l/2026/waving_green/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "X9",
+      "year_group": "2024-2025",
+      "exterior_color": "arctic_white",
+      "views": {
+        "front": {
+          "path": "vehicles/x9/2024-2025/arctic_white/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/x9/2024-2025/arctic_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/x9/2024-2025/arctic_white/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "X9",
+      "year_group": "2024-2025",
+      "exterior_color": "midnight_black",
+      "views": {
+        "front": {
+          "path": "vehicles/x9/2024-2025/midnight_black/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/x9/2024-2025/midnight_black/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/x9/2024-2025/midnight_black/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "X9",
+      "year_group": "2024-2025",
+      "exterior_color": "silver_frost",
+      "views": {
+        "front": {
+          "path": "vehicles/x9/2024-2025/silver_frost/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/x9/2024-2025/silver_frost/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/x9/2024-2025/silver_frost/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "X9",
+      "year_group": "2024-2025",
+      "exterior_color": "matte_gray",
+      "views": {
+        "front": {
+          "path": "vehicles/x9/2024-2025/matte_gray/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/x9/2024-2025/matte_gray/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/x9/2024-2025/matte_gray/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "X9",
+      "year_group": "2026",
+      "exterior_color": "arctic_white",
+      "views": {
+        "front": {
+          "path": "vehicles/x9/2026/arctic_white/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/x9/2026/arctic_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/x9/2026/arctic_white/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "X9",
+      "year_group": "2026",
+      "exterior_color": "midnight_black",
+      "views": {
+        "front": {
+          "path": "vehicles/x9/2026/midnight_black/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/x9/2026/midnight_black/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/x9/2026/midnight_black/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "X9",
+      "year_group": "2026",
+      "exterior_color": "silver_frost",
+      "views": {
+        "front": {
+          "path": "vehicles/x9/2026/silver_frost/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/x9/2026/silver_frost/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/x9/2026/silver_frost/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "X9",
+      "year_group": "2026",
+      "exterior_color": "matte_gray",
+      "views": {
+        "front": {
+          "path": "vehicles/x9/2026/matte_gray/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/x9/2026/matte_gray/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/x9/2026/matte_gray/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "X9",
+      "year_group": "2026",
+      "exterior_color": "lambent_cyan",
+      "views": {
+        "front": {
+          "path": "vehicles/x9/2026/lambent_cyan/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/x9/2026/lambent_cyan/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/x9/2026/lambent_cyan/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "X9",
+      "year_group": "2026",
+      "exterior_color": "polar_violet",
+      "views": {
+        "front": {
+          "path": "vehicles/x9/2026/polar_violet/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/x9/2026/polar_violet/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/x9/2026/polar_violet/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "MONA M03",
+      "year_group": "2024-2025",
+      "exterior_color": "night_black",
+      "views": {
+        "front": {
+          "path": "vehicles/mona_m03/2024-2025/night_black/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/mona_m03/2024-2025/night_black/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/mona_m03/2024-2025/night_black/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "MONA M03",
+      "year_group": "2024-2025",
+      "exterior_color": "nebula_white",
+      "views": {
+        "front": {
+          "path": "vehicles/mona_m03/2024-2025/nebula_white/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/mona_m03/2024-2025/nebula_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/mona_m03/2024-2025/nebula_white/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "MONA M03",
+      "year_group": "2024-2025",
+      "exterior_color": "star_gray",
+      "views": {
+        "front": {
+          "path": "vehicles/mona_m03/2024-2025/star_gray/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/mona_m03/2024-2025/star_gray/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/mona_m03/2024-2025/star_gray/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "MONA M03",
+      "year_group": "2024-2025",
+      "exterior_color": "starlight_beige",
+      "views": {
+        "front": {
+          "path": "vehicles/mona_m03/2024-2025/starlight_beige/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/mona_m03/2024-2025/starlight_beige/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/mona_m03/2024-2025/starlight_beige/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "MONA M03",
+      "year_group": "2024-2025",
+      "exterior_color": "star_blue",
+      "views": {
+        "front": {
+          "path": "vehicles/mona_m03/2024-2025/star_blue/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/mona_m03/2024-2025/star_blue/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/mona_m03/2024-2025/star_blue/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "MONA M03",
+      "year_group": "2026",
+      "exterior_color": "roland_purple",
+      "views": {
+        "front": {
+          "path": "vehicles/mona_m03/2026/roland_purple/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/mona_m03/2026/roland_purple/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/mona_m03/2026/roland_purple/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "MONA M03",
+      "year_group": "2026",
+      "exterior_color": "avocado_green",
+      "views": {
+        "front": {
+          "path": "vehicles/mona_m03/2026/avocado_green/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/mona_m03/2026/avocado_green/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/mona_m03/2026/avocado_green/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "MONA M03",
+      "year_group": "2026",
+      "exterior_color": "micro_moon_gray",
+      "views": {
+        "front": {
+          "path": "vehicles/mona_m03/2026/micro_moon_gray/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/mona_m03/2026/micro_moon_gray/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/mona_m03/2026/micro_moon_gray/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "MONA M03",
+      "year_group": "2026",
+      "exterior_color": "night_black",
+      "views": {
+        "front": {
+          "path": "vehicles/mona_m03/2026/night_black/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/mona_m03/2026/night_black/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/mona_m03/2026/night_black/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "MONA M03",
+      "year_group": "2026",
+      "exterior_color": "nebula_white",
+      "views": {
+        "front": {
+          "path": "vehicles/mona_m03/2026/nebula_white/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/mona_m03/2026/nebula_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/mona_m03/2026/nebula_white/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "MONA M03",
+      "year_group": "2026",
+      "exterior_color": "starlight_beige",
+      "views": {
+        "front": {
+          "path": "vehicles/mona_m03/2026/starlight_beige/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/mona_m03/2026/starlight_beige/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/mona_m03/2026/starlight_beige/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "MONA M03",
+      "year_group": "2026",
+      "exterior_color": "cherry_pink",
+      "views": {
+        "front": {
+          "path": "vehicles/mona_m03/2026/cherry_pink/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/mona_m03/2026/cherry_pink/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/mona_m03/2026/cherry_pink/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "L03",
+      "year_group": "2026",
+      "exterior_color": "arctic_white",
+      "views": {
+        "front": {
+          "path": "vehicles/l03/2026/arctic_white/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/l03/2026/arctic_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/l03/2026/arctic_white/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "L03",
+      "year_group": "2026",
+      "exterior_color": "midnight_black",
+      "views": {
+        "front": {
+          "path": "vehicles/l03/2026/midnight_black/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/l03/2026/midnight_black/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/l03/2026/midnight_black/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "L03",
+      "year_group": "2026",
+      "exterior_color": "silver_frost",
+      "views": {
+        "front": {
+          "path": "vehicles/l03/2026/silver_frost/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/l03/2026/silver_frost/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/l03/2026/silver_frost/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "L03",
+      "year_group": "2026",
+      "exterior_color": "rock_gray",
+      "views": {
+        "front": {
+          "path": "vehicles/l03/2026/rock_gray/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/l03/2026/rock_gray/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/l03/2026/rock_gray/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "L03",
+      "year_group": "2026",
+      "exterior_color": "phantom_purple",
+      "views": {
+        "front": {
+          "path": "vehicles/l03/2026/phantom_purple/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/l03/2026/phantom_purple/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/l03/2026/phantom_purple/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "L03",
+      "year_group": "2026",
+      "exterior_color": "black_edition",
+      "views": {
+        "front": {
+          "path": "vehicles/l03/2026/black_edition/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/l03/2026/black_edition/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/l03/2026/black_edition/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "GX",
+      "year_group": "2026",
+      "exterior_color": "diamond_black",
+      "views": {
+        "front": {
+          "path": "vehicles/gx/2026/diamond_black/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/gx/2026/diamond_black/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/gx/2026/diamond_black/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "GX",
+      "year_group": "2026",
+      "exterior_color": "everest_white",
+      "views": {
+        "front": {
+          "path": "vehicles/gx/2026/everest_white/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/gx/2026/everest_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/gx/2026/everest_white/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "GX",
+      "year_group": "2026",
+      "exterior_color": "matte_desert_gold",
+      "views": {
+        "front": {
+          "path": "vehicles/gx/2026/matte_desert_gold/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/gx/2026/matte_desert_gold/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/gx/2026/matte_desert_gold/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "GX",
+      "year_group": "2026",
+      "exterior_color": "graphite_gray",
+      "views": {
+        "front": {
+          "path": "vehicles/gx/2026/graphite_gray/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/gx/2026/graphite_gray/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/gx/2026/graphite_gray/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "GX",
+      "year_group": "2026",
+      "exterior_color": "two_tone_gray_silver",
+      "views": {
+        "front": {
+          "path": "vehicles/gx/2026/two_tone_gray_silver/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/gx/2026/two_tone_gray_silver/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/gx/2026/two_tone_gray_silver/top.webp",
+          "status": "pending"
+        }
+      }
+    }
+  ]
+}
