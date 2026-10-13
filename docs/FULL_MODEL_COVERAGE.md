@@ -46,3 +46,6 @@ Use `artwork-backlog.csv` as a sortable build queue and `tools/export_vehicle_ar
 ## G9 image batch 1
 
 For the G9 2025–2026 year-group, Arctic White, Graphite Gray and Midnight Black each have separate `front.webp`, `charging.webp` (rear three-quarter) and `top.webp` (overhead) AI-generated transparent WebP files. Manufacturer accuracy still requires visual review. Remaining G9 colours and the earlier generation remain pending.
+
+## Year-specific colours
+All 42 individual model years have explicit paint lists and source confidence in [year-color-matrix.json](../year-color-matrix.json). P7i 2024 adds Starry Dusk Purple and Star Blue, without implying they were available in 2023 or 2025. Model/year/paint select the artwork; selected trim remains text only. Paint lists inherited from grouped market catalogues require additional historical or regional verification.

@@ -31,10 +31,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "historic_market_dependent",
+      "exterior_catalogue_status": "provisional_historical",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "G3",
@@ -54,10 +55,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "historic_market_dependent",
+      "exterior_catalogue_status": "provisional_historical",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "G3",
@@ -77,10 +79,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "historic_market_dependent",
+      "exterior_catalogue_status": "provisional_historical",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "G3",
@@ -100,10 +103,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "historic_market_dependent",
+      "exterior_catalogue_status": "provisional_historical",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "G3i",
@@ -124,10 +128,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "historic_market_dependent",
+      "exterior_catalogue_status": "provisional_historical",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "G3i",
@@ -148,10 +153,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "historic_market_dependent",
+      "exterior_catalogue_status": "provisional_historical",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "G3i",
@@ -172,10 +178,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "historic_market_dependent",
+      "exterior_catalogue_status": "provisional_historical",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "P5",
@@ -195,10 +202,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "historic_market_dependent",
+      "exterior_catalogue_status": "provisional_historical",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "P5",
@@ -218,10 +226,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "historic_market_dependent",
+      "exterior_catalogue_status": "provisional_historical",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "P5",
@@ -241,10 +250,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "historic_market_dependent",
+      "exterior_catalogue_status": "provisional_historical",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "P5",
@@ -264,10 +274,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "historic_market_dependent",
+      "exterior_catalogue_status": "provisional_historical",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "P7",
@@ -290,10 +301,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "official_global",
+      "exterior_catalogue_status": "inherited_group_market_specific",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "P7",
@@ -316,10 +328,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "official_global",
+      "exterior_catalogue_status": "inherited_group_market_specific",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "P7",
@@ -342,10 +355,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "official_global",
+      "exterior_catalogue_status": "inherited_group_market_specific",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "P7i",
@@ -368,10 +382,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "official_global",
+      "exterior_catalogue_status": "international_baseline",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": "https://www.xpeng.com/model/p7"
     },
     {
       "model": "P7i",
@@ -388,16 +403,19 @@
         "jet_black",
         "space_gray",
         "silver_frost",
-        "kaitoke_green_matte"
+        "kaitoke_green_matte",
+        "starry_dusk_purple",
+        "star_blue"
       ],
       "interior_options": [
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "official_global",
+      "exterior_catalogue_status": "manufacturer_reported",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": "https://www.xiaopeng.com/news/company_news/5267.html"
     },
     {
       "model": "P7i",
@@ -420,10 +438,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "official_global",
+      "exterior_catalogue_status": "baseline_unverified",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": "https://www.xpeng.com/model/p7"
     },
     {
       "model": "Next P7",
@@ -445,10 +464,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "official_cn_launch",
+      "exterior_catalogue_status": "inherited_group_market_specific",
       "market": "China",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": "https://www.xiaopeng.com/news/company_news/5489.html"
     },
     {
       "model": "Next P7",
@@ -474,10 +494,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "official_cn_configurator",
+      "exterior_catalogue_status": "inherited_group_market_specific",
       "market": "China",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": "https://www.xiaopeng.com/p7n/configuration.html"
     },
     {
       "model": "P7+",
@@ -500,10 +521,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "official_global",
+      "exterior_catalogue_status": "inherited_group_market_specific",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "P7+",
@@ -526,10 +548,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "official_global",
+      "exterior_catalogue_status": "inherited_group_market_specific",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "P7+",
@@ -552,10 +575,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "official_global",
+      "exterior_catalogue_status": "inherited_group_market_specific",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "G6",
@@ -578,10 +602,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "official_global",
+      "exterior_catalogue_status": "inherited_group_market_specific",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "G6",
@@ -604,10 +629,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "official_global",
+      "exterior_catalogue_status": "inherited_group_market_specific",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "G6",
@@ -630,10 +656,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "official_global",
+      "exterior_catalogue_status": "inherited_group_market_specific",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "G6",
@@ -658,10 +685,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "official_global",
+      "exterior_catalogue_status": "inherited_group_market_specific",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "G7",
@@ -683,10 +711,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "official_cn",
+      "exterior_catalogue_status": "inherited_group_market_specific",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "G7",
@@ -707,10 +736,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "official_cn",
+      "exterior_catalogue_status": "inherited_group_market_specific",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "G9",
@@ -733,10 +763,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "official_global",
+      "exterior_catalogue_status": "inherited_group_market_specific",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "G9",
@@ -759,10 +790,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "official_global",
+      "exterior_catalogue_status": "inherited_group_market_specific",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "G9",
@@ -785,10 +817,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "official_global",
+      "exterior_catalogue_status": "inherited_group_market_specific",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "G9",
@@ -815,10 +848,11 @@
         "saddle",
         "light_gray"
       ],
-      "exterior_catalogue_status": "official_global",
+      "exterior_catalogue_status": "inherited_group_market_specific",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "G9",
@@ -845,10 +879,11 @@
         "saddle",
         "light_gray"
       ],
-      "exterior_catalogue_status": "official_global",
+      "exterior_catalogue_status": "inherited_group_market_specific",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "G9L",
@@ -870,10 +905,11 @@
         "meteorite_black",
         "tangerine"
       ],
-      "exterior_catalogue_status": "official_global",
+      "exterior_catalogue_status": "inherited_group_market_specific",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "X9",
@@ -894,10 +930,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "official_global",
+      "exterior_catalogue_status": "inherited_group_market_specific",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "X9",
@@ -918,10 +955,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "official_global",
+      "exterior_catalogue_status": "inherited_group_market_specific",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "X9",
@@ -945,10 +983,11 @@
         "meteorite_black",
         "coffee"
       ],
-      "exterior_catalogue_status": "official_global",
+      "exterior_catalogue_status": "inherited_group_market_specific",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "MONA M03",
@@ -969,10 +1008,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "official_cn_launch_baseline",
+      "exterior_catalogue_status": "inherited_group_market_specific",
       "market": "China",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": "https://bbs.xiaopeng.com/article/2764153"
     },
     {
       "model": "MONA M03",
@@ -993,10 +1033,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "official_cn_launch_baseline",
+      "exterior_catalogue_status": "inherited_group_market_specific",
       "market": "China",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": "https://bbs.xiaopeng.com/article/2764153"
     },
     {
       "model": "MONA M03",
@@ -1019,10 +1060,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "official_cn_configurator",
+      "exterior_catalogue_status": "inherited_group_market_specific",
       "market": "China",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": "https://www.xiaopeng.com/m03_2026.html"
     },
     {
       "model": "L03",
@@ -1048,10 +1090,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "official_global",
+      "exterior_catalogue_status": "inherited_group_market_specific",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     },
     {
       "model": "GX",
@@ -1072,10 +1115,11 @@
         "dark_gray",
         "light_gray"
       ],
-      "exterior_catalogue_status": "official_regional",
+      "exterior_catalogue_status": "inherited_group_market_specific",
       "market": "varies by region",
       "art_status": "exact-model-year-group-paint-views-only",
-      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations."
+      "art_note": "Model + year group + exterior colour select artwork. Trim is display-only. Missing views fall back to labelled illustrations.",
+      "year_palette_source": null
     }
   ]
 }

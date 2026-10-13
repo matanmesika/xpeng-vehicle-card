@@ -58,3 +58,6 @@ Five paints now contain front, charging/rear and top WebP files (15 files). Thes
 ## Final catalogue matrix expansion — 2026-10-13
 
 All 15 models, 21 year groups and 111 paint combinations now appear in [the full model coverage report](FULL_MODEL_COVERAGE.md) and the machine-readable [artwork backlog](../artwork-backlog.csv). The MONA M03 and Next P7 ranges were expanded with official Chinese market year-specific palettes. An exterior paint is a visual selector even where the factory sells it as an edition package; selected trim remains a text-only label. Missing artwork is kept pending.
+
+## Specific model years and paint choices
+The editor now offers concrete model years while transparently mapping those years to body-generation asset folders. Old group-based configs remain accepted (and only show paint colours common to all years in the group). Per-year metadata and source confidence: [year-color-matrix.json](../year-color-matrix.json). P7i added two limited Wing Edition paint colours in 2024: https://www.xiaopeng.com/news/company_news/5267.html .

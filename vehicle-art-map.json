@@ -14,7 +14,7 @@
     "charging",
     "top"
   ],
-  "description": "Only available paths exist in Git; generated previews are labelled in the provenance file. Pending images never borrow another model/year/color.",
+  "description": "Model year filters paints, shared body-generation groups select assets; missing views are pending.",
   "entries": [
     {
       "model": "G3",
@@ -392,6 +392,44 @@
         },
         "top": {
           "path": "vehicles/p7i/2023-2025/kaitoke_green_matte/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "P7i",
+      "year_group": "2023-2025",
+      "exterior_color": "starry_dusk_purple",
+      "views": {
+        "front": {
+          "path": "vehicles/p7i/2023-2025/starry_dusk_purple/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/p7i/2023-2025/starry_dusk_purple/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/p7i/2023-2025/starry_dusk_purple/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "P7i",
+      "year_group": "2023-2025",
+      "exterior_color": "star_blue",
+      "views": {
+        "front": {
+          "path": "vehicles/p7i/2023-2025/star_blue/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/p7i/2023-2025/star_blue/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/p7i/2023-2025/star_blue/top.webp",
           "status": "pending"
         }
       }

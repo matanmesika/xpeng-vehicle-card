@@ -40,6 +40,7 @@ jobs:
         run: |
           python tools/sync_vehicle_artwork.py --check
           python tools/export_vehicle_artwork_backlog.py --check
+          python tools/sync_year_palettes.py --check
           node --test tests/vehicle-artwork-mapping.test.cjs
           python tools/check_photo_candidates.py
 

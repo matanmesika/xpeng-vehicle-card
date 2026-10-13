@@ -42,7 +42,7 @@ def build():
         "schema_version": 1, "as_of": "2026-10-13", "catalog": "vehicle-catalog.json",
         "selection_key": ["model", "year_group", "exterior_color"], "trim_affects_artwork": False,
         "asset_root": "assets", "views": list(VIEWS),
-        "description": "Only available paths exist in Git; generated previews are labelled in the provenance file. Pending images never borrow another model/year/color.",
+        "description": "Model year filters paints, shared body-generation groups select assets; missing views are pending.",
         "entries": entries,
     }
     inventory = {

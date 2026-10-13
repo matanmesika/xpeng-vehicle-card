@@ -164,7 +164,7 @@ test('every single model year resolves to one group; no missing view may borrow 
     assert.ok(!visited.has(year),model.id+' year '+year);
     visited.add(year);
     const normalized=api.xpNormalizeAppearance({model:model.id,year:String(year),color:group.colors[0]});
-    assert.equal(normalized.year,group.id,model.id+' '+year);
+    assert.equal(normalized.year,String(year),model.id+' '+year);
     for(const view of ['front','charging','top']){
      assert.equal(api.xpVehicleAssetPath(normalized,view),
        'vehicles/'+model.id.toLowerCase().replace(/\+/g,'_plus').replace(/ /g,'_')+'/'+group.id+'/'+group.colors[0]+'/'+view+'.webp');
@@ -186,4 +186,32 @@ test('G9 refreshed 2025-2026 first three paint sets are complete with independen
   const app=api.xpNormalizeAppearance({model:'G9',year:'2026',color:paint});
   assert.equal(instance(app).assetSpec().tier,'generated-preview');
  }
+});
+
+test('year-specific colour choices and historic group fallback',()=>{
+ const allYears=vm.runInNewContext('xpAllowedYears',sandbox);
+ assert.deepEqual(Array.from(allYears('P7i'),x=>x.id),['2023','2024','2025']);
+ const ids=year=>Array.from(api.xpAllowedPaints('P7i',year),p=>p.id);
+ const basic=['arctic_white','jet_black','space_gray','silver_frost','kaitoke_green_matte'];
+ assert.deepEqual(ids('2023'),basic);
+ assert.deepEqual(ids('2024'),[...basic,'starry_dusk_purple','star_blue']);
+ assert.deepEqual(ids('2025'),basic);
+ assert.deepEqual(ids('2023-2025'),basic);
+ const selected=api.xpNormalizeAppearance({model:'P7i',year:'2024',color:'starry_dusk_purple'});
+ assert.equal(selected.year,'2024');
+ assert.equal(api.xpVehicleAssetPath(selected,'front'),'vehicles/p7i/2023-2025/starry_dusk_purple/front.webp');
+ assert.equal(api.xpNormalizeAppearance({...selected,year:'2023'}).color,'arctic_white');
+});
+test('all individual years have explicitly recorded year palettes',()=>{
+ let count=0;
+ for(const m of catalog.models){
+  const seen=new Set();
+  for(const g of m.groups)for(const y of g.years){
+   count++;assert.equal(seen.has(y),false);seen.add(y);
+   assert.deepEqual(Array.from(api.xpAllowedPaints(m.id,String(y)),p=>p.id),g.colors_by_year[String(y)]);
+   assert.ok(g.year_palette_sources[String(y)]);
+   assert.equal(api.xpNormalizeAppearance({model:m.id,year:String(y)}).year,String(y));
+  }
+ }
+ assert.equal(count,42);
 });

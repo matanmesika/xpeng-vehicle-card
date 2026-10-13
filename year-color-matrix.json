@@ -1,0 +1,643 @@
+{
+  "schema_version": 1,
+  "generated_on": "2026-10-13",
+  "catalog": "vehicle-catalog.json",
+  "model_year_count": 42,
+  "selection_parameters": [
+    "model",
+    "model_year",
+    "exterior_color"
+  ],
+  "image_geometry": [
+    "model",
+    "year_group",
+    "exterior_color"
+  ],
+  "trim_affects_artwork": false,
+  "years": [
+    {
+      "model": "G3",
+      "year": 2018,
+      "year_group": "2018-2021",
+      "colors": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black"
+      ],
+      "confidence": "provisional_historical",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "G3",
+      "year": 2019,
+      "year_group": "2018-2021",
+      "colors": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black"
+      ],
+      "confidence": "provisional_historical",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "G3",
+      "year": 2020,
+      "year_group": "2018-2021",
+      "colors": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black"
+      ],
+      "confidence": "provisional_historical",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "G3",
+      "year": 2021,
+      "year_group": "2018-2021",
+      "colors": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black"
+      ],
+      "confidence": "provisional_historical",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "G3i",
+      "year": 2021,
+      "year_group": "2021-2023",
+      "colors": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "coral_green"
+      ],
+      "confidence": "provisional_historical",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "G3i",
+      "year": 2022,
+      "year_group": "2021-2023",
+      "colors": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "coral_green"
+      ],
+      "confidence": "provisional_historical",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "G3i",
+      "year": 2023,
+      "year_group": "2021-2023",
+      "colors": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "coral_green"
+      ],
+      "confidence": "provisional_historical",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "P5",
+      "year": 2021,
+      "year_group": "2021-2024",
+      "colors": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black"
+      ],
+      "confidence": "provisional_historical",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "P5",
+      "year": 2022,
+      "year_group": "2021-2024",
+      "colors": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black"
+      ],
+      "confidence": "provisional_historical",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "P5",
+      "year": 2023,
+      "year_group": "2021-2024",
+      "colors": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black"
+      ],
+      "confidence": "provisional_historical",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "P5",
+      "year": 2024,
+      "year_group": "2021-2024",
+      "colors": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black"
+      ],
+      "confidence": "provisional_historical",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "P7",
+      "year": 2020,
+      "year_group": "2020-2022",
+      "colors": [
+        "arctic_white",
+        "jet_black",
+        "space_gray",
+        "red",
+        "green"
+      ],
+      "confidence": "inherited_group_market_specific",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "P7",
+      "year": 2021,
+      "year_group": "2020-2022",
+      "colors": [
+        "arctic_white",
+        "jet_black",
+        "space_gray",
+        "red",
+        "green"
+      ],
+      "confidence": "inherited_group_market_specific",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "P7",
+      "year": 2022,
+      "year_group": "2020-2022",
+      "colors": [
+        "arctic_white",
+        "jet_black",
+        "space_gray",
+        "red",
+        "green"
+      ],
+      "confidence": "inherited_group_market_specific",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "P7i",
+      "year": 2023,
+      "year_group": "2023-2025",
+      "colors": [
+        "arctic_white",
+        "jet_black",
+        "space_gray",
+        "silver_frost",
+        "kaitoke_green_matte"
+      ],
+      "confidence": "international_baseline",
+      "source": "https://www.xpeng.com/model/p7",
+      "notes": "International P7i colour names; market dependent."
+    },
+    {
+      "model": "P7i",
+      "year": 2024,
+      "year_group": "2023-2025",
+      "colors": [
+        "arctic_white",
+        "jet_black",
+        "space_gray",
+        "silver_frost",
+        "kaitoke_green_matte",
+        "starry_dusk_purple",
+        "star_blue"
+      ],
+      "confidence": "manufacturer_reported",
+      "source": "https://www.xiaopeng.com/news/company_news/5267.html",
+      "notes": "Starry Dusk Purple and Star Blue introduced in 2024 Wing Edition; trim selection remains display-only."
+    },
+    {
+      "model": "P7i",
+      "year": 2025,
+      "year_group": "2023-2025",
+      "colors": [
+        "arctic_white",
+        "jet_black",
+        "space_gray",
+        "silver_frost",
+        "kaitoke_green_matte"
+      ],
+      "confidence": "baseline_unverified",
+      "source": "https://www.xpeng.com/model/p7",
+      "notes": "Baseline palette only; 2024 limited paints not asserted for 2025."
+    },
+    {
+      "model": "Next P7",
+      "year": 2025,
+      "year_group": "2025",
+      "colors": [
+        "new_moon_silver",
+        "rhythm_yellow",
+        "stellar_green",
+        "dusk_purple",
+        "micro_star_gray",
+        "starburst_blue"
+      ],
+      "confidence": "inherited_group_market_specific",
+      "source": "https://www.xiaopeng.com/news/company_news/5489.html",
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "Next P7",
+      "year": 2026,
+      "year_group": "2026",
+      "colors": [
+        "new_moon_silver",
+        "rhythm_yellow",
+        "stellar_green",
+        "dusk_purple",
+        "micro_star_gray",
+        "starburst_blue",
+        "night_black",
+        "nebula_white",
+        "star_red",
+        "matte_new_moon_silver"
+      ],
+      "confidence": "inherited_group_market_specific",
+      "source": "https://www.xiaopeng.com/p7n/configuration.html",
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "P7+",
+      "year": 2024,
+      "year_group": "2024-2026",
+      "colors": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "confidence": "inherited_group_market_specific",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "P7+",
+      "year": 2025,
+      "year_group": "2024-2026",
+      "colors": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "confidence": "inherited_group_market_specific",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "P7+",
+      "year": 2026,
+      "year_group": "2024-2026",
+      "colors": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple"
+      ],
+      "confidence": "inherited_group_market_specific",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "G6",
+      "year": 2023,
+      "year_group": "2023-2025",
+      "colors": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "fiery_orange"
+      ],
+      "confidence": "inherited_group_market_specific",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "G6",
+      "year": 2024,
+      "year_group": "2023-2025",
+      "colors": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "fiery_orange"
+      ],
+      "confidence": "inherited_group_market_specific",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "G6",
+      "year": 2025,
+      "year_group": "2023-2025",
+      "colors": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "fiery_orange"
+      ],
+      "confidence": "inherited_group_market_specific",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "G6",
+      "year": 2026,
+      "year_group": "2026",
+      "colors": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "stellar_purple",
+        "black_edition"
+      ],
+      "confidence": "inherited_group_market_specific",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "G7",
+      "year": 2025,
+      "year_group": "2025",
+      "colors": [
+        "starday_gray",
+        "crescent_silver",
+        "cloud_beige",
+        "interstellar_green",
+        "night_black",
+        "nebula_white"
+      ],
+      "confidence": "inherited_group_market_specific",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "G7",
+      "year": 2026,
+      "year_group": "2026",
+      "colors": [
+        "twilight_purple",
+        "starday_gray",
+        "crescent_silver",
+        "night_black",
+        "nebula_white"
+      ],
+      "confidence": "inherited_group_market_specific",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "G9",
+      "year": 2022,
+      "year_group": "2022-2024",
+      "colors": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "kaitoke_green_matte"
+      ],
+      "confidence": "inherited_group_market_specific",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "G9",
+      "year": 2023,
+      "year_group": "2022-2024",
+      "colors": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "kaitoke_green_matte"
+      ],
+      "confidence": "inherited_group_market_specific",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "G9",
+      "year": 2024,
+      "year_group": "2022-2024",
+      "colors": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "kaitoke_green_matte"
+      ],
+      "confidence": "inherited_group_market_specific",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "G9",
+      "year": 2025,
+      "year_group": "2025-2026",
+      "colors": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "kaitoke_green_matte",
+        "black_edition"
+      ],
+      "confidence": "inherited_group_market_specific",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "G9",
+      "year": 2026,
+      "year_group": "2025-2026",
+      "colors": [
+        "arctic_white",
+        "graphite_gray",
+        "midnight_black",
+        "silver_frost",
+        "kaitoke_green_matte",
+        "black_edition"
+      ],
+      "confidence": "inherited_group_market_specific",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "G9L",
+      "year": 2026,
+      "year_group": "2026",
+      "colors": [
+        "arctic_white",
+        "diamond_black",
+        "mirror_gray",
+        "waving_green"
+      ],
+      "confidence": "inherited_group_market_specific",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "X9",
+      "year": 2024,
+      "year_group": "2024-2025",
+      "colors": [
+        "arctic_white",
+        "midnight_black",
+        "silver_frost",
+        "matte_gray"
+      ],
+      "confidence": "inherited_group_market_specific",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "X9",
+      "year": 2025,
+      "year_group": "2024-2025",
+      "colors": [
+        "arctic_white",
+        "midnight_black",
+        "silver_frost",
+        "matte_gray"
+      ],
+      "confidence": "inherited_group_market_specific",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "X9",
+      "year": 2026,
+      "year_group": "2026",
+      "colors": [
+        "arctic_white",
+        "midnight_black",
+        "silver_frost",
+        "matte_gray",
+        "lambent_cyan",
+        "polar_violet"
+      ],
+      "confidence": "inherited_group_market_specific",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "MONA M03",
+      "year": 2024,
+      "year_group": "2024-2025",
+      "colors": [
+        "night_black",
+        "nebula_white",
+        "star_gray",
+        "starlight_beige",
+        "star_blue"
+      ],
+      "confidence": "inherited_group_market_specific",
+      "source": "https://bbs.xiaopeng.com/article/2764153",
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "MONA M03",
+      "year": 2025,
+      "year_group": "2024-2025",
+      "colors": [
+        "night_black",
+        "nebula_white",
+        "star_gray",
+        "starlight_beige",
+        "star_blue"
+      ],
+      "confidence": "inherited_group_market_specific",
+      "source": "https://bbs.xiaopeng.com/article/2764153",
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "MONA M03",
+      "year": 2026,
+      "year_group": "2026",
+      "colors": [
+        "roland_purple",
+        "avocado_green",
+        "micro_moon_gray",
+        "night_black",
+        "nebula_white",
+        "starlight_beige",
+        "cherry_pink"
+      ],
+      "confidence": "inherited_group_market_specific",
+      "source": "https://www.xiaopeng.com/m03_2026.html",
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "L03",
+      "year": 2026,
+      "year_group": "2026",
+      "colors": [
+        "arctic_white",
+        "midnight_black",
+        "silver_frost",
+        "rock_gray",
+        "phantom_purple",
+        "black_edition"
+      ],
+      "confidence": "inherited_group_market_specific",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    },
+    {
+      "model": "GX",
+      "year": 2026,
+      "year_group": "2026",
+      "colors": [
+        "diamond_black",
+        "everest_white",
+        "matte_desert_gold",
+        "graphite_gray",
+        "two_tone_gray_silver"
+      ],
+      "confidence": "inherited_group_market_specific",
+      "source": null,
+      "notes": "Inherits group palette. Factory paint availability for this individual year/market not independently verified."
+    }
+  ]
+}
