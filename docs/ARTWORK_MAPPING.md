@@ -61,3 +61,8 @@ All 15 models, 21 year groups and 111 paint combinations now appear in [the full
 
 ## Specific model years and paint choices
 The editor now offers concrete model years while transparently mapping those years to body-generation asset folders. Old group-based configs remain accepted (and only show paint colours common to all years in the group). Per-year metadata and source confidence: [year-color-matrix.json](../year-color-matrix.json). P7i added two limited Wing Edition paint colours in 2024: https://www.xiaopeng.com/news/company_news/5267.html .
+
+
+## P7i: first individually uploaded image
+
+`assets/vehicles/p7i/2023-2025/arctic_white/front.webp` is a transparent AI-generated *illustration*, not a real manufacturer packshot. Both the rear (`charging.webp`) and overhead (`top.webp`) view are **pending**, and no unrelated view is substituted. Uploaded-artwork inventory now contains 43 actual WebP views; 296 are outstanding for 113 paint combinations.

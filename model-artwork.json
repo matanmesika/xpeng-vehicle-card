@@ -12,7 +12,7 @@
   "trim_policy": "Trim is display-only, year_group filters offered trim labels. Trim never affects artwork, colors, cabin, telemetry or sensor mappings.",
   "backdrop": "xpeng-approved-lakeside-background.webp",
   "target_asset_layout": "assets/vehicles/{model}/{year_group}/{exterior_color}/{front,charging,top}.webp",
-  "available_image_count": 42,
+  "available_image_count": 43,
   "available_combinations": 14,
   "pending_combinations": 99,
   "missing_asset_policy": "Labelled colour-matched silhouette only; never substitute wrong model/year-group/color or silently reuse front for charging/top.",

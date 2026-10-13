@@ -308,7 +308,7 @@
       "views": {
         "front": {
           "path": "vehicles/p7i/2023-2025/arctic_white/front.webp",
-          "status": "pending"
+          "status": "available"
         },
         "charging": {
           "path": "vehicles/p7i/2023-2025/arctic_white/charging.webp",

@@ -218,3 +218,16 @@ test('all individual years have explicitly recorded year palettes',()=>{
  }
  assert.equal(count,42);
 });
+
+test('P7i white front is a provenance-tagged partial 3-view combination',()=>{
+ const item=artMap.entries.find(x=>x.model==='P7i'&&x.year_group==='2023-2025'&&x.exterior_color==='arctic_white');
+ assert.equal(item.views.front.status,'available');
+ assert.equal(item.views.charging.status,'pending');
+ assert.equal(item.views.top.status,'pending');
+ const front=item.views.front.path;
+ assert.equal(api.XP_ARTWORK_INDEX.has(front),true);
+ assert.equal(api.XP_ILLUSTRATIVE_ARTWORK_INDEX.has(front),true);
+ const a=api.xpNormalizeAppearance({model:'P7i',year:'2024',color:'arctic_white'});
+ assert.equal(instance(a).assetSpec().tier,'generated-preview');
+ assert.equal(instance(a,true).assetSpec().tier,'silhouette');
+});

@@ -1,8 +1,8 @@
 # XPENG full artwork coverage — 2026-10-13
 
-This is a truthful **catalogue and image-slot matrix**, not a claim that all 333 pictures exist.
+This is a truthful **catalogue and image-slot matrix**, not a claim that all 339 pictures exist.
 
-The model catalogue contains **15 models**, **21 model-year groups**, and **111 exterior paint combinations**. Each combination has exactly three distinct **slot names**: `front.webp`, `charging.webp`, and `top.webp`. Currently **42 actual WebP images** are present (**14 fully occupied combinations**); **291 individual image views** are pending. AI renders are not official manufacturer photography.
+The model catalogue contains **15 models**, **21 model-year groups**, and **113 exterior paint combinations**. Each combination has exactly three distinct **slot names**: `front.webp`, `charging.webp`, and `top.webp`. Currently **43 actual WebP images** are present (**14 fully occupied combinations**); **296 individual image views** are pending. AI renders are not official manufacturer photography.
 
 | Model | Year groups | Paint combinations | Existing WebP | Missing WebP |
 |---|---|---:|---:|---:|
@@ -49,3 +49,8 @@ For the G9 2025–2026 year-group, Arctic White, Graphite Gray and Midnight Blac
 
 ## Year-specific colours
 All 42 individual model years have explicit paint lists and source confidence in [year-color-matrix.json](../year-color-matrix.json). P7i 2024 adds Starry Dusk Purple and Star Blue, without implying they were available in 2023 or 2025. Model/year/paint select the artwork; selected trim remains text only. Paint lists inherited from grouped market catalogues require additional historical or regional verification.
+
+
+### P7i Arctic White front preview
+
+The `front.webp` WebP for P7i 2023–2025 Arctic White is now uploaded as a clearly labelled AI **illustrative preview**. It has verified transparency. `charging.webp` and `top.webp` are still missing and must not be inferred from front.
