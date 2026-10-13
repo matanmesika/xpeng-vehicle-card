@@ -34,7 +34,7 @@ test('source/dist parity, 15-model mapped catalogue and no trim path key', () =>
  assert.equal(artMap.trim_affects_artwork, false);
  assert.equal(inventory.trim_affects_artwork, false);
 });
-test('all 83 model/year-group/paint selections resolve to a model-specific canonical path', () => {
+test('all catalogued model/year-group/paint selections resolve to a model-specific canonical path', () => {
  for (const e of artMap.entries) {
    for (const view of ['front','charging','top']) {
      const a = api.xpNormalizeAppearance({model:e.model,year:e.year_group,color:e.exterior_color});
@@ -100,7 +100,7 @@ test('front and charging require their own actual view; missing or broken URLs f
 test('G6 original five colours use explicit AI-generation provenance and independently mapped views',()=>{
  const photos=JSON.parse(fs.readFileSync(path.join(ROOT,'sources/ai-generated-vehicle-art.json'),'utf8'));
  assert.equal(photos.manufacturer_verified,false);
- assert.equal(photos.paths.length,15);
+ assert.equal(photos.paths.filter(p=>p.startsWith('vehicles/g6/2023-2025/')).length,15);
  const originals=artMap.entries.filter(e=>e.model==='G6'&&e.year_group==='2023-2025');
  assert.equal(originals.length,5);
  for(const item of originals){
@@ -114,4 +114,25 @@ test('G6 original five colours use explicit AI-generation provenance and indepen
   assert.equal(seen.size,3);
   assert.equal(instance({model:'G6',year:'2023-2025',color:item.exterior_color}).assetSpec().view_status,'ai_generated_preview');
  }
+});
+
+test('G7 2025 and 2026 expose distinct verified China-market palettes without changing trim routing',()=>{
+ const palette2025=Array.from(api.xpAllowedPaints('G7','2025'),p=>p.id);
+ const palette2026=Array.from(api.xpAllowedPaints('G7','2026'),p=>p.id);
+ assert.equal(palette2025.length,6);
+ assert.equal(palette2026.length,5);
+ assert.ok(palette2025.includes('interstellar_green')&&!palette2026.includes('interstellar_green'));
+ assert.ok(palette2026.includes('twilight_purple')&&!palette2025.includes('twilight_purple'));
+ for(const view of ['front','charging','top']){
+  const relative='vehicles/g7/2025/nebula_white/'+view+'.webp';
+  assert.ok(api.XP_ARTWORK_INDEX.has(relative),relative);
+  assert.ok(api.XP_ILLUSTRATIVE_ARTWORK_INDEX.has(relative),relative);
+ }
+ const a=api.xpNormalizeAppearance({model:'G7',year:'2025',color:'nebula_white'});
+ assert.equal(api.xpVehicleAssetPath(a,'front'),'vehicles/g7/2025/nebula_white/front.webp');
+ assert.equal(instance(a).assetSpec().tier,'generated-preview');
+ assert.equal(instance({...a,trim:'market_dependent'}).assetSpec().src,instance(a).assetSpec().src);
+ const b=api.xpNormalizeAppearance({model:'G7',year:'2026',color:'twilight_purple'});
+ assert.equal(api.xpVehicleAssetPath(b,'front'),'vehicles/g7/2026/twilight_purple/front.webp');
+ assert.equal(instance(b).assetSpec().tier,'silhouette');
 });

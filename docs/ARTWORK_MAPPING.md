@@ -44,3 +44,13 @@ Run `python tools/check_photo_candidates.py` to check that no source record has 
 ## G6 2023–2025 AI cutout upload (2026-10-13)
 
 Five paints now contain front, charging/rear and top WebP files (15 files). These are **AI-generated artistic approximations** rather than factory or photographic renders. The Silver Frost front image was corrected to show the front; no trims enter artwork filenames. Full disclosure and exact file list: `sources/ai-generated-vehicle-art.json`. These images are staged in PR #29 and default loader URLs become available after merge to `main`.
+
+## G7 — First independent 3-view AI artwork batch (2026-10-13)
+
+- `assets/vehicles/g7/2025/nebula_white/front.webp`: front three-quarter.
+- `assets/vehicles/g7/2025/nebula_white/charging.webp`: **rear** three-quarter, separately extracted from a generated G7 reference.
+- `assets/vehicles/g7/2025/nebula_white/top.webp`: **true overhead** view, separately extracted from a generated G7 reference.
+- All three are independent files with transparency and different byte hashes. These are generated illustrations **not manufacturer photos**; manual automotive-design fidelity still needs review.
+- The 2025 China-market G7 has six official exterior colour *names*; the 2026 domestic range lists five. Colour values in the general palette are illustrative UI HEX, not official factory paint codes. Source: https://www.xiaopeng.com/news/company_news/5481.html and https://www.xiaopeng.com/g7_2026.html .
+- G7 year groups are now separate: `2025` and `2026`. Trims remain informational; the file selection is **model + year + exterior colour only**.
+- All other G7 colours are still **pending** and will render labelled fallback until actual art is reviewed and uploaded. Do not reuse G6 renderings or rename 2025 images as 2026.

@@ -778,76 +778,209 @@
     },
     {
       "model": "G7",
-      "year_group": "2025-2026",
-      "exterior_color": "arctic_white",
+      "year_group": "2025",
+      "exterior_color": "starday_gray",
       "views": {
         "front": {
-          "path": "vehicles/g7/2025-2026/arctic_white/front.webp",
+          "path": "vehicles/g7/2025/starday_gray/front.webp",
           "status": "pending"
         },
         "charging": {
-          "path": "vehicles/g7/2025-2026/arctic_white/charging.webp",
+          "path": "vehicles/g7/2025/starday_gray/charging.webp",
           "status": "pending"
         },
         "top": {
-          "path": "vehicles/g7/2025-2026/arctic_white/top.webp",
+          "path": "vehicles/g7/2025/starday_gray/top.webp",
           "status": "pending"
         }
       }
     },
     {
       "model": "G7",
-      "year_group": "2025-2026",
-      "exterior_color": "graphite_gray",
+      "year_group": "2025",
+      "exterior_color": "crescent_silver",
       "views": {
         "front": {
-          "path": "vehicles/g7/2025-2026/graphite_gray/front.webp",
+          "path": "vehicles/g7/2025/crescent_silver/front.webp",
           "status": "pending"
         },
         "charging": {
-          "path": "vehicles/g7/2025-2026/graphite_gray/charging.webp",
+          "path": "vehicles/g7/2025/crescent_silver/charging.webp",
           "status": "pending"
         },
         "top": {
-          "path": "vehicles/g7/2025-2026/graphite_gray/top.webp",
+          "path": "vehicles/g7/2025/crescent_silver/top.webp",
           "status": "pending"
         }
       }
     },
     {
       "model": "G7",
-      "year_group": "2025-2026",
-      "exterior_color": "midnight_black",
+      "year_group": "2025",
+      "exterior_color": "cloud_beige",
       "views": {
         "front": {
-          "path": "vehicles/g7/2025-2026/midnight_black/front.webp",
+          "path": "vehicles/g7/2025/cloud_beige/front.webp",
           "status": "pending"
         },
         "charging": {
-          "path": "vehicles/g7/2025-2026/midnight_black/charging.webp",
+          "path": "vehicles/g7/2025/cloud_beige/charging.webp",
           "status": "pending"
         },
         "top": {
-          "path": "vehicles/g7/2025-2026/midnight_black/top.webp",
+          "path": "vehicles/g7/2025/cloud_beige/top.webp",
           "status": "pending"
         }
       }
     },
     {
       "model": "G7",
-      "year_group": "2025-2026",
-      "exterior_color": "silver_frost",
+      "year_group": "2025",
+      "exterior_color": "interstellar_green",
       "views": {
         "front": {
-          "path": "vehicles/g7/2025-2026/silver_frost/front.webp",
+          "path": "vehicles/g7/2025/interstellar_green/front.webp",
           "status": "pending"
         },
         "charging": {
-          "path": "vehicles/g7/2025-2026/silver_frost/charging.webp",
+          "path": "vehicles/g7/2025/interstellar_green/charging.webp",
           "status": "pending"
         },
         "top": {
-          "path": "vehicles/g7/2025-2026/silver_frost/top.webp",
+          "path": "vehicles/g7/2025/interstellar_green/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "G7",
+      "year_group": "2025",
+      "exterior_color": "night_black",
+      "views": {
+        "front": {
+          "path": "vehicles/g7/2025/night_black/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/g7/2025/night_black/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/g7/2025/night_black/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "G7",
+      "year_group": "2025",
+      "exterior_color": "nebula_white",
+      "views": {
+        "front": {
+          "path": "vehicles/g7/2025/nebula_white/front.webp",
+          "status": "available"
+        },
+        "charging": {
+          "path": "vehicles/g7/2025/nebula_white/charging.webp",
+          "status": "available"
+        },
+        "top": {
+          "path": "vehicles/g7/2025/nebula_white/top.webp",
+          "status": "available"
+        }
+      }
+    },
+    {
+      "model": "G7",
+      "year_group": "2026",
+      "exterior_color": "twilight_purple",
+      "views": {
+        "front": {
+          "path": "vehicles/g7/2026/twilight_purple/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/g7/2026/twilight_purple/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/g7/2026/twilight_purple/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "G7",
+      "year_group": "2026",
+      "exterior_color": "starday_gray",
+      "views": {
+        "front": {
+          "path": "vehicles/g7/2026/starday_gray/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/g7/2026/starday_gray/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/g7/2026/starday_gray/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "G7",
+      "year_group": "2026",
+      "exterior_color": "crescent_silver",
+      "views": {
+        "front": {
+          "path": "vehicles/g7/2026/crescent_silver/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/g7/2026/crescent_silver/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/g7/2026/crescent_silver/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "G7",
+      "year_group": "2026",
+      "exterior_color": "night_black",
+      "views": {
+        "front": {
+          "path": "vehicles/g7/2026/night_black/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/g7/2026/night_black/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/g7/2026/night_black/top.webp",
+          "status": "pending"
+        }
+      }
+    },
+    {
+      "model": "G7",
+      "year_group": "2026",
+      "exterior_color": "nebula_white",
+      "views": {
+        "front": {
+          "path": "vehicles/g7/2026/nebula_white/front.webp",
+          "status": "pending"
+        },
+        "charging": {
+          "path": "vehicles/g7/2026/nebula_white/charging.webp",
+          "status": "pending"
+        },
+        "top": {
+          "path": "vehicles/g7/2026/nebula_white/top.webp",
           "status": "pending"
         }
       }

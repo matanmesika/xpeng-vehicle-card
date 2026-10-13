@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "as_of": "2026-10-13",
-  "model": "G6",
-  "year_group": "2023-2025",
+  "model": "multiple",
+  "year_group": "multiple",
   "generation_method": "AI-generated photorealistic illustration",
   "manufacturer_verified": false,
   "photographic_source": false,
@@ -27,12 +27,17 @@
     "vehicles/g6/2023-2025/midnight_black/top.webp",
     "vehicles/g6/2023-2025/silver_frost/charging.webp",
     "vehicles/g6/2023-2025/silver_frost/front.webp",
-    "vehicles/g6/2023-2025/silver_frost/top.webp"
+    "vehicles/g6/2023-2025/silver_frost/top.webp",
+    "vehicles/g7/2025/nebula_white/charging.webp",
+    "vehicles/g7/2025/nebula_white/front.webp",
+    "vehicles/g7/2025/nebula_white/top.webp"
   ],
   "notes": [
     "Created as visual approximations, not genuine manufacturer vehicle photographs.",
     "Varying wheel details and visual geometry may not match production versions; manual design review recommended.",
     "All paths are cutout WebP assets with alpha; front, charging/rear and top views have independent images for each paint.",
-    "Corrected Silver Frost front from a duplicate rear render before upload."
+    "Corrected Silver Frost front from a duplicate rear render before upload.",
+    "G7 2025 Nebula White views were created as AI illustrative assets. Rear and top were separately cut out from a generated three-view reference; not factory-authentic photos.",
+    "G7-specific year and paint labels follow official China-market choices; not all regions offer the same combinations."
   ]
 }

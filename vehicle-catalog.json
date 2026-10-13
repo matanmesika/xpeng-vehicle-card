@@ -1,10 +1,11 @@
 {
   "schema_version": 3,
-  "as_of": "2026-10-12",
+  "as_of": "2026-10-13",
   "notes": [
     "Artwork storage uses model/year-group/exterior-color. Trim is display-only and never changes the artwork path.",
     "Year groups combine consecutive model years that share the same exterior generation.",
-    "Historic and market-specific trim/color availability can vary by country; entries marked market_dependent are intentionally conservative."
+    "Historic and market-specific trim/color availability can vary by country; entries marked market_dependent are intentionally conservative.",
+    "G7 factory paint families are listed by 2025 and 2026 China-market model-year, based on xiaopeng.com; illustrative HEX values are not official paint codes. Overseas availability may vary."
   ],
   "paints": [
     {
@@ -126,6 +127,41 @@
       "id": "green",
       "label": "Green",
       "hex": "#476B5C"
+    },
+    {
+      "id": "nebula_white",
+      "label": "G7 Nebula White (2025/2026)",
+      "hex": "#F0F0EC"
+    },
+    {
+      "id": "starday_gray",
+      "label": "G7 Star Day Gray (2025/2026)",
+      "hex": "#7B8390"
+    },
+    {
+      "id": "crescent_silver",
+      "label": "G7 Crescent Silver (2025/2026)",
+      "hex": "#B6BDC4"
+    },
+    {
+      "id": "night_black",
+      "label": "G7 Night Black (2025/2026)",
+      "hex": "#17191B"
+    },
+    {
+      "id": "cloud_beige",
+      "label": "G7 Cloud Beige (2025)",
+      "hex": "#BEB4A1"
+    },
+    {
+      "id": "interstellar_green",
+      "label": "G7 Interstellar Green (2025)",
+      "hex": "#596C63"
+    },
+    {
+      "id": "twilight_purple",
+      "label": "G7 Twilight Purple (2026)",
+      "hex": "#827690"
     }
   ],
   "interiors": [
@@ -482,10 +518,31 @@
       "shape": "crossover",
       "groups": [
         {
-          "id": "2025-2026",
-          "label": "2025-2026",
+          "id": "2025",
+          "label": "2025",
           "years": [
-            2025,
+            2025
+          ],
+          "trims": [
+            {
+              "id": "market_dependent",
+              "label": "Variant / market-dependent"
+            }
+          ],
+          "colors": [
+            "starday_gray",
+            "crescent_silver",
+            "cloud_beige",
+            "interstellar_green",
+            "night_black",
+            "nebula_white"
+          ],
+          "catalog_status": "official_cn"
+        },
+        {
+          "id": "2026",
+          "label": "2026",
+          "years": [
             2026
           ],
           "trims": [
@@ -495,12 +552,13 @@
             }
           ],
           "colors": [
-            "arctic_white",
-            "graphite_gray",
-            "midnight_black",
-            "silver_frost"
+            "twilight_purple",
+            "starday_gray",
+            "crescent_silver",
+            "night_black",
+            "nebula_white"
           ],
-          "catalog_status": "catalog_pending"
+          "catalog_status": "official_cn"
         }
       ]
     },

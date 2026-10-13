@@ -12,10 +12,10 @@
   "trim_policy": "Trim is display-only, year_group filters offered trim labels. Trim never affects artwork, colors, cabin, telemetry or sensor mappings.",
   "backdrop": "xpeng-approved-lakeside-background.webp",
   "target_asset_layout": "assets/vehicles/{model}/{year_group}/{exterior_color}/{front,charging,top}.webp",
-  "available_image_count": 30,
-  "available_combinations": 10,
-  "pending_combinations": 73,
+  "available_image_count": 33,
+  "available_combinations": 11,
+  "pending_combinations": 79,
   "missing_asset_policy": "Labelled colour-matched silhouette only; never substitute wrong model/year-group/color or silently reuse front for charging/top.",
-  "provenance_policy": "G6 2023-2025 WebP cutouts are AI-generated illustrations (sources/ai-generated-vehicle-art.json); never claim factory-verified imagery.",
+  "provenance_policy": "G6 2023-2025 and G7 2025 WebP images are AI-generated illustrations; see sources/ai-generated-vehicle-art.json. Do not claim factory-verified imagery.",
   "ai_artwork_index": "sources/ai-generated-vehicle-art.json"
 }

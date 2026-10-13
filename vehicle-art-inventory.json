@@ -37,7 +37,10 @@
     "vehicles/g6/2026/silver_frost/top.webp",
     "vehicles/g6/2026/stellar_purple/charging.webp",
     "vehicles/g6/2026/stellar_purple/front.webp",
-    "vehicles/g6/2026/stellar_purple/top.webp"
+    "vehicles/g6/2026/stellar_purple/top.webp",
+    "vehicles/g7/2025/nebula_white/charging.webp",
+    "vehicles/g7/2025/nebula_white/front.webp",
+    "vehicles/g7/2025/nebula_white/top.webp"
   ],
   "model_family": [],
   "known_uploaded_now": [
@@ -70,12 +73,15 @@
     "vehicles/g6/2026/silver_frost/top.webp",
     "vehicles/g6/2026/stellar_purple/charging.webp",
     "vehicles/g6/2026/stellar_purple/front.webp",
-    "vehicles/g6/2026/stellar_purple/top.webp"
+    "vehicles/g6/2026/stellar_purple/top.webp",
+    "vehicles/g7/2025/nebula_white/charging.webp",
+    "vehicles/g7/2025/nebula_white/front.webp",
+    "vehicles/g7/2025/nebula_white/top.webp"
   ],
   "model_count": 15,
-  "year_group_count": 18,
-  "paint_combination_count": 83,
-  "pending_combination_count": 73,
+  "year_group_count": 19,
+  "paint_combination_count": 90,
+  "pending_combination_count": 79,
   "caveats": [
     "Available means a WebP file exists, not that it has manufacturer-verified provenance or accuracy.",
     "2023-2025 G6 images are AI-generated illustrative renders, not official manufacturer photography; see sources/ai-generated-vehicle-art.json.",
