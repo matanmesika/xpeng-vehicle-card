@@ -44,6 +44,7 @@ jobs:
           python tools/sync_master_view_queue.py --check
           node tools/render_artwork_status.mjs --check
           node --test tests/vehicle-artwork-mapping.test.cjs
+          node --test tests/charging-cable-static.test.cjs
           python tools/check_photo_candidates.py
           python tools/audit_vehicle_provenance.py
 
