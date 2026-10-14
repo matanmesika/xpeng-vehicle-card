@@ -94,14 +94,17 @@ function xpAppearanceId(v,kind='color'){
  return XP_ALIASES[k]||k;
 }
 function xpModel(model){return XP_MODELS.find(m=>m.id===model)||XP_MODELS.find(m=>m.id==='G6');}
-function xpAllowedModels(){return XP_MODELS;}
+function xpAllowedModels(){return [...XP_MODELS].sort((a,b)=>Math.max(...xpAllowedYearGroups(b.id).flatMap(g=>g.years))-Math.max(...xpAllowedYearGroups(a.id).flatMap(g=>g.years))||a.name.localeCompare(b.name));}
 function xpAllowedYearGroups(model){return XP_YEAR_GROUPS[String(model)]||[];}
 function xpYearGroupFor(model,value){
  const groups=xpAllowedYearGroups(model);if(!groups.length)return null;
  const raw=String(value??'').trim();
  return groups.find(g=>g.id===raw)||groups.find(g=>g.years.includes(Number(raw)))||groups[groups.length-1];
 }
-function xpAllowedYears(model){return xpAllowedYearGroups(model).flatMap(g=>g.years.map(year=>({id:String(year),label:String(year)})));}
+function xpAllowedYears(model){
+ const years=new Set(xpAllowedYearGroups(model).flatMap(g=>g.years));
+ return [...years].sort((a,b)=>b-a).map(year=>({id:String(year),label:String(year)}));
+}
 function xpAllowedTrims(model,year){return xpYearGroupFor(model,year)?.trims||[{id:'market_dependent',label:'Variant / market-dependent'}];}
 function xpAllowedPaints(model,year){
  const group=xpYearGroupFor(model,year),raw=String(year??'');
@@ -120,7 +123,8 @@ function xpNormalizeAppearance(value){
  const mdl=XP_MODELS.some(m=>m.id===incoming)?incoming:'G6';
  const group=xpYearGroupFor(mdl,v.year)||xpAllowedYearGroups(mdl)[0];
  const rawYear=String(v.year??'');
- const yr=group?.years.includes(Number(rawYear))&&/^\d{4}$/.test(rawYear)?rawYear:(group?.id||String(v.year||'2026'));
+ const availableYears=xpAllowedYears(mdl).map(x=>x.id);
+  const yr=availableYears.includes(rawYear)?rawYear:(availableYears[0]||'2026');
  const trims=xpAllowedTrims(mdl,yr),requestedTrim=String(v.trim??'');
  const trim=trims.some(x=>x.id===requestedTrim)?requestedTrim:(trims[0]?.id||'market_dependent');
  const paints=xpAllowedPaints(mdl,yr),requestedPaint=xpAppearanceId(v.color);
@@ -669,7 +673,7 @@ class XpengVehicleCardEditor extends HTMLElement{
    </style><section>
     <h3>Vehicle appearance</h3>
      ${select('model','Model',xpAllowedModels().map(m=>({id:m.id,label:m.name})))}
-     ${select('year','Model year',[...xpAllowedYears(v.model),...(!xpAllowedYears(v.model).some(x=>x.id===v.year)?[{id:v.year,label:v.year+' (legacy group; select a year)'}]:[])])}
+     ${select('year','Model year',xpAllowedYears(v.model))}
      ${select('trim','Trim · display only',xpAllowedTrims(v.model,v.year))}
      ${select('color','Exterior paint',xpAllowedPaints(v.model,v.year))}
      ${select('interior','Interior finish',xpAllowedInteriors(v.model,v.year))}
