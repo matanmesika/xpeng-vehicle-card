@@ -10,7 +10,7 @@
 
 **Master views:** 4/21 generation-specific master trios complete; 50 base camera views still missing.
 
-[Latest changes (PR #29)](https://github.com/matanmesika/xpeng-vehicle-card/pull/29) · [Workflow runs](https://github.com/matanmesika/xpeng-vehicle-card/actions) · [Missing master views](../master-view-queue.json) · [Machine-readable status](../artwork-status.json)
+[Latest changes (PR #29)](https://github.com/matanmesika/xpeng-vehicle-card/pull/29) · [Workflow runs](https://github.com/matanmesika/xpeng-vehicle-card/actions) · [Missing master views](../data/master-view-queue.json) · [Machine-readable status](../data/artwork-status.json)
 
 ## Progress by model
 
@@ -61,6 +61,6 @@
 ## Counting rules and caveats
 
 - A completed paint combination requires **three distinct files**: `front.webp`, `charging.webp` (rear three-quarter) and `top.webp` (true overhead). One available view does not count as a complete combination.
-- Year-by-year paint availability is defined in `year-color-matrix.json`; the artwork asset is selected by model, body-generation group and exterior colour. Trim selection does not change artwork.
+- Year-by-year paint availability is defined in `data/year-color-matrix.json`; the artwork asset is selected by model, body-generation group and exterior colour. Trim selection does not change artwork.
 - **These renders are not official manufacturer photographs**. Some geometry, colours and wheels remain pending manufacturer-fidelity review. Technical alpha/WebP checks are not visual authenticity checks.
-- This report is regenerated from `vehicle-catalog.json`, `vehicle-art-map.json` and `master-view-queue.json` whenever artwork is added by the repository workflow. The displayed counts reflect the **last committed status**, not a real-time background job.
+- This report is regenerated from `data/vehicle-catalog.json`, `data/vehicle-art-map.json` and `data/master-view-queue.json` whenever artwork is added by the repository workflow. The displayed counts reflect the **last committed status**, not a real-time background job.
