@@ -12,7 +12,7 @@ const js = fs.readFileSync(path.join(ROOT, 'src/xpeng-vehicle-card.js'), 'utf8')
 const dist = fs.readFileSync(path.join(ROOT, 'dist/xpeng-vehicle-card.js'), 'utf8');
 const classes = new Map();
 const sandbox = {
- HTMLElement: class { attachShadow() { return {addEventListener() {}, innerHTML: ''}; }},
+ HTMLElement: class { attachShadow() { this.shadowRoot={addEventListener() {}, innerHTML: ''}; return this.shadowRoot; }},
  customElements: {get:k=>classes.get(k), define:(k,c)=>classes.set(k,c)},
  window: {customCards:[]}, document: {addEventListener() {}, removeEventListener() {}},
  console, URL, CustomEvent: class {}
