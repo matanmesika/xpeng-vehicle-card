@@ -84,7 +84,7 @@ test('missing artwork is a labelled colour-matched silhouette, never another mod
  }
 });
 test('year editor changes must invalidate old manual hero images, unlike trim changes', () => {
- assert.match(js, /\['model','year','color'\]\.includes\(key\)/);
+ assert.match(js, /\['model','year_group','year','color'\]\.includes\(key\)/);
  assert.doesNotMatch(js, /\['model','year','color','trim'\]\.includes\(key\)/);
 });
 test('front and charging require their own actual view; missing or broken URLs fall back', () => {
@@ -267,4 +267,49 @@ test('G6 2023, 2024 and 2025 share shape assets, while 2026 uses distinct faceli
   assert.ok(api.XP_ARTWORK_INDEX.has(historic[0]),'2023-2025 '+view+' artwork must exist');
  }
  assert.deepEqual(Array.from(api.xpAllowedYears('G6'),x=>x.id),['2026','2025','2024','2023']);
+});
+
+test('all 15 model pickers group shared generations instead of repeating years', () => {
+ const {xpYearGroupChoices,xpYearNeedsSpecificChoice,xpYearGroupFor} = vm.runInNewContext(
+   '({xpYearGroupChoices,xpYearNeedsSpecificChoice,xpYearGroupFor})',sandbox);
+ const Editor = classes.get('xpeng-vehicle-card-editor');
+ for (const model of catalog.models) {
+  const choices=Array.from(xpYearGroupChoices(model.id));
+  assert.equal(choices.length,model.groups.length,model.id);
+  assert.equal(new Set(choices.map(x=>x.id)).size,choices.length,model.id);
+  assert.deepEqual(choices.map(x=>x.id).sort(),model.groups.map(x=>x.id).sort(),model.id);
+  for (const group of model.groups)for (const year of group.years) {
+   const e=new Editor();
+   e.setConfig({model:model.id,year:String(year)});
+   const html=e.shadowRoot.innerHTML;
+   assert.ok(html.includes('data-key="year_group"'),model.id);
+   assert.ok(html.includes('<option value="'+group.id+'" selected>'),model.id+' '+year);
+   const expectedPaletteDiff=new Set(group.years.map(y=>JSON.stringify(group.colors_by_year[String(y)]))).size>1;
+   assert.equal(xpYearNeedsSpecificChoice(model.id,String(year)),expectedPaletteDiff);
+   assert.equal(html.includes('data-key="year"'),expectedPaletteDiff,model.id+' '+year);
+   assert.equal(xpYearGroupFor(model.id,String(year)).id,group.id);
+  }
+ }
+});
+
+test('G6 2026 display names match the official Israeli lineup and do not combine legacy labels',()=>{
+ const trims=Array.from(api.xpAllowedTrims('G6','2026'),x=>x.label);
+ assert.deepEqual(trims,['Core RWD','Core+ RWD','Core Performance AWD','Black Edition']);
+ const Editor=classes.get('xpeng-vehicle-card-editor');
+ const e=new Editor();e.setConfig({model:'G6',year:'2026',trim:'core_performance_awd'});
+ assert.match(e.shadowRoot.innerHTML,/data-key="year_group"/);
+ assert.doesNotMatch(e.shadowRoot.innerHTML,/data-key="year"/);
+ for(const name of trims)assert.ok(e.shadowRoot.innerHTML.includes('>'+name+'</option>'),name);
+ assert.doesNotMatch(e.shadowRoot.innerHTML,/RWD Standard Range|AWD Performance<\/option>/);
+});
+test('P7i keeps exact-year colour selection for the 2024-only paints',()=>{
+ const Editor=classes.get('xpeng-vehicle-card-editor');
+ const editor=new Editor();
+ editor.setConfig({model:'P7i',year:'2024',color:'star_blue'});
+ assert.match(editor.shadowRoot.innerHTML,/data-key="year_group"/);
+ assert.match(editor.shadowRoot.innerHTML,/data-key="year"/);
+ assert.ok(editor.shadowRoot.innerHTML.includes('<option value="2024" selected>'));
+ assert.ok(editor.shadowRoot.innerHTML.includes('value="star_blue"'));
+ editor.setConfig({model:'P7i',year:'2025',color:'star_blue'});
+ assert.equal(editor._cfg.color,'arctic_white');
 });
