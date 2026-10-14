@@ -57,17 +57,18 @@ async function main(){
       trim:'core_plus_rwd',color:'graphite_gray',interior:'light_gray'});
  });
  async function screen(name){
-  await page.waitForFunction(()=>{
+  const selector=name==='tire-pressure'?'[data-top-art]':'[data-car-art]';
+  await page.waitForFunction(selector=>{
    const root=document.querySelector('xpeng-vehicle-card').shadowRoot;
-   const img=root.querySelector('[data-car-art]');
+   const img=root.querySelector(selector);
    return img&&img.complete&&img.naturalWidth>200;
-  },{timeout:30000});
+  },selector,{timeout:30000});
   // Also ensure the exact body view is attached and actually rendered.
-  const info=await car.evaluate(e=>{
-    const root=e.shadowRoot,stage=root.querySelector('.xp-scene'),img=root.querySelector('[data-car-art]');
+  const info=await car.evaluate((e,selector)=>{
+    const root=e.shadowRoot,stage=root.querySelector('.xp-scene'),img=root.querySelector(selector);
     return {width:stage.getBoundingClientRect().width,height:stage.getBoundingClientRect().height,
       imageWidth:img.naturalWidth,imageSrc:img.src,kind:stage.className};
-  });
+  },selector);
   assert.ok(info.width>=1300&&info.height>=700,JSON.stringify(info));
   assert.ok(info.imageWidth>200,JSON.stringify(info));
   await page.waitForTimeout(600);
