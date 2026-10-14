@@ -17,7 +17,7 @@ background=root/'dist'/'xpeng-approved-lakeside-background.webp'
 assert background in chosen and background.stat().st_size>50000
 cutout=root/'dist'/'xpeng-asset-vehicles-g6-2026-core_plus_rwd-arctic_white.webp'
 assert cutout in chosen and cutout.stat().st_size>100000
-catalog=json.loads((root/'vehicle-art-inventory.json').read_text())
+catalog=json.loads((root/'data/vehicle-art-inventory.json').read_text())
 for relative in catalog['exact']+catalog['model_family']:
     file=root/'dist'/('xpeng-asset-'+relative.replace('/','-'))
     assert file in chosen, f"HACS installer would not download {relative}"

@@ -2,11 +2,11 @@
 from pathlib import Path
 import json
 root=Path(__file__).resolve().parents[1]
-m=json.loads((root/'model-artwork.json').read_text())
-copy=json.loads((root/'dist/model-artwork.json').read_text())
+m=json.loads((root/'data/model-artwork.json').read_text())
+copy=json.loads((root/'dist/data/model-artwork.json').read_text())
 assert m==copy
 cat=json.loads((root/'model-catalog.json').read_text())
-inv=json.loads((root/'vehicle-art-inventory.json').read_text())
+inv=json.loads((root/'data/vehicle-art-inventory.json').read_text())
 assert m['selection']=='model + exterior paint ONLY'
 assert len(m['models'])==len(cat['models'])==16
 exact=set(inv['exact'])
