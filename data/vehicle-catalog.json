@@ -921,15 +921,15 @@
           "trims": [
             {
               "id": "core_rwd",
-              "label": "Core RWD / RWD Standard Range"
+              "label": "Core RWD"
             },
             {
               "id": "core_plus_rwd",
-              "label": "Core+ RWD / RWD Long Range"
+              "label": "Core+ RWD"
             },
             {
               "id": "core_performance_awd",
-              "label": "Core Performance AWD / AWD Performance"
+              "label": "Core Performance AWD"
             },
             {
               "id": "black_edition",
