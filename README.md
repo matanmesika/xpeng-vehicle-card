@@ -47,7 +47,7 @@ See [artwork and tire view policy](docs/SHAPE_ASSETS_AND_TPMS.md) and [design lo
 
 ## Installation through HACS
 
-Add `https://github.com/matanmesika/xpeng-vehicle-card` to **HACS → Custom repositories**, category **Dashboard**. Install the most recent published beta and reload Home Assistant. The current release candidate is `v1.0.0-beta.2`; check GitHub Releases for actual publication status.
+Add `https://github.com/matanmesika/xpeng-vehicle-card` to **HACS → Custom repositories**, category **Dashboard**. Install the latest appropriate version shown in [GitHub Releases](https://github.com/matanmesika/xpeng-vehicle-card/releases) and refresh Home Assistant. `v1.0.0` is already published; later commits to `main` are **not** included in that tag until a subsequent release. Check the release notes and commit date before updating.
 
 Example configuration:
 
