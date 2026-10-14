@@ -12,12 +12,13 @@ permissions:
   contents: write
 
 concurrency:
-  group: xpeng-dashboard-gallery-${{ github.ref }}
+  group: xpeng-dashboard-gallery-v2-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   screenshots:
     runs-on: ubuntu-latest
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
         with:
@@ -35,7 +36,7 @@ jobs:
       - name: Capture genuine card screenshots with DEMO sensor states
         env:
           PLAYWRIGHT_MODULE: /tmp/xpeng-capture/node_modules/playwright
-        run: node scripts/capture-dashboard.cjs
+        run: timeout 150s node scripts/capture-dashboard.cjs
 
       - name: Verify three independent screenshots
         run: |
