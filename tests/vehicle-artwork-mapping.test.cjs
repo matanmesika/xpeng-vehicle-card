@@ -195,7 +195,7 @@ test('G9 refreshed 2025-2026 first three paint sets are complete with independen
 
 test('year-specific colour choices and historic group fallback',()=>{
  const allYears=vm.runInNewContext('xpAllowedYears',sandbox);
- assert.deepEqual(Array.from(allYears('P7i'),x=>x.id),['2023','2024','2025']);
+ assert.deepEqual(Array.from(allYears('P7i'),x=>x.id),['2025','2024','2023']);
  const ids=year=>Array.from(api.xpAllowedPaints('P7i',year),p=>p.id);
  const basic=['arctic_white','jet_black','space_gray','silver_frost','kaitoke_green_matte'];
  assert.deepEqual(ids('2023'),basic);
