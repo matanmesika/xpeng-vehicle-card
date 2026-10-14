@@ -7,8 +7,8 @@ from pathlib import Path
 from io import StringIO
 
 ROOT = Path(__file__).resolve().parents[1]
-catalog = json.loads((ROOT / "vehicle-catalog.json").read_text(encoding="utf-8"))
-art = json.loads((ROOT / "vehicle-art-map.json").read_text(encoding="utf-8"))
+catalog = json.loads((ROOT / "data/vehicle-catalog.json").read_text(encoding="utf-8"))
+art = json.loads((ROOT / "data/vehicle-art-map.json").read_text(encoding="utf-8"))
 entry_by_key = {(e["model"],e["year_group"],e["exterior_color"]):e for e in art["entries"]}
 buf = StringIO(newline="")
 writer = csv.writer(buf,lineterminator="\n",quoting=csv.QUOTE_ALL)
@@ -22,7 +22,7 @@ for m in catalog["models"]:
             for view in ("front","charging","top"):
                 x=item["views"][view]
                 writer.writerow([m["id"],group["id"],colour,view,x["path"],x["status"],group["catalog_status"],group.get("market","varies")])
-target = ROOT/"artwork-backlog.csv"
+target = ROOT/"data/artwork-backlog.csv"
 if "--check" in sys.argv:
     assert target.read_text(encoding="utf-8")==buf.getvalue(),"Artwork backlog is out of sync; run exporter"
 else:

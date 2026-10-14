@@ -6,7 +6,7 @@ from collections import defaultdict
 from PIL import Image
 
 root = Path(__file__).resolve().parents[1]
-catalog = json.loads((root / "vehicle-art-map.json").read_text())
+catalog = json.loads((root / "data/vehicle-art-map.json").read_text())
 groups = defaultdict(lambda: defaultdict(list))
 warnings = []
 count = 0

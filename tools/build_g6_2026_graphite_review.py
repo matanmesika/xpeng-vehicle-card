@@ -10,7 +10,7 @@ from PIL import Image
 from recolor_vehicle_assets import colourise
 
 ROOT = Path(__file__).resolve().parents[1]
-CAT = json.loads((ROOT / 'vehicle-catalog.json').read_text(encoding='utf-8'))
+CAT = json.loads((ROOT / 'data/vehicle-catalog.json').read_text(encoding='utf-8'))
 HEX = next(p['hex'] for p in CAT['paints'] if p['id'] == 'graphite_gray')
 SOURCE = ROOT / 'assets/vehicles/g6/2026/arctic_white'
 DEST = ROOT / 'review-export/g6/2026/graphite_gray'

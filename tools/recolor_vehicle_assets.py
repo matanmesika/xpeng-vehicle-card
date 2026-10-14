@@ -12,7 +12,7 @@ import numpy as np
 import json, re
 
 ROOT=Path(__file__).resolve().parents[1]
-CAT=json.loads((ROOT/'vehicle-catalog.json').read_text(encoding='utf-8'))
+CAT=json.loads((ROOT/'data/vehicle-catalog.json').read_text(encoding='utf-8'))
 PAINT={p['id']:p['hex'] for p in CAT['paints']}
 ROOT_VEHICLES=ROOT/'assets'/'vehicles'
 VIEWS=('front','charging','top')
