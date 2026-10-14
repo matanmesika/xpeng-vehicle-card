@@ -33,6 +33,8 @@ async function main(){
  const page=await browser.newPage({viewport:{width:1440,height:860},deviceScaleFactor:1});
  const errors=[];
  page.on('pageerror',err=>errors.push(err.message));
+ page.on('requestfailed',request=>console.warn('Browser request failed',request.url(),request.failure()));
+ page.on('console',msg=>{if(msg.type()==='error')console.warn('Browser console error',msg.text());});
  let imagesServed=0;
  // Never use remote 'main' images for this branch: serve the exact checked-out artwork.
  await page.route('https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/assets/**',async route=>{
@@ -57,12 +59,13 @@ async function main(){
       trim:'core_plus_rwd',color:'graphite_gray',interior:'light_gray'});
  });
  async function screen(name){
+  console.log('Checking browser screen:',name);
   const selector=name==='tire-pressure'?'[data-top-art]':'[data-car-art]';
   await page.waitForFunction(selector=>{
    const root=document.querySelector('xpeng-vehicle-card').shadowRoot;
    const img=root.querySelector(selector);
    return img&&img.complete&&img.naturalWidth>200;
-  },selector,{timeout:30000});
+  },selector,{timeout:12000});
   // Also ensure the exact body view is attached and actually rendered.
   const info=await car.evaluate((e,selector)=>{
     const root=e.shadowRoot,stage=root.querySelector('.xp-scene'),img=root.querySelector(selector);
