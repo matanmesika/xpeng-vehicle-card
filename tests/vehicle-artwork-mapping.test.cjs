@@ -18,7 +18,7 @@ const sandbox = {
  console, URL, CustomEvent: class {}
 };
 vm.runInNewContext(js, sandbox);
-const api = vm.runInNewContext('({xpNormalizeAppearance,xpVehicleAssetPath,xpAllowedTrims,xpAllowedPaints,XP_ARTWORK_INDEX,XP_ILLUSTRATIVE_ARTWORK_INDEX})', sandbox);
+const api = vm.runInNewContext('({xpNormalizeAppearance,xpVehicleAssetPath,xpAllowedTrims,xpAllowedPaints,xpAllowedYears,xpAllowedModels,XP_ARTWORK_INDEX,XP_ILLUSTRATIVE_ARTWORK_INDEX})', sandbox);
 const Card = classes.get('xpeng-vehicle-card');
 function instance(cfg, charging=false) {
  const obj = Object.create(Card.prototype);
@@ -195,7 +195,7 @@ test('G9 refreshed 2025-2026 first three paint sets are complete with independen
 
 test('year-specific colour choices and historic group fallback',()=>{
  const allYears=vm.runInNewContext('xpAllowedYears',sandbox);
- assert.deepEqual(Array.from(allYears('P7i'),x=>x.id),['2023','2024','2025']);
+ assert.deepEqual(Array.from(allYears('P7i'),x=>x.id),['2025','2024','2023']);
  const ids=year=>Array.from(api.xpAllowedPaints('P7i',year),p=>p.id);
  const basic=['arctic_white','jet_black','space_gray','silver_frost','kaitoke_green_matte'];
  assert.deepEqual(ids('2023'),basic);
@@ -232,4 +232,22 @@ test('P7i white front is a provenance-tagged partial 3-view combination',()=>{
  const a=api.xpNormalizeAppearance({model:'P7i',year:'2024',color:'arctic_white'});
  assert.equal(instance(a).assetSpec().tier,'generated-preview');
  assert.equal(instance(a,true).assetSpec().tier,'silhouette');
+});
+
+test('model years are unique, descending, and never display mixed-year group options', () => {
+ const models=Array.from(api.xpAllowedModels());
+ const newest=m=>Math.max(...catalog.models.find(x=>x.id===m.id).groups.flatMap(g=>g.years));
+ for(let i=1;i<models.length;i++)assert.ok(newest(models[i-1])>=newest(models[i]));
+ for(const model of catalog.models){
+  const years=Array.from(api.xpAllowedYears(model.id),x=>Number(x.id));
+  const expected=[...new Set(model.groups.flatMap(g=>g.years))].sort((a,b)=>b-a);
+  assert.deepEqual(years,expected,model.id);
+  assert.equal(years.length,new Set(years).size,model.id);
+  for(const year of years){
+   const normalized=api.xpNormalizeAppearance({model:model.id,year:String(year)});
+   assert.equal(normalized.year,String(year));
+   const group=model.groups.find(g=>g.years.includes(year));
+   assert.ok(api.xpVehicleAssetPath(normalized,'front').includes('/'+group.id+'/'));
+  }
+ }
 });
