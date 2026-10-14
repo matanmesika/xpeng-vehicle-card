@@ -2,7 +2,7 @@
 
 ## Unreleased — full model/year-group catalog
 
-- Added `vehicle-catalog.json` as the canonical model, year-group, trim-title and exterior-colour catalog.
+- Added `data/vehicle-catalog.json` as the canonical model, year-group, trim-title and exterior-colour catalog.
 - The card editor now exposes Model, Model years, Trim (display only), Exterior paint and Interior finish.
 - Artwork selection is strictly `model + year-group + exterior colour`; trim never changes an image path.
 - Consecutive years with the same exterior generation use one range key such as `2023-2025`.
@@ -35,14 +35,14 @@
 
 - Merged [PR #28](https://github.com/matanmesika/xpeng-vehicle-card/pull/28) into `main` (commit `17fd199`), replacing `assets/vehicles/g6/2026/core_performance_awd/front.webp` with the user-uploaded front three-quarter view.
 - Retained the existing approved lakeside backdrop, charging artwork and overhead artwork without changes in this PR.
-- Aligned `model-artwork.json` and `vehicle-art-inventory.json` with the existing runtime artwork paths.
+- Aligned `data/model-artwork.json` and `data/vehicle-art-inventory.json` with the existing runtime artwork paths.
 - This is a repository update, **not a new GitHub Release**. The image is loaded from GitHub at runtime; the frontend JavaScript bundle and HACS release artifact were not rebuilt for this change.
 - Visual verification in a live Home Assistant dashboard and CI checks for this merge are still outstanding.
 
 ## v1.0.0-alpha.6 — UI-only prerelease planned (2026-10-12)
 
 - Simplify all vehicle illustrations to **one highest-available-trim image per model+exterior colour**, shared across every year and selected trim. Trim selections carry no visual effect; year affects only trim names.
-- Replace the old model/year/trim/shape image chooser with the model+paint mapping in `model-artwork.json`; keep available year ranges in the editor.
+- Replace the old model/year/trim/shape image chooser with the model+paint mapping in `data/model-artwork.json`; keep available year ranges in the editor.
 - Keep the owner-approved lakeside photo separate from car layers in Vehicle status, Charging and Tire pressures.
 - Add full-size Tire pressure detail mode: overhead car with independent FL/FR/RL/RR sensor readings in bar and Back to vehicle.
 - Put live connection indicator and info icon on one responsive header row. Popup **closed by default**, opens only on info click, displays **Connection and Last vehicle update only**, closes on second click.

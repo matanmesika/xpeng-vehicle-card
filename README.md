@@ -4,7 +4,7 @@
 
 A standalone, **read-only Home Assistant dashboard card** for XPENG vehicles. This repository contains **frontend/UI only**; the XPENG Home Assistant integration is a separate project and is not modified here.
 
-**Updates and release history:** [CHANGELOG.md](CHANGELOG.md) is the single canonical history for this project. Obsolete per-release note files were removed; installable versions are published separately under [GitHub Releases](https://github.com/matanmesika/xpeng-vehicle-card/releases).
+**Updates and release history:** [docs/CHANGELOG.md](docs/CHANGELOG.md) is the single canonical history for this project. Obsolete per-release note files were removed; installable versions are published separately under [GitHub Releases](https://github.com/matanmesika/xpeng-vehicle-card/releases).
 
 **Current candidate (2026-10-12):** **v1.0.0-beta.2**. It includes the current dashboard/UI, the approved lakeside backdrop, and the current G6 front/charging/top artwork. The temporary `mix-blend-mode: multiply` workaround has been removed so the updated front artwork renders normally.
 
@@ -18,7 +18,7 @@ A standalone, **read-only Home Assistant dashboard card** for XPENG vehicles. Th
 
 ## Artwork storage policy: model → year group → exterior paint
 
-`vehicle-catalog.json` is the canonical appearance catalog. Trim is display-only and does not select artwork.\n\nVehicle artwork files use one canonical hierarchy: `assets/vehicles/{model}/{year}/{color}/{front,charging,top}.webp`. There is **no trim folder** in the artwork path. Trim may remain informational in configuration, but it never selects a different image file.
+`data/vehicle-catalog.json` is the canonical appearance catalog. Trim is display-only and does not select artwork.\n\nVehicle artwork files use one canonical hierarchy: `assets/vehicles/{model}/{year}/{color}/{front,charging,top}.webp`. There is **no trim folder** in the artwork path. Trim may remain informational in configuration, but it never selects a different image file.
 
 - **Model** changes vehicle artwork and its available selections.
 - **Exterior colour** changes the vehicle artwork (and any colour-matched preview).
@@ -26,7 +26,7 @@ A standalone, **read-only Home Assistant dashboard card** for XPENG vehicles. Th
 - **Trim** is informational only. Each year group always selects its own geometry; no substitution of newer or older generations.
 - **Interior finish** is an editor-only future-facing visual setting; it does not appear in the information popup.
 
-The mapping is recorded in [model-artwork.json](model-artwork.json). The current G6 set covers five 2026 colours in separate `front.webp`, `charging.webp`, and `top.webp` files. Other model/year/paint folders are prepared but currently pending real artwork. Trim names are not part of the filesystem path. See [complete artwork mapping](docs/ARTWORK_MAPPING.md).
+The mapping is recorded in [data/model-artwork.json](data/model-artwork.json). The current G6 set covers five 2026 colours in separate `front.webp`, `charging.webp`, and `top.webp` files. Other model/year/paint folders are prepared but currently pending real artwork. Trim names are not part of the filesystem path. See [complete artwork mapping](docs/ARTWORK_MAPPING.md).
 
 See [artwork and tire view policy](docs/SHAPE_ASSETS_AND_TPMS.md) and [design lock](docs/DESIGN_LOCK.md).
 
@@ -86,17 +86,17 @@ The charging sensor determines the view; an available charging cable alone does 
 
 - `src/xpeng-vehicle-card.js` is the development source; `dist/xpeng-vehicle-card.js` is the identical HACS delivery file.
 - `dist/` also contains the approved backdrop and the flat `xpeng-asset-*` image files required by HACS packaging.
-- `model-artwork.json` and `vehicle-art-inventory.json` use the canonical `model/year/color` artwork hierarchy. Trim is not part of artwork selection.
+- `data/model-artwork.json` and `data/vehicle-art-inventory.json` use the canonical `model/year/color` artwork hierarchy. Trim is not part of artwork selection.
 - `tests/` covers appearance invariants, real sensor mapping, network info popup, charging and tire modes, responsive desktop/phone browser rendering, image inventory and HACS packaging.
 
-The tested UI improvements originated in [PR #21](https://github.com/matanmesika/xpeng-vehicle-card/pull/21); image research continues separately. See [release checklist](docs/RELEASE_CHECKLIST.md) and [changelog](CHANGELOG.md). Final real-vehicle photography, licence checks, owner visual sign-off, and installation testing in an actual Home Assistant instance remain separate release gates.
+The tested UI improvements originated in [PR #21](https://github.com/matanmesika/xpeng-vehicle-card/pull/21); image research continues separately. See [release checklist](docs/RELEASE_CHECKLIST.md) and [changelog](docs/CHANGELOG.md). Final real-vehicle photography, licence checks, owner visual sign-off, and installation testing in an actual Home Assistant instance remain separate release gates.
 
 *Independent community dashboard; not an official XPENG product.*
 
 
 ## Full model/year-group/paint image inventory
 
-The [artwork map](vehicle-art-map.json) covers all current catalog combinations and explicitly marks missing image views. Run `python tools/sync_vehicle_artwork.py` after adding correctly licensed WebP images to the corresponding folder; see [mapping instructions](docs/ARTWORK_MAPPING.md). Until the file is available, the dashboard displays a labelled illustration. No trim-specific photos or guessed vehicle/paint substitutions are used.
+The [artwork map](data/vehicle-art-map.json) covers all current catalog combinations and explicitly marks missing image views. Run `python tools/sync_vehicle_artwork.py` after adding correctly licensed WebP images to the corresponding folder; see [mapping instructions](docs/ARTWORK_MAPPING.md). Until the file is available, the dashboard displays a labelled illustration. No trim-specific photos or guessed vehicle/paint substitutions are used.
 
 
 ### G6 original generation artwork
@@ -106,9 +106,9 @@ A first pack for G6 **2023–2025** adds five exterior paints × front, charging
 
 ## Complete multi-model artwork matrix
 
-[Final 15-model year/paint artwork matrix](docs/FULL_MODEL_COVERAGE.md) tracks all 15 catalogue models, 21 year groups, 113 exterior paint choices and three independent image slots per combination. The [CSV build backlog](artwork-backlog.csv) identifies pending versus uploaded real files. Some historical/region-specific paint lists remain provisional; see source notes. 43 actual WebP assets are currently uploaded — the remaining slots **are not pictures**. Model/year/paint choose the asset; trim is display-only and never affects artwork or telemetry. Run `python tools/export_vehicle_artwork_backlog.py --check` to verify the CSV before merging.
+[Final 15-model year/paint artwork matrix](docs/FULL_MODEL_COVERAGE.md) tracks all 15 catalogue models, 21 year groups, 113 exterior paint choices and three independent image slots per combination. The [CSV build backlog](data/artwork-backlog.csv) identifies pending versus uploaded real files. Some historical/region-specific paint lists remain provisional; see source notes. 43 actual WebP assets are currently uploaded — the remaining slots **are not pictures**. Model/year/paint choose the asset; trim is display-only and never affects artwork or telemetry. Run `python tools/export_vehicle_artwork_backlog.py --check` to verify the CSV before merging.
 
 
 ## Remaining model-specific camera angles
 
-The [master-view work queue](master-view-queue.json) tracks missing independent front, rear/charging and vertical-overhead photos for all 21 body-generation groups. [Build order](docs/ARTWORK_MASTER_PLAN.md). Generating correctly shaped master trios precedes any mass colour derivation; a missing camera view is never replaced with an alternate angle.
+The [master-view work queue](data/master-view-queue.json) tracks missing independent front, rear/charging and vertical-overhead photos for all 21 body-generation groups. [Build order](docs/ARTWORK_MASTER_PLAN.md). Generating correctly shaped master trios precedes any mass colour derivation; a missing camera view is never replaced with an alternate angle.

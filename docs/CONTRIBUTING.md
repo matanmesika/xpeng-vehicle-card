@@ -7,4 +7,4 @@ Before proposing a pull request:
 2. Keep new UI controls disabled/absent unless a Home Assistant entity with a verified control contract exists.
 3. Update tests and document copyright/trademark provenance of all images.
 4. Run `node --check dist/xpeng-vehicle-card.js`, `python tests/test_hacs_package.py`, and the browser regression scripts (`pip install playwright; python -m playwright install chromium`).
-5. Update `CHANGELOG.md` for user-visible changes. Never include real VINs, tokens, account data or address telemetry in code or screenshots.
+5. Update `docs/CHANGELOG.md` for user-visible changes. Never include real VINs, tokens, account data or address telemetry in code or screenshots.
