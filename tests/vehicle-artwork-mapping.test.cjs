@@ -251,3 +251,20 @@ test('model years are unique, descending, and never display mixed-year group opt
   }
  }
 });
+
+// Regression: 2023-2025 G6 uses one body generation; facelift 2026 must never reuse it.
+test('G6 2023, 2024 and 2025 share shape assets, while 2026 uses distinct facelift assets', () => {
+ const group=catalog.models.find(m=>m.id==='G6').groups;
+ assert.deepEqual(group.map(g=>g.id),['2023-2025','2026']);
+ for(const view of ['front','charging','top']) {
+  const historic=['2023','2024','2025'].map(year=>api.xpVehicleAssetPath(api.xpNormalizeAppearance({model:'G6',year,color:'arctic_white'}),view));
+  assert.equal(new Set(historic).size,1,'2023-2025 must share '+view);
+  assert.match(historic[0],/\/g6\/2023-2025\/arctic_white\//);
+  const facelift=api.xpVehicleAssetPath(api.xpNormalizeAppearance({model:'G6',year:'2026',color:'arctic_white'}),view);
+  assert.match(facelift,/\/g6\/2026\/arctic_white\//);
+  assert.notEqual(facelift,historic[0],'2026 must use facelift '+view);
+  assert.ok(api.XP_ARTWORK_INDEX.has(facelift),'2026 '+view+' artwork must exist');
+  assert.ok(api.XP_ARTWORK_INDEX.has(historic[0]),'2023-2025 '+view+' artwork must exist');
+ }
+ assert.deepEqual(Array.from(api.xpAllowedYears('G6'),x=>x.id),['2026','2025','2024','2023']);
+});
