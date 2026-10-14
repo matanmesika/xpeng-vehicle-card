@@ -124,7 +124,7 @@ function xpNormalizeAppearance(value){
  const group=xpYearGroupFor(mdl,v.year)||xpAllowedYearGroups(mdl)[0];
  const rawYear=String(v.year??'');
  const availableYears=xpAllowedYears(mdl).map(x=>x.id);
-  const yr=availableYears.includes(rawYear)?rawYear:(availableYears[0]||'2026');
+  const yr=availableYears.includes(rawYear)||xpAllowedYearGroups(mdl).some(g=>g.id===rawYear)?rawYear:(availableYears[0]||'2026');
  const trims=xpAllowedTrims(mdl,yr),requestedTrim=String(v.trim??'');
  const trim=trims.some(x=>x.id===requestedTrim)?requestedTrim:(trims[0]?.id||'market_dependent');
  const paints=xpAllowedPaints(mdl,yr),requestedPaint=xpAppearanceId(v.color);
