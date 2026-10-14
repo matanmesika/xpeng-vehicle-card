@@ -1,12 +1,31 @@
 # XPENG Dashboard — Home Assistant vehicle card
 
+## Install manually through HACS
+
+[![Add XPENG Vehicle Card to HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=matanmesika&repository=xpeng-vehicle-card&category=plugin)
+
+**[Open the HACS custom repository shortcut](https://my.home-assistant.io/redirect/hacs_repository/?owner=matanmesika&repository=xpeng-vehicle-card&category=plugin)** · [GitHub repository](https://github.com/matanmesika/xpeng-vehicle-card)
+
+If the shortcut does not open, in Home Assistant go to **HACS → ⋮ → Custom repositories**, paste `https://github.com/matanmesika/xpeng-vehicle-card`, select **Dashboard**, and press **Add**. Then locate and download the repository in HACS. This is a custom repository, not necessarily listed in the default HACS catalog.
+
+## Real project visuals
+
+![XPENG Vehicle Card — existing project asset](https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/assets/vehicles/g6/2026/arctic_white/front.webp)
+
+Actual vehicle artwork shipped by this repository, not a screenshot of the running Home Assistant dashboard. Artwork for other models/years may be incomplete.
+
 **[📊 Artwork progress dashboard](docs/ARTWORK_STATUS.md)** — current completion by XPENG model and generation, missing views, and verified checks. Counts update when new assets are committed; this is not a live rendering indicator.
 
 A standalone, **read-only Home Assistant dashboard card** for XPENG vehicles. This repository contains **frontend/UI only**; the XPENG Home Assistant integration is a separate project and is not modified here.
 
 **Updates and release history:** [docs/CHANGELOG.md](docs/CHANGELOG.md) is the single canonical history for this project. Obsolete per-release note files were removed; installable versions are published separately under [GitHub Releases](https://github.com/matanmesika/xpeng-vehicle-card/releases).
 
-**Current candidate (2026-10-12):** **v1.0.0-beta.2**. It includes the current dashboard/UI, the approved lakeside backdrop, and the current G6 front/charging/top artwork. The temporary `mix-blend-mode: multiply` workaround has been removed so the updated front artwork renders normally.
+**Latest stable release:** **v1.0.0**. It includes the current dashboard/UI, the approved lakeside backdrop, and the current G6 front/charging/top artwork. The temporary `mix-blend-mode: multiply` workaround has been removed so the updated front artwork renders normally.
+
+
+| Front artwork | Charging artwork | Top view artwork |
+| :---: | :---: | :---: |
+| ![G6 front](assets/vehicles/g6/2026/arctic_white/front.webp) | ![G6 charging](assets/vehicles/g6/2026/arctic_white/charging.webp) | ![G6 overhead](assets/vehicles/g6/2026/arctic_white/top.webp) |
 
 ## User-approved design
 
