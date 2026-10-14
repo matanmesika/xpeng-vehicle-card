@@ -313,3 +313,20 @@ test('P7i keeps exact-year colour selection for the 2024-only paints',()=>{
  editor.setConfig({model:'P7i',year:'2025',color:'star_blue'});
  assert.equal(editor._cfg.color,'arctic_white');
 });
+
+test('the README dashboard gallery ships three real browser PNG captures',()=>{
+ const gallery=fs.readFileSync(path.join(ROOT,'README.md'),'utf8');
+ const files=['vehicle-status','charging','tire-pressure'].map(view=>'g6-2026-'+view+'.png');
+ const sizes=[];
+ for(const f of files){
+  const relative='docs/screenshots/'+f;
+  assert.ok(gallery.includes(']('+relative+')'),'gallery link missing: '+relative);
+  const raw=fs.readFileSync(path.join(ROOT,relative));
+  assert.equal(raw.subarray(0,8).toString('hex'),'89504e470d0a1a0a',f);
+  assert.ok(raw.readUInt32BE(16)>=1100&&raw.readUInt32BE(20)>=620,f);
+  assert.ok(raw.length>80000,f);
+  sizes.push(raw.length);
+ }
+ assert.equal(new Set(sizes).size,3,'views must be independent captures');
+ assert.ok(fs.existsSync(path.join(ROOT,'scripts/capture-dashboard.cjs')),'capture script missing');
+});
