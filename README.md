@@ -8,7 +8,21 @@
 
 If the shortcut does not open, in Home Assistant go to **HACS → ⋮ → Custom repositories**, paste `https://github.com/matanmesika/xpeng-vehicle-card`, select **Dashboard**, and press **Add**. Then locate and download the repository in HACS. This is a custom repository, not necessarily listed in the default HACS catalog.
 
-## Visual gallery — shipped artwork (not UI screenshots)
+## Actual Home Assistant dashboard screenshots (demo telemetry)
+
+These are browser screenshots captured from the **real `custom:xpeng-vehicle-card`**
+using synthetic example sensor readings, not from the user's car. Each image includes
+the full dashboard composition: the approved lakeside background, vehicle artwork,
+UI overlays and live-state layout. They are distinct from transparent vehicle renders.
+
+| Vehicle status | Charging | Tire-pressure view |
+| --- | --- | --- |
+| ![G6 2026 vehicle status dashboard](docs/screenshots/g6-2026-vehicle-status.png) | ![G6 2026 charging dashboard](docs/screenshots/g6-2026-charging.png) | ![G6 2026 tire-pressure dashboard](docs/screenshots/g6-2026-tire-pressure.png) |
+
+The gallery images are built from the current source, with a browser script at
+`scripts/capture-dashboard.cjs`. Demo readings are never represented as real vehicle values.
+
+## Visual gallery — shipped vehicle artwork (not UI screenshots)
 
 The images below are actual files distributed with the card. **They are vehicle layers, not captures of the finished Home Assistant screen.**
 

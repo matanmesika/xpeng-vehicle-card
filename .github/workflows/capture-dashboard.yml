@@ -1,0 +1,65 @@
+name: Capture actual XPENG dashboard views
+
+on:
+  push:
+    branches:
+      - fix/appearance-generations-dashboard-gallery
+    paths:
+      - scripts/capture-dashboard.cjs
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: xpeng-dashboard-gallery-v2-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  screenshots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install pinned Playwright and headless Chromium
+        run: |
+          npm install --prefix /tmp/xpeng-capture --no-audit --no-fund playwright@1.56.1
+          /tmp/xpeng-capture/node_modules/.bin/playwright install --with-deps chromium
+
+      - name: Capture genuine card screenshots with DEMO sensor states
+        env:
+          PLAYWRIGHT_MODULE: /tmp/xpeng-capture/node_modules/playwright
+        run: timeout 150s node scripts/capture-dashboard.cjs
+
+      - name: Verify three independent screenshots
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import struct
+          names = ['vehicle-status','charging','tire-pressure']
+          for name in names:
+              p = Path('docs/screenshots/g6-2026-' + name + '.png')
+              b = p.read_bytes()
+              assert b[:8] == b'\x89PNG\r\n\x1a\n', p
+              w,h = struct.unpack('>II',b[16:24])
+              assert w >= 1100 and h >= 620 and len(b) > 80_000, (p,w,h,len(b))
+              print('verified',p,w,h,len(b))
+          PY
+
+      - name: Commit browser captures to the screenshot gallery
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/screenshots/*.png
+          if ! git diff --staged --quiet; then
+            git commit -m "docs: add actual rendered XPENG card screenshots"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
