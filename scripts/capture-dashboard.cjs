@@ -87,4 +87,4 @@ async function main(){
  assert.ok(imagesServed>=4,'Expected bundled vehicle and background assets to be loaded');
  await browser.close();
 }
-main().catch(err=>{console.error(err);process.exitCode=1;});
+main().catch(err=>{console.error(err);process.exit(1);});
