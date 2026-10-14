@@ -19,7 +19,7 @@ def slug(model: str) -> str:
 
 
 def build():
-    catalog = json.loads((ROOT / "vehicle-catalog.json").read_text(encoding="utf-8"))
+    catalog = json.loads((ROOT / "data/vehicle-catalog.json").read_text(encoding="utf-8"))
     entries = []
     for model in catalog["models"]:
         for group in model["groups"]:
@@ -39,15 +39,15 @@ def build():
         raise ValueError("Duplicate artwork asset path")
     pending = sum(any(v["status"] == "pending" for v in e["views"].values()) for e in entries)
     art_map = {
-        "schema_version": 1, "as_of": "2026-10-13", "catalog": "vehicle-catalog.json",
+        "schema_version": 1, "as_of": "2026-10-13", "catalog": "data/vehicle-catalog.json",
         "selection_key": ["model", "year_group", "exterior_color"], "trim_affects_artwork": False,
         "asset_root": "assets", "views": list(VIEWS),
         "description": "Model year filters paints, shared body-generation groups select assets; missing views are pending.",
         "entries": entries,
     }
     inventory = {
-        "schema_version": 3, "as_of": "2026-10-13", "catalog": "vehicle-catalog.json",
-        "artwork_map": "vehicle-art-map.json",
+        "schema_version": 3, "as_of": "2026-10-13", "catalog": "data/vehicle-catalog.json",
+        "artwork_map": "data/vehicle-art-map.json",
         "path_pattern": "vehicles/{model}/{year_group}/{exterior_color}/{front,charging,top}.webp",
         "backdrop": "xpeng-approved-lakeside-background.webp", "backdrop_is_common": True,
         "trim_affects_artwork": False, "exact": exact, "model_family": [],
@@ -75,8 +75,8 @@ def main():
     if len(illustrative) != len(set(illustrative)) or not set(illustrative).issubset(set(exact)):
         raise ValueError("Provenance paths must be unique existing artwork paths")
     files = {
-        ROOT / "vehicle-art-map.json": json.dumps(art_map, indent=2, ensure_ascii=False) + "\n",
-        ROOT / "vehicle-art-inventory.json": json.dumps(inventory, indent=2, ensure_ascii=False) + "\n",
+        ROOT / "data/vehicle-art-map.json": json.dumps(art_map, indent=2, ensure_ascii=False) + "\n",
+        ROOT / "data/vehicle-art-inventory.json": json.dumps(inventory, indent=2, ensure_ascii=False) + "\n",
     }
     old = re.compile(r"^const XP_ARTWORK_INDEX = new Set\(.*\);$", re.M)
     ai_pattern = re.compile(r"^const XP_ILLUSTRATIVE_ARTWORK_INDEX = new Set\(.*\);$", re.M)

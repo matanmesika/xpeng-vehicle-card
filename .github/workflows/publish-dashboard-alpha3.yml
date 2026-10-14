@@ -29,7 +29,7 @@ jobs:
           node --test tests/dashboard-v010.test.cjs tests/all-profiles.test.cjs
           python tests/test_hacs_package.py
           python -m json.tool model-catalog.json >/dev/null
-          python -m json.tool vehicle-art-inventory.json >/dev/null
+          python -m json.tool data/vehicle-art-inventory.json >/dev/null
           test -s dist/assets/xpeng-reference-background.webp
           grep -Fq 'background_image' dist/xpeng-vehicle-card.js
       - name: Verify included vehicle image alpha channels

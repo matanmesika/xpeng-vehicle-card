@@ -30,8 +30,8 @@ jobs:
           node --check dist/xpeng-vehicle-card.js
           cmp src/xpeng-vehicle-card.js dist/xpeng-vehicle-card.js
           python -m json.tool hacs.json >/dev/null
-          python -m json.tool model-artwork.json >/dev/null
-          python -m json.tool vehicle-art-inventory.json >/dev/null
+          python -m json.tool data/model-artwork.json >/dev/null
+          python -m json.tool data/vehicle-art-inventory.json >/dev/null
           if [ -f profiles/year-profiles.json ]; then
             python -m json.tool profiles/year-profiles.json >/dev/null
           fi

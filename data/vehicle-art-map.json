@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "as_of": "2026-10-13",
-  "catalog": "vehicle-catalog.json",
+  "catalog": "data/vehicle-catalog.json",
   "selection_key": [
     "model",
     "year_group",

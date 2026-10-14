@@ -143,8 +143,8 @@ test('card editor remains appearance-only and dashboard does not add new screens
 });
 
 test('data-driven asset index matches actual repo files for every model and year',()=>{
- const index=JSON.parse(fs.readFileSync(path.join(ROOT,'vehicle-art-inventory.json'),'utf8'));
- const packaged=JSON.parse(fs.readFileSync(path.join(ROOT,'dist/vehicle-art-inventory.json'),'utf8'));
+ const index=JSON.parse(fs.readFileSync(path.join(ROOT,'data/vehicle-art-inventory.json'),'utf8'));
+ const packaged=JSON.parse(fs.readFileSync(path.join(ROOT,'dist/data/vehicle-art-inventory.json'),'utf8'));
  assert.deepEqual(index,packaged);
  assert.equal(index.backdrop,'xpeng-approved-lakeside-background.webp');
  assert.equal(index.backdrop_is_common,true);
@@ -160,7 +160,7 @@ test('data-driven asset index matches actual repo files for every model and year
 });
 test('bundled top-trim artwork is stable across every year and paint',()=>{
  const c=new Card(),scene=c.sceneBackdrop();
- const inventory=JSON.parse(fs.readFileSync(path.join(ROOT,'vehicle-art-inventory.json'),'utf8'));
+ const inventory=JSON.parse(fs.readFileSync(path.join(ROOT,'data/vehicle-art-inventory.json'),'utf8'));
  for(const model of ['G6','G9']){
   const top=model==='G6'?'core_performance_awd':'performance_awd';
   for(const paint of ['arctic_white','graphite_gray','midnight_black','silver_frost']){

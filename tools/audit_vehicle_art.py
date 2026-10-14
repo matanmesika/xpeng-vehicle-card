@@ -8,8 +8,8 @@ from PIL import Image
 import json
 
 ROOT = Path(__file__).resolve().parents[1]
-MAN = json.loads((ROOT / "vehicle-art-inventory.json").read_text(encoding="utf-8"))
-ART = json.loads((ROOT / "vehicle-art-map.json").read_text(encoding="utf-8"))
+MAN = json.loads((ROOT / "data/vehicle-art-inventory.json").read_text(encoding="utf-8"))
+ART = json.loads((ROOT / "data/vehicle-art-map.json").read_text(encoding="utf-8"))
 transparent, opaque, invalid = [], [], []
 exact = MAN["exact"]
 declared = sorted(

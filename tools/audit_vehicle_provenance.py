@@ -13,7 +13,7 @@ def read(name):
     return json.loads((ROOT / name).read_text(encoding="utf-8"))
 
 def run():
-    art=read("vehicle-art-map.json")
+    art=read("data/vehicle-art-map.json")
     ai=read("sources/ai-generated-vehicle-art.json")
     unverified=read("sources/unverified-existing-artwork.json")
     derived=read("sources/derived-paint-views.json")

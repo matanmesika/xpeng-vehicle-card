@@ -17,7 +17,7 @@ import numpy as np
 import subprocess
 
 ROOT=Path(__file__).resolve().parents[1]
-MAN=json.loads((ROOT/'vehicle-art-inventory.json').read_text())
+MAN=json.loads((ROOT/'data/vehicle-art-inventory.json').read_text())
 SLUGS=('arctic_white','jet_black','silver_frost','space_grey','stellar_purple')
 # y coordinates normalized from 780x585 studio originals.
 LOWER={

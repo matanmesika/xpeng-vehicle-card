@@ -5,9 +5,9 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parents[1]
-CAT = json.loads((ROOT / "vehicle-catalog.json").read_text(encoding="utf-8"))
+CAT = json.loads((ROOT / "data/vehicle-catalog.json").read_text(encoding="utf-8"))
 REGISTER = json.loads((ROOT / "sources/vehicle-photo-candidates.json").read_text(encoding="utf-8"))
-MAP = json.loads((ROOT / "vehicle-art-map.json").read_text(encoding="utf-8"))
+MAP = json.loads((ROOT / "data/vehicle-art-map.json").read_text(encoding="utf-8"))
 assert REGISTER["auto_publish"] is False, "No automatic publishing of photos"
 options = {(m["id"],g["id"]): set(g["colors"]) for m in CAT["models"] for g in m["groups"]}
 mapped = {(e["model"],e["year_group"],e["exterior_color"]):e["views"] for e in MAP["entries"]}

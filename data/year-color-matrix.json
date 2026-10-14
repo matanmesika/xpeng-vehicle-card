@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "generated_on": "2026-10-13",
-  "catalog": "vehicle-catalog.json",
+  "catalog": "data/vehicle-catalog.json",
   "model_year_count": 42,
   "selection_parameters": [
     "model",

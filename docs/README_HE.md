@@ -53,7 +53,7 @@ grid_options:
 ## מסמכים ומצב שחרור
 
 - [קוד ותמונות — PR #21](https://github.com/matanmesika/xpeng-vehicle-card/pull/21)
-- [קטלוג תמונות לפי דגם וצבע](model-artwork.json)
+- [קטלוג תמונות לפי דגם וצבע](data/model-artwork.json)
 - [מיפוי החיישנים](docs/ENTITY_MAPPING.md)
 - [מצב התמונות ומבט־על לצמיגים](docs/SHAPE_ASSETS_AND_TPMS.md)
 - [תנאי שחרור](docs/RELEASE_CHECKLIST.md)

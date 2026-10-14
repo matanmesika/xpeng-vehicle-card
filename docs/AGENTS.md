@@ -23,7 +23,7 @@ This repository is the **frontend Lovelace XPENG dashboard only**. The companion
 ## Release checklist
 - Keep `src/xpeng-vehicle-card.js` and `dist/xpeng-vehicle-card.js` byte-identical.
 - Do not alter the SHA of the user-approved background.
-- Check `model-artwork.json` records and actual flat HACS assets.
+- Check `data/model-artwork.json` records and actual flat HACS assets.
 - Verify two fields only inside the info popup in disconnected, connected and connection-error states; popup never auto-opens.
 - Check the frozen background on Overview and Charging and on mobile.
 - The owner approved separating **UI fixes** from **new vehicle image delivery**. UI-only experimental alpha.6 may be merged/published if all checks pass and the approved background and car image binaries remain exactly unchanged from alpha.5. Manufacturer-authentic photo replacements, licensing and visual sign-off are a separate subsequent task.
