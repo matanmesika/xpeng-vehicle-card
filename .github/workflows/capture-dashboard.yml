@@ -13,7 +13,7 @@ permissions:
 
 concurrency:
   group: xpeng-dashboard-gallery-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   screenshots:
