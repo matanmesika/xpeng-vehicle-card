@@ -54,7 +54,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add assets/vehicles/ sources/ai-generated-vehicle-art.json sources/derived-paint-views.json vehicle-art-map.json vehicle-art-inventory.json src/xpeng-vehicle-card.js dist/xpeng-vehicle-card.js artwork-backlog.csv master-view-queue.json artwork-status.json docs/ARTWORK_STATUS.md
+          git add assets/vehicles/ sources/ai-generated-vehicle-art.json sources/derived-paint-views.json data/vehicle-art-map.json data/vehicle-art-inventory.json src/xpeng-vehicle-card.js dist/xpeng-vehicle-card.js data/artwork-backlog.csv data/master-view-queue.json data/artwork-status.json docs/ARTWORK_STATUS.md
           if ! git diff --cached --quiet; then
             git commit -m 'art: create transparent model-specific AI paint preview variants'
             git push origin HEAD:feature/full-model-year-paint-artwork-map-20261012

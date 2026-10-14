@@ -27,6 +27,6 @@ jobs:
         with:
           name: xpeng-model-year-paint-artwork-map
           path: |
-            vehicle-art-map.json
-            vehicle-art-inventory.json
+            data/vehicle-art-map.json
+            data/vehicle-art-inventory.json
           if-no-files-found: error

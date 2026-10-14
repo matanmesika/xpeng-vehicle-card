@@ -43,8 +43,8 @@ jobs:
           node --check dist/xpeng-vehicle-card.js
           cmp src/xpeng-vehicle-card.js dist/xpeng-vehicle-card.js
           python -m json.tool hacs.json >/dev/null
-          python -m json.tool model-artwork.json >/dev/null
-          python -m json.tool vehicle-art-inventory.json >/dev/null
+          python -m json.tool data/model-artwork.json >/dev/null
+          python -m json.tool data/vehicle-art-inventory.json >/dev/null
           test -s assets/xpeng-approved-lakeside-background.webp
           test -s assets/vehicles/g6/2026/graphite_gray/front.webp
           test -s assets/vehicles/g6/2026/graphite_gray/charging.webp
@@ -79,5 +79,5 @@ jobs:
             --repo "$GITHUB_REPOSITORY" \
             --target "$GITHUB_SHA" \
             --title "XPENG Vehicle Card $TAG" \
-            --notes-file CHANGELOG.md \
+            --notes-file docs/CHANGELOG.md \
             --prerelease
