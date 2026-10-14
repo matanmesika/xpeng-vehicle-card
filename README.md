@@ -8,24 +8,20 @@
 
 If the shortcut does not open, in Home Assistant go to **HACS → ⋮ → Custom repositories**, paste `https://github.com/matanmesika/xpeng-vehicle-card`, select **Dashboard**, and press **Add**. Then locate and download the repository in HACS. This is a custom repository, not necessarily listed in the default HACS catalog.
 
-## Real project visuals
+## Visual gallery — shipped artwork (not UI screenshots)
 
-![XPENG Vehicle Card — existing project asset](https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/assets/vehicles/g6/2026/arctic_white/front.webp)
+The images below are actual files distributed with the card. **They are vehicle layers, not captures of the finished Home Assistant screen.**
 
-Actual vehicle artwork shipped by this repository, not a screenshot of the running Home Assistant dashboard. Artwork for other models/years may be incomplete.
+| Model generation | Vehicle status | Charging (cable view) | Tire-pressure top view |
+| --- | --- | --- | --- |
+| G6 2023–2025 (original body) | ![Original G6 front](assets/vehicles/g6/2023-2025/arctic_white/front.webp) | ![Original G6 charging](assets/vehicles/g6/2023-2025/arctic_white/charging.webp) | ![Original G6 overhead](assets/vehicles/g6/2023-2025/arctic_white/top.webp) |
+| G6 2026 (redesigned body) | ![Redesigned G6 front](assets/vehicles/g6/2026/arctic_white/front.webp) | ![Redesigned G6 charging](assets/vehicles/g6/2026/arctic_white/charging.webp) | ![Redesigned G6 overhead](assets/vehicles/g6/2026/arctic_white/top.webp) |
 
-**[📊 Artwork progress dashboard](docs/ARTWORK_STATUS.md)** — current completion by XPENG model and generation, missing views, and verified checks. Counts update when new assets are committed; this is not a live rendering indicator.
+**[Artwork completion and missing combinations](docs/ARTWORK_STATUS.md)** · **[Generation mapping](docs/G6_GENERATIONS.md)**
 
-A standalone, **read-only Home Assistant dashboard card** for XPENG vehicles. This repository contains **frontend/UI only**; the XPENG Home Assistant integration is a separate project and is not modified here.
+### Full dashboard screenshots
 
-**Updates and release history:** [docs/CHANGELOG.md](docs/CHANGELOG.md) is the single canonical history for this project. Obsolete per-release note files were removed; installable versions are published separately under [GitHub Releases](https://github.com/matanmesika/xpeng-vehicle-card/releases).
-
-**Latest stable release:** **v1.0.0**. It includes the current dashboard/UI, the approved lakeside backdrop, and the current G6 front/charging/top artwork. The temporary `mix-blend-mode: multiply` workaround has been removed so the updated front artwork renders normally.
-
-
-| Front artwork | Charging artwork | Top view artwork |
-| :---: | :---: | :---: |
-| ![G6 front](assets/vehicles/g6/2026/arctic_white/front.webp) | ![G6 charging](assets/vehicles/g6/2026/arctic_white/charging.webp) | ![G6 overhead](assets/vehicles/g6/2026/arctic_white/top.webp) |
+Verified captures of the complete running Lovelace card (desktop/mobile, status/charging/TPMS) have **not yet been supplied or published**. We do not label composited artwork as a real screenshot. To contribute, capture the installed card, hide personal telemetry/location and vehicle identifiers, and submit images for review. Do not commit fabricated sensor values as if they were live readings.
 
 ## User-approved design
 
