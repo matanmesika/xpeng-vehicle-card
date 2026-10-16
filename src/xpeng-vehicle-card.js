@@ -463,10 +463,69 @@ class XpengVehicleCard extends HTMLElement{
     },true);
    this.shadowRoot.addEventListener('click',ev=>{
     const b=ev.target.closest('button');if(!b)return;
+     
+     if(b.hasAttribute('data-xp-close')){this._xpPanel=null;this._xpSeatFocus=null;this._xpNotice='';this.render();return;}
+     if(b.hasAttribute('data-xp-page')){this._xpPanel=b.dataset.xpPage;this._xpSeatFocus=null;this._xpNotice='';this.render();return;}
+     if(b.hasAttribute('data-xp-seat')){this._xpPanel='seats';this._xpSeatFocus=b.dataset.xpSeat;this.render();return;}
+     if(b.hasAttribute('data-xp-open')){
+       const action=b.dataset.xpOpen;
+       if(action==='climate'||action==='seats'){this._xpPanel=action;this._xpSeatFocus=null;this._xpNotice='';this.render();}
+       else if(action==='port')this.xpSend('button','press','open_charge_port');
+       else if(action==='locks')this.xpDetails('door_lock','lock');
+       else if(action==='map')this.xpDetails('location','device_tracker');
+       return;
+     }
+     if(b.hasAttribute('data-xp-command')){
+       if(b.dataset.xpCommand==='stop_charge')this.xpSend('button','press','stop_charge');
+       return;
+     }
+     if(b.hasAttribute('data-xp-temp')){this.xpDoTemperature(Number(b.dataset.xpTemp));return;}
+     if(b.hasAttribute('data-xp-climate')){
+       this.xpSend('climate',b.dataset.xpClimate==='on'?'turn_on':'turn_off','cabin_climate');return;
+     }
+     if(b.hasAttribute('data-xp-switch')){
+       if(b.dataset.xpSwitch==='defrost_switch')this.xpSend('switch','toggle','defrost_switch');
+       return;
+     }
+     if(b.hasAttribute('data-xp-select')){
+       const suffix=b.dataset.xpSelect,option=b.dataset.xpOption;
+       const permitted=new Set(['driver_seat_heat_select','passenger_seat_heat_select',
+         'driver_seat_ventilation_select','passenger_seat_ventilation_select',
+         'left_rear_seat_heat_select','right_rear_seat_heat_select',
+         'left_rear_seat_ventilation_select','right_rear_seat_ventilation_select',
+         'steering_wheel_heat_select']);
+       const ent=permitted.has(suffix)?this.xpLive('select',suffix):null;
+       if(ent?.state?.attributes?.options?.includes(option) && !(suffix==='passenger_seat_heat_select'&&option==='Off')){
+         this.xpSend('select','select_option',suffix,option);
+       }
+       return;
+     }
      if(b.hasAttribute('data-meta-toggle')){this._infoOpen=!this._infoOpen;this.render();return;}
      if(b.hasAttribute('data-tire-toggle')){this._tireOpen=!this._tireOpen;this._infoOpen=false;this.render();return;}
     if(b.hasAttribute('data-cycle')){this._vehicleIndex=(this._vehicleIndex+1)%this.vehicles().length;this._tireOpen=false;this.render();}
   });
+   this.shadowRoot.addEventListener('input',ev=>{
+     const slider=ev.target.closest('input[data-xp-range]');
+     if(!slider)return;
+     const label=slider.closest('label'),output=label?.querySelector('span b');
+     if(output)output.textContent=slider.value+(slider.dataset.xpRange==='charge_limit_control'?'%':'');
+   });
+   this.shadowRoot.addEventListener('change',ev=>{
+     const slider=ev.target.closest('input[data-xp-range]');
+     if(!slider)return;
+     const key=slider.dataset.xpRange;
+     if(key!=='charge_limit_control'&&key!=='fan_speed_control')return;
+     const entity=this.xpLive('number',key);
+     if(!entity)return;
+     const attrs=entity.state.attributes||{};
+     const lo=Number(attrs.min??(key==='charge_limit_control'?50:1));
+     const hi=Number(attrs.max??(key==='charge_limit_control'?100:8));
+     const step=Number(attrs.step??(key==='charge_limit_control'?5:1));
+     const raw=Number(slider.value);
+     if(!Number.isFinite(raw)||!Number.isFinite(lo)||!Number.isFinite(hi)||!Number.isFinite(step)||step<=0)return;
+     const value=Math.max(lo,Math.min(hi,Math.round((raw-lo)/step)*step+lo));
+     this.xpSend('number','set_value',key,value);
+   });
  }
 
  async ensureXpengRegistry(){
@@ -496,7 +555,7 @@ class XpengVehicleCard extends HTMLElement{
  }
 
 
- xpUiEnabled(){return this.vehicle()?.show_controls??this._config.show_controls??false;}
+ xpUiEnabled(){const v=this.vehicle()?.show_controls??this._config.show_controls??false;return v===true||v==='true';}
  xpLive(domain,suffix){
   const id=this.xpengEntity(domain,suffix);
   const state=id?this._hass?.states?.[id]:null;
@@ -677,7 +736,7 @@ class XpengVehicleCard extends HTMLElement{
  set hass(hass){
   this._hass=hass;
   if(!this._xpengRegistryLoaded)this.ensureXpengRegistry();
-  this._view=xpChargingActive(this.val('charging'))===true?'charging':'overview';
+  this._view=this.xpChargingActive()?'charging':'overview';
   if(this._view==='charging')this._tireOpen=false;
   this.render();
  }
@@ -932,18 +991,18 @@ class XpengVehicleCard extends HTMLElement{
        <div class="xp-charge-meta"><div><small>Charging power</small><b>${xpEsc(this.num('power','kW',1))}</b></div>
        <div><small>Time remaining</small><b>${xpEsc(this.remainingText())}</b></div>
        <div><small>Charge limit</small><b>${xpEsc(this.num('target','%'))}</b></div></div>
-    </section>`;
+    </section>${this.xpChargeControls()}`;
  }
  render(){
   if(!this.shadowRoot)return;
   this.toggleAttribute('data-expanded',this._expanded);
   // The charging entity is the single source of truth for choosing the screen.
   // Only an explicit 'on' shows Charging. 'off', unknown and unavailable show Overview.
-  const isCharging=xpChargingActive(this.val('charging'))===true;
+  const isCharging=this.xpChargingActive();
   this._view=isCharging?'charging':'overview';
   if(isCharging)this._tireOpen=false;
-  this.shadowRoot.innerHTML=`<style>${XP_CSS}</style><ha-card><div class="xp-scene ${isCharging?'xp-charge':this._tireOpen?'xp-overview xp-tire-mode':'xp-overview'}">
-   ${this.sceneBackdrop()}${this.header()}${isCharging?this.charging():this._tireOpen?this.title()+this.tireScreen():this.overview()}
+  this.shadowRoot.innerHTML=`<style>${XP_CSS}</style><ha-card><div class="xp-scene ${isCharging?'xp-charge':this._tireOpen?'xp-overview xp-tire-mode':'xp-overview'} ${isCharging&&this.xpUiEnabled()?'xp-has-controls':''}">
+   ${this.sceneBackdrop()}${this.header()}${isCharging?this.charging():this._tireOpen?this.title()+this.tireScreen():this.overview()}${!isCharging&&!this._tireOpen?this.xpDock():""}${this.xpModal()}
    
    </div></ha-card>`;
  }
