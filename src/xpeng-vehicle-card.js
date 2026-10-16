@@ -519,7 +519,7 @@ class XpengVehicleCard extends HTMLElement{
      }
      if(b.hasAttribute('data-meta-toggle')){this._infoOpen=!this._infoOpen;this.render();return;}
      if(b.hasAttribute('data-tire-toggle')){this._tireOpen=!this._tireOpen;this._infoOpen=false;this.render();return;}
-    if(b.hasAttribute('data-cycle')){this._vehicleIndex=(this._vehicleIndex+1)%this.vehicles().length;this._tireOpen=false;this.render();}
+    if(b.hasAttribute('data-cycle')){this._vehicleIndex=(this._vehicleIndex+1)%this.vehicles().length;this._tireOpen=false;this._xpPanel=null;this._xpengRegistryLoaded=false;this._xpengByKey=null;this.ensureXpengRegistry();this.render();}
   });
    this.shadowRoot.addEventListener('input',ev=>{
      const slider=ev.target.closest('input[data-xp-range]');
@@ -601,7 +601,7 @@ class XpengVehicleCard extends HTMLElement{
  xpCabinView(){
   const a=this.appearance();
   const finish=XP_INTERIORS.find(x=>x.id===a.interior)||XP_INTERIORS[0];
-  const pictures=this.vehicle()?.interior_images??this._config.interior_images;
+  const pictures=Array.isArray(this._config.vehicles)&&this._config.vehicles.length?this.vehicle()?.interior_images:this._config.interior_images;
   const selected=pictures&&typeof pictures==='object'?pictures[a.interior]:null;
   if(xpLocalArtworkPath(selected))return '<div class="xp-ux-cabin"><img src="'+xpEsc(selected)+'" loading="lazy" alt="'+xpEsc('פנים רכב '+a.model+' בצבע '+finish.label)+'" class="xp-ux-cabin-picture">'
     +'<small>תמונת פנים לפי הגדרת הצבע</small></div>';
@@ -755,7 +755,9 @@ class XpengVehicleCard extends HTMLElement{
  set hass(hass){
   this._hass=hass;
   if(!this._xpengRegistryLoaded)this.ensureXpengRegistry();
-  this._view=this.xpChargingActive()?'charging':'overview';
+  const mode=this.xpChargingActive()?'charging':'overview';
+  if(mode==='charging'&&this._view!=='charging'){this._xpPanel=null;this._xpSeatFocus=null;}
+  this._view=mode;
   if(this._view==='charging')this._tireOpen=false;
   this.render();
  }
