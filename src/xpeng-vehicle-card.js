@@ -475,6 +475,25 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 @media(max-width:600px){.xp-ux-cabin-art .xp-ux-hotspot{width:32px;height:32px;padding:5px}.xp-ux-cabin-art .xp-ux-cabin-disclaimer{font-size:9px}}
 @media(pointer:coarse){.xp-ux-cabin-art .xp-ux-hotspot{min-width:44px;min-height:44px}}
 
+/* Adaptive card-width layout for HA Sections, desktop and mobile browsers. */
+@supports (container-type:inline-size){.xp-scene{container-name:xpeng-card;container-type:inline-size}}
+@container xpeng-card (max-width:650px){
+ .xp-ux-dock{bottom:127px;gap:5px;padding:5px 7px;max-width:94%}
+ .xp-ux-dock-action{min-width:49px;min-height:50px;border-radius:18px;gap:2px}
+ .xp-ux-dock-action small{font-size:9px}
+ .xp-ux-modal{inset:1.5% 2%;padding:13px}
+ .xp-ux-seats-grid,.xp-ux-vehicle-statuses,.xp-ux-vehicle-buttons{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .xp-ux-seat-line{align-items:flex-start;flex-direction:column}
+}
+@container xpeng-card (max-width:430px){
+ .xp-ux-dock{bottom:134px;gap:2px;padding:4px}
+ .xp-ux-dock-action{min-width:44px;min-height:48px}
+ .xp-ux-dock-action small{font-size:8px}
+ .xp-ux-seats-grid{grid-template-columns:1fr}
+ .xp-ux-vehicle-buttons{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .xp-ux-charge-actions{bottom:8%;gap:6px}
+ .xp-ux-charge-stop{padding:6px 9px;font-size:12px}
+}
 /* Native XPENG securing/lighting controls: no direct Access actions. */
 .xp-ux-vehicle-panel{margin-top:10px}
 .xp-ux-vehicle-panel h3{font-size:16px;margin:18px 0 10px}
