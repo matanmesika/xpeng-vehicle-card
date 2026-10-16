@@ -475,6 +475,19 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 @media(max-width:600px){.xp-ux-cabin-art .xp-ux-hotspot{width:32px;height:32px;padding:5px}.xp-ux-cabin-art .xp-ux-cabin-disclaimer{font-size:9px}}
 @media(pointer:coarse){.xp-ux-cabin-art .xp-ux-hotspot{min-width:44px;min-height:44px}}
 
+/* Native XPENG securing/lighting controls: no direct Access actions. */
+.xp-ux-vehicle-panel{margin-top:10px}
+.xp-ux-vehicle-panel h3{font-size:16px;margin:18px 0 10px}
+.xp-ux-vehicle-statuses{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.xp-ux-vehicle-state{border:1px solid #517a977c;background:#11233a;border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:7px;min-width:0}
+.xp-ux-vehicle-state small{font-size:12px;color:#a4bcce}
+.xp-ux-vehicle-state strong{font-size:14px;overflow-wrap:anywhere}
+.xp-ux-vehicle-buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.xp-ux-vehicle-buttons button{display:flex;align-items:center;justify-content:center;gap:9px;padding:15px 10px;min-height:56px;border:1px solid #4a92ba92;border-radius:14px;background:#103149a8}
+.xp-ux-vehicle-buttons button:hover{background:#12546e}
+.xp-ux-note{color:#a9bac8;font-size:12px;line-height:1.6;margin-top:22px}
+@media(max-width:600px){.xp-ux-vehicle-statuses,.xp-ux-vehicle-buttons{grid-template-columns:repeat(2,minmax(0,1fr))}.xp-ux-vehicle-buttons button{min-height:50px;padding:9px 7px;font-size:12px}}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -503,12 +516,25 @@ class XpengVehicleCard extends HTMLElement{
        const action=b.dataset.xpOpen;
        if(action==='climate'||action==='seats'){this._xpPanel=action;this._xpSeatFocus=null;this._xpNotice='';this.render();}
        else if(action==='port')this.xpSend('button','press','open_charge_port');
-       else if(action==='locks')this.xpDetails('door_lock','lock');
+       else if(action==='locks'){this._xpPanel='vehicle';this._xpNotice='';this.render();}
        else if(action==='map')this.xpDetails('location','device_tracker');
        return;
      }
      if(b.hasAttribute('data-xp-command')){
        if(b.dataset.xpCommand==='stop_charge')this.xpSend('button','press','stop_charge');
+       return;
+     }
+     if(b.hasAttribute('data-xp-vehicle')){
+       const actions={
+         'lock.lock.door_lock':['lock','lock','door_lock'],
+         'button.press.close_windows':['button','press','close_windows'],
+         'button.press.close_trunk':['button','press','close_trunk'],
+         'button.press.flash_lights':['button','press','flash_lights'],
+         'button.press.honk_horn':['button','press','honk_horn'],
+         'switch.turn_on.sentinel_switch':['switch','turn_on','sentinel_switch']
+       };
+       const command=actions[b.dataset.xpVehicle];
+       if(command)this.xpSend(...command);
        return;
      }
      if(b.hasAttribute('data-xp-temp')){this.xpDoTemperature(Number(b.dataset.xpTemp));return;}
@@ -736,17 +762,55 @@ class XpengVehicleCard extends HTMLElement{
  xpModal(){
   if(!this.xpUiEnabled()||!this._xpPanel)return '';
   const page=this._xpPanel;
-  if(page!=='climate'&&page!=='seats')return '';
+  if(page!=='climate'&&page!=='seats'&&page!=='vehicle')return '';
   return '<section class="xp-ux-modal" role="dialog" aria-modal="true" aria-label="בקרות מיזוג ומושבים" dir="rtl">'
-   +'<header class="xp-ux-modal-head"><button type="button" data-xp-close aria-label="חזרה למסך הרכב">'+xpIcon('back',24)+'</button><h2>'+(page==='climate'?'מיזוג אוויר':'מושבים והגה')+'</h2><span>'+xpEsc(this.appearance().model)+'</span></header>'
-   +'<div class="xp-ux-tabs"><button type="button" class="'+(page==='climate'?'xp-ux-selected':'')+'" data-xp-page="climate">מיזוג</button>'
-   +'<button type="button" class="'+(page==='seats'?'xp-ux-selected':'')+'" data-xp-page="seats">מושבים והגה</button></div>'
-   +this.xpCabinView()
+   +'<header class="xp-ux-modal-head"><button type="button" data-xp-close aria-label="חזרה למסך הרכב">'+xpIcon('back',24)+'</button><h2>'+(page==='climate'?'מיזוג אוויר':page==='seats'?'מושבים והגה':'בקרת רכב')+'</h2><span>'+xpEsc(this.appearance().model)+'</span></header>'
+   +(page==='vehicle'?'':'<div class="xp-ux-tabs"><button type="button" class="'+(page==='climate'?'xp-ux-selected':'')+'" data-xp-page="climate">מיזוג</button>'
+   +'<button type="button" class="'+(page==='seats'?'xp-ux-selected':'')+'" data-xp-page="seats">מושבים והגה</button></div>')
+   +(page==='vehicle'?this.xpVehiclePanel():this.xpCabinView()
    +(page==='climate' ? this.xpTempControl()+this.xpFanControl()
         +'<button class="xp-ux-nav-seats" type="button" data-xp-page="seats">חימום ואוורור מושבים והגה ←</button>'
-        :this.xpSeatControls())
+        :this.xpSeatControls()))
    +(this._xpNotice?'<p class="xp-ux-notice" role="status">'+xpEsc(this._xpNotice)+'</p>':'')
    +'</section>';
+ }
+
+ xpVehiclePanel(){
+   // Display status only if Xpengtk provides the associated entity.
+   const statuses=[
+     ['lock','door_lock','נעילת דלתות'],
+     ['binary_sensor','windows','חלונות'],
+     ['binary_sensor','doors','דלתות'],
+     ['binary_sensor','trunk','תא מטען'],
+     ['sensor','charge_port','שקע טעינה'],
+     ['binary_sensor','sentinel_mode','מצב X-Guard']
+   ].map(([domain,suffix,label])=>{
+     const e=this.xpLive(domain,suffix);
+     if(!e)return '';
+     const raw=e.state.state, state=domain==='lock'
+       ?({locked:'נעול',unlocked:'לא נעול',locking:'נועל',unlocking:'פותח'}[raw]||raw)
+       :domain==='binary_sensor'?({on:'פעיל / פתוח',off:'כבוי / סגור'}[raw]||raw):raw;
+     return '<article class="xp-ux-vehicle-state"><small>'+label+'</small><strong>'+xpEsc(state)+'</strong></article>';
+   }).filter(Boolean).join('');
+   // Safe / securing controls only; Access (unlock, open doors,
+   // open trunk, open windows, disarm security) is deliberately not here.
+   const buttons=[
+      ['lock','lock','door_lock','נעילת דלתות','lock'],
+      ['button','press','close_windows','סגירת חלונות','car'],
+      ['button','press','close_trunk','סגירת תא מטען','car'],
+      ['button','press','flash_lights','הבהוב אורות','sun'],
+      ['button','press','honk_horn','צפירה','info']
+   ].filter(([domain,service,suffix])=>!!this.xpLive(domain,suffix));
+   const xGuard=this.xpLive('switch','sentinel_switch');
+   if(xGuard?.state?.state==='off')buttons.push(['switch','turn_on','sentinel_switch','הפעלת X-Guard','shield']);
+   const actionHtml=buttons.map(([domain,service,suffix,label,icon])=>
+     '<button type="button" data-xp-vehicle="'+xpEsc(domain+'.'+service+'.'+suffix)+'">'
+       +xpIcon(icon,18)+'<span>'+label+'</span></button>').join('');
+   return '<div class="xp-ux-vehicle-panel">'
+     +(statuses?'<div class="xp-ux-vehicle-statuses">'+statuses+'</div>':'')
+     +(actionHtml?'<h3>פעולות זמינות</h3><div class="xp-ux-vehicle-buttons">'+actionHtml+'</div>':'<p>אין כרגע פקודות זמינות באינטגרציה.</p>')
+     +'<p class="xp-ux-note">לא מוצגות פקודות פתיחת נעילה, פתיחת חלונות או תא מטען. פעולות רגישות דורשות אישור ויעברו דרך הרשאות Xpengtk.</p>'
+     +'</div>';
  }
  xpChargeControls(){
   if(!this.xpUiEnabled())return '';
@@ -773,7 +837,7 @@ class XpengVehicleCard extends HTMLElement{
   if(service==='set_value')data.value=value;
   else if(service==='set_temperature')data.temperature=value;
   else if(service==='select_option')data.option=value;
-  const sensitive=(domain==='lock'||suffix==='stop_charge'||suffix==='open_charge_port');
+  const sensitive=(domain==='lock'||suffix==='stop_charge'||suffix==='open_charge_port'||suffix==='close_trunk'||suffix==='close_windows'||suffix==='honk_horn'||suffix==='flash_lights'||suffix==='sentinel_switch');
   if(sensitive&&typeof window.confirm==='function'
      &&!window.confirm('לשלוח את הפקודה לרכב?'))return;
   try{
