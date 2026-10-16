@@ -461,8 +461,9 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 @media(pointer:coarse){.xp-ux-seat-options button,.xp-ux-dock-action,.xp-ux-pill-row button{min-height:44px}}
 
 /* Matching G6 cabin image hotspot alignment, consistent across both palettes. */
+.xp-ux-cabin-art{aspect-ratio:8/5;max-height:none!important}
 .xp-ux-cabin-art{aspect-ratio:8/5}
-.xp-ux-cabin-art .xp-ux-cabin-picture{max-height:none;width:100%;height:100%;object-fit:contain}
+.xp-ux-cabin-art .xp-ux-cabin-picture{display:block;max-height:none!important;width:100%;height:100%;object-fit:contain}
 .xp-ux-cabin-art .xp-ux-hotspot{z-index:2;transform:translate(-50%,-50%);width:38px;height:38px}
 .xp-ux-cabin-art .xp-ux-wheel{left:27.25%;top:18%}
 .xp-ux-cabin-art .xp-ux-driver{left:27%;top:53%}
@@ -621,12 +622,12 @@ class XpengVehicleCard extends HTMLElement{
     ['rear_right','מושב אחורי ימין',[['select','right_rear_seat_heat_select'],['select','right_rear_seat_ventilation_select']]]
   ];
   return controls.map(([key,title,options])=>{
-    const entities=options.map(([domain,suffix])=>this.xpLive(domain,suffix)).filter(Boolean);
+    const entities=options.map(([domain,suffix])=>({suffix,entity:this.xpLive(domain,suffix)})).filter(item=>item.entity);
     if(!entities.length)return '';
     const isOff=state=>/^(off|0)$/i.test(state);
-    const active=entities.some(item=>!isOff(item.state.state));
-    const vent=entities.some(item=>item.id.includes('ventilation')&&!isOff(item.state.state));
-    const heat=entities.some(item=>!item.id.includes('ventilation')&&!isOff(item.state.state));
+    const active=entities.some(item=>!isOff(item.entity.state.state));
+    const vent=entities.some(item=>item.suffix.includes('ventilation')&&!isOff(item.entity.state.state));
+    const heat=entities.some(item=>!item.suffix.includes('ventilation')&&!isOff(item.entity.state.state));
     const css='xp-ux-hotspot xp-ux-'+key+(heat?' xp-ux-active-heat':'')+(vent?' xp-ux-active-vent':'');
     return '<button type="button" class="'+css+'" data-xp-seat="'+key+'" aria-label="'+title
       +(active?' — פעיל':'')+'" title="'+title+'">'+xpIcon(key==='wheel'?'thermometer':'fan',17)+'</button>';
