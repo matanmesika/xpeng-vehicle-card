@@ -372,6 +372,77 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-overview .xp-car.xp-reference-cutout{left:25.5%;bottom:26.6%;width:51.4%;max-height:none;filter:drop-shadow(0 13px 13px #0005)}
 @media(max-width:850px){.xp-overview .xp-car.xp-reference-cutout{left:-3%;bottom:27%;width:108%;max-height:42%}}
 @media(max-width:400px){.xp-charge-meta>div{padding:0 7px}.xp-charge-heading{font-size:19px}.xp-charge-meta b{font-size:12px}.xp-overview-stat{top:219px}.xp-status-panel{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+/* Opt-in XPENG controls. Keep all existing hero and charging artwork unchanged. */
+.xp-ux-dock{position:absolute;z-index:12;bottom:2.5%;left:50%;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;gap:10px;padding:8px 12px;border:1px solid #6598b45c;border-radius:40px;background:#06162acb;backdrop-filter:blur(18px);max-width:96%}
+.xp-ux-dock-action{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:60px;min-height:58px;border:1px solid #78a1b84b;background:#132b4587;border-radius:24px;color:#effbff}
+.xp-ux-dock-action svg{color:#99caff}
+.xp-ux-dock-action small{font-size:10px;white-space:nowrap}
+.xp-ux-dock-action:hover,.xp-ux-dock-action:focus-visible{border-color:#1debca;background:#124965}
+.xp-ux-modal{position:absolute;z-index:35;inset:2% 2.5%;padding:16px 20px 25px;overflow:auto;overscroll-behavior:contain;border:1px solid #5e91b078;border-radius:23px;background:linear-gradient(165deg,#060d19f8,#081e34fa);box-shadow:0 28px 75px #000d;backdrop-filter:blur(22px);direction:rtl}
+.xp-ux-modal-head{display:flex;align-items:center;gap:15px}
+.xp-ux-modal-head h2{margin:0;flex:1;font-size:clamp(18px,2.1vw,29px)}
+.xp-ux-modal-head span{color:#b4c8df;font-size:13px}
+.xp-ux-modal-head button{border:1px solid #60849d82;background:#12334d;border-radius:12px;padding:8px;display:grid;place-items:center;min-width:43px;min-height:43px}
+.xp-ux-tabs{display:flex;gap:10px;margin:13px 0}
+.xp-ux-tabs button{border:1px solid #557b9f88;border-radius:18px;padding:10px 19px;background:#1b2b42;color:#bdcee0}
+.xp-ux-selected{background:#124c86!important;color:#fff!important;border-color:#54b9ff!important;box-shadow:0 0 0 1px #54b9ff3a inset}
+.xp-ux-cabin{position:relative;margin:8px auto 12px;width:min(690px,100%);max-height:350px;border-radius:18px;overflow:hidden;background:linear-gradient(180deg,#06121e,#19304b);border:1px solid #6a81994f}
+.xp-ux-cabin svg,.xp-ux-cabin-picture{display:block;width:100%;max-height:325px;object-fit:contain}
+.xp-ux-cabin small{display:block;text-align:center;color:#b2c4d9;padding:4px;font-size:10px}
+.xp-ux-cabin-disclaimer{position:absolute;bottom:0;left:0;right:0;background:#061625a0}
+.xp-ux-hotspot{position:absolute;border:1px solid #88c5ff;color:#fff;background:#194879db;border-radius:50%;width:37px;height:37px;display:grid;place-items:center;box-shadow:0 0 17px #007ee95b}
+.xp-ux-wheel{top:12%;left:21%}.xp-ux-driver{top:49%;left:25%}.xp-ux-passenger{top:49%;right:25%}.xp-ux-rear{bottom:8%;left:50%}
+.xp-ux-climate-card,.xp-ux-range-row,.xp-ux-seat{border:1px solid #6787a165;border-radius:16px;background:#12253bca;padding:14px}
+.xp-ux-climate-caption{display:flex;justify-content:space-between;gap:9px;align-items:center}
+.xp-ux-climate-caption span{font-size:12px;color:#afc7e2}
+.xp-ux-temp-line{display:flex;gap:18px;align-items:center;justify-content:center;margin:12px auto}
+.xp-ux-temp-line b{font-size:clamp(29px,3vw,43px);min-width:115px;text-align:center}
+.xp-ux-temp-line button{border:1px solid #668ab3;background:#1d344d;width:45px;height:45px;border-radius:50%;font-size:26px}
+.xp-ux-pill-row{display:flex;flex-wrap:wrap;gap:10px}
+.xp-ux-pill-row button,.xp-ux-nav-seats{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid #5783a5;border-radius:14px;padding:10px 16px;background:#1b334c}
+.xp-ux-range-row{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.xp-ux-range-row span{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.xp-ux-nav-seats{margin-top:10px;width:100%}
+.xp-ux-modal input[type=range],.xp-ux-charge-limit input[type=range]{width:100%;accent-color:#19dec4;cursor:pointer}
+.xp-ux-seats-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.xp-ux-seat h3{margin:0 0 11px;font-size:16px}
+.xp-ux-seat-line{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:8px}
+.xp-ux-seat-line>span{color:#bcd3e7;font-size:12px}
+.xp-ux-seat-options{display:flex;gap:5px}
+.xp-ux-seat-options button{min-width:35px;min-height:39px;border-radius:10px;border:1px solid #567491;background:#15263d;padding:5px 8px}
+.xp-ux-seat-options button:disabled{opacity:.3;cursor:not-allowed}
+.xp-ux-notice{margin:12px 0 0;border-radius:12px;background:#12374f;padding:9px;font-size:12px}
+.xp-ux-charge-actions{position:absolute;z-index:12;bottom:3.2%;left:3%;right:3%;display:flex;justify-content:flex-start;gap:10px;align-items:center}
+.xp-ux-charge-stop{border:1px solid #11ddc1;border-radius:14px;background:#033b3ebd;color:#9ff7eb;min-height:50px;padding:9px 16px;display:inline-flex;gap:9px;align-items:center;justify-content:center;white-space:nowrap}
+.xp-ux-charge-limit{border:1px solid #6f9abb73;background:#081e37e3;border-radius:14px;min-height:50px;display:flex;flex:1;max-width:450px;min-width:150px;flex-direction:column;gap:3px;padding:7px 13px}
+.xp-ux-charge-limit span{display:flex;justify-content:space-between;font-size:13px}
+.xp-ux-charge-limit input{height:17px}
+@media(max-width:850px){
+ .xp-overview:has(.xp-ux-dock) .xp-status-panel{bottom:18px}
+ .xp-overview .xp-ux-dock{bottom:133px;gap:5px;padding:5px 7px}
+ .xp-ux-dock-action{min-width:49px;min-height:51px;border-radius:18px;gap:2px}
+ .xp-ux-dock-action small{font-size:9px}
+ .xp-ux-modal{inset:1.5% 2%;padding:13px}
+ .xp-ux-cabin{max-height:290px}
+ .xp-ux-cabin svg,.xp-ux-cabin-picture{max-height:285px}
+ .xp-ux-seats-grid{grid-template-columns:1fr}
+ .xp-ux-charge-actions{bottom:8%;left:4%;right:4%;gap:8px}
+ .xp-ux-charge-stop{font-size:12px;padding:6px 10px}
+ .xp-ux-charge-limit{min-width:0}
+ .xp-charge.xp-has-controls .xp-car{bottom:21%;max-height:26%}
+}
+@media(max-width:390px){
+ .xp-ux-dock{gap:3px}
+ .xp-ux-dock-action{min-width:46px;min-height:48px}
+ .xp-ux-dock-action small{font-size:8.5px}
+ .xp-ux-charge-actions{flex-wrap:wrap;bottom:3%}
+ .xp-ux-charge-stop,.xp-ux-charge-limit{flex:1 1 100%}
+ .xp-charge.xp-has-controls .xp-car{bottom:29%;max-height:24%}
+ .xp-ux-seat-line{align-items:flex-start;flex-direction:column}
+}
+@media(pointer:coarse){.xp-ux-seat-options button,.xp-ux-dock-action,.xp-ux-pill-row button{min-height:44px}}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -422,6 +493,174 @@ class XpengVehicleCard extends HTMLElement{
   if(registered&&this._hass?.states?.[registered])return registered;
   const legacy=domain+'.'+this.prefix()+'_'+suffix;
   return this._hass?.states?.[legacy]?legacy:null;
+ }
+
+
+ xpUiEnabled(){return this.vehicle()?.show_controls??this._config.show_controls??false;}
+ xpLive(domain,suffix){
+  const id=this.xpengEntity(domain,suffix);
+  const state=id?this._hass?.states?.[id]:null;
+  return state&&!['unknown','unavailable'].includes(state.state)?{id,state}:null;
+ }
+ xpChargingActive(){
+  // A confirmed unplugged cable overrides stale charging telemetry.
+  if(this.bool('plugged')===false)return false;
+  return xpChargingActive(this.val('charging'))===true;
+ }
+ xpDock(){
+  if(!this.xpUiEnabled())return '';
+  const features=[
+   ['climate','fan','מיזוג',this.xpLive('climate','cabin_climate')],
+   ['seats','thermometer','מושבים',this.xpLive('select','driver_seat_heat_select')||this.xpLive('select','steering_wheel_heat_select')],
+   ['port','plug','שקע טעינה',this.xpLive('button','open_charge_port')],
+   ['locks','lock','נעילה',this.xpLive('lock','door_lock')],
+   ['map','pin','מיקום',this.xpLive('device_tracker','location')]
+  ];
+  return '<nav class="xp-ux-dock" aria-label="בקרות הרכב" dir="rtl">'+features.filter(item=>item[3]).map(item=>
+   '<button class="xp-ux-dock-action" type="button" data-xp-open="'+item[0]+'" aria-label="'+item[2]+'">'
+    +xpIcon(item[1],21)+'<small>'+item[2]+'</small></button>').join('')+'</nav>';
+ }
+ xpCabinView(){
+  const a=this.appearance();
+  const finish=XP_INTERIORS.find(x=>x.id===a.interior)||XP_INTERIORS[0];
+  const pictures=this.vehicle()?.interior_images??this._config.interior_images;
+  const selected=pictures&&typeof pictures==='object'?pictures[a.interior]:null;
+  if(xpLocalArtworkPath(selected))return '<div class="xp-ux-cabin"><img src="'+xpEsc(selected)+'" loading="lazy" alt="'+xpEsc('פנים רכב '+a.model+' בצבע '+finish.label)+'" class="xp-ux-cabin-picture">'
+    +'<small>תמונת פנים לפי הגדרת הצבע</small></div>';
+  const seat=xpEsc(finish.hex),shade=xpEsc(finish.secondary);
+  // Honest, colour-matched illustration, never an invented factory photograph.
+  const seatShape=(x,y,w,h)=>'<g><rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="24" fill="'+shade+'" stroke="#87a4b9" stroke-opacity=".48" stroke-width="2"/>'
+   +'<rect x="'+(x+9)+'" y="'+(y+9)+'" width="'+(w-18)+'" height="'+(h-18)+'" rx="18" fill="'+seat+'" stroke="#a8b9bf" stroke-opacity=".35"/>'
+   +'<path d="M'+(x+15)+' '+(y+h*.48)+'h'+(w-30)+'" stroke="'+shade+'" stroke-width="6" opacity=".48"/></g>';
+  const seatHtml=seatShape(105,112,130,151)+seatShape(447,112,130,151)
+    +seatShape(105,278,130,87)+seatShape(276,278,130,87)+seatShape(447,278,130,87);
+  return '<div class="xp-ux-cabin" dir="ltr"><svg viewBox="0 0 680 390" role="img" aria-label="'+xpEsc('איור פנים רכב '+a.model+' — '+finish.label)+'">'
+    +'<rect x="43" y="7" width="594" height="375" rx="87" fill="#0c1e30" stroke="#6c859c" stroke-width="4"/>'
+    +'<path d="M91 55Q340 5 589 55L605 104H75Z" fill="#1b324a" stroke="#5c819c" stroke-width="3"/>'
+    +'<rect x="294" y="78" width="92" height="39" rx="8" fill="#101620" stroke="#407197" stroke-width="2"/>'
+    +'<circle cx="170" cy="87" r="31" fill="none" stroke="'+seat+'" stroke-width="10"/>'
+    +'<path d="M151 77h38m-19 0v30" stroke="'+shade+'" stroke-width="4"/>'
+    +'<rect x="288" y="122" width="104" height="153" rx="18" fill="#1c2c39" stroke="#5a778d"/>'
+    +seatHtml+'</svg>'
+    +'<button type="button" class="xp-ux-hotspot xp-ux-wheel" data-xp-seat="wheel" aria-label="חימום הגה">♨</button>'
+    +'<button type="button" class="xp-ux-hotspot xp-ux-driver" data-xp-seat="driver" aria-label="מושב נהג">♨</button>'
+    +'<button type="button" class="xp-ux-hotspot xp-ux-passenger" data-xp-seat="passenger" aria-label="מושב נוסע">♨</button>'
+    +'<button type="button" class="xp-ux-hotspot xp-ux-rear" data-xp-seat="rear" aria-label="מושבים אחוריים">♨</button>'
+    +'<small class="xp-ux-cabin-disclaimer">תצוגה מאוירת · '+xpEsc(finish.label)+'</small></div>';
+ }
+ xpTempControl(){
+  const c=this.xpLive('climate','cabin_climate');
+  if(!c)return '<p>בקרת המיזוג אינה זמינה כרגע.</p>';
+  const attrs=c.state.attributes||{};
+  const target=Number(attrs.temperature);
+  const actual=Number.isFinite(target)?target:22;
+  const inside=Number(attrs.current_temperature);
+  const insideText=Number.isFinite(inside)?xpNum(inside,1)+'°C':this.num('cabin','°C',1);
+  const running=c.state.state!=='off';
+  const value=Number.isFinite(target)?xpNum(target,1)+'°C':'—';
+  return '<div class="xp-ux-climate-card">'
+   +'<div class="xp-ux-climate-caption"><strong>מיזוג אוויר</strong><span>בתא הנוסעים: '+xpEsc(insideText)+'</span></div>'
+   +'<div class="xp-ux-temp-line"><button type="button" data-xp-temp="-1" aria-label="הורד חצי מעלה">−</button>'
+   +'<b>'+value+'</b><button type="button" data-xp-temp="1" aria-label="העלה חצי מעלה">+</button></div>'
+   +'<div class="xp-ux-pill-row"><button class="'+(running?'xp-ux-selected':'')+'" type="button" data-xp-climate="'+(running?'off':'on')+'">'+xpIcon('power',17)+(running?' כבה מיזוג':' הפעל מיזוג')+'</button>'
+   +(this.xpLive('switch','defrost_switch')?'<button type="button" data-xp-switch="defrost_switch">'+xpIcon('sun',17)+' הפשרת שמשה</button>':'')
+   +'</div></div>';
+ }
+ xpFanControl(){
+  const c=this.xpLive('number','fan_speed_control');
+  if(!c)return '';
+  const a=c.state.attributes||{}, min=Number(a.min??1), max=Number(a.max??8), step=Number(a.step??1);
+  const v=Number(c.state.state);
+  if(!Number.isFinite(v))return '';
+  return '<label class="xp-ux-range-row"><span>'+xpIcon('fan',18)+' עוצמת מאוורר <b>'+xpEsc(v)+'</b></span>'
+   +'<input type="range" min="'+min+'" max="'+max+'" step="'+step+'" value="'+v+'" data-xp-range="fan_speed_control" aria-label="מהירות מאוורר"></label>';
+ }
+ xpSeatControls(){
+  const slots=[
+    ['driver','נהג','driver_seat_heat_select','driver_seat_ventilation_select'],
+    ['passenger','נוסע','passenger_seat_heat_select','passenger_seat_ventilation_select'],
+    ['rear','אחורי שמאל','left_rear_seat_heat_select','left_rear_seat_ventilation_select'],
+    ['rear','אחורי ימין','right_rear_seat_heat_select','right_rear_seat_ventilation_select'],
+    ['wheel','חימום הגה','steering_wheel_heat_select',null]
+  ];
+  const focus=this._xpSeatFocus;
+  const controls=slots.filter(r=>!focus||r[0]===focus).map(([zone,title,heat,cool])=>{
+    const rows=[['חימום',heat],['אוורור',cool]].filter(([,suffix])=>suffix&&this.xpLive('select',suffix));
+    if(!rows.length)return '';
+    return '<article class="xp-ux-seat"><h3>'+title+'</h3>'+rows.map(([label,suffix])=>{
+      const ent=this.xpLive('select',suffix),current=ent.state.state;
+      const choices=(Array.isArray(ent.state.attributes?.options)?ent.state.attributes.options:[]).filter(s=>typeof s==='string');
+      // The passenger front heat Off command is not supported by the current integration.
+      const options=choices.map(choice=>{
+        const unsupported=title==='נוסע'&&suffix==='passenger_seat_heat_select'&&choice==='Off';
+        const short=choice==='Off'?'כבוי':(/[1-3]/.exec(choice)?.[0]||choice);
+        const active=choice===current?' xp-ux-selected':'';
+        return '<button type="button" data-xp-select="'+xpEsc(suffix)+'" data-xp-option="'+xpEsc(choice)+'" class="'+active+'" '+(unsupported?'disabled title="כיבוי חימום נוסע אינו מאומת באינטגרציה"':'')+' aria-pressed="'+(choice===current)+'">'+xpEsc(short)+'</button>';
+      }).join('');
+      return '<div class="xp-ux-seat-line"><span>'+label+'</span><div class="xp-ux-seat-options">'+options+'</div></div>';
+    }).join('')+'</article>';
+  }).filter(Boolean).join('');
+  return '<div class="xp-ux-seats-grid">'+(controls||'<p>לא נמצאו בקרות מושבים נתמכות לרכב זה.</p>')+'</div>';
+ }
+ xpModal(){
+  if(!this.xpUiEnabled()||!this._xpPanel)return '';
+  const page=this._xpPanel;
+  if(page!=='climate'&&page!=='seats')return '';
+  return '<section class="xp-ux-modal" role="dialog" aria-modal="true" aria-label="בקרות מיזוג ומושבים" dir="rtl">'
+   +'<header class="xp-ux-modal-head"><button type="button" data-xp-close aria-label="חזרה למסך הרכב">'+xpIcon('back',24)+'</button><h2>'+(page==='climate'?'מיזוג אוויר':'מושבים והגה')+'</h2><span>'+xpEsc(this.appearance().model)+'</span></header>'
+   +'<div class="xp-ux-tabs"><button type="button" class="'+(page==='climate'?'xp-ux-selected':'')+'" data-xp-page="climate">מיזוג</button>'
+   +'<button type="button" class="'+(page==='seats'?'xp-ux-selected':'')+'" data-xp-page="seats">מושבים והגה</button></div>'
+   +this.xpCabinView()
+   +(page==='climate' ? this.xpTempControl()+this.xpFanControl()
+        +'<button class="xp-ux-nav-seats" type="button" data-xp-page="seats">חימום ואוורור מושבים והגה ←</button>'
+        :this.xpSeatControls())
+   +(this._xpNotice?'<p class="xp-ux-notice" role="status">'+xpEsc(this._xpNotice)+'</p>':'')
+   +'</section>';
+ }
+ xpChargeControls(){
+  if(!this.xpUiEnabled())return '';
+  const stop=this.xpLive('button','stop_charge');
+  const limit=this.xpLive('number','charge_limit_control');
+  const controls=[];
+  if(stop)controls.push('<button class="xp-ux-charge-stop" type="button" data-xp-command="stop_charge">'+xpIcon('plug',19)+' הפסק טעינה</button>');
+  if(limit){
+    const n=Number(limit.state.state),a=limit.state.attributes||{};
+    if(Number.isFinite(n))controls.push('<label class="xp-ux-charge-limit"><span>הגבלת טעינה <b>'+xpEsc(xpNum(n))+'%</b></span>'
+      +'<input type="range" data-xp-range="charge_limit_control" min="'+Number(a.min??50)+'" max="'+Number(a.max??100)+'" step="'+Number(a.step??5)+'" value="'+n+'" aria-label="הגבלת טעינה"></label>');
+  }
+  return controls.length?'<div class="xp-ux-charge-actions" dir="rtl">'+controls.join('')+'</div>':'';
+ }
+ xpDetails(suffix,domain){
+  const entity=this.xpLive(domain,suffix);
+  if(!entity)return;
+  this.dispatchEvent(new CustomEvent('hass-more-info',{detail:{entityId:entity.id},bubbles:true,composed:true}));
+ }
+ async xpSend(domain,service,suffix,value){
+  const entity=this.xpLive(domain,suffix);
+  if(!entity||typeof this._hass?.callService!=='function')return;
+  const data={entity_id:entity.id};
+  if(service==='set_value')data.value=value;
+  else if(service==='set_temperature')data.temperature=value;
+  else if(service==='select_option')data.option=value;
+  const sensitive=(domain==='lock'||suffix==='stop_charge'||suffix==='open_charge_port');
+  if(sensitive&&typeof window.confirm==='function'
+     &&!window.confirm('לשלוח את הפקודה לרכב?'))return;
+  try{
+    await this._hass.callService(domain,service,data);
+    this._xpNotice='הפקודה נשלחה ל־Home Assistant. יש לוודא שהרכב אישר את הפעולה.';
+  }catch(err){
+    this._xpNotice='שגיאה בשליחת הפקודה: '+(err?.message||'נסה שוב');
+  }
+  this.render();
+ }
+ xpDoTemperature(direction){
+  const c=this.xpLive('climate','cabin_climate');
+  if(!c)return;
+  const a=c.state.attributes||{},now=Number(a.temperature);
+  const step=Number(a.target_temp_step)||.5;
+  if(!Number.isFinite(now))return;
+  const target=Math.round(Math.max(Number(a.min_temp??16),Math.min(Number(a.max_temp??32),now+direction*step))*10)/10;
+  if(target!==now)this.xpSend('climate','set_temperature','cabin_climate',target);
  }
 
  connectedCallback(){if(!this._fullscreenHandler){this._fullscreenHandler=()=>{if(!document.fullscreenElement&&this._expanded){this._expanded=false;this.render();}};}document.addEventListener('fullscreenchange',this._fullscreenHandler);}
