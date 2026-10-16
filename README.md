@@ -199,9 +199,10 @@ default on unverified models. Front passenger seat-heating Off is disabled
 because the integration notes that this command is not verified on some cars.
 No unsupported Pet, Max, cleaning or sterilisation modes are presented.
 
-Cabin geometry currently uses a colour-matched *illustrative* SVG, not
-manufacturer-certified interior photography. The image palette follows
-the selected interior finish. `interior: white` is normalised to `light_gray`,
+G6 2026 ships two original colour-matched *illustrative* SVG artworks
+(`assets/interiors/g6/2026/light_gray.svg` and `dark_gray.svg`) with matching
+seat/steering interaction positions; these are **not photographs**.
+Only the selected colour is loaded, based on the interior finish. `interior: white` is normalised to `light_gray`,
 and `interior: black` to `dark_gray`. Optional matching local images can be
 configured:
 
@@ -237,3 +238,5 @@ interiors, iPhone and desktop browser layouts, narrow Sections widths,
 seat and wheel feedback, charging stop/limit, charge-port opening and
 automatic return after cable unplug. A successful HA call is **not** proof
 that the physical vehicle executed a command.
+
+The opt-in **Vehicle controls** panel displays door/lock/window/trunk/security states and supports lock, close windows, close trunk, flash lights, horn and arming X-Guard only when Xpengtk exposes an authorized entity. It deliberately omits Access actions such as car unlock, opening trunk and disarming X-Guard.
