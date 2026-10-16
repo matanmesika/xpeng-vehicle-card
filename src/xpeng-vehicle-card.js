@@ -22,6 +22,33 @@ const XP_KEYS = Object.freeze({
  last_update:['sensor','last_update','last_vehicle_update'],location:['device_tracker','location'],
  speed:['sensor','vehicle_speed_kmh','vehicle_speed']
 });
+/* Xpengtk (xpengtoolkit/xpengtoolkit) aliases.
+ * Home Assistant creates entity IDs from translated names, not unique_id keys.
+ * These aliases are additional automatic read-only sources. Never infer commands
+ * from a matching name, and keep manual mappings authoritative.
+ */
+const XP_XPENGTK_KEYS = Object.freeze({
+ connection:[['binary_sensor','mqtt_connected']],
+ soc:[['sensor','battery']],
+ range:[['sensor','range']],
+ charging:[['binary_sensor','charging']],
+ plugged:[['binary_sensor','plugged_in']],
+ target:[['number','charge_limit'],['sensor','max_charge']],
+ power:[['sensor','charge_power']],
+ remaining:[['sensor','charge_time_remaining']],
+ current:[['sensor','charge_current']],
+ voltage:[['sensor','charge_voltage']],
+ odometer:[['sensor','odometer']],
+ tire_fl:[['sensor','tyre_pressure_front_left']],
+ tire_fr:[['sensor','tyre_pressure_front_right']],
+ tire_rl:[['sensor','tyre_pressure_rear_left']],
+ tire_rr:[['sensor','tyre_pressure_rear_right']],
+ last_update:[['sensor','last_data_timestamp'],['sensor','last_data_update']],
+ cabin:[['sensor','cabin_temperature']],
+ speed:[['sensor','speed']],
+ location:[['device_tracker','location']]
+});
+
 const XP_ICONS = {
  home:'<path d="M3 10.5 12 3l9 7.5V21h-6v-7H9v7H3Z"/>',
  lock:'<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
@@ -52,7 +79,8 @@ function xpNum(v,dec=0){if(v===null||v===undefined||v===''||!Number.isFinite(Num
 function xpConnText(v){
   const raw=String(v??'').trim().toLowerCase();
   if(!raw || ['not_configured','not_connected','unavailable','unknown','none','null','offline'].includes(raw))return 'Not connected';
-  if(['connected','online'].includes(raw))return 'Connected';
+  if(['connected','online','on','true','1'].includes(raw))return 'Connected';
+  if(['off','false','0'].includes(raw))return 'Not connected';
   if(['error','connection_error','auth_error'].includes(raw))return 'Connection error';
   return String(v).replace(/_/g,' ');
 }
@@ -364,7 +392,10 @@ class XpengVehicleCard extends HTMLElement{
    const spec=XP_KEYS[key];if(!spec)return null;
    const override=xpSensorMappingMode(this._config,this.vehicle())==='manual'?(this.vehicle()?.entities?.[key]??this._config.entities?.[key]):null;
    const custom=override?xpParseEntityMapping(override):null;
-   const ids=custom?[custom.id]:spec.slice(1).map(s=>spec[0]+'.'+this.prefix()+'_'+s);
+   const ids=custom?[custom.id]:[
+     ...spec.slice(1).map(s=>spec[0]+'.'+this.prefix()+'_'+s),
+     ...(XP_XPENGTK_KEYS[key]||[]).map(([domain,suffix])=>domain+'.'+this.prefix()+'_'+suffix)
+   ];
    const id=ids.find(x=>this._hass?.states?.[x])||ids[0];
    const entity=this._hass?.states?.[id];
    const attribute=custom?.attribute;
