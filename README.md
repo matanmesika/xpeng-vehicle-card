@@ -141,3 +141,23 @@ A first pack for G6 **2023–2025** adds five exterior paints × front, charging
 ## Remaining model-specific camera angles
 
 The [master-view work queue](data/master-view-queue.json) tracks missing independent front, rear/charging and vertical-overhead photos for all 21 body-generation groups. [Build order](docs/ARTWORK_MASTER_PLAN.md). Generating correctly shaped master trios precedes any mass colour derivation; a missing camera view is never replaced with an alternate angle.
+
+## XPENG G6 + Xpengtk integration compatibility
+
+For [Xpengtk](https://github.com/xpengtoolkit/xpengtoolkit), configure the read-only vehicle card with:
+
+```yaml
+type: custom:xpeng-vehicle-card
+prefix: xpeng_g6
+model: G6
+year: "2026"
+sensor_mapping_mode: auto
+grid_options:
+  columns: full
+  rows: auto
+```
+
+Automatic mapping also recognizes Xpengtk's `sensor.xpeng_g6_battery`, `sensor.xpeng_g6_range`, `binary_sensor.xpeng_g6_charging`, `number.xpeng_g6_charge_limit`, the four `tyre_pressure_*` sensors, `binary_sensor.xpeng_g6_mqtt_connected`, and `sensor.xpeng_g6_last_data_timestamp`. If your Home Assistant registry uses different entity IDs, use the existing manual sensor-mapping editor.
+
+**Vehicle controls belong in separate native Home Assistant Sections cards:** `climate.xpeng_g6_climate` (thermostat), `lock.xpeng_g6_door_lock` (locking), `number.xpeng_g6_charge_limit` (numeric-input tile), `button.xpeng_g6_open_charge_port` / `button.xpeng_g6_close_charge_port` (charge flap), and `device_tracker.xpeng_g6_location` (map). `button.press`, `lock.lock`, etc. are standard Home Assistant actions; the card itself remains read-only. Xpengtk Safe Plus **does not allow door unlock**; keep unlock hidden unless Access commands are explicitly enabled. Open charge flap is **not** proof of charge cable release.
+
