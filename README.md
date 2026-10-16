@@ -40,7 +40,7 @@ Verified captures of the complete running Lovelace card (desktop/mobile, status/
 ## User-approved design
 
 - One **fixed approved night-time lake/house/mountain photo** as the full-screen background. Vehicle artwork is a separate foreground layer. Do not change the background without owner approval.
-- Two principal modes: **Vehicle status**, and **Charging** only when the mapped Home Assistant charging sensor reports active charging. No extra control, weather, climate, seat, door or map pages.
+- Two principal modes remain **Vehicle status** and automatic **Charging**. Optional climate and seat overlays are available with `show_controls: true`, without changing the approved background or vehicle artwork.
 - In Vehicle status, tapping **Tire pressure** keeps the same approved scenic background, brand header and vehicle title, while replacing the central car with a colour-matched overhead view and four independently measured pressure values near the corresponding wheels. The readings use the same dark-glass style as the main information panel; **Back to vehicle** restores the hero. This is a detail mode within Vehicle status, not a third dashboard page. Until a verified overhead image is obtained, the vehicle artwork is explicitly labelled illustrative.
 - The top-right header has **one Wi-Fi button** (no separate connection text or info icon) on desktop and mobile. Its colour indicates the mapped connection state, without assuming a connection when the sensor is missing. Tap the Wi-Fi icon to open a popup with only **Connection** and **Last vehicle update** from mapped Home Assistant sensors. The date/time is shown explicitly when supplied by the vehicle-update sensor; a Home Assistant entity's generic `last_updated` metadata is not treated as a vehicle refresh. Tap the same icon to close. No cabin, model, paint or artwork metadata in the popup.
 - No hardcoded SOC, range, TPMS, charging data, location or update times. Missing values are displayed as unavailable/—.
@@ -78,7 +78,7 @@ grid_options:
   rows: auto
 ```
 
-Choose **Edit dashboard → Edit card** to select model, year, informational trim, paint and cabin finish. All appearance selectors stay **in the card editor**, never on the dashboard. The entire old **Data source** / picture-URL section was removed: car/charging/overhead/background image URLs, asset directories and the automatic prefix are no longer editable controls. Images are sourced from the packaged dashboard assets; old custom YAML paths remain supported for compatibility, but they are not shown in the visual editor. This is a read-only view; it neither authenticates with XPENG nor issues vehicle commands.
+Choose **Edit dashboard → Edit card** to select model, year, informational trim, paint and cabin finish. All appearance selectors stay **in the card editor**, never on the dashboard. The entire old **Data source** / picture-URL section was removed: car/charging/overhead/background image URLs, asset directories and the automatic prefix are no longer editable controls. Images are sourced from the packaged dashboard assets; old custom YAML paths remain supported for compatibility, but they are not shown in the visual editor. By default this is a read-only view. Opt-in `show_controls: true` calls native Home Assistant entity services; the card does not authenticate directly with XPENG.
 
 ### Sensor mapping — Automatic or Manual
 
@@ -161,3 +161,79 @@ Automatic mapping also recognizes Xpengtk's `sensor.xpeng_g6_battery`, `sensor.x
 
 **Vehicle controls belong in separate native Home Assistant Sections cards:** `climate.xpeng_g6_climate` (thermostat), `lock.xpeng_g6_door_lock` (locking), `number.xpeng_g6_charge_limit` (numeric-input tile), `button.xpeng_g6_open_charge_port` / `button.xpeng_g6_close_charge_port` (charge flap), and `device_tracker.xpeng_g6_location` (map). `button.press`, `lock.lock`, etc. are standard Home Assistant actions; the card itself remains read-only. Xpengtk Safe Plus **does not allow door unlock**; keep unlock hidden unless Access commands are explicitly enabled. Open charge flap is **not** proof of charge cable release.
 
+
+## Optional native XPENG controls — G6 2026 pilot
+
+This is a **draft PR feature**, not included in the published v1.0.2 HACS release.
+The existing night-time mountain/lake background, vehicle cutouts, Wi-Fi status,
+TPMS details, and automatic charging-mode switch are preserved.
+
+Enable through the card editor (Optional control pages) or add to existing YAML:
+
+```yaml
+type: custom:xpeng-vehicle-card
+model: G6
+year: "2026"
+interior: light_gray       # white/light; use dark_gray for black/dark
+sensor_mapping_mode: auto
+show_controls: true
+prefix: xpeng_g6           # fallback if registry cannot be read
+grid_options:
+  columns: full
+  rows: auto
+```
+
+### Vehicle screen
+
+Compact buttons open Climate, Seats/steering, native Home Assistant door-lock
+details and location details. The Charge port button opens the charge flap
+using the integration's button entity; it is not a cable release command.
+
+### Climate, steering, seats
+
+Climate on/off, temperature +/- by 0.5°C, fan speed, front defrost, seat
+heating/ventilation and steering-wheel heating use Xpengtk entities through
+normal Home Assistant services. The UI does not send raw MQTT. Missing or
+disabled entities are hidden. Upstream rear-seat ventilation is disabled by
+default on unverified models. Front passenger seat-heating Off is disabled
+because the integration notes that this command is not verified on some cars.
+No unsupported Pet, Max, cleaning or sterilisation modes are presented.
+
+Cabin geometry currently uses a colour-matched *illustrative* SVG, not
+manufacturer-certified interior photography. The image palette follows
+the selected interior finish. `interior: white` is normalised to `light_gray`,
+and `interior: black` to `dark_gray`. Optional matching local images can be
+configured:
+
+```yaml
+interior_images:
+  light_gray: /local/xpeng/interiors/g6-2026-light.webp
+  dark_gray: /local/xpeng/interiors/g6-2026-dark.webp
+```
+
+Only the image for the selected finish is used. In multi-vehicle configurations,
+provide interior_images on the matching vehicle profile, never reuse images
+from another model or year without verification.
+
+### Charging mode
+
+The original charging view remains automatic. On a confirmed cable unplug,
+the main vehicle view returns even if the charging sensor is stale.
+While charging, compact controls show Stop charging and a percentage charge
+limit slider from the native number entity. Charge port opening belongs to
+the noncharging vehicle view. There is **no verified separate charging cable
+unlock command** in the installed integration, so it is not offered.
+
+### Permissions, auto mapping and testing
+
+Entity mapping uses stable Xpengtk unique IDs via the HA Entity Registry;
+renamed entities are supported. If registry access is unavailable to the
+current HA user, conventional ID fallbacks remain, and renamed fallback
+entities may need manual setup. All actions still respect Xpengtk permissions
+(Safe Plus does not enable vehicle unlock).
+
+Before releasing: test against the real G6 and HA permissions, check light/dark
+interiors, iPhone and desktop browser layouts, narrow Sections widths,
+seat and wheel feedback, charging stop/limit, charge-port opening and
+automatic return after cable unplug. A successful HA call is **not** proof
+that the physical vehicle executed a command.
