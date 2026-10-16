@@ -49,6 +49,44 @@ const XP_XPENGTK_KEYS = Object.freeze({
  location:[['device_tracker','location']]
 });
 
+const XP_UNIQUE_KEYS=Object.freeze({
+ soc:[['sensor','battery_soc']],range:[['sensor','range']],odometer:[['sensor','odometer']],
+ connection:[['binary_sensor','mqtt_connected']],charging:[['binary_sensor','charging']],
+ plugged:[['binary_sensor','plugged_in']],target:[['number','charge_limit_control'],['sensor','max_charge']],
+ power:[['sensor','charge_power']],remaining:[['sensor','charge_time_remaining']],
+ current:[['sensor','charge_current']],voltage:[['sensor','charge_voltage']],
+ tire_fl:[['sensor','tyre_pressure_fl']],tire_fr:[['sensor','tyre_pressure_fr']],
+ tire_rl:[['sensor','tyre_pressure_rl']],tire_rr:[['sensor','tyre_pressure_rr']],
+ last_update:[['sensor','last_data_update'],['sensor','last_update']],
+ cabin:[['sensor','cabin_temperature']],speed:[['sensor','speed']],
+ location:[['device_tracker','location']],locked:[['binary_sensor','locked']],
+ climate:[['binary_sensor','hvac_on']],door_fl:[['binary_sensor','driver_door']],
+ door_fr:[['binary_sensor','passenger_door']],door_rl:[['binary_sensor','rear_left_door']],
+ door_rr:[['binary_sensor','rear_right_door']],trunk:[['binary_sensor','trunk']],
+ hood:[['binary_sensor','bonnet']]
+});
+/* Resolves Xpengtk stable unique IDs from HA Entity Registry so user-renamed
+ * entity IDs work automatically. Never mingle different XPENG devices.
+ */
+function xpVehicleRegistryRows(rows,prefix,deviceSelector){
+ const own=Array.isArray(rows)?rows.filter(e=>e?.platform==='xpeng'
+   && typeof e.unique_id==='string'&&e.unique_id.startsWith('xpeng_')
+   && typeof e.entity_id==='string'&&/^[a-z_]+\.[a-z0-9_]+$/.test(e.entity_id)):[];
+ const gps=own.filter(e=>e.unique_id.endsWith('_location')&&e.entity_id.startsWith('device_tracker.'));
+ const matchingGps=gps.find(e=>e.entity_id.startsWith('device_tracker.'+prefix+'_'));
+ const chosen=gps.find(e=>deviceSelector&&e.device_id===deviceSelector)
+   ||matchingGps||(gps.length===1?gps[0]:null);
+ if(!chosen)return {byKey:Object.create(null),entries:[],message:gps.length>1?'multiple_vehicles':'no_vehicle'};
+ const marker=chosen.unique_id.slice(0,-'_location'.length)+'_';
+ const sameVehicle=own.filter(e=>e.unique_id.startsWith(marker)&&e.device_id===chosen.device_id);
+ const byKey=Object.create(null);
+ for(const e of sameVehicle){
+   const suffix=e.unique_id.slice(marker.length);
+   byKey[e.entity_id.split('.')[0]+'.'+suffix]=e.entity_id;
+ }
+ return {byKey,entries:sameVehicle,message:null};
+}
+
 const XP_ICONS = {
  home:'<path d="M3 10.5 12 3l9 7.5V21h-6v-7H9v7H3Z"/>',
  lock:'<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
@@ -359,6 +397,33 @@ class XpengVehicleCard extends HTMLElement{
     if(b.hasAttribute('data-cycle')){this._vehicleIndex=(this._vehicleIndex+1)%this.vehicles().length;this._tireOpen=false;this.render();}
   });
  }
+
+ async ensureXpengRegistry(){
+  if(this._xpengRegistryPending||this._xpengRegistryLoaded)return;
+  const conn=this._hass?.connection;
+  if(typeof conn?.sendMessagePromise!=='function')return;
+  this._xpengRegistryPending=true;
+  try{
+   const entries=await conn.sendMessagePromise({type:'config/entity_registry/list'});
+   const selection=xpVehicleRegistryRows(entries,this.prefix(),this._config.xpeng_device_id);
+   this._xpengByKey=selection.byKey;
+   this._xpengEntities=selection.entries;
+   this._xpengRegistryMessage=selection.message;
+   this._xpengRegistryLoaded=true;
+   this.render();
+  }catch(error){
+   this._xpengRegistryMessage='registry_unavailable';
+  }finally{
+   this._xpengRegistryPending=false;
+  }
+ }
+ xpengEntity(domain,suffix){
+  const registered=this._xpengByKey?.[domain+'.'+suffix];
+  if(registered&&this._hass?.states?.[registered])return registered;
+  const legacy=domain+'.'+this.prefix()+'_'+suffix;
+  return this._hass?.states?.[legacy]?legacy:null;
+ }
+
  connectedCallback(){if(!this._fullscreenHandler){this._fullscreenHandler=()=>{if(!document.fullscreenElement&&this._expanded){this._expanded=false;this.render();}};}document.addEventListener('fullscreenchange',this._fullscreenHandler);}
  disconnectedCallback(){if(this._fullscreenHandler)document.removeEventListener('fullscreenchange',this._fullscreenHandler);}
  toggleFullScreen(){this._expanded=!this._expanded;if(this._expanded&&this.requestFullscreen){this.requestFullscreen().catch(()=>{});}else if(!this._expanded&&document.fullscreenElement===this){document.exitFullscreen().catch(()=>{});}this.render();}
@@ -372,6 +437,7 @@ class XpengVehicleCard extends HTMLElement{
  }
  set hass(hass){
   this._hass=hass;
+  if(!this._xpengRegistryLoaded)this.ensureXpengRegistry();
   this._view=xpChargingActive(this.val('charging'))===true?'charging':'overview';
   if(this._view==='charging')this._tireOpen=false;
   this.render();
@@ -393,6 +459,7 @@ class XpengVehicleCard extends HTMLElement{
    const override=xpSensorMappingMode(this._config,this.vehicle())==='manual'?(this.vehicle()?.entities?.[key]??this._config.entities?.[key]):null;
    const custom=override?xpParseEntityMapping(override):null;
    const ids=custom?[custom.id]:[
+     ...(XP_UNIQUE_KEYS[key]||[]).map(([domain,suffix])=>this._xpengByKey?.[domain+'.'+suffix]).filter(Boolean),
      ...spec.slice(1).map(s=>spec[0]+'.'+this.prefix()+'_'+s),
      ...(XP_XPENGTK_KEYS[key]||[]).map(([domain,suffix])=>domain+'.'+this.prefix()+'_'+suffix)
    ];
