@@ -559,7 +559,7 @@ class XpengVehicleCard extends HTMLElement{
  xpLive(domain,suffix){
   const id=this.xpengEntity(domain,suffix);
   const state=id?this._hass?.states?.[id]:null;
-  return state&&!['unknown','unavailable'].includes(state.state)?{id,state}:null;
+  return state&&state.state!=='unavailable'&&(domain==='button'||state.state!=='unknown')?{id,state}:null;
  }
  xpChargingActive(){
   // A confirmed unplugged cable overrides stale charging telemetry.
@@ -1084,6 +1084,7 @@ class XpengVehicleCardEditor extends HTMLElement{
      ${select('trim','Trim · display only',xpAllowedTrims(v.model,v.year))}
      ${select('color','Exterior paint',xpAllowedPaints(v.model,v.year))}
      ${select('interior','Interior finish',xpAllowedInteriors(v.model,v.year))}
+     ${select('show_controls','Optional control pages', [{id:'false',label:'Disabled (original card)'},{id:'true',label:'Enabled (responsive controls)'}],String(v.show_controls===true||v.show_controls==='true'))}
      <p>Years sharing the same exterior/facelift are grouped. Select a specific year only when paint availability differs. Trim labels never change vehicle pictures.</p>
     <h3>Sensor mapping</h3>
      <label>Mapping mode<select data-key="sensor_mapping_mode">
@@ -1095,7 +1096,7 @@ class XpengVehicleCardEditor extends HTMLElement{
        ${mappingRows}
        <datalist id="xp-entity-choices">${dataList}</datalist>
      </div>`:`<p data-auto-mapping>Vehicle sensors are matched automatically using the XPENG integration. Choose Manual to show and assign individual sensor entities.</p>`}
-     <p>The only screens are Vehicle status and Charging. Live readings update automatically; missing sensors stay unavailable. Vehicle appearance is edited here, never on the dashboard.</p>
+     <p>Vehicle status and automatic Charging remain the two principal scenes. Optional in-card overlays show climate and seat controls and use native Home Assistant services. The cabin illustration reflects the selected interior colour.</p>
   </section>`;
  }
 }
