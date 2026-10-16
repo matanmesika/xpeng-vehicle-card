@@ -85,7 +85,7 @@ test('remote actions go through HA services with resolved IDs', async () => {
   const {card, commands} = createCard();
   await card.xpSend('button', 'press', 'open_charge_port');
   await card.xpSend('number', 'set_value', 'charge_limit_control', 85);
-  assert.deepEqual(commands, [
+  assert.deepEqual(JSON.parse(JSON.stringify(commands)), [
     {domain: 'button', service: 'press', data: {entity_id: 'button.open_flap'}},
     {domain: 'number', service: 'set_value', data: {entity_id: 'number.user_charge_limit', value: 85}}
   ]);
