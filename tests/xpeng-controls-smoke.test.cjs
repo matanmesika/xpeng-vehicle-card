@@ -58,9 +58,16 @@ test('renamed entity IDs resolve from Xpengtk stable unique IDs', () => {
 });
 test('interior artwork respects selected colour; original background unchanged', () => {
   const {card} = createCard();
-  assert.match(card.xpCabinView(), /#d8d9d4/i);
+  assert.match(card.xpCabinView(), /interiors\/g6\/2026\/light_gray\.svg/);
+  assert.equal((card.xpCabinView().match(/data-xp-seat=/g) || []).length, 2);
   card.setConfig({type: 'custom:xpeng-vehicle-card', prefix: 'xpeng_g6', model: 'G6', year: '2026', interior: 'black', show_controls: true});
-  assert.match(card.xpCabinView(), /#40454b/i);
+  assert.match(card.xpCabinView(), /interiors\/g6\/2026\/dark_gray\.svg/);
+  const artRoot = path.join(__dirname, '..', 'assets', 'interiors', 'g6', '2026');
+  const light = fs.readFileSync(path.join(artRoot, 'light_gray.svg'), 'utf8');
+  const dark = fs.readFileSync(path.join(artRoot, 'dark_gray.svg'), 'utf8');
+  assert.match(light, /viewBox="0 0 800 500"/);
+  assert.match(dark, /viewBox="0 0 800 500"/);
+  assert.notEqual(light, dark);
   assert.match(src, /xp-night-photo/);
 });
 test('never hide unpressed HA button entities whose states are unknown', () => {
@@ -96,4 +103,32 @@ test('controls are opt-in and have mobile breakpoints', () => {
   assert.equal(card.xpDock(), '');
   assert.match(src, /@media\(max-width:850px\)/);
   assert.match(src, /@media\(max-width:390px\)/);
+});
+
+test('G6 driver, passenger, rear left/right and wheel have separate hotspots', () => {
+  const {card} = createCard();
+  const svg = card.xpCabinView();
+  assert.match(svg, /data-xp-seat="driver"/);
+  card._xpengByKey['select.passenger_seat_heat_select'] = 'select.passenger_heat';
+  card._xpengByKey['select.left_rear_seat_heat_select'] = 'select.rear_left_heat';
+  card._xpengByKey['select.right_rear_seat_heat_select'] = 'select.rear_right_heat';
+  for(const id of ['select.passenger_heat','select.rear_left_heat','select.rear_right_heat']){
+    card._hass.states[id]={state:'Off',attributes:{options:['Off','Heat 1','Heat 2','Heat 3']}};
+  }
+  const five=card.xpCabinView();
+  assert.match(five, /data-xp-seat="passenger"/);
+  assert.match(five, /data-xp-seat="rear_left"/);
+  assert.match(five, /data-xp-seat="rear_right"/);
+  assert.match(svg, /data-xp-seat="wheel"/);
+  assert.equal((five.match(/data-xp-seat=/g)||[]).length, 5);
+});
+test('safe vehicle controls require only approved HA entities', () => {
+  const {card} = createCard();
+  card._xpengByKey['lock.door_lock'] = 'lock.user_lock';
+  card._xpengByKey['button.close_windows'] = 'button.close_all';
+  card._hass.states['lock.user_lock'] = {state:'unlocked', attributes:{}};
+  card._hass.states['button.close_all'] = {state:'unknown', attributes:{}};
+  assert.match(card.xpVehiclePanel(), /data-xp-vehicle="lock.lock.door_lock"/);
+  assert.match(card.xpVehiclePanel(), /data-xp-vehicle="button.press.close_windows"/);
+  assert.doesNotMatch(card.xpVehiclePanel(), /data-xp-vehicle="lock.unlock/);
 });
