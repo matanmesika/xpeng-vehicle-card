@@ -476,7 +476,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 @media(pointer:coarse){.xp-ux-cabin-art .xp-ux-hotspot{min-width:44px;min-height:44px}}
 
 /* Adaptive card-width layout for HA Sections, desktop and mobile browsers. */
-@supports (container-type:inline-size){.xp-scene{container-name:xpeng-card;container-type:inline-size}}
+@supports (container-type:inline-size){.xp-scene.xp-has-controls{container-name:xpeng-card;container-type:inline-size}}
 @container xpeng-card (max-width:650px){
  .xp-ux-dock{bottom:127px;gap:5px;padding:5px 7px;max-width:94%}
  .xp-ux-dock-action{min-width:49px;min-height:50px;border-radius:18px;gap:2px}
@@ -1158,7 +1158,7 @@ class XpengVehicleCard extends HTMLElement{
   const isCharging=this.xpChargingActive();
   this._view=isCharging?'charging':'overview';
   if(isCharging)this._tireOpen=false;
-  this.shadowRoot.innerHTML=`<style>${XP_CSS}</style><ha-card><div class="xp-scene ${isCharging?'xp-charge':this._tireOpen?'xp-overview xp-tire-mode':'xp-overview'} ${isCharging&&this.xpUiEnabled()?'xp-has-controls':''}">
+  this.shadowRoot.innerHTML=`<style>${XP_CSS}</style><ha-card><div class="xp-scene ${isCharging?'xp-charge':this._tireOpen?'xp-overview xp-tire-mode':'xp-overview'} ${this.xpUiEnabled()?'xp-has-controls':''}">
    ${this.sceneBackdrop()}${this.header()}${isCharging?this.charging():this._tireOpen?this.title()+this.tireScreen():this.overview()}${!isCharging&&!this._tireOpen?this.xpDock():""}${this.xpModal()}
    
    </div></ha-card>`;
