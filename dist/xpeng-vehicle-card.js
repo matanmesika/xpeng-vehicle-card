@@ -460,6 +460,20 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 }
 @media(pointer:coarse){.xp-ux-seat-options button,.xp-ux-dock-action,.xp-ux-pill-row button{min-height:44px}}
 
+/* Matching G6 cabin image hotspot alignment, consistent across both palettes. */
+.xp-ux-cabin-art{aspect-ratio:8/5}
+.xp-ux-cabin-art .xp-ux-cabin-picture{max-height:none;width:100%;height:100%;object-fit:contain}
+.xp-ux-cabin-art .xp-ux-hotspot{z-index:2;transform:translate(-50%,-50%);width:38px;height:38px}
+.xp-ux-cabin-art .xp-ux-wheel{left:27.25%;top:18%}
+.xp-ux-cabin-art .xp-ux-driver{left:27%;top:53%}
+.xp-ux-cabin-art .xp-ux-passenger{left:72%;top:53%}
+.xp-ux-cabin-art .xp-ux-rear_left{left:27.5%;top:86%}
+.xp-ux-cabin-art .xp-ux-rear_right{left:72.5%;top:86%}
+.xp-ux-active-heat{background:#7b2534e9!important;border-color:#ff8b8b!important;box-shadow:0 0 14px #ff505085!important}
+.xp-ux-active-vent{background:#064c89ed!important;border-color:#79cfff!important;box-shadow:0 0 14px #18acff85!important}
+@media(max-width:600px){.xp-ux-cabin-art .xp-ux-hotspot{width:32px;height:32px;padding:5px}.xp-ux-cabin-art .xp-ux-cabin-disclaimer{font-size:9px}}
+@media(pointer:coarse){.xp-ux-cabin-art .xp-ux-hotspot{min-width:44px;min-height:44px}}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -472,7 +486,7 @@ class XpengVehicleCard extends HTMLElement{
   super();this.attachShadow({mode:'open'});this._config={};this._hass=null;this._view='overview';this._expanded=false;this._vehicleIndex=0;this._infoOpen=false;this._tireOpen=false;this._failedArtwork=new Set();
   this.shadowRoot.addEventListener('error',ev=>{
       const img=ev.target;
-      if(!img?.matches?.('img[data-car-art],img[data-top-art]'))return;
+      if(!img?.matches?.('img[data-car-art],img[data-top-art],img[data-cabin-art]'))return;
       const failed=img.getAttribute('src');
       if(!failed||this._failedArtwork.has(failed))return;
       this._failedArtwork.add(failed);
@@ -598,7 +612,45 @@ class XpengVehicleCard extends HTMLElement{
    '<button class="xp-ux-dock-action" type="button" data-xp-open="'+item[0]+'" aria-label="'+item[2]+'">'
     +xpIcon(item[1],21)+'<small>'+item[2]+'</small></button>').join('')+'</nav>';
  }
+ xpCabinHotspots(){
+  const controls=[
+    ['wheel','חימום הגה',[['select','steering_wheel_heat_select']]],
+    ['driver','מושב נהג',[['select','driver_seat_heat_select'],['select','driver_seat_ventilation_select']]],
+    ['passenger','מושב נוסע',[['select','passenger_seat_heat_select'],['select','passenger_seat_ventilation_select']]],
+    ['rear_left','מושב אחורי שמאל',[['select','left_rear_seat_heat_select'],['select','left_rear_seat_ventilation_select']]],
+    ['rear_right','מושב אחורי ימין',[['select','right_rear_seat_heat_select'],['select','right_rear_seat_ventilation_select']]]
+  ];
+  return controls.map(([key,title,options])=>{
+    const entities=options.map(([domain,suffix])=>this.xpLive(domain,suffix)).filter(Boolean);
+    if(!entities.length)return '';
+    const isOff=state=>/^(off|0)$/i.test(state);
+    const active=entities.some(item=>!isOff(item.state.state));
+    const vent=entities.some(item=>item.id.includes('ventilation')&&!isOff(item.state.state));
+    const heat=entities.some(item=>!item.id.includes('ventilation')&&!isOff(item.state.state));
+    const css='xp-ux-hotspot xp-ux-'+key+(heat?' xp-ux-active-heat':'')+(vent?' xp-ux-active-vent':'');
+    return '<button type="button" class="'+css+'" data-xp-seat="'+key+'" aria-label="'+title
+      +(active?' — פעיל':'')+'" title="'+title+'">'+xpIcon(key==='wheel'?'thermometer':'fan',17)+'</button>';
+  }).join('');
+ }
  xpCabinView(){
+   const a=this.appearance();
+   const finish=XP_INTERIORS.find(x=>x.id===a.interior)||XP_INTERIORS[0];
+   const profiles=Array.isArray(this._config.vehicles)&&this._config.vehicles.length;
+   const photos=profiles?this.vehicle()?.interior_images:this._config.interior_images;
+   const custom=photos&&typeof photos==='object'?photos[a.interior]:null;
+   const group=xpYearGroupFor(a.model,a.year)?.id;
+   const stock=a.model==='G6'&&group==='2026'
+     ?this.artworkUrl('interiors/g6/2026/'+a.interior+'.svg'):null;
+   const asset=xpLocalArtworkPath(custom)?custom:stock;
+   if(asset&&!this._failedArtwork.has(asset)){
+     const caption=xpLocalArtworkPath(custom)?'תמונה שהוגדרה על ידי המשתמש':'איור מקורי בהשראת תא הנוסעים של XPENG G6';
+     return '<div class="xp-ux-cabin xp-ux-cabin-art" dir="ltr"><img class="xp-ux-cabin-picture" data-cabin-art src="'+xpEsc(asset)
+       +'" alt="'+xpEsc(a.model+' '+a.year+', '+finish.label+' interior')+'" loading="eager">'
+       +this.xpCabinHotspots()+'<small class="xp-ux-cabin-disclaimer">'+caption+' · '+xpEsc(finish.label)+'</small></div>';
+   }
+   return this.xpCabinFallback();
+ }
+ xpCabinFallback(){
   const a=this.appearance();
   const finish=XP_INTERIORS.find(x=>x.id===a.interior)||XP_INTERIORS[0];
   const pictures=Array.isArray(this._config.vehicles)&&this._config.vehicles.length?this.vehicle()?.interior_images:this._config.interior_images;
@@ -657,8 +709,8 @@ class XpengVehicleCard extends HTMLElement{
   const slots=[
     ['driver','נהג','driver_seat_heat_select','driver_seat_ventilation_select'],
     ['passenger','נוסע','passenger_seat_heat_select','passenger_seat_ventilation_select'],
-    ['rear','אחורי שמאל','left_rear_seat_heat_select','left_rear_seat_ventilation_select'],
-    ['rear','אחורי ימין','right_rear_seat_heat_select','right_rear_seat_ventilation_select'],
+    ['rear_left','אחורי שמאל','left_rear_seat_heat_select','left_rear_seat_ventilation_select'],
+    ['rear_right','אחורי ימין','right_rear_seat_heat_select','right_rear_seat_ventilation_select'],
     ['wheel','חימום הגה','steering_wheel_heat_select',null]
   ];
   const focus=this._xpSeatFocus;
