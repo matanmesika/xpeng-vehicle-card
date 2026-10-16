@@ -87,6 +87,23 @@ function xpVehicleRegistryRows(rows,prefix,deviceSelector){
  return {byKey,entries:sameVehicle,message:null};
 }
 
+/* Local ID aliases only when HA Entity Registry is not readable. */
+const XP_CONTROL_FALLBACKS=Object.freeze({
+ 'climate.cabin_climate':'climate',
+ 'number.charge_limit_control':'charge_limit','number.fan_speed_control':'fan_speed',
+ 'button.start_charge':'start_charging','button.stop_charge':'stop_charging',
+ 'select.driver_seat_heat_select':'driver_seat_heating',
+ 'select.passenger_seat_heat_select':'passenger_seat_heating',
+ 'select.driver_seat_ventilation_select':'driver_seat_ventilation',
+ 'select.passenger_seat_ventilation_select':'passenger_seat_ventilation',
+ 'select.left_rear_seat_heat_select':'left_rear_seat_heating',
+ 'select.right_rear_seat_heat_select':'right_rear_seat_heating',
+ 'select.left_rear_seat_ventilation_select':'left_rear_seat_ventilation',
+ 'select.right_rear_seat_ventilation_select':'right_rear_seat_ventilation',
+ 'select.steering_wheel_heat_select':'steering_wheel_heating',
+ 'switch.defrost_switch':'front_defrost'
+});
+
 const XP_ICONS = {
  home:'<path d="M3 10.5 12 3l9 7.5V21h-6v-7H9v7H3Z"/>',
  lock:'<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
@@ -548,10 +565,12 @@ class XpengVehicleCard extends HTMLElement{
   }
  }
  xpengEntity(domain,suffix){
-  const registered=this._xpengByKey?.[domain+'.'+suffix];
-  if(registered&&this._hass?.states?.[registered])return registered;
-  const legacy=domain+'.'+this.prefix()+'_'+suffix;
-  return this._hass?.states?.[legacy]?legacy:null;
+  const key=domain+'.'+suffix;
+  const registered=this._xpengByKey?.[key];
+  if(registered)return this._hass?.states?.[registered]?registered:null;
+  const fallback=XP_CONTROL_FALLBACKS[key]||suffix;
+  const id=domain+'.'+this.prefix()+'_'+fallback;
+  return this._hass?.states?.[id]?id:null;
  }
 
 
