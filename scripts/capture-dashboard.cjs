@@ -8,6 +8,24 @@ const ROOT=path.resolve(__dirname,'..');
 const OUTPUT=path.join(ROOT,'docs','screenshots');
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 
+/* Only the standalone screenshot harness needs a HA icon preview.
+ * The shipped card uses HA's native <ha-icon>; here the OFFICIAL @mdi/js paths
+ * reproduce those very same MDI symbols without inventing any icon shapes.
+ */
+const MDI_MODULE=process.env.MDI_JS_MODULE||
+  path.join(path.dirname(process.env.PLAYWRIGHT_MODULE||require.resolve('playwright')),'@mdi/js');
+const officialMdi=require(MDI_MODULE);
+const cardSource=fs.readFileSync(path.join(ROOT,'src','xpeng-vehicle-card.js'),'utf8');
+const iconPaths={};
+for(const icon of new Set([...cardSource.matchAll(/mdi:[a-z0-9-]+/g)].map(match=>match[0]))){
+ const exportName='mdi'+icon.slice(4).split('-').map(part=>part[0].toUpperCase()+part.slice(1)).join('');
+ assert.equal(typeof officialMdi[exportName],'string','Missing official Material Design icon: '+icon+' ('+exportName+')');
+ iconPaths[icon]=officialMdi[exportName];
+}
+assert.ok(Object.keys(iconPaths).length>=25,'Expected all native dashboard icons');
+
+
+
 const state=(value,attrs={})=>({state:String(value),attributes:attrs});
 function demo(charging){
  return {states:{
@@ -84,6 +102,26 @@ async function main(){
  body{font-family:Arial,sans-serif}
  .card-wrap{width:1400px;margin:18px auto}</style></head>
  <body><div class="card-wrap"><xpeng-vehicle-card></xpeng-vehicle-card></div></body></html>`);
+
+ // HA itself registers ha-icon; the standalone browser does not. Only the
+ // screenshot harness registers an equivalent test renderer using official paths.
+ await page.evaluate(paths=>{
+   if(window.customElements.get('ha-icon'))return;
+   class PreviewHomeAssistantIcon extends HTMLElement{
+     connectedCallback(){
+       const glyph=paths[this.getAttribute('icon')];
+       if(!glyph){this.setAttribute('data-mdi-missing','true');return;}
+       const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+       svg.setAttribute('viewBox','0 0 24 24');
+       svg.setAttribute('width','100%');svg.setAttribute('height','100%');
+       svg.setAttribute('fill','currentColor');
+       const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+       p.setAttribute('d',glyph);svg.append(p);
+       this.attachShadow({mode:'open'}).append(svg);
+     }
+   }
+   window.customElements.define('ha-icon',PreviewHomeAssistantIcon);
+ },iconPaths);
  await page.addScriptTag({path:path.join(ROOT,'src','xpeng-vehicle-card.js')});
  const car=page.locator('xpeng-vehicle-card');
  await page.evaluate(()=>{
@@ -107,6 +145,15 @@ async function main(){
   },selector);
   assert.ok(info.width>=1300&&info.height>=700,JSON.stringify(info));
   assert.ok(info.imageWidth>200,JSON.stringify(info));
+
+  const officialIcons=await car.evaluate(el=>{
+    const icons=[...el.shadowRoot.querySelectorAll('ha-icon')];
+    return {count:icons.length,missing:icons.filter(icon=>!icon.shadowRoot?.querySelector('svg path[d]'))
+      .map(icon=>icon.getAttribute('icon'))};
+  });
+  assert.ok(officialIcons.count>0,'At least one native HA icon should appear on every scene');
+  assert.deepEqual(officialIcons.missing,[],'All screenshot glyphs must use official MDI paths');
+
   await page.waitForTimeout(600);
   await car.screenshot({path:path.join(OUTPUT,'g6-2026-'+name+'.png'),animations:'disabled'});
   console.log('Captured '+name,JSON.stringify(info));
