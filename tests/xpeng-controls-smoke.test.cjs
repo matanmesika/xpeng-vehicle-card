@@ -978,3 +978,28 @@ test('diagnostics list real one-car HA entities, show unavailable and never expo
  assert.match(renamed,/sensor\.user_named_battery/);
  assert.doesNotMatch(renamed,/sensor\.xpeng_abcdef_battery/);
 });
+
+test('maintenance details appear only after pressing the Maintenance button, never in Home summary',()=>{
+ const {card}=createCard({show_controls:true});
+ const home=card.overview();
+ assert.doesNotMatch(home,/תחזוקת הרכב|צמיגים · טיפולים|data-xp-open="maintenance"/);
+ assert.match(home,/xp-status-panel/);
+ assert.match(home,/Location/);
+ const dock=card.xpDock();
+ assert.equal((dock.match(/data-xp-open="maintenance"/g)||[]).length,1);
+ card._xpPanel='maintenance';
+ const page=card.xpModal();
+ assert.match(page,/xp-ux-modal-maintenance/);
+ assert.match(page,/תחזוקת הרכב/);
+ assert.match(page,/data-xp-close/);
+});
+test('status-only legacy cards still show one simple Maintenance button, without Home maintenance stats',()=>{
+ const {card}=createCard({show_controls:false});
+ const home=card.overview();
+ assert.equal((home.match(/data-xp-open="maintenance"/g)||[]).length,1);
+ assert.match(home,/xp-maintenance-home-button/);
+ assert.doesNotMatch(home,/צמיגים · טיפולים · נתוני רכב/);
+ assert.equal(card.xpDock(),'');
+ card._xpPanel='maintenance';
+ assert.match(card.xpModal(),/xp-ux-modal-maintenance/);
+});
