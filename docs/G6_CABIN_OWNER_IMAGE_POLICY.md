@@ -3,10 +3,10 @@
 Use only the two exact owner-provided cabin photos for all G6 generations, not a generated replacement or existing schematic SVG.
 
 Required binary image paths once uploaded:
-- `assets/interiors/g6/2026/light_gray_photo.webp`
-- `assets/interiors/g6/2026/dark_gray_photo.webp`
+- `assets/vehicles/g6/interior_light_gray.webp`
+- `assets/vehicles/g6/interior_dark_gray.webp`
 
-The `2026` segment is an existing asset namespace, not a model-year filter. Every G6 can use those two assets. Review seat/steering hotspots against the actual photos once received.
+Both photos reside directly in `assets/vehicles/g6` as the owner requested. Every G6 year and trim uses the same two images. Review seat/steering hotspots against the actual photos once received.
 
 The documented Xpengtk integration currently does **not** publish interior upholstery colour. Only a valid, selected-vehicle Xpengtk Entity Registry colour entry can override the explicit card-editor finish; never guess from exterior paint, trim, or another vehicle. Without one, the card editor setting controls the photo.
 

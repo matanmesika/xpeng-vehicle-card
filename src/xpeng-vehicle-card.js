@@ -1152,7 +1152,7 @@ class XpengVehicleCard extends HTMLElement{
    const group=xpYearGroupFor(a.model,a.year)?.id;
    // Both owner photos are shared by every G6 year/trim and never replaced by SVG.
    const known=a.model==='G6';
-   const photo=known?this.artworkUrl('interiors/g6/2026/'+a.interior+'_photo.webp'):null;
+   const photo=known?this.artworkUrl('vehicles/g6/interior_'+a.interior+'.webp'):null;
    const candidates=[
      ...(xpLocalArtworkPath(custom)?[{src:custom,portrait:!(this._config.interior_images_landscape===true),caption:'תמונת פנים לפי הגדרות הרכב'}]:[]),
      ...(photo?[{src:photo,portrait:true,caption:'תמונת פנים בעל הרכב · XPENG G6'}]:[])

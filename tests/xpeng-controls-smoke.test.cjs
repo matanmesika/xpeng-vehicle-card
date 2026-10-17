@@ -58,13 +58,13 @@ test('renamed entity IDs resolve from Xpengtk stable unique IDs', () => {
 });
 test('interior artwork respects selected colour; original background unchanged', () => {
   const {card} = createCard();
-  assert.match(card.xpCabinView(), /interiors\/g6\/2026\/light_gray_photo\.webp/);
-  const photo=card.artworkUrl('interiors/g6/2026/light_gray_photo.webp');
+  assert.match(card.xpCabinView(), /vehicles\/g6\/interior_light_gray\.webp/);
+  const photo=card.artworkUrl('vehicles/g6/interior_light_gray.webp');
   card._failedArtwork.add(photo);
-  assert.match(card.xpCabinView(), /interiors\/g6\/2026\/light_gray\.svg/);
+  assert.match(card.xpCabinView(), /vehicles\/g6\/light_gray\.svg/);
   assert.equal((card.xpCabinView().match(/data-xp-cycle=/g) || []).length, 2);
   card.setConfig({type: 'custom:xpeng-vehicle-card', prefix: 'xpeng_g6', model: 'G6', year: '2026', interior: 'black', show_controls: true});
-  assert.match(card.xpCabinView(), /interiors\/g6\/2026\/dark_gray_photo\.webp/);
+  assert.match(card.xpCabinView(), /vehicles\/g6\/interior_dark_gray\.webp/);
   const artRoot = path.join(__dirname, '..', 'assets', 'interiors', 'g6', '2026');
   const light = fs.readFileSync(path.join(artRoot, 'light_gray.svg'), 'utf8');
   const dark = fs.readFileSync(path.join(artRoot, 'dark_gray.svg'), 'utf8');
@@ -149,16 +149,16 @@ test('charge flap panel includes both separate commands and a cable-release disc
 });
 test('G6 photo mapping keeps other XPENG model artwork unchanged', () => {
   const {card}=createCard({model:'G9',year:'2026'});
-  assert.doesNotMatch(card.xpCabinView(), /interiors\/g6\/2026\/.+_photo/);
+  assert.doesNotMatch(card.xpCabinView(), /vehicles\/g6\/.+_photo/);
 });
 test('photo files must be committed before releasing this draft', {
-  skip: ['light_gray_photo.webp','dark_gray_photo.webp'].some(name=>
+  skip: ['interior_light_gray.webp','interior_dark_gray.webp'].some(name=>
     !fs.existsSync(path.join(__dirname,'..','assets','interiors','g6','2026',name)))
     ? 'BLOCKED: owner-reviewed cabin photo WebPs have not been uploaded; not ready to release'
     : false
 }, () => {
   const root=path.join(__dirname,'..','assets','interiors','g6','2026');
-  const required=['light_gray_photo.webp','dark_gray_photo.webp'];
+  const required=['interior_light_gray.webp','interior_dark_gray.webp'];
   for(const name of required){
     assert.ok(fs.existsSync(path.join(root,name)),name+' is not yet in GitHub');
   }
@@ -368,10 +368,10 @@ test('without supported sensors extra pages contain no operative control',()=>{
 test('climate image follows interior finish only in card settings',()=>{
   const {card}=createCard({interior:'light_gray'});
   card._xpPanel='climate';
-  assert.match(card.xpCabinView(),/light_gray_photo\.webp/);
+  assert.match(card.xpCabinView(),/interior_light_gray\.webp/);
   assert.doesNotMatch(card.xpModal(),/data-key="interior"/);
   card.setConfig({type:'custom:xpeng-vehicle-card',model:'G6',year:'2026',prefix:'xpeng_g6',interior:'dark_gray',show_controls:true});
-  assert.match(card.xpCabinView(),/dark_gray_photo\.webp/);
+  assert.match(card.xpCabinView(),/interior_dark_gray\.webp/);
   assert.doesNotMatch(card.xpModal(),/data-key="interior"/);
 });
 test('screenshot functions wired only when upstream Xpengtk offers native entity',()=>{
@@ -490,16 +490,16 @@ test('G6 charging uses front asset and defers active actions to a modal',()=>{
 test('all G6 generations use the same owner-photo slots',()=>{
  for(const year of ['2023','2024','2025','2026']){
    const {card}=createCard({model:'G6',year,interior:'light_gray'});
-   assert.match(card.xpCabinView(),/interiors\/g6\/2026\/light_gray_photo\.webp/);
+   assert.match(card.xpCabinView(),/vehicles\/g6\/interior_light_gray\.webp/);
    card.setConfig({type:'custom:xpeng-vehicle-card',model:'G6',year,interior:'dark_gray',show_controls:true});
-   assert.match(card.xpCabinView(),/interiors\/g6\/2026\/dark_gray_photo\.webp/);
+   assert.match(card.xpCabinView(),/vehicles\/g6\/interior_dark_gray\.webp/);
  }
  const {card}=createCard({model:'G9',year:'2026'});
- assert.doesNotMatch(card.xpCabinView(),/interiors\/g6\/2026\//);
+ assert.doesNotMatch(card.xpCabinView(),/vehicles\/g6\//);
 });
 test('missing G6 photo must never show old synthetic SVG',()=>{
  const {card}=createCard({model:'G6',year:'2026',interior:'light_gray'});
- card._failedArtwork.add(card.artworkUrl('interiors/g6/2026/light_gray_photo.webp'));
+ card._failedArtwork.add(card.artworkUrl('vehicles/g6/interior_light_gray.webp'));
  const html=card.xpCabinView();
  assert.match(html,/xp-ux-cabin-missing/);
  assert.doesNotMatch(html,/\.svg|<svg|xp-ux-cabin-fallback/);
@@ -512,7 +512,7 @@ test('only verified same-vehicle integration colour overrides G6 editor choice',
  card._xpengByKey['sensor.interior_color']='sensor.vehicle_colour';
  card._hass.states['sensor.vehicle_colour']={state:'black',attributes:{}};
  assert.equal(card.xpCabinFinish(),'dark_gray');
- assert.match(card.xpCabinView(),/dark_gray_photo\.webp/);
+ assert.match(card.xpCabinView(),/interior_dark_gray\.webp/);
  card._hass.states['sensor.vehicle_colour'].state='unavailable';
  assert.equal(card.xpCabinFinish(),'light_gray');
 });
