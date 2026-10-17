@@ -189,9 +189,12 @@ async function main(){
    await car.locator('button[data-xp-close]').click();
  }
  await page.evaluate(()=>{
-   const card=document.querySelector('xpeng-vehicle-card');card._xpPanel='climate';card.render();
+   const card=document.querySelector('xpeng-vehicle-card');
+   card.setConfig({type:'custom:xpeng-vehicle-card',prefix:'my_xpeng',model:'G6',year:'2026',
+     trim:'core_performance_awd',color:'arctic_white',interior:'dark_gray',enable_access_controls:true});
+   card._xpPanel='climate';card.render();
  });
- await page.waitForFunction(()=>{const img=document.querySelector('xpeng-vehicle-card').shadowRoot.querySelector('img[data-cabin-art]');return img&&img.complete&&img.naturalWidth===752&&img.src.includes('interior_dark_gray.webp');});
+ await page.waitForFunction(()=>{const img=document.querySelector('xpeng-vehicle-card').shadowRoot.querySelector('img[data-cabin-art]');return img&&img.complete&&img.naturalWidth===752&&img.src.includes('interior_dark_gray.webp');},{timeout:12000});
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-climate-dark-mobile.png'),animations:'disabled'});
  await car.locator('button[data-xp-close]').click();
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(true));
