@@ -12,11 +12,13 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 const mdi=require(path.join(path.dirname(process.env.PLAYWRIGHT_MODULE||require.resolve('playwright')),'@mdi','js'));
 const sourceText=fs.readFileSync(path.join(ROOT,'src','xpeng-vehicle-card.js'),'utf8');
 const mdiNames=[...new Set([...sourceText.matchAll(/'mdi:([a-z0-9-]+)'/g)].map(match=>match[1]))];
+const missingMdi=[];
 const mdiPaths=Object.fromEntries(mdiNames.map(name=>{
  const exportName='mdi'+name.split('-').map(piece=>piece[0].toUpperCase()+piece.slice(1)).join('');
- assert.ok(mdi[exportName],'Missing standard Material Design Icon path: '+name);
- return ['mdi:'+name,mdi[exportName]];
+ if(!mdi[exportName])missingMdi.push(name);
+ return ['mdi:'+name,mdi[exportName]||mdi.mdiHelpCircleOutline];
 }));
+assert.deepEqual(missingMdi,[],'Unknown Material Design Icons in frontend source: '+missingMdi.join(', '));
 
 const state=(value,attrs={})=>({state:String(value),attributes:attrs});
 function demo(charging){
