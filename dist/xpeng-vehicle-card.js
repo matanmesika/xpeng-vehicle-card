@@ -120,7 +120,15 @@ const XP_CONTROL_FALLBACKS=Object.freeze({
  'select.right_rear_seat_ventilation_select':'right_rear_seat_ventilation',
  'select.steering_wheel_heat_select':'steering_wheel_heating',
  'sensor.slow_charge_port':'charge_port',
- 'switch.defrost_switch':'front_defrost'
+ 'switch.defrost_switch':'front_defrost',
+ 'switch.sentinel_switch':'x_guard',
+ 'number.sentinel_sensitivity_control':'sentinel_sensitivity',
+ 'switch.trunk_power_switch':'trunk_power',
+ 'number.trunk_power_timer_control':'trunk_power_timer',
+ 'switch.auto_upgrade_switch':'ota_auto_upgrade',
+ 'sensor.maintenance':'next_maintenance',
+ 'sensor.ota_upgrade':'ota_update',
+ 'calendar.hvac_schedule_calendar':'hvac_schedule'
 });
 
 const XP_ICONS = {
@@ -605,6 +613,42 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-ux-hotspot-zone{gap:2px}
 }
 
+/* Opt-in extra controls: reuse the approved XPENG background and in-card overlay. */
+.xp-more-trigger{width:42px;height:42px;display:grid;place-items:center;cursor:pointer;
+ border:1px solid #7aa0bc81;border-radius:14px;color:#e9f9ff;background:#122a43b8}
+.xp-more-trigger:focus-visible,.xp-extra-tile:focus-visible{outline:2px solid #a0ecff;outline-offset:2px}
+.xp-extra-body{width:min(760px,100%);margin:16px auto 0}
+.xp-extra-subtitle{font-size:13px;color:#aac7df;margin:0 0 20px}
+.xp-extra-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.xp-extra-tile{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;
+ text-align:center;min-height:150px;padding:14px 8px;border:1px solid #4c87ab9c;border-radius:19px;
+ background:linear-gradient(155deg,#142b44e3,#071a2eea);color:#f0f8ff;cursor:pointer}
+.xp-extra-tile:hover{background:#163959}
+.xp-extra-tile svg{color:#77d7fb}
+.xp-extra-tile b{font-size:16px}
+.xp-extra-tile small{font-size:11px;color:#a8c6de;line-height:1.4}
+.xp-extra-heading{display:flex;align-items:center;gap:14px;font-size:19px;margin-bottom:15px}
+.xp-extra-heading button{border:1px solid #5d88a7;background:#1a3753;color:#fff;border-radius:11px;
+ padding:10px;display:grid;place-items:center}
+.xp-extra-details{display:grid;gap:9px}
+.xp-extra-line{display:flex;justify-content:space-between;align-items:center;gap:15px;
+ border:1px solid #6387aa60;background:#10283bdf;padding:13px 15px;border-radius:14px;min-height:29px}
+.xp-extra-line span{color:#acc8dd;font-size:13px}
+.xp-extra-line b{font-size:15px;overflow-wrap:anywhere;min-width:0;text-align:end}
+.xp-extra-line small{font-size:11px;color:#a6bfd5}
+.xp-extra-action{border:1px solid #23b5d6;background:#134e67d9;color:#f2fcff;
+ padding:13px;border-radius:14px;min-height:48px;cursor:pointer}
+.xp-extra-action:disabled{opacity:.35;cursor:not-allowed}
+.xp-extra-range{display:flex;flex-direction:column;gap:11px;padding:13px 15px;
+ border:1px solid #6387aa60;background:#10283bdf;border-radius:14px}
+.xp-extra-range span{display:flex;align-items:center;justify-content:space-between;gap:12px;color:#c8dfec}
+.xp-extra-range input{width:100%;accent-color:#29d9bd}
+@media(max-width:600px){.xp-more-trigger{width:40px;height:40px}.xp-extra-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .xp-extra-tile{min-height:120px;padding:11px 6px;gap:8px}.xp-extra-tile b{font-size:14px}
+ .xp-extra-body{margin:10px auto 0}}
+@container xpeng-card (max-width:430px){.xp-extra-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .xp-extra-tile{min-height:116px}.xp-extra-line{padding:11px;gap:8px}}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -696,6 +740,44 @@ class XpengVehicleCard extends HTMLElement{
        }
        return;
      }
+
+     if(b.hasAttribute('data-xp-more')){
+       this._xpPanel='extras';this._xpExtraSection=null;this._xpNotice='';this.render();return;
+     }
+     if(b.hasAttribute('data-xp-extra-page')){
+       const page=b.dataset.xpExtraPage;
+       if(['security','energy','schedule','power','maintenance','updates'].includes(page)){
+         this._xpPanel='extras';this._xpExtraSection=page;this._xpNotice='';this.render();
+       }
+       return;
+     }
+     if(b.hasAttribute('data-xp-extra-back')){
+       this._xpExtraSection=null;this._xpNotice='';this.render();return;
+     }
+     if(b.hasAttribute('data-xp-extra-detail')){
+       const lookup={
+         schedules:['sensor','hvac_schedules'], calendar:['calendar','hvac_schedule_calendar'],
+         maintenance:['sensor','maintenance'], ota:['sensor','ota_upgrade']
+       };
+       const key=lookup[b.dataset.xpExtraDetail];
+       if(key)this.xpDetails(key[1],key[0]);
+       return;
+     }
+     if(b.hasAttribute('data-xp-extra-action')){
+       const cmds={
+         'guard_on':['switch','turn_on','sentinel_switch'],
+         'guard_off':['switch','turn_off','sentinel_switch'],
+         'v2l_on':['switch','turn_on','trunk_power_switch'],
+         'v2l_off':['switch','turn_off','trunk_power_switch'],
+         'ota_on':['switch','turn_on','auto_upgrade_switch'],
+         'ota_off':['switch','turn_off','auto_upgrade_switch']
+       };
+       const action=b.dataset.xpExtraAction;
+       if(action==='guard_off'&&!this.xpAccessAllowed())return;
+       const command=cmds[action];
+       if(command&&this.xpLive(command[0],command[2]))this.xpSend(...command);
+       return;
+     }
      if(b.hasAttribute('data-meta-toggle')){this._infoOpen=!this._infoOpen;this.render();return;}
      if(b.hasAttribute('data-tire-toggle')){this._tireOpen=!this._tireOpen;this._infoOpen=false;this.render();return;}
     if(b.hasAttribute('data-cycle')){this._vehicleIndex=(this._vehicleIndex+1)%this.vehicles().length;this._tireOpen=false;this._xpPanel=null;this._xpengRegistryLoaded=false;this._xpengByKey=null;this.ensureXpengRegistry();this.render();}
@@ -710,7 +792,7 @@ class XpengVehicleCard extends HTMLElement{
      const slider=ev.target.closest('input[data-xp-range]');
      if(!slider)return;
      const key=slider.dataset.xpRange;
-     if(key!=='charge_limit_control'&&key!=='fan_speed_control')return;
+     if(!['charge_limit_control','fan_speed_control','sentinel_sensitivity_control','trunk_power_timer_control'].includes(key))return;
      const entity=this.xpLive('number',key);
      if(!entity)return;
      const attrs=entity.state.attributes||{};
@@ -1049,8 +1131,8 @@ class XpengVehicleCard extends HTMLElement{
  xpModal(){
    if(!this.xpUiEnabled()||!this._xpPanel)return '';
    const page=this._xpPanel;
-   if(!['climate','port','doors','windows','map'].includes(page))return '';
-   const labels={climate:'מיזוג אוויר',port:'שקע טעינה',doors:'דלתות',windows:'חלונות',map:'מיקום הרכב'};
+   if(!['climate','port','doors','windows','map','extras'].includes(page))return '';
+   const labels={climate:'מיזוג אוויר',port:'שקע טעינה',doors:'דלתות',windows:'חלונות',map:'מיקום הרכב',extras:'אפשרויות נוספות'};
    let body='';
    if(page==='climate'){
      body=this.xpCabinView();
@@ -1060,12 +1142,137 @@ class XpengVehicleCard extends HTMLElement{
    else if(page==='doors')body=this.xpDoorsPanel();
    else if(page==='windows')body=this.xpWindowsPanel();
    else if(page==='map')body=this.xpMapPanel();
+   else if(page==='extras')body=this.xpExtrasPanel();
    return '<section class="xp-ux-modal xp-ux-modal-'+page+'" role="dialog" aria-modal="true" aria-label="'+labels[page]+'" dir="rtl">'
     +'<header class="xp-ux-modal-head"><button type="button" data-xp-close aria-label="חזרה לרכב">'+xpIcon('back',24)+'</button>'
     +'<h2>'+labels[page]+'</h2><span>'+xpEsc(this.appearance().model)+'</span></header>'
     +body+(this._xpNotice?'<p class="xp-ux-notice" role="status">'+xpEsc(this._xpNotice)+'</p>':'')
     +'</section>';
  }
+
+ xpExtraLive(domain,suffix){return this.xpLive(domain,suffix);}
+ xpExtraValue(domain,suffix){
+   const e=this.xpExtraLive(domain,suffix);
+   return e?xpEsc(e.state.state):'—';
+ }
+ xpExtraLine(label,domain,suffix,unit=''){
+   const e=this.xpExtraLive(domain,suffix);
+   if(!e)return '';
+   const u=unit||e.state.attributes?.unit_of_measurement||'';
+   return '<div class="xp-extra-line"><span>'+xpEsc(label)+'</span><b>'
+     +xpEsc(e.state.state)+(u?' <small>'+xpEsc(u)+'</small>':'')+'</b></div>';
+ }
+ xpExtraNumber(label,suffix){
+   const e=this.xpExtraLive('number',suffix);
+   if(!e)return '';
+   const attrs=e.state.attributes||{},now=Number(e.state.state);
+   const min=Number(attrs.min),max=Number(attrs.max),step=Number(attrs.step);
+   if(!Number.isFinite(now)||!Number.isFinite(min)||!Number.isFinite(max)||!Number.isFinite(step)||step<=0)return '';
+   return '<label class="xp-extra-range"><span>'+xpEsc(label)+' <b>'+xpEsc(now)
+     +'</b></span><input type="range" data-xp-range="'+xpEsc(suffix)
+     +'" min="'+min+'" max="'+max+'" step="'+step+'" value="'+now
+     +'" aria-label="'+xpEsc(label)+'"></label>';
+ }
+ xpExtraAction(label,action,domain,suffix,restricted=false){
+   const e=this.xpExtraLive(domain,suffix);
+   if(!e)return '';
+   const disabled=restricted&&!this.xpAccessAllowed();
+   return '<button type="button" class="xp-extra-action" data-xp-extra-action="'+xpEsc(action)+'" '
+     +(disabled?'disabled title="פעולה זו דורשת הרשאת Access באינטגרציה ובהגדרות הכרטיס"':'')
+     +'>'+xpEsc(label)+'</button>';
+ }
+ xpExtraSectionContent(section){
+   if(section==='security'){
+     const guard=this.xpExtraLive('switch','sentinel_switch');
+     let out=this.xpExtraLine('X-Guard','switch','sentinel_switch');
+     if(guard?.state.state==='off')out+=this.xpExtraAction('הפעל X-Guard','guard_on','switch','sentinel_switch');
+     else if(guard?.state.state==='on')out+=this.xpExtraAction('כבה X-Guard','guard_off','switch','sentinel_switch',true);
+     out+=this.xpExtraNumber('רגישות השמירה','sentinel_sensitivity_control');
+     return out||'<p>לא נמצאו ישויות אבטחה זמינות לרכב זה.</p>';
+   }
+   if(section==='energy'){
+     const lines=[
+       ['צריכה ממוצעת ב־7 ימים','energy_consumption_7_day_avg'],
+       ['צריכת אנרגיה בחניה','parked_consumption'],
+       ['אנרגיה בטעינה האחרונה','last_charge_energy'],
+       ['משך הטעינה האחרונה','last_charge_duration'],
+       ['טווח שנוסף בטעינה','last_charge_range_added'],
+       ['נסועה כוללת','odometer']
+     ].map(([title,key])=>this.xpExtraLine(title,'sensor',key)).join('');
+     return lines||'<p>אין כרגע נתוני אנרגיה זמינים.</p>';
+   }
+   if(section==='schedule'){
+     const schedule=this.xpExtraLive('sensor','hvac_schedules');
+     const calendar=this.xpExtraLive('calendar','hvac_schedule_calendar');
+     let out=schedule?this.xpExtraLine('תזמונים מוגדרים','sensor','hvac_schedules'):'';
+     const items=schedule?.state.attributes?.schedules;
+     if(Array.isArray(items)){
+       out+=items.slice(0,8).map(x=>{
+         if(!x||typeof x!=='object')return '';
+         const time=x.start_time||'—',days=Array.isArray(x.days)?x.days.join(', '):'';
+         return '<div class="xp-extra-line"><span>'+xpEsc(days||'תזמון מיזוג')+'</span>'
+           +'<b>'+xpEsc(time)+'</b></div>';
+       }).join('');
+     }
+     if(calendar)out+='<button type="button" class="xp-extra-action" data-xp-extra-detail="calendar">הצג לוח תזמוני מיזוג</button>';
+     return out||'<p>אין לוח תזמוני מיזוג זמין באינטגרציה. לא ניצור תזמון מדומה.</p>';
+   }
+   if(section==='power'){
+     const power=this.xpExtraLive('switch','trunk_power_switch');
+     let out=this.xpExtraLine('שקע חשמל בתא המטען','switch','trunk_power_switch');
+     if(power?.state.state==='off')out+=this.xpExtraAction('הפעל שקע V2L','v2l_on','switch','trunk_power_switch');
+     else if(power?.state.state==='on')out+=this.xpExtraAction('כבה שקע V2L','v2l_off','switch','trunk_power_switch');
+     out+=this.xpExtraNumber('טיימר לכיבוי אוטומטי (דקות)','trunk_power_timer_control');
+     return out||'<p>בקרות V2L אינן זמינות בדגם או בהרשאות האינטגרציה.</p>';
+   }
+   if(section==='maintenance'){
+     const maintenance=this.xpExtraLive('sensor','maintenance');
+     let out=this.xpExtraLine('הטיפול הבא','sensor','maintenance');
+     if(maintenance){
+       const attrs=maintenance.state.attributes||{};
+       for(const [field,label] of [['next_date','תאריך טיפול'],['days_remaining','ימים נותרו'],
+         ['km_remaining','קילומטרים נותרו']]){
+         const v=attrs[field];
+         if(v!==null&&v!==undefined&&v!=='')out+='<div class="xp-extra-line"><span>'+label+'</span><b>'+xpEsc(v)+'</b></div>';
+       }
+       out+='<button type="button" class="xp-extra-action" data-xp-extra-detail="maintenance">פרטי תחזוקה ב־Home Assistant</button>';
+     }
+     return out||'<p>עדיין אין נתוני תחזוקה זמינים.</p>';
+   }
+   if(section==='updates'){
+     let out=this.xpExtraLine('גרסת XOS','sensor','xos_version');
+     out+=this.xpExtraLine('עדכוני תוכנה','sensor','ota_upgrade');
+     const auto=this.xpExtraLive('switch','auto_upgrade_switch');
+     if(auto?.state.state==='on')out+=this.xpExtraAction('כבה עדכונים אוטומטיים','ota_off','switch','auto_upgrade_switch');
+     else if(auto?.state.state==='off')out+=this.xpExtraAction('הפעל עדכונים אוטומטיים','ota_on','switch','auto_upgrade_switch');
+     if(this.xpExtraLive('sensor','ota_upgrade'))out+='<button type="button" class="xp-extra-action" data-xp-extra-detail="ota">פרטי עדכון</button>';
+     return out||'<p>אין נתוני גרסה או עדכונים זמינים.</p>';
+   }
+   return '';
+ }
+ xpExtrasPanel(){
+   const sections=[
+     ['security','shield','X-Guard','אבטחה ורגישות השמירה'],
+     ['schedule','clock','תזמון מיזוג','תזמונים קיימים'],
+     ['energy','gauge','נתוני אנרגיה','צריכה והיסטוריית טעינה'],
+     ['power','plug','V2L','חשמל בתא המטען'],
+     ['maintenance','settings','תחזוקה','הטיפול הבא'],
+     ['updates','refresh','עדכוני תוכנה','XOS ו־OTA']
+   ];
+   const section=sections.find(x=>x[0]===this._xpExtraSection);
+   if(section){
+     return '<div class="xp-extra-body"><div class="xp-extra-heading"><button type="button" data-xp-extra-back aria-label="חזרה לאפשרויות הנוספות">'
+       +xpIcon('back',20)+'</button><strong>'+xpEsc(section[2])+'</strong></div>'
+       +'<div class="xp-extra-details">'+this.xpExtraSectionContent(section[0])+'</div>'
+       +'<p class="xp-ux-note">המידע מגיע מ־Xpengtk. הפקודות פועלות לפי הרשאות Home Assistant והרכב בלבד.</p></div>';
+   }
+   return '<div class="xp-extra-body"><p class="xp-extra-subtitle">אפשרויות נוספות לרכב — לא שינינו את ארבעת כפתורי הבית.</p>'
+     +'<div class="xp-extra-grid">'+sections.map(([id,icon,title,detail])=>
+       '<button type="button" class="xp-extra-tile" data-xp-extra-page="'+id+'">'
+       +xpIcon(icon,30)+'<b>'+title+'</b><small>'+detail+'</small></button>').join('')
+     +'</div></div>';
+ }
+
  xpVehiclePanel(){
    // Display status only if Xpengtk provides the associated entity.
    const statuses=[
@@ -1129,7 +1336,7 @@ class XpengVehicleCard extends HTMLElement{
   else if(service==='set_temperature')data.temperature=value;
   else if(service==='select_option')data.option=value;
   const sensitive=(domain==='lock'||suffix==='stop_charge'||suffix==='open_charge_port'||suffix==='close_charge_port'||suffix==='close_trunk'||suffix==='close_windows'||suffix==='open_windows'||suffix==='honk_horn'||suffix==='flash_lights'||suffix==='sentinel_switch');
-  if(sensitive&&typeof window.confirm==='function'
+  if((sensitive||['trunk_power_switch','auto_upgrade_switch','sentinel_sensitivity_control','trunk_power_timer_control'].includes(suffix))&&typeof window.confirm==='function'
      &&!window.confirm('לשלוח את הפקודה לרכב?'))return;
   try{
     await this._hass.callService(domain,service,data);
@@ -1301,6 +1508,7 @@ class XpengVehicleCard extends HTMLElement{
    const stateClass=status==='Connected'?'xp-connected':status==='Connection error'?'xp-error':'xp-disconnected';
    return `<header class="xp-header"><div class="xp-brand"><span class="xp-x-mark">✕</span><span>XPENG</span></div>
      <div class="xp-header-right"><div class="xp-meta-tools">
+        ${this.xpUiEnabled()?'<button type="button" class="xp-more-trigger" data-xp-more aria-label="אפשרויות נוספות" title="אפשרויות נוספות">'+xpIcon('settings',21)+'</button>':''}
        <button class="xp-wifi ${stateClass}" type="button" data-meta-toggle
          aria-label="Vehicle communication details" aria-expanded="${this._infoOpen?'true':'false'}"
          aria-controls="xp-last-update-details" title="Vehicle communication details">
