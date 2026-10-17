@@ -866,6 +866,26 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{min-height:49px}
  .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action small{font-size:9px}
 }
+
+/* Desktop climate = cabin + controls side by side; mobile = one scrolling page.
+   The two owner photos remain unchanged and preserve their proportions. */
+.xp-ux-modal-climate .xp-climate-layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(300px,.9fr);gap:clamp(14px,2.5vw,42px);align-items:start;max-width:1180px;margin:12px auto 0;direction:ltr}
+.xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{width:min(354px,100%);margin:0 auto;height:auto;max-height:none}
+.xp-ux-modal-climate .xp-climate-layout>.xp-ux-climate-bottom{margin:0;direction:rtl;min-width:0;display:flex;flex-direction:column;gap:10px}
+.xp-ux-modal-climate .xp-climate-layout .xp-ux-climate-card,
+.xp-ux-modal-climate .xp-climate-layout .xp-ux-range-row{margin:0}
+.xp-ux-modal-climate .xp-climate-layout .xp-ux-climate-features{grid-template-columns:repeat(2,minmax(0,1fr));margin:0}
+.xp-ux-modal-climate .xp-climate-layout .xp-ux-climate-feature{min-height:89px}
+@container xpeng-layout (max-width:850px){
+ .xp-ux-modal-climate .xp-climate-layout{display:flex;flex-direction:column;align-items:center;gap:8px;margin:6px auto 0}
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{width:min(258px,100%);margin:0 auto}
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-climate-bottom{width:100%;max-width:530px;gap:8px}
+ .xp-ux-modal-climate .xp-climate-layout .xp-ux-climate-features{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .xp-ux-modal-climate .xp-climate-layout .xp-ux-climate-feature{min-height:82px}
+}
+@container xpeng-layout (max-width:390px){
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{width:min(230px,100%)}
+}
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -1452,9 +1472,9 @@ class XpengVehicleCard extends HTMLElement{
    const labels={climate:'מיזוג אוויר',port:'שקע טעינה',doors:'דלתות',windows:'חלונות',charge_controls:'פעולות טעינה',charge_schedule:'תזמוני טעינה',maintenance:'תחזוקת הרכב',map:'מיקום הרכב',extras:'אפשרויות נוספות'};
    let body='';
    if(page==='climate'){
-     body=this.xpCabinView();
-     body+='<section class="xp-ux-climate-bottom" aria-label="בקרת אקלים">'
-       +this.xpTempControl()+this.xpFanControl()+this.xpClimateFeatures()+'</section>';
+     body='<div class="xp-climate-layout">'+this.xpCabinView()+
+       '<section class="xp-ux-climate-bottom" aria-label="בקרת אקלים">'+
+       this.xpTempControl()+this.xpFanControl()+this.xpClimateFeatures()+'</section></div>';
    }else if(page==='charge_controls')body='<div class="xp-ux-charging-panel">'+(this.xpChargeControls()||'<p>אין פקודות טעינה זמינות לרכב כרגע.</p>')+this.xpPortPanel()+'</div>';
    else if(page==='charge_schedule')body=this.xpChargeSchedulesPanel();
    else if(page==='maintenance')body=this.xpMaintenancePanel();
