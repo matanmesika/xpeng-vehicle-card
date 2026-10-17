@@ -61,16 +61,10 @@ test('interior artwork respects selected colour; original background unchanged',
   assert.match(card.xpCabinView(), /vehicles\/g6\/interior_light_gray\.webp/);
   const photo=card.artworkUrl('vehicles/g6/interior_light_gray.webp');
   card._failedArtwork.add(photo);
-  assert.match(card.xpCabinView(), /vehicles\/g6\/light_gray\.svg/);
-  assert.equal((card.xpCabinView().match(/data-xp-cycle=/g) || []).length, 2);
+  assert.match(card.xpCabinView(), /xp-ux-cabin-missing/);
+  assert.doesNotMatch(card.xpCabinView(), /\.svg|<svg|data-xp-cycle=/);
   card.setConfig({type: 'custom:xpeng-vehicle-card', prefix: 'xpeng_g6', model: 'G6', year: '2026', interior: 'black', show_controls: true});
   assert.match(card.xpCabinView(), /vehicles\/g6\/interior_dark_gray\.webp/);
-  const artRoot = path.join(__dirname, '..', 'assets', 'interiors', 'g6', '2026');
-  const light = fs.readFileSync(path.join(artRoot, 'light_gray.svg'), 'utf8');
-  const dark = fs.readFileSync(path.join(artRoot, 'dark_gray.svg'), 'utf8');
-  assert.match(light, /viewBox="0 0 800 500"/);
-  assert.match(dark, /viewBox="0 0 800 500"/);
-  assert.notEqual(light, dark);
   assert.match(src, /xp-night-photo/);
 });
 test('never hide unpressed HA button entities whose states are unknown', () => {
@@ -153,11 +147,11 @@ test('G6 photo mapping keeps other XPENG model artwork unchanged', () => {
 });
 test('photo files must be committed before releasing this draft', {
   skip: ['interior_light_gray.webp','interior_dark_gray.webp'].some(name=>
-    !fs.existsSync(path.join(__dirname,'..','assets','interiors','g6','2026',name)))
+    !fs.existsSync(path.join(__dirname,'..','assets','vehicles','g6',name)))
     ? 'BLOCKED: owner-reviewed cabin photo WebPs have not been uploaded; not ready to release'
     : false
 }, () => {
-  const root=path.join(__dirname,'..','assets','interiors','g6','2026');
+  const root=path.join(__dirname,'..','assets','vehicles','g6');
   const required=['interior_light_gray.webp','interior_dark_gray.webp'];
   for(const name of required){
     assert.ok(fs.existsSync(path.join(root,name)),name+' is not yet in GitHub');
