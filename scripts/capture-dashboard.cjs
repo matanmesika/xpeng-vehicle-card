@@ -372,7 +372,9 @@ async function main(){
  // Charge mode cannot be opened manually; it always follows real charging telemetry.
  assert.equal(await car.locator('button[data-xp-open="charging"]').count(),0);
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(true));
- assert.equal(await car.locator('.xp-charge-cable-live').count(),1,'Real charge turns cable green');
+ const greenDebug=await car.evaluate(e=>({active:e.xpChargingActive(),view:e._view,dismissed:e._xpChargingDismissed,last:e._xpLastActualCharging,charging:e.val('charging'),plugged:e.val('plugged'),svg:!!e.shadowRoot.querySelector('svg.xp-charge-cable-live')}));
+ console.log('Live cable after charge transition:',JSON.stringify(greenDebug));
+ assert.equal(await car.locator('.xp-charge-cable-live').count(),1,'Real charge turns cable green: '+JSON.stringify(greenDebug));
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
  assert.equal(await car.locator('.xp-charge-cable-live').count(),0,'Idle state removes green cable');
  assert.equal(errors.length,0,errors.join('\n'));
