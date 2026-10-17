@@ -314,9 +314,9 @@ test('P7i keeps exact-year colour selection for the 2024-only paints',()=>{
  assert.equal(editor._cfg.color,'arctic_white');
 });
 
-test('the README dashboard gallery ships three real browser PNG captures',()=>{
+test('the README dashboard gallery ships overview, original charging and maintenance captures',()=>{
  const gallery=fs.readFileSync(path.join(ROOT,'README.md'),'utf8');
- const files=['vehicle-status','charging','tire-pressure'].map(view=>'g6-2026-'+view+'.png');
+ const files=['vehicle-status','charging','maintenance-desktop'].map(view=>'g6-2026-'+view+'.png');
  const sizes=[];
  for(const f of files){
   const relative='docs/screenshots/'+f;

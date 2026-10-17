@@ -17,7 +17,7 @@ UI overlays and live-state layout. They are distinct from transparent vehicle re
 
 | Vehicle status | Charging | Tire-pressure view |
 | --- | --- | --- |
-| ![G6 2026 vehicle status dashboard](docs/screenshots/g6-2026-vehicle-status.png) | ![G6 2026 charging dashboard](docs/screenshots/g6-2026-charging.png) | ![G6 2026 tire-pressure dashboard](docs/screenshots/g6-2026-tire-pressure.png) |
+| ![G6 2026 vehicle status dashboard](docs/screenshots/g6-2026-vehicle-status.png) | ![G6 2026 charging dashboard](docs/screenshots/g6-2026-charging.png) | ![G6 2026 vehicle maintenance including TPMS dashboard](docs/screenshots/g6-2026-maintenance-desktop.png) |
 
 The gallery images are built from the current source, with a browser script at
 `scripts/capture-dashboard.cjs`. Demo readings are never represented as real vehicle values.
