@@ -903,6 +903,31 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-ux-dock-seven .xp-ux-dock-action{flex-basis:78px;min-width:61px;max-width:84px}
 .xp-ux-map-actions button{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px}
 .xp-ux-modal-trunk .xp-ux-access-buttons button{min-height:48px}
+
+/* Real phone scrolling: the home dock slides horizontally, and every subpage
+   (including climate/maintenance) permits vertical touch scrolling on iOS. */
+.xp-ux-modal{overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;touch-action:pan-y;overscroll-behavior-y:contain;min-height:0}
+.xp-ux-modal-head{position:sticky;top:-1px;z-index:3;padding:7px 0 12px;background:linear-gradient(180deg,#07182afc,#07182af5 88%,transparent)}
+.xp-ux-modal .xp-maintenance-page{min-height:0;overflow:visible}
+.xp-maintenance-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.xp-tire-units{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:#cadfed}
+.xp-tire-units select{background:#17344a;color:#fff;border:1px solid #5786a2;padding:7px 9px;border-radius:9px;min-height:42px}
+@container xpeng-layout (max-width:650px){
+ .xp-ux-dock{left:3%;right:3%;transform:none;max-width:none;width:94%;overflow-x:auto;justify-content:flex-start;touch-action:pan-x;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;scrollbar-width:thin;scrollbar-color:#5a9ac0 #0a2034;padding:6px 9px}
+ .xp-ux-dock-action{flex:0 0 72px;min-width:72px;scroll-snap-align:start}
+ .xp-ux-modal{inset:1.5% 2%;max-height:97%;padding:12px;touch-action:pan-y}
+ .xp-ux-modal .xp-maint-info{grid-template-columns:1fr}
+ .xp-ux-modal-maintenance .xp-tire-screen{position:relative;inset:auto;height:auto;min-height:0;margin:0 0 12px}
+ .xp-ux-modal-maintenance .xp-tire-stage{width:100%;height:auto;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:175px auto auto;gap:9px;align-items:stretch}
+ .xp-ux-modal-maintenance .xp-tire-center{grid-area:1/1/2/3;min-height:0}
+ .xp-ux-modal-maintenance .xp-top-car,.xp-ux-modal-maintenance .xp-top-cutout{height:170px;max-height:170px}
+ .xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_fl"]{grid-area:2/1}
+ .xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_fr"]{grid-area:2/2}
+ .xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_rl"]{grid-area:3/1}
+ .xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_rr"]{grid-area:3/2}
+ .xp-ux-modal-maintenance .xp-tire-reading{min-height:82px;padding:10px 5px;overflow-wrap:anywhere}
+ .xp-ux-modal-maintenance .xp-tire-reading strong{font-size:clamp(18px,5vw,25px)}
+}
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
