@@ -21,6 +21,14 @@ function demo(charging){
   'sensor.my_xpeng_last_update':state('2026-10-14T12:00:00'),
   'binary_sensor.my_xpeng_is_charging':state(charging?'on':'off'),
   'binary_sensor.my_xpeng_is_plugged_in':state(charging?'on':'off'),
+  'climate.my_xpeng_climate':state('heat_cool',{temperature:22,current_temperature:24,min_temp:16,max_temp:32,target_temp_step:0.5}),
+  'lock.my_xpeng_door_lock':state('locked'),
+  'button.my_xpeng_open_windows':state('unknown'),
+  'button.my_xpeng_close_windows':state('unknown'),
+  'button.my_xpeng_open_charge_port':state('unknown'),
+  'button.my_xpeng_close_charge_port':state('unknown'),
+  'button.my_xpeng_stop_charging':state('unknown'),
+  'number.my_xpeng_charge_limit':state('90',{min:50,max:100,step:5}),
   'sensor.my_xpeng_tire_pressure_front_left_kpa':state('250'),
   'sensor.my_xpeng_tire_pressure_front_right_kpa':state('251'),
   'sensor.my_xpeng_tire_pressure_rear_left_kpa':state('248'),
@@ -56,7 +64,7 @@ async function main(){
  await page.evaluate(()=>{
    const card=document.querySelector('xpeng-vehicle-card');
    card.setConfig({type:'custom:xpeng-vehicle-card',prefix:'my_xpeng',model:'G6',year:'2026',
-      trim:'core_performance_awd',color:'arctic_white',interior:'light_gray'});
+      trim:'core_performance_awd',color:'arctic_white',interior:'light_gray',show_controls:false});
  });
  async function screen(name){
   console.log('Checking browser screen:',name);
@@ -124,6 +132,40 @@ async function main(){
  await responsiveShot(320,false,'small-mobile-vehicle-status');
  await responsiveShot(320,true,'small-mobile-charging');
  await responsiveShot(420,false,'sections-vehicle-status',1200);
+ // Capture real component's additional home controls, using demo HA entities only.
+ await page.setViewportSize({width:1440,height:900});
+ await page.evaluate(()=>{
+   const wrap=document.querySelector('.card-wrap');
+   wrap.style.width='1400px';wrap.style.margin='18px auto';
+   const card=document.querySelector('xpeng-vehicle-card');
+   card.setConfig({type:'custom:xpeng-vehicle-card',prefix:'my_xpeng',model:'G6',year:'2026',
+     trim:'core_performance_awd',color:'arctic_white',interior:'light_gray'});
+ });
+ await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
+ assert.equal(await car.locator('.xp-ux-dock-action').count(),4,'Four quick actions missing');
+ assert.equal(await car.locator('.xp-ux-dock-action:not([disabled])').count(),4,'Demo HA controls unresolved');
+ await car.screenshot({path:path.join(OUTPUT,'g6-2026-controls-desktop.png'),animations:'disabled'});
+ await car.locator('button[data-xp-open="climate"]').first().click();
+ assert.ok(await car.locator('.xp-ux-modal-climate').count(),'Climate modal missing');
+ await car.screenshot({path:path.join(OUTPUT,'g6-2026-climate-desktop.png'),animations:'disabled'});
+ await car.locator('button[data-xp-close]').click();
+ await page.setViewportSize({width:390,height:900});
+ await page.evaluate(()=>{const w=document.querySelector('.card-wrap');w.style.width='390px';w.style.margin='0 auto';});
+ await car.screenshot({path:path.join(OUTPUT,'g6-2026-controls-mobile.png'),animations:'disabled'});
+ for(const [action,name] of [['doors','doors-mobile'],['windows','windows-mobile'],['port','charge-port-mobile'],['climate','climate-mobile']]){
+   await car.locator('button[data-xp-open="'+action+'"]').first().click();
+   assert.ok(await car.locator('.xp-ux-modal-'+action).count(),action+' modal missing');
+   await car.screenshot({path:path.join(OUTPUT,'g6-2026-'+name+'.png'),animations:'disabled'});
+   await car.locator('button[data-xp-close]').click();
+ }
+ await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(true));
+ assert.equal(await car.locator('.xp-ux-dock').count(),0,'Charging should have no visible quick action dock');
+ assert.equal(await car.locator('.xp-ux-charge-actions').count(),0,'Charging controls must not overlay hero');
+ assert.equal(await car.locator('button[data-xp-open="charge_controls"]').count(),1,'Charging heading should open controls');
+ await car.screenshot({path:path.join(OUTPUT,'g6-2026-charging-reference-mobile.png'),animations:'disabled'});
+ await car.locator('button[data-xp-open="charge_controls"]').click();
+ assert.ok(await car.locator('.xp-ux-modal-charge_controls').count(),'Charging modal missing');
+ await car.screenshot({path:path.join(OUTPUT,'g6-2026-charging-actions-mobile.png'),animations:'disabled'});
  assert.equal(errors.length,0,errors.join('\n'));
  assert.ok(imagesServed>=4,'Expected bundled vehicle and background assets to be loaded');
  await browser.close();
