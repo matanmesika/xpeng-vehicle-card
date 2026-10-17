@@ -507,6 +507,22 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-ux-note{color:#a9bac8;font-size:12px;line-height:1.6;margin-top:22px}
 @media(max-width:600px){.xp-ux-vehicle-statuses,.xp-ux-vehicle-buttons{grid-template-columns:repeat(2,minmax(0,1fr))}.xp-ux-vehicle-buttons button{min-height:50px;padding:9px 7px;font-size:12px}}
 
+/* New G6 photo: portrait cabin top view; hotspots line up with the actual seats. */
+.xp-ux-cabin-art.xp-ux-cabin-portrait{aspect-ratio:480/853;width:min(420px,100%);max-height:none!important;margin:10px auto 18px;overflow:hidden}
+.xp-ux-cabin-portrait .xp-ux-cabin-picture{display:block;width:100%;height:auto;max-height:none!important;object-fit:contain}
+.xp-ux-cabin-portrait .xp-ux-wheel{left:27%;top:21%}
+.xp-ux-cabin-portrait .xp-ux-driver{left:28%;top:41%}
+.xp-ux-cabin-portrait .xp-ux-passenger{left:72%;top:41%}
+.xp-ux-cabin-portrait .xp-ux-rear_left{left:28%;top:77%}
+.xp-ux-cabin-portrait .xp-ux-rear_right{left:72%;top:77%}
+.xp-ux-port-panel{padding:12px;max-width:590px;margin:auto}
+.xp-ux-port-state{display:flex;align-items:center;gap:18px;border:1px solid #4b77976e;border-radius:18px;background:#122640;padding:20px}
+.xp-ux-port-state>div{display:flex;flex-direction:column;gap:6px}
+.xp-ux-port-state small{opacity:.75}
+.xp-ux-port-actions{display:flex;flex-wrap:wrap;gap:12px;margin:18px 0}
+.xp-ux-port-action{display:flex;align-items:center;justify-content:center;gap:10px;border-radius:18px;background:#145069;border:1px solid #36a6bc;padding:14px 18px;min-height:48px;flex:1}
+@media(max-width:450px){.xp-ux-port-panel{padding:5px}.xp-ux-port-action{font-size:13px}.xp-ux-cabin-portrait .xp-ux-hotspot{width:44px;height:44px}}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -534,9 +550,14 @@ class XpengVehicleCard extends HTMLElement{
      if(b.hasAttribute('data-xp-open')){
        const action=b.dataset.xpOpen;
        if(action==='climate'||action==='seats'){this._xpPanel=action;this._xpSeatFocus=null;this._xpNotice='';this.render();}
-       else if(action==='port')this.xpSend('button','press','open_charge_port');
+       else if(action==='port'){this._xpPanel='port';this._xpNotice='';this.render();}
        else if(action==='locks'){this._xpPanel='vehicle';this._xpNotice='';this.render();}
        else if(action==='map')this.xpDetails('location','device_tracker');
+       return;
+     }
+     if(b.hasAttribute('data-xp-port')){
+       const suffix=b.dataset.xpPort==='open'?'open_charge_port':b.dataset.xpPort==='close'?'close_charge_port':null;
+       if(suffix)this.xpSend('button','press',suffix);
        return;
      }
      if(b.hasAttribute('data-xp-command')){
@@ -650,7 +671,7 @@ class XpengVehicleCard extends HTMLElement{
   const features=[
    ['climate','fan','מיזוג',this.xpLive('climate','cabin_climate')],
    ['seats','thermometer','מושבים',this.xpLive('select','driver_seat_heat_select')||this.xpLive('select','steering_wheel_heat_select')],
-   ['port','plug','שקע טעינה',this.xpLive('button','open_charge_port')],
+   ['port','plug','שקע טעינה',this.xpLive('button','open_charge_port')||this.xpLive('button','close_charge_port')],
    ['locks','lock','נעילה',this.xpLive('lock','door_lock')],
    ['map','pin','מיקום',this.xpLive('device_tracker','location')]
   ];
@@ -681,20 +702,25 @@ class XpengVehicleCard extends HTMLElement{
  xpCabinView(){
    const a=this.appearance();
    const finish=XP_INTERIORS.find(x=>x.id===a.interior)||XP_INTERIORS[0];
-   const profiles=Array.isArray(this._config.vehicles)&&this._config.vehicles.length;
-   const photos=profiles?this.vehicle()?.interior_images:this._config.interior_images;
+   const multi=Array.isArray(this._config.vehicles)&&this._config.vehicles.length>0;
+   const photos=multi?this.vehicle()?.interior_images:this._config.interior_images;
    const custom=photos&&typeof photos==='object'?photos[a.interior]:null;
    const group=xpYearGroupFor(a.model,a.year)?.id;
-   const stock=a.model==='G6'&&group==='2026'
-     ?this.artworkUrl('interiors/g6/2026/'+a.interior+'.svg'):null;
-   const asset=xpLocalArtworkPath(custom)?custom:stock;
-   if(asset&&!this._failedArtwork.has(asset)){
-     const caption=xpLocalArtworkPath(custom)?'תמונה שהוגדרה על ידי המשתמש':'איור מקורי בהשראת תא הנוסעים של XPENG G6';
-     return '<div class="xp-ux-cabin xp-ux-cabin-art" dir="ltr"><img class="xp-ux-cabin-picture" data-cabin-art src="'+xpEsc(asset)
-       +'" alt="'+xpEsc(a.model+' '+a.year+', '+finish.label+' interior')+'" loading="eager">'
-       +this.xpCabinHotspots()+'<small class="xp-ux-cabin-disclaimer">'+caption+' · '+xpEsc(finish.label)+'</small></div>';
-   }
-   return this.xpCabinFallback();
+   // Model/year-specific assets only; never render G6 cabin artwork for G9/P7.
+   const known=a.model==='G6'&&group==='2026';
+   const photo=known?this.artworkUrl('interiors/g6/2026/'+a.interior+'_photo.webp'):null;
+   const drawing=known?this.artworkUrl('interiors/g6/2026/'+a.interior+'.svg'):null;
+   const candidates=[
+     ...(xpLocalArtworkPath(custom)?[{src:custom,portrait:!(this._config.interior_images_landscape===true),caption:'תמונת פנים לפי הגדרות הרכב'}]:[]),
+     ...(photo?[{src:photo,portrait:true,caption:'תצוגת פנים פוטוריאליסטית בהמחשה · XPENG G6'}]:[]),
+     ...(drawing?[{src:drawing,portrait:false,caption:'איור פנים חלופי · XPENG G6'}]:[])
+   ];
+   const found=candidates.find(x=>!this._failedArtwork.has(x.src));
+   if(!found)return this.xpCabinFallback();
+   const orientation=found.portrait?' xp-ux-cabin-portrait':'';
+   return '<div class="xp-ux-cabin xp-ux-cabin-art'+orientation+'" dir="ltr"><img class="xp-ux-cabin-picture" data-cabin-art src="'+xpEsc(found.src)
+     +'" alt="'+xpEsc(a.model+' '+a.year+', '+finish.label+' interior')+'" loading="eager">'
+     +this.xpCabinHotspots()+'<small class="xp-ux-cabin-disclaimer">'+xpEsc(found.caption)+' · '+xpEsc(finish.label)+'</small></div>';
  }
  xpCabinFallback(){
   const a=this.appearance();
@@ -778,15 +804,27 @@ class XpengVehicleCard extends HTMLElement{
   }).filter(Boolean).join('');
   return '<div class="xp-ux-seats-grid">'+(controls||'<p>לא נמצאו בקרות מושבים נתמכות לרכב זה.</p>')+'</div>';
  }
+ xpPortPanel(){
+   const status=this.xpLive('sensor','charge_port')?.state?.state;
+   const open=this.xpLive('button','open_charge_port');
+   const close=this.xpLive('button','close_charge_port');
+   const button=(label,act,available)=>!available?'':'<button type="button" class="xp-ux-port-action" data-xp-port="'+act+'">'+xpIcon('plug',20)+label+'</button>';
+   return '<div class="xp-ux-port-panel"><div class="xp-ux-port-state">'
+     +xpIcon('plug',34)+'<div><strong>דלתית שקע הטעינה</strong><small>'
+     +(status?xpEsc(status):'מצב הדלתית אינו זמין')+'</small></div></div>'
+     +'<div class="xp-ux-port-actions">'
+     +button('פתח דלתית','open',open)+button('סגור דלתית','close',close)
+     +'</div><p class="xp-ux-note">הפעולות מיועדות לדלתית הטעינה בלבד, ולא לשחרור נעילת הכבל.</p></div>';
+ }
  xpModal(){
   if(!this.xpUiEnabled()||!this._xpPanel)return '';
   const page=this._xpPanel;
-  if(page!=='climate'&&page!=='seats'&&page!=='vehicle')return '';
+  if(page!=='climate'&&page!=='seats'&&page!=='vehicle'&&page!=='port')return '';
   return '<section class="xp-ux-modal" role="dialog" aria-modal="true" aria-label="בקרות מיזוג ומושבים" dir="rtl">'
-   +'<header class="xp-ux-modal-head"><button type="button" data-xp-close aria-label="חזרה למסך הרכב">'+xpIcon('back',24)+'</button><h2>'+(page==='climate'?'מיזוג אוויר':page==='seats'?'מושבים והגה':'בקרת רכב')+'</h2><span>'+xpEsc(this.appearance().model)+'</span></header>'
+   +'<header class="xp-ux-modal-head"><button type="button" data-xp-close aria-label="חזרה למסך הרכב">'+xpIcon('back',24)+'</button><h2>'+(page==='climate'?'מיזוג אוויר':page==='seats'?'מושבים והגה':page==='port'?'שקע טעינה':'בקרת רכב')+'</h2><span>'+xpEsc(this.appearance().model)+'</span></header>'
    +(page==='vehicle'?'':'<div class="xp-ux-tabs"><button type="button" class="'+(page==='climate'?'xp-ux-selected':'')+'" data-xp-page="climate">מיזוג</button>'
    +'<button type="button" class="'+(page==='seats'?'xp-ux-selected':'')+'" data-xp-page="seats">מושבים והגה</button></div>')
-   +(page==='vehicle'?this.xpVehiclePanel():this.xpCabinView()
+   +(page==='vehicle'?this.xpVehiclePanel():page==='port'?this.xpPortPanel():this.xpCabinView()
    +(page==='climate' ? this.xpTempControl()+this.xpFanControl()
         +'<button class="xp-ux-nav-seats" type="button" data-xp-page="seats">חימום ואוורור מושבים והגה ←</button>'
         :this.xpSeatControls()))
@@ -856,7 +894,7 @@ class XpengVehicleCard extends HTMLElement{
   if(service==='set_value')data.value=value;
   else if(service==='set_temperature')data.temperature=value;
   else if(service==='select_option')data.option=value;
-  const sensitive=(domain==='lock'||suffix==='stop_charge'||suffix==='open_charge_port'||suffix==='close_trunk'||suffix==='close_windows'||suffix==='honk_horn'||suffix==='flash_lights'||suffix==='sentinel_switch');
+  const sensitive=(domain==='lock'||suffix==='stop_charge'||suffix==='open_charge_port'||suffix==='close_charge_port'||suffix==='close_trunk'||suffix==='close_windows'||suffix==='honk_horn'||suffix==='flash_lights'||suffix==='sentinel_switch');
   if(sensitive&&typeof window.confirm==='function'
      &&!window.confirm('לשלוח את הפקודה לרכב?'))return;
   try{
