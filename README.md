@@ -262,3 +262,18 @@ intentionally fails until both WebP files are present in GitHub.
 ### Direct seat/wheel control (without extra sheet)
 
 The G6 cabin artwork has separate heat and ventilation icons on seats when the corresponding select entity is available. Each tap uses a verified Xpengtk `select.select_option` option: 1, 2, 3, then Off on the fourth tap. Wheel heating cycles Low, Medium, High, then Off. The card queues rapid taps per control while the integration processes each command, because Xpengtk may send an Off-first step with a delay. Unsupported front passenger heat Off remains deliberately blocked and visibly explained instead of claiming success. No model-agnostic undocumented seat command is emitted.
+
+## Six-category optional controls (review stage)
+
+With the original `show_controls: true` setting, the XPENG card keeps exactly **four compact home buttons** and its approved vehicle / charging scenes. An extra **settings icon** in the header opens six additional categories **inside** the same card:
+
+- **X-Guard:** actual `switch.sentinel_switch`, sensitivity `number.sentinel_sensitivity_control`. Turning guard off requires separate `enable_access_controls` opt-in and upstream Xpengtk Access permissions.
+- **HVAC scheduling:** `sensor.hvac_schedules` appointments and native `calendar.hvac_schedule_calendar` more-info; no invented appointment creation.
+- **Energy:** available real vehicle sensors, including 7-day average, parked energy, last charge and odometer; no fake graph samples.
+- **V2L:** `switch.trunk_power_switch` and `number.trunk_power_timer_control`, only where exposed and authorized.
+- **Maintenance:** current `sensor.maintenance` and its next service/remaining distance attributes.
+- **Software:** XOS and OTA sensor readings and the upstream `switch.auto_upgrade_switch`, if present.
+
+Actions use standard Home Assistant `switch`/`number` services and require confirmation for physical changes; absent sensors produce explanatory unavailable states, never fabricated telemetry. The JavaScript source and HACS distribution are kept byte-identical. Narrow-card CSS includes a compact portrait cabin image so the A/C temperature controls remain accessible on mobile.
+
+Review and release gates: [PR #40](https://github.com/matanmesika/xpeng-vehicle-card/pull/40) remains draft. Two SVG fallback interiors are present in the repository; the approved realistic WebP files (`light_gray_photo.webp` / `dark_gray_photo.webp`) are **not committed to GitHub yet**. Live iOS Safari, Home Assistant Lovelace and physical G6 commands are not verified. Do not merge / release based only on simulated integration tests.
