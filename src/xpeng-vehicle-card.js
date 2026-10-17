@@ -794,7 +794,8 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-title{top:84px}
  .xp-title h1{font-size:30px}
  .xp-overview-stat{left:5%;top:207px;width:53%;max-width:none}
- .xp-overview .xp-car.xp-reference-cutout{left:-3%;width:106%;bottom:29%;max-height:38%}
+ .xp-overview .xp-car{left:0;width:100%;bottom:29%;max-height:38%}
+ .xp-overview .xp-car.xp-reference-cutout{left:0;width:100%;bottom:29%;max-height:38%}
  .xp-status-panel{left:4%;right:4%;width:92%;bottom:14px;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;padding:5px 10px}
  .xp-info-row{min-height:57px;padding:8px 7px}
  .xp-info-row:nth-child(2){border-right:0}
@@ -802,7 +803,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-info-copy b{font-size:12px}
  .xp-charge-card{left:4%;width:92%;top:206px;padding:16px 14px}
  .xp-charge-heading{margin-bottom:15px}
- .xp-charge .xp-car{width:105%;left:-2.5%;bottom:5%;max-height:30%}
+ .xp-charge .xp-car{width:100%;left:0;bottom:5%;max-height:30%}
  .xp-station{right:4%;bottom:16%;height:12%}
  .xp-ux-dock{bottom:177px}
 }

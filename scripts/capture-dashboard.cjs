@@ -56,7 +56,7 @@ async function main(){
  await page.evaluate(()=>{
    const card=document.querySelector('xpeng-vehicle-card');
    card.setConfig({type:'custom:xpeng-vehicle-card',prefix:'my_xpeng',model:'G6',year:'2026',
-      trim:'core_plus_rwd',color:'graphite_gray',interior:'light_gray'});
+      trim:'core_performance_awd',color:'arctic_white',interior:'light_gray'});
  });
  async function screen(name){
   console.log('Checking browser screen:',name);
