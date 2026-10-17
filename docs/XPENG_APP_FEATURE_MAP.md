@@ -88,7 +88,7 @@ Official XPENG G6 material (including regional availability caveats) describes A
 | Target temperature | `climate.cabin_climate` (`set_temperature`) | 0.5°C incremental controls, 16–32°C when available |
 | Fan level | `number.fan_speed_control` (`set_value`) | Native slider with entity min/max/step |
 | Front windscreen defrost | `switch.defrost_switch` (`toggle`) | Action tile with live on/off state |
-| HVAC schedule | `calendar.hvac_schedule_calendar` or `sensor.hvac_schedules` | Open in-card existing schedule view; no fake schedule creation |
+| HVAC schedule | `calendar.hvac_schedule_calendar` / `sensor.hvac_schedules`, and `switch.hvac_schedule_<appointment_id>` | View existing schedules; enable/disable individual schedules where a matching native switch exists. No invented schedule creation |
 | Front/rear seat heat and ventilation, steering heat | Native Xpengtk `select` entities | Direct in-image 1→2→3→Off on each supported control, with passenger front heat Off limited by upstream |
 | Heating MAX / Cooling MAX | No distinct Xpengtk *command* verified. Some telemetry may describe quick warm/cool *state*. | No actionable tile |
 | Refresh / sterilisation / A/C cleaning | No verified Xpengtk entity/service action | Hidden, never send undocumented MQTT |
