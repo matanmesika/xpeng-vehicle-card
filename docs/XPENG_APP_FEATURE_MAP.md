@@ -19,13 +19,13 @@ Opt-in `show_controls: true` preserves the preexisting vehicle/charging artwork.
 | Cabin A/C on/off and target temperature | `cabin_climate` (`climate`) | Built: `turn_on`, `turn_off`, `set_temperature` |
 | Fan speed | `fan_speed_control` (`number`) | Built: `set_value` |
 | Front defrost | `defrost_switch` (`switch`) | Built: `toggle` |
-| Driver heated seat | `driver_seat_heat_select` (`select`) | Built: choose levels from entity options |
-| Front passenger heated seat | `passenger_seat_heat_select` (`select`) | Built; upstream front passenger `Off` unsupported in some telemetry, disabled in UI |
-| Driver ventilated seat | `driver_seat_ventilation_select` (`select`) | Built when entity available |
+| Driver heated seat | `driver_seat_heat_select` (`select`) | Tap red seat heat icon cycles Off → Heat 1 → Heat 2 → Heat 3 → Off |
+| Front passenger heated seat | `passenger_seat_heat_select` (`select`) | Heat levels 1–3 cycle; Off is blocked because Xpengtk reports that the G6 rejected the command; no false success claim |
+| Driver ventilated seat | `driver_seat_ventilation_select` (`select`) | Tap blue vent icon cycles Off → Ventilation 1 → 2 → 3 → Off |
 | Front passenger ventilated seat | `passenger_seat_ventilation_select` (`select`) | Built when available |
 | Left/right rear heated seats | `left_rear_seat_heat_select` / `right_rear_seat_heat_select` (`select`) | Built when available |
 | Left/right rear ventilation | `left_rear_seat_ventilation_select` / `right_rear_seat_ventilation_select` (`select`) | Disabled upstream by default; hardware-dependent; hide when absent |
-| Steering-wheel heater | `steering_wheel_heat_select` (`select`) | Built when available |
+| Steering-wheel heater | `steering_wheel_heat_select` (`select`) | Direct wheel icon cycles Off → Low → Medium → High → Off |
 | Charging target | `charge_limit_control` (`number`) | Built: native slider |
 | Stop active charging | `stop_charge` (`button`) | Built: press with confirmation |
 | Open charge flap | `open_charge_port` (`button`) | Built on main scene with confirmation |
@@ -72,3 +72,7 @@ confirmation for potentially disruptive physical actions.
 QA requires tests in desktop window, narrow HA Sections card and iOS Safari
 (portrait). This PR remains in draft until the model-specific imagery and
 command results are checked against a real vehicle.
+
+## Automatic parking and remote movement
+
+Official XPENG G6 material (including regional availability caveats) describes APA, AEP and remote parking. The Xpengtk `services.py`, `button.py` and `command_policy.py` inspected for this change contain **no documented or verified park/move/remote summon command**. The card must not infer movement commands from MQTT internals or pretend that service success implies movement safety. No remote parking command is added. Future support requires an upstream supported API with appropriate user presence, safety supervision and jurisdiction/vehicle compatibility checks.
