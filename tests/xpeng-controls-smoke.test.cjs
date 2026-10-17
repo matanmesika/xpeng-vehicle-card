@@ -784,3 +784,51 @@ test('charging remains original scene with exactly two visible action shortcuts'
  assert.match(html,/data-xp-open="charge_schedule"/);
  assert.doesNotMatch(html,/data-xp-toggle="trunk"/);
 });
+
+test('Location requests HA native GPS map with dark mode and zoom 11, not a fabricated address',async()=>{
+ const {card,sandbox}=createCard();
+ let captured=null,attached=null;
+ card._xpengByKey['device_tracker.location']='device_tracker.real_vehicle';
+ card._hass.states['device_tracker.real_vehicle']={
+   state:'not_home',attributes:{latitude:32.0,longitude:34.8,gps_accuracy:15}
+ };
+ card._xpPanel='map';
+ const host={textContent:'טוען מפה…',replaceChildren(view){attached=view}};
+ card.shadowRoot.querySelector=selector=>selector==='[data-xp-map-host]'?host:null;
+ card.shadowRoot.contains=x=>x===host;
+ sandbox.window.loadCardHelpers=async()=>({createCardElement(config){captured=config;return {hass:null}}});
+ await card.xpMountMap();
+ assert.deepEqual(JSON.parse(JSON.stringify(captured)),{
+   type:'map',entities:[{entity:'device_tracker.real_vehicle'}],
+   default_zoom:11,hours_to_show:0,dark_mode:true
+ });
+ assert.equal(attached.hass,card._hass);
+ card._xpPanel=null;captured=null;
+ await card.xpMountMap();
+ assert.equal(captured,null);
+});
+test('G6 multilingual text and icon contract covers all new user-facing actions',()=>{
+ const {card}=createCard({enable_access_controls:true});
+ Object.assign(card._xpengByKey,{
+   'binary_sensor.trunk':'binary_sensor.trunk_for_translation',
+   'button.open_trunk':'button.open_trunk_translation',
+   'button.close_trunk':'button.close_trunk_translation'
+ });
+ card._hass.states['binary_sensor.trunk_for_translation']={state:'off',attributes:{}};
+ card._hass.states['button.open_trunk_translation']={state:'unknown',attributes:{}};
+ card._hass.states['button.close_trunk_translation']={state:'unknown',attributes:{}};
+ for(const name of ['מיזוג','טעינה','תחזוקה','מיקום','חלונות','פתח תא מטען'])
+   assert.ok(card.xpDock().includes(name),'Missing correct Hebrew action: '+name);
+ assert.match(card.xpTrunkPanel(),/תא המטען/);
+ assert.match(card.xpMapPanel(),/צופר/);
+ assert.match(card.xpMapPanel(),/הבהוב/);
+ assert.match(card.xpChargeSchedulesPanel(),/שעת התחלת טעינה/);
+ assert.match(card.xpChargeSchedulesPanel(),/שעת סיום טעינה/);
+ assert.match(card.charging(),/Charging information/);
+ assert.match(card.charging(),/data-xp-open="charge_controls"/);
+ assert.match(card.charging(),/data-xp-open="charge_schedule"/);
+ assert.match(src,/auto:'<path/);
+ assert.match(src,/horn:'<path/);
+ assert.match(src,/flash:'<path/);
+ assert.match(src,/windscreen:'<path/);
+});
