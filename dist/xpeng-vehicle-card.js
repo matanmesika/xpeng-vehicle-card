@@ -817,6 +817,13 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-status-panel{padding:5px 7px}
 }
 
+/* Keep the G6 Charging-now composition unchanged while still allowing an accessible
+   control modal when the user taps the original visible heading. */
+.xp-charge-heading-action{background:transparent;border:0;padding:0;text-align:left;width:auto;cursor:pointer;color:var(--xp-mint)}
+.xp-charge-heading-action:focus-visible{outline:2px solid #82dbfe;outline-offset:4px;border-radius:8px}
+.xp-ux-modal-charge_controls .xp-ux-charge-actions{position:static;inset:auto;display:flex;flex-wrap:wrap;margin:12px 0 20px}
+.xp-ux-modal-charge_controls .xp-ux-charge-limit{max-width:none}
+.xp-ux-modal-charge_controls .xp-ux-port-panel{margin-top:15px}
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -844,7 +851,7 @@ class XpengVehicleCard extends HTMLElement{
       
      if(b.hasAttribute('data-xp-open')){
        const action=b.dataset.xpOpen;
-       if(['climate','port','doors','windows','map'].includes(action)){
+       if(['climate','port','doors','windows','map','charge_controls'].includes(action)){
          this._xpPanel=action;this._xpSeatFocus=null;this._xpNotice='';this.render();
        }
        return;
@@ -1014,7 +1021,7 @@ class XpengVehicleCard extends HTMLElement{
  }
 
 
- xpUiEnabled(){const v=this.vehicle()?.show_controls??this._config.show_controls??false;return v===true||v==='true';}
+ xpUiEnabled(){const v=this.vehicle()?.show_controls??this._config.show_controls;return v===undefined?this.model()==='G6':v===true||v==='true';}
  xpLive(domain,suffix){
   const id=this.xpengEntity(domain,suffix);
   const state=id?this._hass?.states?.[id]:null;
@@ -1341,14 +1348,15 @@ class XpengVehicleCard extends HTMLElement{
  xpModal(){
    if(!this.xpUiEnabled()||!this._xpPanel)return '';
    const page=this._xpPanel;
-   if(!['climate','port','doors','windows','map','extras'].includes(page))return '';
-   const labels={climate:'מיזוג אוויר',port:'שקע טעינה',doors:'דלתות',windows:'חלונות',map:'מיקום הרכב',extras:'אפשרויות נוספות'};
+   if(!['climate','port','doors','windows','map','charge_controls','extras'].includes(page))return '';
+   const labels={climate:'מיזוג אוויר',port:'שקע טעינה',doors:'דלתות',windows:'חלונות',charge_controls:'פעולות טעינה',map:'מיקום הרכב',extras:'אפשרויות נוספות'};
    let body='';
    if(page==='climate'){
      body=this.xpCabinView();
      body+='<section class="xp-ux-climate-bottom" aria-label="בקרת אקלים">'
        +this.xpTempControl()+this.xpFanControl()+this.xpClimateFeatures()+'</section>';
-   }else if(page==='port')body=this.xpPortPanel();
+   }else if(page==='charge_controls')body='<div class="xp-ux-charging-panel">'+(this.xpChargeControls()||'<p>אין פקודות טעינה זמינות לרכב כרגע.</p>')+this.xpPortPanel()+'</div>';
+   else if(page==='port')body=this.xpPortPanel();
    else if(page==='doors')body=this.xpDoorsPanel();
    else if(page==='windows')body=this.xpWindowsPanel();
    else if(page==='map')body=this.xpMapPanel();
@@ -1646,7 +1654,8 @@ class XpengVehicleCard extends HTMLElement{
         description:'Owner-supplied artwork for '+a.model+' '+a.color};
     // Prefer separately packaged and verified three-view assets when present.
     // A view must never silently reuse a front render as a rear or overhead render.
-    const candidate=xpVehicleAssetPath(a,view==='rear'?'charging':'front');
+    // Owner's G6 charging screenshot requires a front-facing vehicle; owner-supplied charging_image still wins.
+    const candidate=xpVehicleAssetPath(a,a.model==='G6'?'front':view==='rear'?'charging':'front');
     if(candidate&&XP_ARTWORK_INDEX.has(candidate)&&!this._failedArtwork.has(bundled(candidate))){
       const generated=XP_ILLUSTRATIVE_ARTWORK_INDEX.has(candidate);
       return {src:bundled(candidate),illustrative:generated,studio:false,tier:generated?'generated-preview':'exact-view',view,
@@ -1727,7 +1736,7 @@ class XpengVehicleCard extends HTMLElement{
    const stateClass=status==='Connected'?'xp-connected':status==='Connection error'?'xp-error':'xp-disconnected';
    return `<header class="xp-header"><div class="xp-brand"><span class="xp-x-mark">✕</span><span>XPENG</span></div>
      <div class="xp-header-right"><div class="xp-meta-tools">
-        ${this.xpUiEnabled()?'<button type="button" class="xp-more-trigger" data-xp-more aria-label="אפשרויות נוספות" title="אפשרויות נוספות">'+xpIcon('settings',21)+'</button>':''}
+        ${this.xpUiEnabled()&&this._view!=='charging'?'<button type="button" class="xp-more-trigger" data-xp-more aria-label="אפשרויות נוספות" title="אפשרויות נוספות">'+xpIcon('settings',21)+'</button>':''}
        <button class="xp-wifi ${stateClass}" type="button" data-meta-toggle
          aria-label="Vehicle communication details" aria-expanded="${this._infoOpen?'true':'false'}"
          aria-controls="xp-last-update-details" title="Vehicle communication details">
@@ -1843,14 +1852,14 @@ class XpengVehicleCard extends HTMLElement{
   return `${this.title()}
     <div class="xp-station" aria-hidden="true">✕</div>${this.carArt()}
     <section class="xp-charge-card" aria-label="Charging information">
-       <div class="xp-charge-heading">${xpIcon('bolt',42)}<span>${xpEsc(this.chargeStatus())}</span></div>
+       <button class="xp-charge-heading xp-charge-heading-action" type="button" data-xp-open="charge_controls" aria-label="פעולות טעינה" title="הקש לפתיחת פעולות טעינה">${xpIcon('bolt',42)}<span>${xpEsc(this.chargeStatus())}</span></button>
        ${this.progress()}
        <div class="xp-charge-main"><div class="xp-soc">${this.socHtml()}</div><div class="xp-charge-divider"></div>
           <div class="xp-charge-range"><div class="xp-stat-label">Estimated range</div><b>${xpEsc(this.num('range','km'))}</b></div></div>
        <div class="xp-charge-meta"><div><small>Charging power</small><b>${xpEsc(this.num('power','kW',1))}</b></div>
        <div><small>Time remaining</small><b>${xpEsc(this.remainingText())}</b></div>
        <div><small>Charge limit</small><b>${xpEsc(this.num('target','%'))}</b></div></div>
-    </section>${this.xpChargeControls()}`;
+    </section>`;
  }
  render(){
   if(!this.shadowRoot)return;
@@ -1860,7 +1869,7 @@ class XpengVehicleCard extends HTMLElement{
   const isCharging=this.xpChargingActive();
   this._view=isCharging?'charging':'overview';
   if(isCharging)this._tireOpen=false;
-  this.shadowRoot.innerHTML=`<style>${XP_CSS}</style><ha-card><div class="xp-scene ${isCharging?'xp-charge':this._tireOpen?'xp-overview xp-tire-mode':'xp-overview'} ${this.xpUiEnabled()?'xp-has-controls':''}">
+  this.shadowRoot.innerHTML=`<style>${XP_CSS}</style><ha-card><div class="xp-scene ${isCharging?'xp-charge':this._tireOpen?'xp-overview xp-tire-mode':'xp-overview'} ${this.xpUiEnabled()&&!isCharging?'xp-has-controls':''}">
    ${this.sceneBackdrop()}${this.header()}${isCharging?this.charging():this._tireOpen?this.title()+this.tireScreen():this.overview()}${!isCharging&&!this._tireOpen?this.xpDock():""}${this.xpModal()}
    
    </div></ha-card>`;
@@ -1944,7 +1953,7 @@ class XpengVehicleCardEditor extends HTMLElement{
      ${select('trim','Trim · display only',xpAllowedTrims(v.model,v.year))}
      ${select('color','Exterior paint',xpAllowedPaints(v.model,v.year))}
      ${select('interior','Interior finish · צבע פנים הרכב',xpAllowedInteriors(v.model,v.year))}
-     ${select('show_controls','Optional control pages', [{id:'false',label:'Disabled (original card)'},{id:'true',label:'Enabled (responsive controls)'}],String(v.show_controls===true||v.show_controls==='true'))}
+     ${select('show_controls','Control buttons', [{id:'true',label:'Visible · four quick buttons'},{id:'false',label:'Hidden · original status-only view'}],String(v.show_controls===undefined?v.model==='G6':v.show_controls===true||v.show_controls==='true'))}
      ${select('enable_access_controls','Access actions (unlock / windows)',[{id:'false',label:'Off (safe default)'},{id:'true',label:'On (requires Xpengtk Access permission)'}],String(v.enable_access_controls===true||v.enable_access_controls==='true'))}
      <p>Years sharing the same exterior/facelift are grouped. Select a specific year only when paint availability differs. Trim labels never change vehicle pictures.</p>
     <h3>Sensor mapping</h3>

@@ -458,3 +458,26 @@ test('missing XPENG target and cabin telemetry must not be rendered as zero degr
     {domain:'climate',service:'set_temperature',data:{entity_id:'climate.renamed_hvac',temperature:22.5}}
   ]);
 });
+
+test('G6 home controls default visible but still allow explicit hiding',()=>{
+ const {card}=createCard({show_controls:undefined});
+ assert.equal(card.xpUiEnabled(),true);
+ assert.equal((card.xpDock().match(/data-xp-open=/g)||[]).length,4);
+ assert.equal(card.xpAccessAllowed(),false);
+ card.setConfig({type:'custom:xpeng-vehicle-card',model:'G6',year:'2026',prefix:'xpeng_g6',show_controls:false});
+ assert.equal(card.xpUiEnabled(),false);
+});
+test('G6 charging uses front asset and defers active actions to a modal',()=>{
+ const {card}=createCard({show_controls:undefined});
+ card._view='charging';
+ assert.match(card.assetSpec().src,/\/g6\/2026\/[^/]+\/front\.webp$/);
+ card.render();
+ const h=card.shadowRoot.innerHTML;
+ assert.match(h,/data-xp-open="charge_controls"/);
+ assert.doesNotMatch(h,/class="xp-ux-charge-actions"/);
+ assert.doesNotMatch(h,/class="xp-ux-dock /);
+ assert.doesNotMatch(h,/class="xp-more-trigger"/);
+ card._xpPanel='charge_controls';
+ assert.match(card.xpModal(),/data-xp-command="stop_charge"/);
+ assert.match(card.xpModal(),/data-xp-port="open"/);
+});
