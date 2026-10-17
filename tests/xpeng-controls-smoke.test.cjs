@@ -409,3 +409,30 @@ test('no rear defrost/pet/sterilisation control is faked without a supported Xpe
   assert.doesNotMatch(html,/data-xp-clean/);
   assert.doesNotMatch(html,/MAX/);
 });
+
+
+test('existing HVAC schedules use Xpengtk appointment-specific switches only',async()=>{
+  const {card,commands}=createCard();
+  card._xpengByKey['sensor.hvac_schedules']='sensor.schedules';
+  card._xpengByKey['switch.hvac_schedule_12']='switch.workday';
+  card._xpengByKey['switch.hvac_schedule_88']='switch.weekend';
+  card._hass.states['sensor.schedules']={state:'2',attributes:{schedules:[
+    {appointment_id:12,start_time:'07:30',days:['Mon'],is_valid:true},
+    {appointment_id:88,start_time:'19:15',days:['Sun'],is_valid:false}
+  ]}};
+  card._hass.states['switch.workday']={state:'on',attributes:{}};
+  card._hass.states['switch.weekend']={state:'off',attributes:{}};
+  const html=card.xpExtraSectionContent('schedule');
+  assert.match(html,/data-xp-hvac-schedule="12"/);
+  assert.match(html,/data-xp-hvac-schedule="88"/);
+  assert.match(html,/07:30/);
+  assert.match(html,/19:15/);
+  await card.xpSend('switch','turn_off','hvac_schedule_12');
+  await card.xpSend('switch','turn_on','hvac_schedule_88');
+  assert.deepEqual(JSON.parse(JSON.stringify(commands)),[
+    {domain:'switch',service:'turn_off',data:{entity_id:'switch.workday'}},
+    {domain:'switch',service:'turn_on',data:{entity_id:'switch.weekend'}}
+  ]);
+  card._hass.states['switch.weekend'].state='unavailable';
+  assert.doesNotMatch(card.xpExtraSectionContent('schedule'),/data-xp-hvac-schedule="88"/);
+});
