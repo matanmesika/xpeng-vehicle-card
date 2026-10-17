@@ -119,7 +119,8 @@ const XP_CONTROL_FALLBACKS=Object.freeze({
  'select.left_rear_seat_ventilation_select':'left_rear_seat_ventilation',
  'select.right_rear_seat_ventilation_select':'right_rear_seat_ventilation',
  'select.steering_wheel_heat_select':'steering_wheel_heating',
- 'sensor.slow_charge_port':'charge_port',
+ 'sensor.slow_charge_port':'slow_charge_port',
+ 'binary_sensor.windows':'any_window_open',
  'switch.defrost_switch':'front_defrost',
  'switch.sentinel_switch':'x_guard',
  'number.sentinel_sensitivity_control':'sentinel_sensitivity',
@@ -148,7 +149,7 @@ const XP_ICONS = {
  auto:'<path d="M20 8a8 8 0 0 0-14-3L4 7V3M4 7h4M4 16a8 8 0 0 0 14 3l2-2v4m0-4h-4"/><path d="m9 15 3-7 3 7m-5-2h4"/>',
  windscreen:'<path d="m4 18 2-12h12l2 12H4Zm4-7 1-2m3 2 1-2m3 2 1-2M8 15l1-2m3 2 1-2m3 2 1-2"/>',
  port_open:'<rect x="4" y="7" width="16" height="13" rx="3"/><path d="m8 11 4-4 4 4m-4-4V2"/><path d="M8 17h8"/>',
- fan:'<path d="M12 12c6-2 7-9 3-9-3 0-3 6-3 9Zm0 0c4 5 11 3 9-1-2-3-6 0-9 1Zm0 0c-5 4-3 11 1 9 3-2 0-6-1-9Z"/>',
+ fan:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2"/><path d="M12 9.7c-1.9-2.5-.4-5.7 2-5.1 2.4.6 3.3 3.6 1.1 6.4M14 12.5c3-.4 5.2 2.2 3.8 4.3-1.4 2.1-4.6 2-7.2.6M10.6 13.5c-.7 3.1-4 4.2-5.7 2.3-1.7-1.9-.2-4.7 2.9-6.6"/><circle cx="12" cy="12" r="3"/>',
  bolt:'<path d="M13 2 4 13h7l-1 9 10-12h-7l1-8Z"/>',
  pin:'<path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2"/>',
  arrow:'<path d="m9 5 7 7-7 7"/>', back:'<path d="m15 5-7 7 7 7"/>',
@@ -920,6 +921,36 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-ux-dock-seven .xp-ux-dock-action{flex-basis:78px;min-width:61px;max-width:84px}
 .xp-ux-map-actions button{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px}
 .xp-ux-modal-trunk .xp-ux-access-buttons button{min-height:48px}
+
+/* Mobile scroll: modal is an independent touch-scrolling surface inside the scene. */
+.xp-ux-modal{overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;
+ touch-action:pan-y;overscroll-behavior-y:contain;max-height:96%;box-sizing:border-box}
+.xp-ux-modal-head{position:sticky;top:-16px;z-index:5;padding:4px 2px 12px;
+ background:linear-gradient(180deg,#07182b 80%,#07182b00)}
+@container xpeng-layout (max-width:600px){
+ .xp-ux-modal{inset:1% 1%;height:auto;min-height:0;max-height:98%;
+   padding:11px 11px 38px;touch-action:pan-y}
+ .xp-ux-modal-head{top:-11px}
+ .xp-ux-modal-maintenance .xp-tire-screen{position:relative;inset:auto;
+    height:auto!important;min-height:0!important;margin:8px 0 22px;overflow:visible}
+ .xp-ux-modal-maintenance .xp-tire-stage{display:grid;width:100%;height:auto;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    grid-template-rows:auto auto auto;gap:10px;align-items:stretch}
+ .xp-ux-modal-maintenance .xp-tire-center{grid-area:1/1/2/3;height:195px;
+    width:100%;max-width:220px;justify-self:center;filter:none}
+ .xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_fl"]{grid-area:2/1}
+ .xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_fr"]{grid-area:2/2}
+ .xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_rl"]{grid-area:3/1}
+ .xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_rr"]{grid-area:3/2}
+ .xp-ux-modal-maintenance .xp-tire-reading{min-width:0;padding:12px 8px}
+ .xp-ux-modal-maintenance .xp-tire-reading strong{font-size:clamp(21px,6vw,29px)}
+ .xp-ux-modal-maintenance .xp-maint-info{grid-template-columns:minmax(0,1fr)}
+ .xp-ux-modal-maintenance .xp-extra-line{min-width:0;overflow-wrap:anywhere}
+ .xp-ux-modal-climate .xp-climate-layout{padding-bottom:55px}
+}
+.xp-charge-cable-live .xp-charge-cable-halo{stroke:#00f59c;stroke-width:13;
+ filter:drop-shadow(0 0 12px #00ffab)}
+.xp-charge-cable-live .xp-charge-cable-core{stroke:#abffe6;stroke-width:3}
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -948,12 +979,8 @@ class XpengVehicleCard extends HTMLElement{
       
      if(b.hasAttribute('data-xp-open')){
        const action=b.dataset.xpOpen;
-       if(['climate','charging','port','doors','windows','trunk','map','maintenance','charge_controls','charge_schedule'].includes(action)){
-         if(action==='charging'){
-           this._xpManualCharging=true;this._xpChargingDismissed=false;this._xpPanel=null;
-         }else{
-           this._xpPanel=action;this._xpSeatFocus=null;
-         }
+       if(['climate','port','doors','windows','trunk','map','maintenance','charge_controls','charge_schedule'].includes(action)){
+         this._xpPanel=action;this._xpSeatFocus=null;
          this._xpNotice='';this.render();
        }
        return;
@@ -1132,11 +1159,15 @@ class XpengVehicleCard extends HTMLElement{
  }
  xpengEntity(domain,suffix){
   const key=domain+'.'+suffix;
-  const registered=this._xpengByKey?.[key];
-  if(registered)return this._hass?.states?.[registered]?registered:null;
-  const fallback=XP_CONTROL_FALLBACKS[key]||suffix;
-  const id=domain+'.'+this.prefix()+'_'+fallback;
-  return this._hass?.states?.[id]?id:null;
+  const equivalent=key==='binary_sensor.windows'?'binary_sensor.any_window_open':null;
+  const candidates=[
+    this._xpengByKey?.[key],equivalent?this._xpengByKey?.[equivalent]:null,
+    domain+'.'+this.prefix()+'_'+(XP_CONTROL_FALLBACKS[key]||suffix),
+    domain+'.'+this.prefix()+'_'+suffix,
+    ...(key==='sensor.slow_charge_port'?[domain+'.'+this.prefix()+'_charge_port']:[])
+  ].filter(Boolean);
+  return candidates.find(id=>this._hass?.states?.[id]&&!XP_INVALID.has(String(this._hass.states[id].state).trim().toLowerCase()))
+    ||candidates.find(id=>this._hass?.states?.[id])||null;
  }
 
 
@@ -1148,13 +1179,15 @@ class XpengVehicleCard extends HTMLElement{
  }
  xpChargingActive(){
   // A confirmed unplugged cable overrides stale charging telemetry.
-  if(this.bool('plugged')===false)return false;
   return xpChargingActive(this.val('charging'))===true;
  }
  xpActionState(action){
    if(action==='doors'){
      const state=this.xpLive('lock','door_lock')?.state?.state;
-     return state==='locked'?'closed':state==='unlocked'?'open':null;
+     if(state==='locked'||state==='unlocked')return state==='locked'?'closed':'open';
+     // In Xpengtk binary_sensor.locked: ON means *unlocked*, OFF means locked.
+     const sensor=this.xpLive('binary_sensor','locked')?.state?.state;
+     return sensor==='on'?'open':sensor==='off'?'closed':null;
    }
    if(action==='trunk'){
      const state=this.xpLive('binary_sensor','trunk')?.state?.state;
@@ -1206,7 +1239,7 @@ class XpengVehicleCard extends HTMLElement{
  xpDock(){
    if(!this.xpUiEnabled())return '';
    const items=[
-     ['climate','fan','מיזוג'],['charging','bolt','טעינה'],
+     ['climate','fan','מיזוג'],
      ['doors','lock','נעילה'],['windows','windows','חלונות'],
      ['port','plug','שקע טעינה'],['trunk','trunk','תא מטען'],
      ['maintenance','settings','תחזוקה'],['map','pin','מיקום']
@@ -1897,7 +1930,8 @@ class XpengVehicleCard extends HTMLElement{
      ...spec.slice(1).map(s=>spec[0]+'.'+this.prefix()+'_'+s),
      ...(XP_XPENGTK_KEYS[key]||[]).map(([domain,suffix])=>domain+'.'+this.prefix()+'_'+suffix)
    ];
-   const id=ids.find(x=>this._hass?.states?.[x])||ids[0];
+   const id=ids.find(x=>this._hass?.states?.[x]&&!XP_INVALID.has(String(this._hass.states[x].state).trim().toLowerCase()))
+     ||ids.find(x=>this._hass?.states?.[x])||ids[0];
    const entity=this._hass?.states?.[id];
    const attribute=custom?.attribute;
    const attrs=entity?.attributes;
@@ -1930,7 +1964,7 @@ class XpengVehicleCard extends HTMLElement{
     // Preserve the existing separately supplied charging artwork and geometry.
     // The owner approved the original left-side charging metrics layout but the
     // reference shows a front three-quarter G6, never the rear-facing cutout.
-    const candidate=xpVehicleAssetPath(a,a.model==='G6'?'front':view==='rear'?'charging':'front');
+    const candidate=xpVehicleAssetPath(a,view==='rear'?'charging':'front');
     if(candidate&&XP_ARTWORK_INDEX.has(candidate)&&!this._failedArtwork.has(bundled(candidate))){
       const generated=XP_ILLUSTRATIVE_ARTWORK_INDEX.has(candidate);
       return {src:bundled(candidate),illustrative:generated,studio:false,tier:generated?'generated-preview':'exact-view',view,
@@ -2112,7 +2146,7 @@ class XpengVehicleCard extends HTMLElement{
  charging(){
   return `${this.title()}
     <div class="xp-station" aria-hidden="true">✕</div>${this.carArt()}
-    ${this.model()==='G6'?'<svg class="xp-charge-cable" aria-hidden="true" viewBox="0 0 1536 864" preserveAspectRatio="none"><path class="xp-charge-cable-halo xp-cable-desktop" d="M1443 500C1464 647 1366 663 1235 625S1174 522 1185 479"/><path class="xp-charge-cable-core xp-cable-desktop" d="M1443 500C1464 647 1366 663 1235 625S1174 522 1185 479"/><path class="xp-charge-cable-halo xp-cable-mobile" d="M1440 685Q1408 747 1300 714"/><path class="xp-charge-cable-core xp-cable-mobile" d="M1440 685Q1408 747 1300 714"/></svg>':''}
+    ${this.model()==='G6'&&this.xpChargingActive()?'<svg class="xp-charge-cable xp-charge-cable-live" aria-hidden="true" viewBox="0 0 1536 864" preserveAspectRatio="none"><path class="xp-charge-cable-halo xp-cable-desktop" d="M1443 500C1464 647 1366 663 1235 625S1174 522 1185 479"/><path class="xp-charge-cable-core xp-cable-desktop" d="M1443 500C1464 647 1366 663 1235 625S1174 522 1185 479"/><path class="xp-charge-cable-halo xp-cable-mobile" d="M1440 685Q1408 747 1300 714"/><path class="xp-charge-cable-core xp-cable-mobile" d="M1440 685Q1408 747 1300 714"/></svg>':''}
     <section class="xp-charge-card" aria-label="Charging information">
        <div class="xp-charge-heading">${xpIcon('bolt',42)}<span>${xpEsc(this.chargeStatus())}</span></div>
        ${this.progress()}
@@ -2130,7 +2164,7 @@ class XpengVehicleCard extends HTMLElement{
   // The charging entity is the single source of truth for choosing the screen.
   // Only an explicit 'on' shows Charging. 'off', unknown and unavailable show Overview.
   const actualCharging=this.xpChargingActive();
-  const isCharging=this._xpManualCharging||(actualCharging&&!this._xpChargingDismissed);
+  const isCharging=actualCharging&&!this._xpChargingDismissed;
   this._view=isCharging?'charging':'overview';
   if(isCharging)this._tireOpen=false;
   const onHome=!isCharging&&!this._tireOpen&&!this._xpPanel;
