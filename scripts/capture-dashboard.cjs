@@ -107,7 +107,7 @@ async function main(){
      const panel=element.shadowRoot.querySelector('.xp-status-panel');
      return {sceneWidth:scene.getBoundingClientRect().width,
        sceneHeight:scene.getBoundingClientRect().height,
-       panelColumns:panel?getComputedStyle(panel).gridTemplateColumns.trim().split(/\\s+/).length:0,
+       panelColumns:panel?getComputedStyle(panel).gridTemplateColumns.trim().split(/\s+/).length:0,
        charging:scene.classList.contains('xp-charge'),
        horizontalOverflow:document.documentElement.scrollWidth>innerWidth+2};
    });
