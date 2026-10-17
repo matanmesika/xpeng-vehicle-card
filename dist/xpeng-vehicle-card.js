@@ -933,6 +933,11 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-tire-units{position:absolute;z-index:6;top:0;right:12px;display:flex;align-items:center;gap:7px;color:#c5d9f1;font-size:12px}
 .xp-tire-units select{background:#112940;border:1px solid #4c80a1;border-radius:8px;color:#fff;padding:6px;min-height:34px}
 @container xpeng-layout (max-width:600px){.xp-ux-modal-maintenance .xp-tire-units{position:relative;justify-content:flex-start;margin:6px 0 9px;padding:0 8px}}
+.xp-diagnostics-scroll{max-height:min(440px,55vh);overflow-y:auto;overscroll-behavior:contain;display:grid;gap:5px;direction:ltr}
+.xp-entity-diagnostic{min-width:0;display:grid;grid-template-columns:minmax(0,3fr) minmax(70px,1fr);gap:9px;align-items:center;text-align:left}
+.xp-entity-diagnostic span{font-size:11px;overflow-wrap:anywhere}
+.xp-entity-diagnostic b{font-size:12px;text-align:right}
+@container xpeng-layout (max-width:430px){.xp-entity-diagnostic{grid-template-columns:minmax(0,1fr)}.xp-entity-diagnostic b{text-align:left}}
 /* Mobile scroll: modal is an independent touch-scrolling surface inside the scene. */
 .xp-ux-modal{overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;
  touch-action:pan-y;overscroll-behavior-y:contain;max-height:96%;box-sizing:border-box}
@@ -1078,7 +1083,7 @@ class XpengVehicleCard extends HTMLElement{
      }
      if(b.hasAttribute('data-xp-extra-page')){
        const page=b.dataset.xpExtraPage;
-       if(['security','energy','schedule','power','maintenance','updates'].includes(page)){
+       if(['security','energy','schedule','power','maintenance','updates','diagnostics'].includes(page)){
          this._xpPanel='extras';this._xpExtraSection=page;this._xpNotice='';this.render();
        }
        return;
@@ -1731,6 +1736,7 @@ class XpengVehicleCard extends HTMLElement{
      +'>'+xpEsc(label)+'</button>';
  }
  xpExtraSectionContent(section){
+   if(section==='diagnostics')return this.xpSensorDiagnosticsPanel();
    if(section==='security'){
      const guard=this.xpExtraLive('switch','sentinel_switch');
      let out=this.xpExtraLine('X-Guard','switch','sentinel_switch');
@@ -1807,6 +1813,32 @@ class XpengVehicleCard extends HTMLElement{
    }
    return '';
  }
+ xpSensorDiagnosticsPanel(){
+  const states=this._hass?.states||{};
+  // Registry rows are already restricted to exactly one selected XPENG device.
+  // When HA denies registry access, use the explicitly configured prefix or an
+  // unambiguous single-car prefix. Never list another car as part of this one.
+  const registry=Array.isArray(this._xpengEntities)?this._xpengEntities:[];
+  const ids=registry.length?registry.map(x=>x.entity_id).filter(Boolean)
+    :Object.keys(states).filter(id=>/^(?:sensor|binary_sensor|button|number|select|switch|lock|climate|device_tracker|calendar|image)\./.test(id)
+      &&this.xpPrefixes().some(prefix=>id.split('.')[1]?.startsWith(prefix+'_')));
+  const entries=[...new Set(ids)].sort();
+  if(!entries.length)return '<p>עדיין לא זוהו ישויות Xpengtk. בדוק חיבור, קידומת VIN והרשאות Entity Registry.</p>';
+  const unknown=entries.filter(id=>!states[id]||['unavailable','unknown','none'].includes(String(states[id].state).toLowerCase())&& !id.startsWith('button.'));
+  const ok=entries.length-unknown.length;
+  const line=id=>{
+   const entity=states[id],state=entity?.state;
+   const status=!entity?'חסרה':id.startsWith('button.')&&state==='unknown'?'כפתור פעולה'
+     :state==='unavailable'||state==='unknown'||state==='none'?'לא זמין':String(state??'חסרה');
+   return '<div class="xp-extra-line xp-entity-diagnostic"><span dir="ltr">'+xpEsc(id)+'</span><b>'+
+     xpEsc(status)+'</b></div>';
+  };
+  return '<div class="xp-entity-diagnostics"><p role="status">נמצאו '+entries.length+
+    ' ישויות משויכות לרכב • '+ok+' זמינות או פעולות • '+unknown.length+' לא זמינות</p>'+
+    '<div class="xp-diagnostics-scroll" role="region" aria-label="רשימת ישויות Xpengtk">'+
+    entries.map(line).join('')+'</div>'+
+    '<p class="xp-ux-note">חיישן unavailable אינו ניתן לתיקון באמצעות ציור הכרטיס. בדוק את מקור הנתון באינטגרציה. כפתורי פעולה מסוג button אינם מדווחים מצב רגיל.</p></div>';
+ }
  xpExtrasPanel(){
    const sections=[
      ['security','shield','X-Guard','אבטחה ורגישות השמירה'],
@@ -1814,7 +1846,8 @@ class XpengVehicleCard extends HTMLElement{
      ['energy','gauge','נתוני אנרגיה','צריכה והיסטוריית טעינה'],
      ['power','plug','V2L','חשמל בתא המטען'],
      ['maintenance','settings','תחזוקה','הטיפול הבא'],
-     ['updates','refresh','עדכוני תוכנה','XOS ו־OTA']
+     ['updates','refresh','עדכוני תוכנה','XOS ו־OTA'],
+     ['diagnostics','info','אבחון ישויות','חיישנים, מצב ומזהי Xpengtk']
    ];
    const section=sections.find(x=>x[0]===this._xpExtraSection);
    if(section){
