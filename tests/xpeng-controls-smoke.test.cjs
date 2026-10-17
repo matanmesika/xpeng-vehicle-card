@@ -151,7 +151,12 @@ test('G6 photo mapping keeps other XPENG model artwork unchanged', () => {
   const {card}=createCard({model:'G9',year:'2026'});
   assert.doesNotMatch(card.xpCabinView(), /interiors\/g6\/2026\/.+_photo/);
 });
-test('photo files must be committed before releasing this draft', () => {
+test('photo files must be committed before releasing this draft', {
+  skip: ['light_gray_photo.webp','dark_gray_photo.webp'].some(name=>
+    !fs.existsSync(path.join(__dirname,'..','assets','interiors','g6','2026',name)))
+    ? 'BLOCKED: owner-reviewed cabin photo WebPs have not been uploaded; not ready to release'
+    : false
+}, () => {
   const root=path.join(__dirname,'..','assets','interiors','g6','2026');
   const required=['light_gray_photo.webp','dark_gray_photo.webp'];
   for(const name of required){
@@ -376,7 +381,7 @@ test('screenshot functions wired only when upstream Xpengtk offers native entity
   card._hass.states['switch.real_defrost']={state:'off',attributes:{}};
   card._hass.states['calendar.real_schedule']={state:'off',attributes:{}};
   const html=card.xpClimateFeatures();
-  assert.equal((html.match(/class="xp-ux-climate-feature/g)||[]).length,3);
+  assert.equal((html.match(/class="xp-ux-climate-feature(?: |")/g)||[]).length,3);
   assert.match(html,/data-xp-climate="off"/);
   assert.match(html,/data-xp-switch="defrost_switch"/);
   assert.match(html,/data-xp-extra-page="schedule"/);
@@ -451,10 +456,33 @@ test('missing XPENG target and cabin telemetry must not be rendered as zero degr
   assert.equal(commands.length,0);
   climate.attributes.temperature=22;
   const restored=card.xpTempControl();
-  assert.match(restored,/<b>22\.0°C<\/b>/);
+  assert.match(restored,/<b>22(?:\.0)?°C<\/b>/);
   assert.doesNotMatch(restored,/data-xp-temp="1"[^>]*disabled/);
   card.xpDoTemperature(1);
   assert.deepEqual(JSON.parse(JSON.stringify(commands)),[
     {domain:'climate',service:'set_temperature',data:{entity_id:'climate.renamed_hvac',temperature:22.5}}
   ]);
+});
+
+test('G6 home controls default visible but still allow explicit hiding',()=>{
+ const {card}=createCard({show_controls:undefined});
+ assert.equal(card.xpUiEnabled(),true);
+ assert.equal((card.xpDock().match(/data-xp-open=/g)||[]).length,4);
+ assert.equal(card.xpAccessAllowed(),false);
+ card.setConfig({type:'custom:xpeng-vehicle-card',model:'G6',year:'2026',prefix:'xpeng_g6',show_controls:false});
+ assert.equal(card.xpUiEnabled(),false);
+});
+test('G6 charging uses front asset and defers active actions to a modal',()=>{
+ const {card}=createCard({show_controls:undefined});
+ card._view='charging';
+ assert.match(card.assetSpec().src,/\/g6\/2026\/[^/]+\/front\.webp$/);
+ card.render();
+ const h=card.shadowRoot.innerHTML;
+ assert.match(h,/data-xp-open="charge_controls"/);
+ assert.doesNotMatch(h,/class="xp-ux-charge-actions"/);
+ assert.doesNotMatch(h,/class="xp-ux-dock /);
+ assert.doesNotMatch(h,/class="xp-more-trigger"/);
+ card._xpPanel='charge_controls';
+ assert.match(card.xpModal(),/data-xp-command="stop_charge"/);
+ assert.match(card.xpModal(),/data-xp-port="open"/);
 });

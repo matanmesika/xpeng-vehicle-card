@@ -87,7 +87,7 @@ test('year editor changes must invalidate old manual hero images, unlike trim ch
  assert.match(js, /\['model','year_group','year','color'\]\.includes\(key\)/);
  assert.doesNotMatch(js, /\['model','year','color','trim'\]\.includes\(key\)/);
 });
-test('front and charging require their own actual view; missing or broken URLs fall back', () => {
+test('G6 front-facing charging reference overrides rear-only legacy asset', () => {
  const cfg={model:'G6',year:'2026',color:'graphite_gray'};
  const car=instance(cfg);
  const front=car.assetSpec();
@@ -95,7 +95,7 @@ test('front and charging require their own actual view; missing or broken URLs f
  car._failedArtwork.add(front.src);
  assert.equal(car.assetSpec().tier,'silhouette');
  const charge=instance(cfg,true);
- assert.ok(charge.assetSpec().src.endsWith('/vehicles/g6/2026/graphite_gray/charging.webp'));
+ assert.ok(charge.assetSpec().src.endsWith('/vehicles/g6/2026/graphite_gray/front.webp'));
  const top=instance(cfg);
  assert.match(top.topCarArt(),/data-top-art/);
  top._failedArtwork.add(top.artworkUrl('vehicles/g6/2026/graphite_gray/top.webp'));
