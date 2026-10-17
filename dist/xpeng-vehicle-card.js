@@ -675,6 +675,14 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-ux-climate-feature small{font-size:9px;line-height:1.3}}
 @container xpeng-card (max-width:390px){.xp-ux-climate-feature span{font-size:10px}}
 
+.xp-extra-schedule-line{display:flex;align-items:center;gap:8px}
+.xp-extra-schedule-line .xp-extra-line{flex:1}
+.xp-extra-schedule-toggle{min-height:44px;padding:10px 12px;border:1px solid #38c0d6;
+ border-radius:13px;color:#d9faf5;background:#0c4e5de6;cursor:pointer;white-space:nowrap}
+@media(max-width:600px){.xp-extra-schedule-line{flex-wrap:wrap}
+ .xp-extra-schedule-line .xp-extra-line{flex-basis:100%}
+ .xp-extra-schedule-toggle{width:100%}}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -779,6 +787,17 @@ class XpengVehicleCard extends HTMLElement{
      }
      if(b.hasAttribute('data-xp-extra-back')){
        this._xpExtraSection=null;this._xpNotice='';this.render();return;
+     }
+     if(b.hasAttribute('data-xp-hvac-schedule')){
+       const id=b.dataset.xpHvacSchedule;
+       const schedule=this.xpLive('sensor','hvac_schedules');
+       const matches=Array.isArray(schedule?.state.attributes?.schedules)?
+         schedule.state.attributes.schedules.some(item=>item&&item.appointment_id!=null&&String(item.appointment_id)===id):false;
+       if(!matches)return;
+       const suffix='hvac_schedule_'+id,entity=this.xpLive('switch',suffix);
+       if(!entity||!['on','off'].includes(entity.state.state))return;
+       this.xpSend('switch',entity.state.state==='on'?'turn_off':'turn_on',suffix);
+       return;
      }
      if(b.hasAttribute('data-xp-extra-detail')){
        const lookup={
@@ -1267,8 +1286,16 @@ class XpengVehicleCard extends HTMLElement{
        out+=items.slice(0,8).map(x=>{
          if(!x||typeof x!=='object')return '';
          const time=x.start_time||'—',days=Array.isArray(x.days)?x.days.join(', '):'';
-         return '<div class="xp-extra-line"><span>'+xpEsc(days||'תזמון מיזוג')+'</span>'
-           +'<b>'+xpEsc(time)+'</b></div>';
+         const id=x.appointment_id==null?'':String(x.appointment_id);
+         const control=id?this.xpLive('switch','hvac_schedule_'+id):null;
+         const active=control?.state.state==='on';
+         const available=control&&['on','off'].includes(control.state.state);
+         return '<div class="xp-extra-schedule-line"><div class="xp-extra-line"><span>'
+           +xpEsc(days||'תזמון מיזוג')+'</span><b>'+xpEsc(time)+'</b></div>'
+           +(available?'<button type="button" class="xp-extra-schedule-toggle" data-xp-hvac-schedule="'
+             +xpEsc(id)+'" aria-label="'+(active?'השבת תזמון':'הפעל תזמון')+'">'
+             +(active?'פעיל · השבת':'כבוי · הפעל')+'</button>':'')
+           +'</div>';
        }).join('');
      }
      if(calendar)out+='<button type="button" class="xp-extra-action" data-xp-extra-detail="calendar">הצג לוח תזמוני מיזוג</button>';
@@ -1392,7 +1419,7 @@ class XpengVehicleCard extends HTMLElement{
   if(service==='set_value')data.value=value;
   else if(service==='set_temperature')data.temperature=value;
   else if(service==='select_option')data.option=value;
-  const sensitive=(domain==='lock'||suffix==='stop_charge'||suffix==='open_charge_port'||suffix==='close_charge_port'||suffix==='close_trunk'||suffix==='close_windows'||suffix==='open_windows'||suffix==='honk_horn'||suffix==='flash_lights'||suffix==='sentinel_switch');
+  const sensitive=(domain==='lock'||suffix==='stop_charge'||suffix==='open_charge_port'||suffix==='close_charge_port'||suffix==='close_trunk'||suffix==='close_windows'||suffix==='open_windows'||suffix==='honk_horn'||suffix==='flash_lights'||suffix==='sentinel_switch'||suffix.startsWith('hvac_schedule_'));
   if((sensitive||['trunk_power_switch','auto_upgrade_switch','sentinel_sensitivity_control','trunk_power_timer_control'].includes(suffix))&&typeof window.confirm==='function'
      &&!window.confirm('לשלוח את הפקודה לרכב?'))return;
   try{
