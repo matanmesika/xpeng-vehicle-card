@@ -31,14 +31,14 @@ Opt-in `show_controls: true` preserves the preexisting vehicle/charging artwork.
 | Open charge flap | `open_charge_port` (`button`) | Built on main scene with confirmation |
 | Automatic return on unplug | `plugged_in` / `charging` (`binary_sensor`) | Built: real telemetry decides view |
 | Door lock | `door_lock` (`lock`) | Built: securing action with confirmation |
-| Unlock the vehicle | `door_lock` (`lock`) | **Not shown** by default; Access permission required |
-| Close windows | `close_windows` (`button`) | Built in securing panel with confirmation |
+| Unlock the vehicle | `door_lock` (`lock`) | Doors popup: disabled by default, requires `enable_access_controls: true` AND Xpengtk Access policy |
+| Close windows | `close_windows` (`button`) | Windows popup, native HA button.press with confirmation |
 | Close trunk | `close_trunk` (`button`) | Built in securing panel with confirmation |
 | Flash lights, sound horn | `flash_lights`, `honk_horn` (`button`) | Built in securing panel with confirmation |
 | Arm X-Guard | `sentinel_switch` (`switch`) | Built only when state off |
 | Disarm X-Guard | `sentinel_switch` (`switch`) | Not shown; Access permission required |
 | Vehicle GPS | `location` (`device_tracker`) | Native HA entity detail, never guessed location |
-| Charge-cable release latch | no distinct verified entity | **Not implemented**; flap != connector lock |
+| Charge-cable release latch | no distinct verified Xpengtk entity or action | **Not implemented**; `stop_charge` and `open_charge_port` do not unlock the cable |
 | Pet mode, MAX A/C, sterilisation, rear separate temperature | no verified independent entity in Xpengtk | Not offered as fake controls |
 | Seat massage | model equipment may support it; no verified control entity | Not offered until real command is measured |
 | Exterior door opening | no verified direct per-door control | Not offered |
