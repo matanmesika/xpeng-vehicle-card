@@ -21,7 +21,7 @@ function demo(charging){
   'sensor.my_xpeng_last_update':state('2026-10-14T12:00:00'),
   'binary_sensor.my_xpeng_is_charging':state(charging?'on':'off'),
   'binary_sensor.my_xpeng_is_plugged_in':state(charging?'on':'off'),
-  'climate.my_xpeng_climate':state('heat_cool',{temperature:22,current_temperature:24,min_temp:16,max_temp:32,target_temp_step:0.5}),
+  'climate.my_xpeng_climate':state('heat_cool',{temperature:22,current_temperature:24,min_temp:16,max_temp:32,target_temp_step:0.5,hvac_modes:['off','heat_cool','auto'],swing_modes:['off','vertical'],swing_mode:'off'}),
   'lock.my_xpeng_door_lock':state('locked'),
   'button.my_xpeng_open_windows':state('unknown'),
   'button.my_xpeng_close_windows':state('unknown'),
@@ -164,6 +164,27 @@ async function main(){
  for(const action of ['charging','maintenance','map'])assert.equal(await car.locator('button[data-xp-open="'+action+'"]').count(),1,action+' home action missing');
  assert.equal(await car.locator('.xp-ux-dock-action:not([disabled])').count(),7,'Mock owner has approved Access, so all seven actions must work');
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-controls-desktop.png'),animations:'disabled'});
+ const readActions=async()=>car.locator('.xp-ux-dock-action').allTextContents();
+ let quickLabels=(await readActions()).join(' ');
+ assert.match(quickLabels,/פתח נעילה/);
+ assert.match(quickLabels,/פתח חלונות/);
+ assert.match(quickLabels,/פתח שקע/);
+ await page.evaluate(()=>{
+   const card=document.querySelector('xpeng-vehicle-card'),h=card.hass;
+   const states={...h.states};
+   states['lock.my_xpeng_door_lock']={...states['lock.my_xpeng_door_lock'],state:'unlocked'};
+   states['binary_sensor.my_xpeng_windows']={...states['binary_sensor.my_xpeng_windows'],state:'on'};
+   states['sensor.my_xpeng_slow_charge_port']={...states['sensor.my_xpeng_slow_charge_port'],state:'Open'};
+   card.hass={...h,states};
+ });
+ quickLabels=(await readActions()).join(' ');
+ assert.match(quickLabels,/נעל/);
+ assert.match(quickLabels,/סגור חלונות/);
+ assert.match(quickLabels,/סגור שקע/);
+ await car.screenshot({path:path.join(OUTPUT,'g6-2026-home-close-actions-desktop.png'),animations:'disabled'});
+ // Restore reference states; this mock does not issue any vehicle commands.
+ await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
+
  await car.locator('button[data-xp-open="climate"]').first().click();
  assert.ok(await car.locator('.xp-ux-modal-climate').count(),'Climate modal missing');
  assert.equal(await car.locator('.xp-ux-dock').count(),0,'Climate must have Back only, no home menu');
@@ -173,6 +194,8 @@ async function main(){
    assert.equal(await car.locator('.xp-ux-hotspot-zone[data-xp-zone="'+z+'"]').count(),1,'HVAC hotspot missing: '+z);
  }
  assert.equal(await car.locator('button[data-xp-cycle="left_rear_seat_heat_select"]').count(),1,'Missing rear left heater button');
+ assert.equal(await car.locator('[data-xp-hvac-mode="auto"]').count(),1,'AUTO missing despite HA advertised mode');
+ assert.equal(await car.locator('[data-xp-swing-mode="vertical"]').count(),1,'Airflow control missing despite HA advertised swing mode');
  assert.equal(await car.locator('button[data-xp-cycle="right_rear_seat_heat_select"]').count(),1,'Missing rear right heater button');
  const fan=await car.locator('[data-xp-range="fan_speed_control"]').first().evaluate(el=>({
    min:el.min,max:el.max,value:el.value,step:el.step
@@ -198,6 +221,17 @@ async function main(){
  await page.setViewportSize({width:390,height:900});
  await page.evaluate(()=>{const w=document.querySelector('.card-wrap');w.style.width='390px';w.style.margin='0 auto';});
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-controls-mobile.png'),animations:'disabled'});
+ await page.evaluate(()=>{
+   const card=document.querySelector('xpeng-vehicle-card'),h=card.hass;
+   const states={...h.states};
+   states['lock.my_xpeng_door_lock']={...states['lock.my_xpeng_door_lock'],state:'unlocked'};
+   states['binary_sensor.my_xpeng_windows']={...states['binary_sensor.my_xpeng_windows'],state:'on'};
+   states['sensor.my_xpeng_slow_charge_port']={...states['sensor.my_xpeng_slow_charge_port'],state:'Open'};
+   card.hass={...h,states};
+ });
+ assert.match((await readActions()).join(' '),/סגור חלונות/);
+ await car.screenshot({path:path.join(OUTPUT,'g6-2026-home-close-actions-mobile.png'),animations:'disabled'});
+ await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
  // The first-tap actions use real states; demo contains no backend car connection.
  for(const [action,name] of [['doors','doors-mobile'],['windows','windows-mobile'],['port','charge-port-mobile']]){
    await page.evaluate(action=>{const card=document.querySelector('xpeng-vehicle-card');card._xpPanel=action;card.render();},action);

@@ -49,15 +49,15 @@ jobs:
           names = ['vehicle-status','charging','maintenance-desktop',
                    'mobile-vehicle-status','mobile-charging',
                    'small-mobile-vehicle-status','small-mobile-charging',
-                   'sections-vehicle-status','controls-desktop','climate-desktop','climate-dark-desktop',
-                   'controls-mobile','maintenance-mobile',
+                   'sections-vehicle-status','controls-desktop','home-close-actions-desktop','climate-desktop','climate-dark-desktop',
+                   'controls-mobile','home-close-actions-mobile','maintenance-mobile',
                    'climate-mobile','climate-dark-mobile','charging-reference-mobile','charging-actions-mobile','charge-schedule-mobile']
           for name in names:
               p = Path('docs/screenshots/g6-2026-' + name + '.png')
               b = p.read_bytes()
               assert b[:8] == b'\x89PNG\r\n\x1a\n', p
               w,h = struct.unpack('>II',b[16:24])
-              if name in ['vehicle-status','charging','maintenance-desktop','controls-desktop','climate-desktop','climate-dark-desktop']:
+              if name in ['vehicle-status','charging','maintenance-desktop','controls-desktop','home-close-actions-desktop','climate-desktop','climate-dark-desktop']:
                   assert w >= 1100 and h >= 620 and len(b) > 80_000, (p,w,h,len(b))
               else:
                   assert 300 <= w <= 500 and h >= 700 and len(b) > 10_000, (p,w,h,len(b))

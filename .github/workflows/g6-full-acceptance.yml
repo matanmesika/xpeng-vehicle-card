@@ -1,0 +1,131 @@
+name: G6 complete pre-merge acceptance
+
+on:
+  push:
+    branches:
+      - feat/g6-cabin-owner-photos-20261017
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: g6-full-acceptance-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  full-system-acceptance:
+    name: Full G6 code, controls, visuals, responsiveness
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Syntax, package identity and schema checks
+        run: |
+          set -euo pipefail
+          node --check src/xpeng-vehicle-card.js
+          node --check dist/xpeng-vehicle-card.js
+          node --check scripts/capture-dashboard.cjs
+          cmp src/xpeng-vehicle-card.js dist/xpeng-vehicle-card.js
+          python -m json.tool hacs.json >/dev/null
+          python -m json.tool data/model-artwork.json >/dev/null
+          python -m json.tool data/vehicle-art-inventory.json >/dev/null
+
+      - name: Rebuild catalog and check artwork provenance
+        run: |
+          set -euo pipefail
+          python tools/sync_vehicle_artwork.py --check
+          python tools/export_vehicle_artwork_backlog.py --check
+          python tools/sync_year_palettes.py --check
+          python tools/sync_master_view_queue.py --check
+          node tools/render_artwork_status.mjs --check
+          python tools/check_photo_candidates.py
+          python tools/audit_vehicle_provenance.py
+
+      - name: One large regression pass — all maintained front-end suites
+        run: |
+          set -euo pipefail
+          node --test \
+            tests/vehicle-artwork-mapping.test.cjs \
+            tests/charging-cable-static.test.cjs \
+            tests/xpeng-controls-smoke.test.cjs \
+            tests/responsive-dual-state.test.cjs
+
+      - name: Verify owner interior photos and scene assets
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from struct import unpack
+          paths=[
+            'assets/vehicles/g6/interior_light_gray.webp',
+            'assets/vehicles/g6/interior_dark_gray.webp',
+            'assets/xpeng-approved-lakeside-background.webp',
+            'assets/vehicles/g6/2026/arctic_white/front.webp',
+          ]
+          for name in paths:
+            p=Path(name)
+            b=p.read_bytes()
+            assert len(b)>10_000 and b[:4]==b'RIFF' and b[8:12]==b'WEBP',(name,len(b))
+            print('PASS',name,len(b))
+          assert not Path('assets/interiors/g6/2026/light_gray.svg').exists()
+          assert not Path('assets/interiors/g6/2026/dark_gray.svg').exists()
+          PY
+
+      - name: Install pinned real Chromium / Playwright
+        run: |
+          npm install --prefix /tmp/xpeng-g6-qa --no-audit --no-fund playwright@1.56.1
+          /tmp/xpeng-g6-qa/node_modules/.bin/playwright install --with-deps chromium
+
+      - name: Full end-to-end browser capture (desktop, mobile, Sections, charge, cabin, one-tap and Back)
+        env:
+          PLAYWRIGHT_MODULE: /tmp/xpeng-g6-qa/node_modules/playwright
+        run: |
+          set -euo pipefail
+          timeout 150s node scripts/capture-dashboard.cjs | tee /tmp/xpeng-g6-browser.log
+
+      - name: Validate screenshots and responsive evidence
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import struct
+          names=[
+            'vehicle-status','charging','maintenance-desktop',
+            'mobile-vehicle-status','mobile-charging',
+            'small-mobile-vehicle-status','small-mobile-charging','sections-vehicle-status',
+            'controls-desktop','home-close-actions-desktop','climate-desktop','climate-dark-desktop',
+            'controls-mobile','home-close-actions-mobile','maintenance-mobile',
+            'climate-mobile','climate-dark-mobile','charging-reference-mobile',
+            'charging-actions-mobile','charge-schedule-mobile','back-home-mobile'
+          ]
+          for name in names:
+            f=Path('docs/screenshots/g6-2026-'+name+'.png')
+            b=f.read_bytes()
+            assert b[:8]==b'\x89PNG\r\n\x1a\n' and len(b)>10000,(name,len(b))
+            w,h=struct.unpack('>II',b[16:24])
+            if name in {'vehicle-status','charging','maintenance-desktop',
+                        'controls-desktop','home-close-actions-desktop',
+                        'climate-desktop','climate-dark-desktop'}:
+              assert w>=1100 and h>=620,(name,w,h)
+            else:
+              assert 300<=w<=500 and h>=700,(name,w,h)
+            print('PASS screenshot',name,w,h)
+          print('PASS: all 21 browser captures valid')
+          PY
+
+      - name: Upload all G6 acceptance screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: G6-pre-merge-acceptance-${{ github.sha }}
+          path: docs/screenshots/g6-2026-*.png
+          retention-days: 14
+          if-no-files-found: warn

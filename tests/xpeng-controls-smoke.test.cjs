@@ -290,8 +290,9 @@ test('unknown or missing HA select options never trigger an invented seat comman
 
 test('extras menu has six categories and home preserves seven actions',()=>{
   const {card}=createCard();
-  card._xpPanel='extras';
   assert.match(card.header(),/data-xp-more/);
+  card._xpPanel='extras';
+  assert.doesNotMatch(card.header(),/data-xp-more/,'subpages must expose only Back');
   assert.equal((card.xpExtrasPanel().match(/data-xp-extra-page=/g)||[]).length,6);
   assert.equal((card.xpDock().match(/data-xp-(?:open|toggle)=/g)||[]).length,7);
   for(const key of ['security','energy','schedule','power','maintenance','updates']){
