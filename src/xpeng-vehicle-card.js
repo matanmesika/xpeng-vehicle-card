@@ -134,40 +134,23 @@ const XP_CONTROL_FALLBACKS=Object.freeze({
  'calendar.hvac_schedule_calendar':'hvac_schedule'
 });
 
-const XP_ICONS = {
- home:'<path d="M3 10.5 12 3l9 7.5V21h-6v-7H9v7H3Z"/>',
- lock:'<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
- unlock:'<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0V6a4 4 0 0 0-7-2"/>',
- car:'<path d="M4 16H2v-5l2-5h16l2 5v5h-2M4 16h16M4 16v3m16-3v3M2 11h20M7 6l-2 5m12-5 2 5"/><circle cx="6.5" cy="15" r=".8"/><circle cx="17.5" cy="15" r=".8"/>',
- windows:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16M3 10h18"/><path d="m7 15 2-2 2 2"/>',
- windows_open:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16M3 10h18"/><path d="m6.5 17 2-2 2 2m5-1 2-2 2 2"/>',
- trunk:'<path d="M3 8h18v11H3zM4 8l2-4h12l2 4M4 14h16M10 17h4"/><path d="M8 19v2m8-2v2"/>',
- trunk_open:'<path d="M3 12h18v7H3zM4 12l3-7h10l3 7M4 16h16M10 18h4"/><path d="m9 7 3-4 3 4"/>',
- horn:'<path d="M3 10h4l8-5v14l-8-5H3v-4Zm12-1c2 1 2 5 0 6m3-9c4 3 4 9 0 12"/><path d="M6 14l1 5h3"/>',
- flash:'<path d="M3 8c5-2 10-2 14 0v8c-4 2-9 2-14 0V8Zm17 1 2-2m-2 5h3m-3 3 2 2"/><path d="M7 10h6m-6 4h6"/>',
- auto:'<path d="M20 8a8 8 0 0 0-14-3L4 7V3M4 7h4M4 16a8 8 0 0 0 14 3l2-2v4m0-4h-4"/><path d="m9 15 3-7 3 7m-5-2h4"/>',
- windscreen:'<path d="m4 18 2-12h12l2 12H4Zm4-7 1-2m3 2 1-2m3 2 1-2M8 15l1-2m3 2 1-2m3 2 1-2"/>',
- port_open:'<rect x="4" y="7" width="16" height="13" rx="3"/><path d="m8 11 4-4 4 4m-4-4V2"/><path d="M8 17h8"/>',
- fan:'<path d="M12 12c6-2 7-9 3-9-3 0-3 6-3 9Zm0 0c4 5 11 3 9-1-2-3-6 0-9 1Zm0 0c-5 4-3 11 1 9 3-2 0-6-1-9Z"/>',
- bolt:'<path d="M13 2 4 13h7l-1 9 10-12h-7l1-8Z"/>',
- pin:'<path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2"/>',
- arrow:'<path d="m9 5 7 7-7 7"/>', back:'<path d="m15 5-7 7 7 7"/>',
- refresh:'<path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.5 9A7 7 0 0 1 18 7l2 5M4 12l2 5a7 7 0 0 0 12.5-2"/>',
- settings:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M19 5l-2 2M7 17l-2 2"/>',
- thermometer:'<path d="M10 14.5V5a2 2 0 1 1 4 0v9.5a4 4 0 1 1-4 0Z"/>',
- tire:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 4v5m8 3h-5m-3 8v-5m-8-3h5"/>',
- info:'<circle cx="12" cy="12" r="10"/><path d="M12 11v6m0-10v1"/>',
- clock:'<circle cx="12" cy="12" r="9"/><path d="M12 6v7l4 3"/>',
- battery:'<rect x="2" y="6" width="18" height="12" rx="2"/><path d="M22 10v4"/>',
- power:'<path d="M12 2v10m-5-8a9 9 0 1 0 10 0"/>',
- plug:'<path d="M8 2v6m8-6v6M5 8h14v5a7 7 0 0 1-14 0V8Zm7 12v2"/>',
- check:'<path d="m4 12 5 5L20 6"/>',
- carfront:'<path d="M5 17v3m14-3v3M3 13l3-8h12l3 8v4H3v-4Zm0 0h18m-14 2h1m8 0h1"/>',
- shield:'<path d="M12 2 3 6v6c0 5 4 8 9 10 5-2 9-5 9-10V6l-9-4Z"/>',
- sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l2 2m10 10 2 2M19 5l-2 2M7 17l-2 2"/>',
- gauge:'<path d="M4 18a9 9 0 1 1 16 0M12 16l4-7"/>'
-};
-function xpIcon(name,size=22){return `<svg viewBox="0 0 24 24" width="${size}" height="${size}" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">${XP_ICONS[name]||XP_ICONS.info}</svg>`;}
+/* Material Design Icons supplied by Home Assistant (no hand-drawn SVG icon paths). */
+const XP_ICONS=Object.freeze({
+ home:'mdi:home',lock:'mdi:lock',unlock:'mdi:lock-open-variant',car:'mdi:car',
+ windows:'mdi:car-door',windows_open:'mdi:car-door',trunk:'mdi:car-back',
+ trunk_open:'mdi:car-back',horn:'mdi:bullhorn',flash:'mdi:car-light-high',
+ auto:'mdi:autorenew',windscreen:'mdi:car-defrost-front',port_open:'mdi:ev-plug-type2',
+ fan:'mdi:fan',bolt:'mdi:lightning-bolt',pin:'mdi:map-marker',arrow:'mdi:chevron-right',
+ back:'mdi:arrow-left',refresh:'mdi:swap-horizontal',settings:'mdi:cog',
+ thermometer:'mdi:thermometer',tire:'mdi:car-tire-alert',info:'mdi:information-outline',
+ clock:'mdi:clock-outline',battery:'mdi:battery',power:'mdi:power',
+ plug:'mdi:ev-plug-type2',check:'mdi:check',carfront:'mdi:car-front',
+ shield:'mdi:shield-outline',sun:'mdi:weather-sunny',gauge:'mdi:speedometer'
+});
+function xpIcon(name,size=22){
+ const px=Number.isFinite(Number(size))?Math.max(12,Math.min(64,Number(size))):22;
+ return '<ha-icon icon="'+(XP_ICONS[name]||XP_ICONS.info)+'" aria-hidden="true" style="--mdc-icon-size:'+px+'px;width:'+px+'px;height:'+px+'px;display:inline-flex;align-items:center;justify-content:center;flex:none"></ha-icon>';
+}
 function xpEsc(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
 function xpNum(v,dec=0){if(v===null||v===undefined||v===''||!Number.isFinite(Number(v)))return '—';return Number(v).toLocaleString('en-US',{maximumFractionDigits:dec});}
 function xpConnText(v){
