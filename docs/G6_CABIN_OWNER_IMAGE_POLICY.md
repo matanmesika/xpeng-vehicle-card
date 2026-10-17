@@ -21,3 +21,6 @@ When either photo is absent, display a missing-asset message, NOT the old synthe
 - The PR must remain draft until the two true photo files are present and verified visually.
 
 The owner's exact 752 × 1336 pixel WebP source images were committed and SHA-verified in the branch. Both obsolete G6 cabin SVGs were deleted. Browser capture loads both real variants and verifies natural image width before taking screenshots.
+
+## Rear comfort and fan range QA (demo)
+Both rear-seat heat controls are independent and should be shown over the rear seats whenever their corresponding Xpengtk `select` entities are present. The screenshot demonstration includes these as two examples, not live car measurements. Xpengtk's documented `number.fan_speed` range is 1–8; the card reads the actual Home Assistant entity's `min`, `max`, and `step` attributes and can render 1–10 only if that real entity reports 10. Never claim unsupported 10-step remote commands.
