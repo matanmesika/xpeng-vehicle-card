@@ -130,13 +130,13 @@ test('safe vehicle controls require only approved HA entities', () => {
   assert.doesNotMatch(card.xpVehiclePanel(), /data-xp-vehicle="lock.unlock/);
 });
 
-test('charge flap panel includes both separate commands and a cable-release disclaimer', () => {
+test('charge flap panel has one state-driven action and clear cable disclaimer', () => {
   const {card} = createCard();
   card._xpengByKey['button.close_charge_port']='button.close_flap';
   card._hass.states['button.close_flap']={state:'unknown',attributes:{}};
   assert.match(card.xpPortPanel(), /data-xp-toggle="port"/);
   assert.match(card.xpPortPanel(), /data-xp-toggle="port"/);
-  assert.match(card.xpPortPanel(), /לא לשחרור נעילת הכבל/);
+  assert.match(card.xpPortPanel(), /אין שחרור כבל/);
   card._xpPanel='port';card.render();
   assert.match(card.shadowRoot.innerHTML, /data-xp-toggle="port"/);
   assert.doesNotMatch(card.shadowRoot.innerHTML, /data-xp-page="seats"/);
@@ -194,6 +194,8 @@ test('opening doors and windows requires explicit owner opt-in plus upstream Acc
   assert.match(card.xpDoorsPanel(),/data-xp-toggle="doors" disabled/);
   assert.match(card.xpWindowsPanel(),/data-xp-toggle="windows" disabled/);
   card.setConfig({type:'custom:xpeng-vehicle-card',model:'G6',year:'2026',prefix:'xpeng_g6',show_controls:true,enable_access_controls:true});
+  card._xpengByKey['binary_sensor.windows']='binary_sensor.window_status';
+  card._hass.states['binary_sensor.window_status']={state:'off',attributes:{}};
   assert.doesNotMatch(card.xpDoorsPanel(),/data-xp-toggle="doors" disabled/);
   assert.doesNotMatch(card.xpWindowsPanel(),/data-xp-toggle="windows" disabled/);
 });
@@ -467,13 +469,14 @@ test('G6 home controls default visible but still allow explicit hiding',()=>{
  card.setConfig({type:'custom:xpeng-vehicle-card',model:'G6',year:'2026',prefix:'xpeng_g6',show_controls:false});
  assert.equal(card.xpUiEnabled(),false);
 });
-test('G6 charging uses front asset and defers active actions to a modal',()=>{
+test('G6 charging preserves original charge artwork and exposes controls',()=>{
  const {card}=createCard({show_controls:undefined});
  card._view='charging';
- assert.match(card.assetSpec().src,/\/g6\/2026\/[^/]+\/front\.webp$/);
+ assert.match(card.assetSpec().src,/\/g6\/2026\/[^/]+\/charging\.webp$/);
  card.render();
  const h=card.shadowRoot.innerHTML;
  assert.match(h,/data-xp-open="charge_controls"/);
+ assert.match(h,/data-xp-open="charge_schedule"/);
  assert.doesNotMatch(h,/class="xp-ux-charge-actions"/);
  assert.doesNotMatch(h,/class="xp-ux-dock /);
  assert.doesNotMatch(h,/class="xp-more-trigger"/);

@@ -1420,7 +1420,7 @@ class XpengVehicleCard extends HTMLElement{
    }
  }
  xpModal(){
-   if(!this.xpUiEnabled()||!this._xpPanel)return '';
+   if(!this._xpPanel||(!this.xpUiEnabled()&&!['maintenance','map'].includes(this._xpPanel)))return '';
    const page=this._xpPanel;
    if(!['climate','port','doors','windows','map','maintenance','charge_controls','charge_schedule','extras'].includes(page))return '';
    const labels={climate:'מיזוג אוויר',port:'שקע טעינה',doors:'דלתות',windows:'חלונות',charge_controls:'פעולות טעינה',charge_schedule:'תזמוני טעינה',maintenance:'תחזוקת הרכב',map:'מיקום הרכב',extras:'אפשרויות נוספות'};

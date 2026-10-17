@@ -150,7 +150,7 @@ async function main(){
  });
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
  assert.equal(await car.locator('.xp-ux-dock-action').count(),4,'Four quick actions missing');
- assert.equal(await car.locator('.xp-ux-dock-action:not([disabled])').count(),3,'Unknown/unpermitted controls must remain disabled');
+ assert.equal(await car.locator('.xp-ux-dock-action:not([disabled])').count(),2,'Unavailable Access permissions must disable open/unlock');
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-controls-desktop.png'),animations:'disabled'});
  await car.locator('button[data-xp-open="climate"]').first().click();
  assert.ok(await car.locator('.xp-ux-modal-climate').count(),'Climate modal missing');
