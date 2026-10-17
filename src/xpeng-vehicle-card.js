@@ -649,6 +649,17 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 @container xpeng-card (max-width:430px){.xp-extra-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
  .xp-extra-tile{min-height:116px}.xp-extra-line{padding:11px;gap:8px}}
 
+/* A portrait cabin must not push the A/C temperature completely off-screen on phones. */
+@media(max-width:600px){
+ .xp-ux-modal-climate .xp-ux-cabin-art.xp-ux-cabin-portrait{width:min(280px,100%);margin:5px auto 10px}
+ .xp-ux-modal-climate .xp-ux-temp-line{margin:8px auto}
+ .xp-ux-modal-climate .xp-ux-climate-card{padding:11px}
+ .xp-ux-modal-climate .xp-ux-cycle{min-height:44px}
+}
+@container xpeng-card (max-width:430px){
+ .xp-ux-modal-climate .xp-ux-cabin-art.xp-ux-cabin-portrait{width:min(270px,100%)}
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
