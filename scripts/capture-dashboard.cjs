@@ -210,6 +210,22 @@ async function main(){
    assert.ok(layout.sceneWidth<=width+2 && layout.sceneWidth>=width-2,JSON.stringify(layout));
    assert.ok(layout.sceneHeight>=700,JSON.stringify(layout));
    assert.equal(layout.charging,charging,JSON.stringify(layout));
+   if(charging){
+     const details=await car.evaluate(el=>{
+       const r=el.shadowRoot,image=r.querySelector('[data-car-art]');
+       const cables=[...r.querySelectorAll('svg[data-xp-cable]')];
+       return {imageSrc:image?.getAttribute('src'),cables:cables.map(svg=>({
+         mode:svg.dataset.xpCable,visible:getComputedStyle(svg).display!=='none',
+         stroke:parseFloat(getComputedStyle(svg.querySelector('.xp-charge-cable-core')).strokeWidth)
+       }))};
+     });
+     assert.match(details.imageSrc||'',/\/g6\/2026\/graphite_gray\/charging\.webp/,
+       'All charging breakpoints must use owner-selected rear-grey image');
+     assert.equal(details.cables.length,2,'Both cable layouts must be defined');
+     assert.equal(details.cables.filter(c=>c.visible).length,1,'Exactly one charging cable should show');
+     assert.ok(details.cables.every(c=>c.stroke<=3),'Green cable must be thin at all breakpoints');
+     console.log('Verified breakpoint charging imagery and cable:',JSON.stringify(details));
+   }
    if(!charging && width<=520)assert.equal(layout.panelColumns,2,JSON.stringify(layout));
    if(viewportWidth===width)assert.equal(layout.horizontalOverflow,false,JSON.stringify(layout));
    await car.screenshot({path:path.join(OUTPUT,'g6-2026-'+name+'.png'),animations:'disabled'});
