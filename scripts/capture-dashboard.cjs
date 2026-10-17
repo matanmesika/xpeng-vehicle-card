@@ -160,11 +160,14 @@ async function main(){
      trim:'core_performance_awd',color:'arctic_white',interior:'light_gray',enable_access_controls:true});
  });
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
- assert.equal(await car.locator('.xp-ux-dock-action').count(),4,'Four quick actions missing');
- assert.equal(await car.locator('.xp-ux-dock-action:not([disabled])').count(),4,'Mock owner has approved Access, so all four actions must work');
+ assert.equal(await car.locator('.xp-ux-dock-action').count(),7,'Seven home quick actions missing');
+ for(const action of ['charging','maintenance','map'])assert.equal(await car.locator('button[data-xp-open="'+action+'"]').count(),1,action+' home action missing');
+ assert.equal(await car.locator('.xp-ux-dock-action:not([disabled])').count(),7,'Mock owner has approved Access, so all seven actions must work');
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-controls-desktop.png'),animations:'disabled'});
  await car.locator('button[data-xp-open="climate"]').first().click();
  assert.ok(await car.locator('.xp-ux-modal-climate').count(),'Climate modal missing');
+ assert.equal(await car.locator('.xp-ux-dock').count(),0,'Climate must have Back only, no home menu');
+ assert.equal(await car.locator('[data-xp-close]').count(),1,'Climate must have one Back');
  const expectedZones=['wheel','driver','passenger','rear_left','rear_right'];
  for(const z of expectedZones){
    assert.equal(await car.locator('.xp-ux-hotspot-zone[data-xp-zone="'+z+'"]').count(),1,'HVAC hotspot missing: '+z);
@@ -223,6 +226,9 @@ async function main(){
  assert.equal(await car.locator('.xp-ux-charge-actions').count(),0,'Charging controls must not overlay hero');
  assert.equal(await car.locator('button[data-xp-open="charge_controls"]').count(),1,'Charge limit control missing');
  assert.equal(await car.locator('button[data-xp-open="charge_schedule"]').count(),1,'Charge schedules shortcut missing');
+ assert.equal(await car.locator('button[data-xp-home]').count(),1,'Charging needs one Back to home');
+ assert.equal(await car.locator('.xp-ux-dock').count(),0,'Charging must not have home dock');
+
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-charging-reference-mobile.png'),animations:'disabled'});
  await car.locator('button[data-xp-open="charge_controls"]').click();
  assert.ok(await car.locator('.xp-ux-modal-charge_controls').count(),'Charging modal missing');
@@ -231,6 +237,18 @@ async function main(){
  await car.locator('button[data-xp-open="charge_schedule"]').click();
  assert.ok(await car.locator('.xp-ux-modal-charge_schedule').count(),'Charging schedules modal missing');
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-charge-schedule-mobile.png'),animations:'disabled'});
+ // Automatic charging remains live, but Back returns Home until charging resets.
+ await car.locator('button[data-xp-close]').click();
+ await car.locator('button[data-xp-home]').click();
+ assert.equal(await car.locator('.xp-ux-dock-action').count(),7,'Back from live Charging should display Home menu');
+ assert.equal(await car.locator('button[data-xp-home]').count(),0,'Home should not have Back');
+ await car.screenshot({path:path.join(OUTPUT,'g6-2026-back-home-mobile.png'),animations:'disabled'});
+ // Charging is also a manually accessible destination, with the exact same scene.
+ await car.locator('button[data-xp-open="charging"]').click();
+ assert.equal(await car.locator('.xp-ux-charge-card').count(),1,'Manual charging view did not open');
+ assert.equal(await car.locator('.xp-ux-dock').count(),0,'Manual charging must hide home dock');
+ await car.locator('button[data-xp-home]').click();
+ assert.equal(await car.locator('.xp-ux-dock-action').count(),7,'Back from manual Charging should return Home');
  assert.equal(errors.length,0,errors.join('\n'));
  assert.ok(imagesServed>=4,'Expected bundled vehicle and background assets to be loaded');
  await browser.close();

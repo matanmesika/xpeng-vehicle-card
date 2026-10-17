@@ -159,7 +159,7 @@ test('photo files must be committed before releasing this draft', {
 });
 
 
-test('home screen presents exactly four controls, with no separate seats or map dock item', () => {
+test('home screen presents seven compact controls including charging, maintenance and map', () => {
   const {card}=createCard();
   for(const [key,domain,suffix,state] of [
     ['port','button','open_charge_port','button.open_flap'],
@@ -170,10 +170,11 @@ test('home screen presents exactly four controls, with no separate seats or map 
     card._hass.states[state] ??= {state:domain==='button'?'unknown':'locked',attributes:{}};
   }
   const nav=card.xpDock();
-  assert.equal((nav.match(/data-xp-(?:open|toggle)=/g)||[]).length,4);
+  assert.equal((nav.match(/data-xp-(?:open|toggle)=/g)||[]).length,7);
   for(const key of ['port','doors','windows'])assert.match(nav,new RegExp('data-xp-toggle="'+key+'"'));
   assert.match(nav,/data-xp-open="climate"/);
-  assert.doesNotMatch(nav,/data-xp-open="(?:map|seats)"/);
+  for(const key of ['charging','maintenance','map'])assert.match(nav,new RegExp('data-xp-open="'+key+'"'));
+  assert.doesNotMatch(nav,/data-xp-open="seats"/);
 });
 test('seat controls stay on cabin image and do not open a second sheet',()=>{
   const {card}=createCard();
@@ -287,12 +288,12 @@ test('unknown or missing HA select options never trigger an invented seat comman
 });
 
 
-test('extras menu has six categories and leaves home at exactly four actions',()=>{
+test('extras menu has six categories and home preserves seven actions',()=>{
   const {card}=createCard();
   card._xpPanel='extras';
   assert.match(card.header(),/data-xp-more/);
   assert.equal((card.xpExtrasPanel().match(/data-xp-extra-page=/g)||[]).length,6);
-  assert.equal((card.xpDock().match(/data-xp-(?:open|toggle)=/g)||[]).length,4);
+  assert.equal((card.xpDock().match(/data-xp-(?:open|toggle)=/g)||[]).length,7);
   for(const key of ['security','energy','schedule','power','maintenance','updates']){
     card._xpExtraSection=key;
     assert.match(card.xpModal(),/xp-extra-details/);
@@ -464,7 +465,7 @@ test('missing XPENG target and cabin telemetry must not be rendered as zero degr
 test('G6 home controls default visible but still allow explicit hiding',()=>{
  const {card}=createCard({show_controls:undefined});
  assert.equal(card.xpUiEnabled(),true);
- assert.equal((card.xpDock().match(/data-xp-(?:open|toggle)=/g)||[]).length,4);
+ assert.equal((card.xpDock().match(/data-xp-(?:open|toggle)=/g)||[]).length,7);
  assert.equal(card.xpAccessAllowed(),false);
  card.setConfig({type:'custom:xpeng-vehicle-card',model:'G6',year:'2026',prefix:'xpeng_g6',show_controls:false});
  assert.equal(card.xpUiEnabled(),false);
@@ -603,4 +604,35 @@ test('rear heating controls render on the cabin only when matching G6 integratio
  assert.match(both,/data-xp-cycle="left_rear_seat_heat_select"/);
  assert.match(both,/data-xp-cycle="right_rear_seat_heat_select"/);
  assert.doesNotMatch(both,/data-xp-cycle="left_rear_seat_ventilation_select"/);
+});
+
+test('one navigation bar on Home, single Back and no dock on all subpages',()=>{
+ const {card}=createCard({enable_access_controls:true});
+ const h=card.shadowRoot;
+ card.render();
+ assert.equal((h.innerHTML.match(/class="xp-ux-dock-action"/g)||[]).length,7);
+ assert.doesNotMatch(h.innerHTML,/data-xp-home/);
+ for(const page of ['climate','maintenance','map','port','windows','doors']){
+   card._xpPanel=page;card.render();
+   assert.match(h.innerHTML,new RegExp('xp-ux-modal-'+page));
+   assert.match(h.innerHTML,/data-xp-close/);
+   assert.doesNotMatch(h.innerHTML,/class="xp-ux-dock-action"/);
+   assert.doesNotMatch(h.innerHTML,/data-xp-home/);
+ }
+ card._xpPanel=null;card._xpManualCharging=true;card.render();
+ assert.match(h.innerHTML,/data-xp-home/);
+ assert.doesNotMatch(h.innerHTML,/class="xp-ux-dock-action"/);
+ card._xpPanel='charge_schedule';card.render();
+ assert.match(h.innerHTML,/data-xp-close/);
+ assert.doesNotMatch(h.innerHTML,/data-xp-home/);
+ assert.doesNotMatch(h.innerHTML,/class="xp-ux-dock-action"/);
+});
+test('charging view can be opened manually and return to Home while charging stays live',()=>{
+ const {card}=createCard();
+ card._xpManualCharging=true;card.render();
+ assert.match(card.shadowRoot.innerHTML,/data-xp-home/);
+ card._xpManualCharging=false;card._xpChargingDismissed=true;card.render();
+ assert.match(card.shadowRoot.innerHTML,/class="xp-ux-dock-action"/);
+ assert.doesNotMatch(card.shadowRoot.innerHTML,/data-xp-home/);
+ card._xpChargingDismissed=false;
 });

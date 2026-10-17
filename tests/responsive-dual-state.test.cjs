@@ -22,7 +22,8 @@ test('on phone status information becomes two columns with final location spanni
 test('original desktop composition, vehicle artwork and automatic charge logic stay intact',()=>{
  assert.match(css,/\.xp-scene\{position:relative;width:100%;min-height:620px;aspect-ratio:16\/9/);
  assert.match(source,/xp-night-photo/);
- assert.match(source,/const isCharging=this\.xpChargingActive\(\);/);
+ assert.match(source,/const actualCharging=this\.xpChargingActive\(\);/);
+ assert.match(source,/this\._xpManualCharging\|\|\(actualCharging&&/);
  assert.match(source,/this\._view=isCharging\?'charging':'overview'/);
  assert.match(source,/isCharging\?this\.charging\(\)/);
  assert.match(source,/interior:'dark_gray'/);
