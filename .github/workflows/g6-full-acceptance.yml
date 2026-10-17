@@ -102,7 +102,7 @@ jobs:
             'mobile-vehicle-status','mobile-charging',
             'small-mobile-vehicle-status','small-mobile-charging','sections-vehicle-status',
             'controls-desktop','home-close-actions-desktop','climate-desktop','climate-dark-desktop',
-            'controls-mobile','home-close-actions-mobile','maintenance-mobile','trunk-mobile','location-mobile',
+            'controls-mobile','home-close-actions-mobile','maintenance-mobile','maintenance-mobile-psi','trunk-mobile','location-mobile',
             'climate-mobile','climate-dark-mobile','charging-reference-mobile',
             'charging-actions-mobile','charge-schedule-mobile','back-home-mobile'
           ]
@@ -118,7 +118,7 @@ jobs:
             else:
               assert 300<=w<=500 and h>=700,(name,w,h)
             print('PASS screenshot',name,w,h)
-          print('PASS: all 24 browser captures valid')
+          print('PASS: all 25 browser captures valid')
           PY
 
       - name: Upload all G6 acceptance screenshots

@@ -50,7 +50,7 @@ jobs:
                    'mobile-vehicle-status','mobile-charging',
                    'small-mobile-vehicle-status','small-mobile-charging',
                    'sections-vehicle-status','location-desktop','controls-desktop','home-close-actions-desktop','climate-desktop','climate-dark-desktop',
-                   'controls-mobile','home-close-actions-mobile','maintenance-mobile','trunk-mobile','location-mobile',
+                   'controls-mobile','home-close-actions-mobile','maintenance-mobile','maintenance-mobile-psi','trunk-mobile','location-mobile',
                    'climate-mobile','climate-dark-mobile','charging-reference-mobile','charging-actions-mobile','charge-schedule-mobile']
           for name in names:
               p = Path('docs/screenshots/g6-2026-' + name + '.png')

@@ -831,8 +831,58 @@ test('G6 multilingual text and icon contract covers all new user-facing actions'
  assert.match(card.charging(),/Charging information/);
  assert.match(card.charging(),/data-xp-open="charge_controls"/);
  assert.match(card.charging(),/data-xp-open="charge_schedule"/);
- assert.match(src,/auto:'<path/);
+ assert.match(src,/auto:'mdi:autorenew'/);
+ assert.match(src,/fan:'mdi:fan'/);
  assert.match(src,/horn:'<path/);
  assert.match(src,/flash:'<path/);
  assert.match(src,/windscreen:'<path/);
+});
+
+test('all action icons are native HA Material Design Icons, including the full fan',()=>{
+ const {card}=createCard({enable_access_controls:true});
+ assert.match(card.xpDock(),/<ha-icon icon="mdi:fan"/);
+ assert.doesNotMatch(card.xpDock(),/<svg/);
+ assert.match(src,/function xpIcon\(name,size=22\)/);
+ assert.doesNotMatch(src,/const XP_ICONS = \{/);
+ assert.doesNotMatch(card.charging(),/xp-charge-cable/);
+});
+test('correct Xpengtk TPMS IDs and no unavailable alias masks an available value',()=>{
+ const {card}=createCard();
+ card._xpengByKey={};
+ const st=card._hass.states;
+ for(const [k,n] of [['fl',243],['fr',250],['rl',235],['rr',247]]){
+   st['sensor.xpeng_g6_tyre_pressure_'+k]={state:String(n),attributes:{unit_of_measurement:'kPa'}};
+ }
+ st['sensor.xpeng_g6_tire_pressure_front_left_kpa']={state:'unavailable',attributes:{unit_of_measurement:'kPa'}};
+ assert.equal(card.number('tire_fl'),243);
+ assert.equal(card.tirePressureBar('tire_fl'),2.43);
+ card._xpTireUnit='bar';
+ assert.equal(card.tirePressureDisplay(card.tirePressureBar('tire_fr')),'2.5');
+ card._xpTireUnit='psi';
+ assert.equal(card.tirePressureDisplay(card.tirePressureBar('tire_fr')),'36.3');
+ card._xpTireUnit='kPa';
+ assert.equal(card.tirePressureDisplay(card.tirePressureBar('tire_fr')),'250');
+ const html=card.xpMaintenancePanel();
+ assert.match(html,/data-xp-tire-unit/);
+ for(const wheel of ['tire_fl','tire_fr','tire_rl','tire_rr'])assert.match(html,new RegExp('data-wheel="'+wheel+'"'));
+ assert.match(html,/קדמי שמאל/);
+ assert.match(html,/250/);
+ st['sensor.xpeng_g6_tyre_pressure_fr'].state='unavailable';
+ assert.equal(card.tirePressureBar('tire_fr'),null,'unavailable is not converted to a false pressure');
+});
+test('card editor permits persistent bar, PSI or kPa preferences',()=>{
+ const {card}=createCard({tire_pressure_unit:'psi'});
+ assert.equal(card.tireUnit(),'psi');
+ assert.match(src,/select\('tire_pressure_unit','Tire pressure units/);
+ card._xpTireUnit='kPa';
+ assert.equal(card.tireUnit(),'kPa');
+ card._xpTireUnit='invalid';
+ assert.equal(card.tireUnit(),'bar');
+});
+test('container scroll styles allow horizontal Home gestures and vertical phone subpages',()=>{
+ assert.match(src,/\.xp-ux-dock\{left:3%;right:3%;transform:none;max-width:none;width:94%;overflow-x:auto/);
+ assert.match(src,/touch-action:pan-x/);
+ assert.match(src,/\.xp-ux-modal\{overflow-y:auto;overflow-x:hidden/);
+ assert.match(src,/touch-action:pan-y/);
+ assert.match(src,/\.xp-ux-modal-maintenance \.xp-tire-reading\[data-wheel="tire_fl"\]\{grid-area:2\/1\}/);
 });
