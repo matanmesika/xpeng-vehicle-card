@@ -316,7 +316,7 @@ async function main(){
    if(action==='climate')await page.waitForFunction(()=>{const img=document.querySelector('xpeng-vehicle-card').shadowRoot.querySelector('img[data-cabin-art]');return img&&img.complete&&img.naturalWidth===752;});
 
    if(action==='climate'||action==='maintenance'){
-     const scroll=await car.locator('.xp-ux-modal-'+action).evaluate(el=>{
+     const scroll=await car.locator('.xp-ux-modal-'+action).evaluate((el,action)=>{
        const start=el.scrollTop,clientHeight=el.clientHeight,scrollHeight=el.scrollHeight;
        el.scrollTop=el.scrollHeight;
        const target=action==='climate'
@@ -325,7 +325,7 @@ async function main(){
        const area=el.getBoundingClientRect(),end=target?.getBoundingClientRect();
        return {start,position:el.scrollTop,clientHeight,scrollHeight,
          visible:!!end&&end.top<area.bottom&&end.bottom>area.top};
-     });
+     },action);
      assert.ok(scroll.scrollHeight>scroll.clientHeight+30,
        action+' content must overflow vertically: '+JSON.stringify(scroll));
      assert.ok(scroll.position>scroll.start+30,

@@ -149,7 +149,7 @@ const XP_ICONS = {
  auto:'<path d="M20 8a8 8 0 0 0-14-3L4 7V3M4 7h4M4 16a8 8 0 0 0 14 3l2-2v4m0-4h-4"/><path d="m9 15 3-7 3 7m-5-2h4"/>',
  windscreen:'<path d="m4 18 2-12h12l2 12H4Zm4-7 1-2m3 2 1-2m3 2 1-2M8 15l1-2m3 2 1-2m3 2 1-2"/>',
  port_open:'<rect x="4" y="7" width="16" height="13" rx="3"/><path d="m8 11 4-4 4 4m-4-4V2"/><path d="M8 17h8"/>',
- fan:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2"/><path d="M12 9.7c-1.9-2.5-.4-5.7 2-5.1 2.4.6 3.3 3.6 1.1 6.4M14 12.5c3-.4 5.2 2.2 3.8 4.3-1.4 2.1-4.6 2-7.2.6M10.6 13.5c-.7 3.1-4 4.2-5.7 2.3-1.7-1.9-.2-4.7 2.9-6.6"/><circle cx="12" cy="12" r="3"/>',
+ fan:'<circle cx="12" cy="12" r="10"/><ellipse cx="12" cy="7.8" rx="2.5" ry="3.5"/><ellipse cx="12" cy="7.8" rx="2.5" ry="3.5" transform="rotate(120 12 12)"/><ellipse cx="12" cy="7.8" rx="2.5" ry="3.5" transform="rotate(240 12 12)"/><circle cx="12" cy="12" r="1.5"/>',
  bolt:'<path d="M13 2 4 13h7l-1 9 10-12h-7l1-8Z"/>',
  pin:'<path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2"/>',
  arrow:'<path d="m9 5 7 7-7 7"/>', back:'<path d="m15 5-7 7 7 7"/>',
