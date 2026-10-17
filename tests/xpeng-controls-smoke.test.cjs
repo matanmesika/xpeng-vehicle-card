@@ -835,10 +835,10 @@ test('G6 multilingual text and icon contract covers all new user-facing actions'
  assert.match(card.charging(),/Charging information/);
  assert.match(card.charging(),/data-xp-open="charge_controls"/);
  assert.match(card.charging(),/data-xp-open="charge_schedule"/);
- assert.match(src,/auto:'<path/);
- assert.match(src,/horn:'<path/);
- assert.match(src,/flash:'<path/);
- assert.match(src,/windscreen:'<path/);
+ assert.match(src,/auto:'mdi:autorenew'/);
+ assert.match(src,/horn:'mdi:bullhorn'/);
+ assert.match(src,/flash:'mdi:car-light-high'/);
+ assert.match(src,/windscreen:'mdi:car-defrost-front'/);
 });
 
 test('upstream Xpengtk unique IDs resolve without guessed windows/port names',()=>{
