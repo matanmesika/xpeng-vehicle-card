@@ -369,8 +369,9 @@ async function main(){
  assert.equal(await car.locator('.xp-ux-dock-action').count(),7,'Back from live Charging should display Home menu');
  assert.equal(await car.locator('button[data-xp-home]').count(),0,'Home should not have Back');
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-back-home-mobile.png'),animations:'disabled'});
- // Charge mode cannot be opened manually; it always follows real charging telemetry.
+ // An explicit Back suppresses the current charge; a NEW charge session reopens it.
  assert.equal(await car.locator('button[data-xp-open="charging"]').count(),0);
+ await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(true));
  const greenDebug=await car.evaluate(e=>({active:e.xpChargingActive(),view:e._view,dismissed:e._xpChargingDismissed,last:e._xpLastActualCharging,charging:e.val('charging'),plugged:e.val('plugged'),svg:!!e.shadowRoot.querySelector('svg.xp-charge-cable-live')}));
  console.log('Live cable after charge transition:',JSON.stringify(greenDebug));
