@@ -176,7 +176,9 @@ async function main(){
  });
  const desktopContent=await contentSignature();
  assert.deepEqual(desktopContent.actions,['climate','doors','windows','port','trunk','maintenance','map']);
- assert.equal(desktopContent.infoRows.length,2);
+ assert.deepEqual(desktopContent.infoRows,['Location']);
+ assert.equal(await car.locator('.xp-ux-dock-action[data-xp-open="maintenance"]').count(),1,'Only Home maintenance shortcut should remain');
+ assert.equal(await car.locator('.xp-status-panel [data-xp-open="maintenance"]').count(),0,'Home maintenance card must be absent');
  console.log('Canonical desktop/phone content signature:',JSON.stringify(desktopContent));
 
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(true));
@@ -267,7 +269,7 @@ async function main(){
        'Controls or vehicle status clipped on '+width+'px card: '+JSON.stringify(geometry));
      assert.ok(geometry.overlap<1,'Vehicle status and seven quick actions overlap: '+JSON.stringify(geometry));
    }
-   if(!charging && width<=520)assert.equal(layout.panelColumns,2,JSON.stringify(layout));
+   if(!charging && width<=520)assert.equal(layout.panelColumns,1,JSON.stringify(layout));
    if(viewportWidth===width)assert.equal(layout.horizontalOverflow,false,JSON.stringify(layout));
    await car.screenshot({path:path.join(OUTPUT,'g6-2026-'+name+'.png'),animations:'disabled'});
    console.log('Responsive capture '+name,JSON.stringify(layout));
