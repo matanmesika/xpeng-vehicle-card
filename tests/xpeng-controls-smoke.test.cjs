@@ -639,9 +639,10 @@ test('only sensor state triggers charging; confirmed charge renders green cable'
  card._hass.states['binary_sensor.cable_present'].state='on';
  card.render();
  assert.match(card.shadowRoot.innerHTML,/class="xp-charge-card"/);
- assert.match(card.shadowRoot.innerHTML,/<svg class="xp-charge-cable xp-charge-cable-live"/);
+ assert.match(card.shadowRoot.innerHTML,/data-xp-cable="desktop"/);
+ assert.match(card.shadowRoot.innerHTML,/data-xp-cable="mobile"/);
  card._hass.states['binary_sensor.is_charging'].state='off';card.render();
- assert.doesNotMatch(card.shadowRoot.innerHTML,/<svg class="xp-charge-cable xp-charge-cable-live"/);
+ assert.doesNotMatch(card.shadowRoot.innerHTML,/data-xp-cable="desktop"|data-xp-cable="mobile"/);
 });
 
 test('one-tap controls alter visible action labels, icons, and avoid duplicate confirms',async()=>{
@@ -881,4 +882,61 @@ test('upstream Xpengtk prefixed HA entity IDs work without registry access',()=>
  st['binary_sensor.xpeng_g6_any_window_open'].state='unavailable';
  st['binary_sensor.xpeng_g6_windows']={state:'on',attributes:{}};
  assert.equal(card.xpActionState('windows'),'open');
+});
+
+test('Xpengtk one-car VIN prefix resolves all core live data when user leaves old default prefix',()=>{
+ const {card}=createCard({prefix:'my_xpeng'});
+ card._xpengByKey={};
+ Object.assign(card._hass.states,{
+  'device_tracker.xpeng_abcdef_location':{state:'not_home',attributes:{latitude:30,longitude:31}},
+  'sensor.xpeng_abcdef_battery':{state:'62',attributes:{unit_of_measurement:'%'}},
+  'binary_sensor.xpeng_abcdef_charging':{state:'on',attributes:{}},
+  'binary_sensor.xpeng_abcdef_plugged_in':{state:'on',attributes:{}},
+  'binary_sensor.xpeng_abcdef_windows':{state:'on',attributes:{}},
+  'binary_sensor.xpeng_abcdef_lock':{state:'off',attributes:{}},
+  'sensor.xpeng_abcdef_slow_charge_port':{state:'Connected',attributes:{}},
+  'sensor.xpeng_abcdef_tyre_pressure_front_left':{state:'250',attributes:{unit_of_measurement:'kPa'}}
+ });
+ assert.equal(card.xpAutoVehiclePrefix(),'xpeng_abcdef');
+ assert.equal(card.val('soc'),'62');
+ assert.equal(card.xpChargingActive(),true);
+ assert.equal(card.xpActionState('windows'),'open');
+ assert.equal(card.xpActionState('doors'),'closed');
+ assert.equal(card.xpActionState('port'),null,'do not close the connected port');
+ assert.equal(card.tirePressureBar('tire_fl'),2.5);
+});
+test('ambiguous multi-vehicle Xpengtk prefixes must not select a random car',()=>{
+ const {card}=createCard({prefix:'my_xpeng'});card._xpengByKey={};
+ Object.assign(card._hass.states,{
+ 'device_tracker.xpeng_abcdef_location':{state:'not_home',attributes:{}},
+ 'device_tracker.xpeng_ghijkl_location':{state:'not_home',attributes:{}},
+ 'sensor.xpeng_abcdef_battery':{state:'85',attributes:{}},
+ 'sensor.xpeng_ghijkl_battery':{state:'18',attributes:{}}
+ });
+ assert.equal(card.xpAutoVehiclePrefix(),null);
+ assert.equal(card.val('soc'),null);
+});
+test('tyre pressure selector returns bar, PSI and kPa with real conversions and respects editor defaults',()=>{
+ const {card}=createCard({tire_pressure_unit:'psi'});
+ card._hass.states['sensor.xpeng_g6_tire_pressure_front_left_kpa']={state:'250',attributes:{unit_of_measurement:'kPa'}};
+ assert.equal(card.tirePressureBar('tire_fl'),2.5);
+ assert.equal(card.tirePressureDisplay('tire_fl').value,'36');
+ assert.match(card.tireScreen(false),/data-xp-tire-unit/);
+ assert.match(card.tireScreen(false),/PSI/);
+ card._xpTireUnit='kpa';
+ assert.equal(card.tirePressureDisplay('tire_fl').value,'250');
+ card._xpTireUnit='bar';
+ assert.equal(card.tirePressureDisplay('tire_fl').value,'2.5');
+});
+test('charging cable uses approved dedicated charging image and separate full-length native overlays',()=>{
+ const {card}=createCard({show_controls:true});
+ card._view='charging';
+ assert.match(card.assetSpec().src,/charging\.webp$/);
+ const html=card.charging();
+ assert.match(html,/data-xp-cable="desktop"/);
+ assert.match(html,/data-xp-cable="mobile"/);
+ assert.match(html,/M357 632.*202 628/);
+ assert.match(html,/M1310 452.*1090 439/);
+ card._hass.states['binary_sensor.is_charging'].state='off';
+ assert.doesNotMatch(card.charging(),/data-xp-cable/);
 });
