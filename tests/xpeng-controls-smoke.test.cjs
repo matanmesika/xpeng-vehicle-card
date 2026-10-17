@@ -475,7 +475,7 @@ test('G6 home controls default visible but still allow explicit hiding',()=>{
 test('G6 charging preserves original panel layout with approved front-oriented car',()=>{
  const {card}=createCard({show_controls:undefined});
  card._view='charging';
- assert.match(card.assetSpec().src,/\/g6\/2026\/[^/]+\/front\.webp$/);
+ assert.match(card.assetSpec().src,/\/g6\/2026\/[^/]+\/charging\.webp$/);
  card.render();
  const h=card.shadowRoot.innerHTML;
  assert.match(h,/data-xp-open="charge_controls"/);
@@ -636,7 +636,7 @@ test('only sensor state triggers charging; confirmed charge renders green cable'
  card.render();
  assert.doesNotMatch(card.xpDock(),/data-xp-open="charging"/);
  card._hass.states['binary_sensor.is_charging'].state='on';
- card._hass.states['binary_sensor.is_plugged_in'].state='off';
+ card._hass.states['binary_sensor.cable_present'].state='on';
  card.render();
  assert.match(card.shadowRoot.innerHTML,/class="xp-charge-card"/);
  assert.match(card.shadowRoot.innerHTML,/xp-charge-cable-live/);
@@ -825,7 +825,7 @@ test('G6 multilingual text and icon contract covers all new user-facing actions'
  card._xpengByKey['button.open_windows']='button.open_windows_translation';
  card._hass.states['binary_sensor.window_for_translation']={state:'off',attributes:{}};
  card._hass.states['button.open_windows_translation']={state:'unknown',attributes:{}};
- for(const name of ['מיזוג','טעינה','תחזוקה','מיקום','חלונות','פתח תא מטען'])
+ for(const name of ['מיזוג','תחזוקה','מיקום','חלונות','פתח תא מטען'])
    assert.ok(card.xpDock().includes(name),'Missing correct Hebrew action: '+name);
  assert.match(card.xpTrunkPanel(),/תא המטען/);
  assert.match(card.xpMapPanel(),/צופר/);

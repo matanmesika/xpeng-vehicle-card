@@ -1179,6 +1179,7 @@ class XpengVehicleCard extends HTMLElement{
  }
  xpChargingActive(){
   // A confirmed unplugged cable overrides stale charging telemetry.
+  if(this.bool('plugged')===false)return false;
   return xpChargingActive(this.val('charging'))===true;
  }
  xpActionState(action){
