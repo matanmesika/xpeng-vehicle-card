@@ -932,7 +932,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 
 .xp-tire-units{position:absolute;z-index:6;top:0;right:12px;display:flex;align-items:center;gap:7px;color:#c5d9f1;font-size:12px}
 .xp-tire-units select{background:#112940;border:1px solid #4c80a1;border-radius:8px;color:#fff;padding:6px;min-height:34px}
-@container xpeng-layout (max-width:600px){.xp-ux-modal-maintenance .xp-tire-units{position:relative;justify-content:flex-end;margin:6px 0 9px}}
+@container xpeng-layout (max-width:600px){.xp-ux-modal-maintenance .xp-tire-units{position:relative;justify-content:flex-start;margin:6px 0 9px;padding:0 8px}}
 /* Mobile scroll: modal is an independent touch-scrolling surface inside the scene. */
 .xp-ux-modal{overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;
  touch-action:pan-y;overscroll-behavior-y:contain;max-height:96%;box-sizing:border-box}
@@ -1161,7 +1161,7 @@ class XpengVehicleCard extends HTMLElement{
   this._xpengRegistryPending=true;
   try{
    const entries=await conn.sendMessagePromise({type:'config/entity_registry/list'});
-   const selection=xpVehicleRegistryRows(entries,this.prefix(),this._config.xpeng_device_id);
+   const selection=xpVehicleRegistryRows(entries,this.prefix(),this.vehicle()?.xpeng_device_id??this._config.xpeng_device_id);
    this._xpengByKey=selection.byKey;
    this._xpengEntities=selection.entries;
    this._xpengRegistryMessage=selection.message;
@@ -1569,7 +1569,10 @@ class XpengVehicleCard extends HTMLElement{
  xpPortPanel(){
    const status=this.xpLive('sensor','slow_charge_port')||this.xpLive('sensor','charge_port');
    const readable=this.xpActionState('port');
-   const msg=readable===null?'מצב הדלתית אינו זמין או שכבל מחובר':readable==='open'?'דלתית פתוחה':'דלתית סגורה';
+   const portValue=String(status?.state?.state??'').trim().toLowerCase();
+   const msg=readable!==null?(readable==='open'?'דלתית פתוחה':'דלתית סגורה')
+     :portValue==='connected'?(this.bool('plugged')===true?'כבל מחובר • אין לסגור את הדלתית':'דיווח Connected • חיבור הכבל אינו מאומת')
+     :'מצב הדלתית אינו זמין';
    return '<div class="xp-ux-port-panel"><div class="xp-ux-port-state">'+xpIcon('plug',34)+
      '<div><strong>דלתית שקע הטעינה</strong><small>'+xpEsc(msg)+'</small></div></div>'+
      '<div class="xp-ux-port-actions">'+this.xpToggleButton('port')+'</div>'+
