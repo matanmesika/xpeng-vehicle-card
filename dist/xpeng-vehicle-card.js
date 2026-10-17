@@ -615,7 +615,8 @@ class XpengVehicleCard extends HTMLElement{
      }
      if(b.hasAttribute('data-xp-access')){
         const act=b.dataset.xpAccess;
-        const allowed=this._config.enable_access_controls===true||this.vehicle()?.enable_access_controls===true;
+        const enabled=this.vehicle()?.enable_access_controls??this._config.enable_access_controls??false;
+        const allowed=enabled===true||enabled==='true';
         if(!allowed)return;
         if(act==='unlock')this.xpSend('lock','unlock','door_lock');
         if(act==='open_windows')this.xpSend('button','press','open_windows');
@@ -869,7 +870,7 @@ class XpengVehicleCard extends HTMLElement{
  }
 
  xpAccessAllowed(){
-   return this.vehicle()?.enable_access_controls===true||this._config.enable_access_controls===true;
+   const opt=this.vehicle()?.enable_access_controls??this._config.enable_access_controls??false;return opt===true||opt==='true';
  }
  xpDoorsPanel(){
    const entry=this.xpLive('lock','door_lock');
@@ -927,7 +928,8 @@ class XpengVehicleCard extends HTMLElement{
    try{
      // Use the Home Assistant native map card, not a hardcoded coordinate or third-party tile URL.
      const helper=typeof window.loadCardHelpers==='function'?await window.loadCardHelpers():null;
-     if(!helper||this._xpPanel!=='map'||!this.shadowRoot?.contains?.(host))return;
+     if(!helper){host.textContent='המפה המובנית אינה זמינה בכרטיס זה כרגע.';return;}
+     if(this._xpPanel!=='map'||!this.shadowRoot?.contains?.(host))return;
      const map=helper.createCardElement({type:'map',entities:[{entity:gps.id}],
        default_zoom:11,hours_to_show:0,dark_mode:true});
      map.hass=this._hass;
@@ -1411,6 +1413,7 @@ class XpengVehicleCardEditor extends HTMLElement{
      ${select('color','Exterior paint',xpAllowedPaints(v.model,v.year))}
      ${select('interior','Interior finish',xpAllowedInteriors(v.model,v.year))}
      ${select('show_controls','Optional control pages', [{id:'false',label:'Disabled (original card)'},{id:'true',label:'Enabled (responsive controls)'}],String(v.show_controls===true||v.show_controls==='true'))}
+     ${select('enable_access_controls','Access actions (unlock / windows)',[{id:'false',label:'Off (safe default)'},{id:'true',label:'On (requires Xpengtk Access permission)'}],String(v.enable_access_controls===true||v.enable_access_controls==='true'))}
      <p>Years sharing the same exterior/facelift are grouped. Select a specific year only when paint availability differs. Trim labels never change vehicle pictures.</p>
     <h3>Sensor mapping</h3>
      <label>Mapping mode<select data-key="sensor_mapping_mode">
