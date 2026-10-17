@@ -572,3 +572,35 @@ test('charge schedules are read-only, charge limit remains a real HA control',()
  assert.match(card.shadowRoot.innerHTML,/data-xp-open="charge_schedule"/);
  assert.match(card.shadowRoot.innerHTML,/data-xp-open="charge_controls"/);
 });
+
+
+test('HVAC fan control uses real Home Assistant limits rather than fixed visual bars',()=>{
+ const {card}=createCard();
+ card._xpengByKey['number.fan_speed_control']='number.preview_fan';
+ card._hass.states['number.preview_fan']={state:'7',attributes:{min:1,max:8,step:1}};
+ const eight=card.xpFanControl();
+ assert.match(eight,/min="1"/);
+ assert.match(eight,/max="8"/);
+ assert.match(eight,/value="7"/);
+ card._hass.states['number.preview_fan']={state:'9',attributes:{min:1,max:10,step:1}};
+ const ten=card.xpFanControl();
+ assert.match(ten,/max="10"/);
+ assert.match(ten,/value="9"/);
+ assert.match(ten,/step="1"/);
+});
+test('rear heating controls render on the cabin only when matching G6 integration entities are present',()=>{
+ const {card}=createCard();
+ const absent=card.xpCabinView();
+ assert.doesNotMatch(absent,/data-xp-zone="rear_left"/);
+ assert.doesNotMatch(absent,/data-xp-zone="rear_right"/);
+ for(const [suffix,name] of [['left_rear_seat_heat_select','select.rear_left'],['right_rear_seat_heat_select','select.rear_right']]){
+   card._xpengByKey['select.'+suffix]=name;
+   card._hass.states[name]={state:'Heat 2',attributes:{options:['Off','Heat 1','Heat 2','Heat 3']}};
+ }
+ const both=card.xpCabinView();
+ assert.match(both,/data-xp-zone="rear_left"/);
+ assert.match(both,/data-xp-zone="rear_right"/);
+ assert.match(both,/data-xp-cycle="left_rear_seat_heat_select"/);
+ assert.match(both,/data-xp-cycle="right_rear_seat_heat_select"/);
+ assert.doesNotMatch(both,/data-xp-cycle="left_rear_seat_ventilation_select"/);
+});
