@@ -1897,7 +1897,9 @@ class XpengVehicleCard extends HTMLElement{
      ...spec.slice(1).map(s=>spec[0]+'.'+this.prefix()+'_'+s),
      ...(XP_XPENGTK_KEYS[key]||[]).map(([domain,suffix])=>domain+'.'+this.prefix()+'_'+suffix)
    ];
-   const id=ids.find(x=>this._hass?.states?.[x])||ids[0];
+   const live=id=>{const v=this._hass?.states?.[id]?.state;
+     return v!==undefined&&!XP_INVALID.has(String(v).trim().toLowerCase());};
+   const id=ids.find(live)||ids.find(x=>this._hass?.states?.[x])||ids[0];
    const entity=this._hass?.states?.[id];
    const attribute=custom?.attribute;
    const attrs=entity?.attributes;
@@ -1921,7 +1923,7 @@ class XpengVehicleCard extends HTMLElement{
     const profileArt=key=>Array.isArray(this._config.vehicles)&&this._config.vehicles.length
       ?this.vehicle()?.[key]:this.vehicle()?.[key]||this._config[key];
     const chosen=(this._view==='charging'&&profileArt('charging_image'))||profileArt('image');
-    const a=this.appearance(),model=xpAssetModel(a.model),view=this._view==='charging'?'rear':'front';
+    const a=this.appearance(),model=xpAssetModel(a.model),view=this._view==='charging'?'charging':'front';
     if(xpLocalArtworkPath(chosen)&&!this._failedArtwork.has(chosen))
       return {src:chosen,illustrative:false,studio:false,tier:'manual',view,view_status:'owner_supplied',
         description:'Owner-supplied artwork for '+a.model+' '+a.color};
@@ -1930,7 +1932,7 @@ class XpengVehicleCard extends HTMLElement{
     // Preserve the existing separately supplied charging artwork and geometry.
     // The owner approved the original left-side charging metrics layout but the
     // reference shows a front three-quarter G6, never the rear-facing cutout.
-    const candidate=xpVehicleAssetPath(a,a.model==='G6'?'front':view==='rear'?'charging':'front');
+    const candidate=xpVehicleAssetPath(a,view);
     if(candidate&&XP_ARTWORK_INDEX.has(candidate)&&!this._failedArtwork.has(bundled(candidate))){
       const generated=XP_ILLUSTRATIVE_ARTWORK_INDEX.has(candidate);
       return {src:bundled(candidate),illustrative:generated,studio:false,tier:generated?'generated-preview':'exact-view',view,
@@ -2112,7 +2114,6 @@ class XpengVehicleCard extends HTMLElement{
  charging(){
   return `${this.title()}
     <div class="xp-station" aria-hidden="true">✕</div>${this.carArt()}
-    ${this.model()==='G6'?'<svg class="xp-charge-cable" aria-hidden="true" viewBox="0 0 1536 864" preserveAspectRatio="none"><path class="xp-charge-cable-halo xp-cable-desktop" d="M1443 500C1464 647 1366 663 1235 625S1174 522 1185 479"/><path class="xp-charge-cable-core xp-cable-desktop" d="M1443 500C1464 647 1366 663 1235 625S1174 522 1185 479"/><path class="xp-charge-cable-halo xp-cable-mobile" d="M1440 685Q1408 747 1300 714"/><path class="xp-charge-cable-core xp-cable-mobile" d="M1440 685Q1408 747 1300 714"/></svg>':''}
     <section class="xp-charge-card" aria-label="Charging information">
        <div class="xp-charge-heading">${xpIcon('bolt',42)}<span>${xpEsc(this.chargeStatus())}</span></div>
        ${this.progress()}
