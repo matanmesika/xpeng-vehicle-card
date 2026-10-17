@@ -2117,6 +2117,8 @@ class XpengVehicleCard extends HTMLElement{
   tireScreen(showBack=true){
     const a=this.appearance(),photo=Array.isArray(this._config.vehicles)&&this._config.vehicles.length
       ?this.vehicle()?.top_image:this.vehicle()?.top_image||this._config.top_image;
+    const catalogTop=xpVehicleAssetPath(a,'top');
+    const topArtworkExists=xpLocalArtworkPath(photo)||(catalogTop&&XP_ARTWORK_INDEX.has(catalogTop));
     const wheel=(key,label)=>{const bar=this.tirePressureBar(key);
       return `<div class="xp-tire-reading" data-wheel="${key}"><small>${label}</small>
         <strong>${xpEsc(this.tirePressureDisplay(bar))}</strong><span>${bar===null?'לא זמין':this.tireUnit()}</span></div>`;};
@@ -2125,7 +2127,7 @@ class XpengVehicleCard extends HTMLElement{
        <div class="xp-tire-stage"><div class="xp-tire-center">${this.topCarArt()}</div>
          ${wheel('tire_fl','קדמי שמאל')}${wheel('tire_fr','קדמי ימין')}
          ${wheel('tire_rl','אחורי שמאל')}${wheel('tire_rr','אחורי ימין')}</div>
-       ${!xpLocalArtworkPath(photo)?'<div class="xp-tire-disclaimer">Illustrative overhead view · exact model artwork pending</div>':''}
+       ${!topArtworkExists?'<div class="xp-tire-disclaimer">תמונת מבט־על לא זמינה לדגם זה</div>':''}
      </section>`;
   }
  overview(){

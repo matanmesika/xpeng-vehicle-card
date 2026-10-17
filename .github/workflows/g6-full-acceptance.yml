@@ -83,7 +83,7 @@ jobs:
 
       - name: Install pinned real Chromium / Playwright
         run: |
-          npm install --prefix /tmp/xpeng-g6-qa --no-audit --no-fund playwright@1.56.1
+          npm install --prefix /tmp/xpeng-g6-qa --no-audit --no-fund playwright@1.56.1 @mdi/js@7.4.47
           /tmp/xpeng-g6-qa/node_modules/.bin/playwright install --with-deps chromium
 
       - name: Full end-to-end browser capture (desktop, mobile, Sections, charge, cabin, one-tap and Back)

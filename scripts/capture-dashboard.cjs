@@ -7,6 +7,16 @@ const assert=require('node:assert/strict');
 const ROOT=path.resolve(__dirname,'..');
 const OUTPUT=path.join(ROOT,'docs','screenshots');
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
+// The stand-alone screenshot harness doesn't load HA's native ha-icon element.
+// Provide the SAME official @mdi/js Material Design paths for accurate previews.
+const mdi=require(path.join(path.dirname(process.env.PLAYWRIGHT_MODULE||require.resolve('playwright')),'@mdi','js'));
+const sourceText=fs.readFileSync(path.join(ROOT,'src','xpeng-vehicle-card.js'),'utf8');
+const mdiNames=[...new Set([...sourceText.matchAll(/'mdi:([a-z0-9-]+)'/g)].map(match=>match[1]))];
+const mdiPaths=Object.fromEntries(mdiNames.map(name=>{
+ const exportName='mdi'+name.split('-').map(piece=>piece[0].toUpperCase()+piece.slice(1)).join('');
+ assert.ok(mdi[exportName],'Missing standard Material Design Icon path: '+name);
+ return ['mdi:'+name,mdi[exportName]];
+}));
 
 const state=(value,attrs={})=>({state:String(value),attributes:attrs});
 function demo(charging){
@@ -84,6 +94,19 @@ async function main(){
  body{font-family:Arial,sans-serif}
  .card-wrap{width:1400px;margin:18px auto}</style></head>
  <body><div class="card-wrap"><xpeng-vehicle-card></xpeng-vehicle-card></div></body></html>`);
+ await page.evaluate(iconPaths=>{
+   if(customElements.get('ha-icon'))return;
+   customElements.define('ha-icon',class extends HTMLElement{
+     static get observedAttributes(){return ['icon'];}
+     connectedCallback(){this.renderIcon();}
+     attributeChangedCallback(){this.renderIcon();}
+     renderIcon(){
+       const path=iconPaths[this.getAttribute('icon')];
+       this.innerHTML=path?
+         '<svg viewBox="0 0 24 24" width="100%" height="100%" fill="currentColor" aria-hidden="true"><path d="'+path+'"/></svg>':'';
+     }
+   });
+ },mdiPaths);
  await page.addScriptTag({path:path.join(ROOT,'src','xpeng-vehicle-card.js')});
  const car=page.locator('xpeng-vehicle-card');
  await page.evaluate(()=>{
@@ -338,9 +361,15 @@ async function main(){
      assert.match(metrics.label,/2\.5bar/);
      await car.locator('select[data-xp-tire-unit]').selectOption('psi');
      assert.match(await car.locator('[data-wheel="tire_fl"]').innerText(),/36\.3/);
+     await car.evaluate(el=>{el.shadowRoot.querySelector('.xp-ux-modal-maintenance').scrollTop=0;});
      await car.screenshot({path:path.join(OUTPUT,'g6-2026-maintenance-mobile-psi.png'),animations:'disabled'});
      await car.locator('select[data-xp-tire-unit]').selectOption('kPa');
      assert.match(await car.locator('[data-wheel="tire_fl"]').innerText(),/250/);
+     await car.evaluate(el=>{el.shadowRoot.querySelector('.xp-ux-modal-maintenance').scrollTop=0;});
+     await page.waitForFunction(()=>{
+       const img=document.querySelector('xpeng-vehicle-card').shadowRoot.querySelector('.xp-ux-modal-maintenance img[data-top-art]');
+       return img&&img.complete&&img.naturalWidth>100;
+     });
      console.log('Mobile maintenance vertical scrolling and PSI/kPa conversion:',JSON.stringify(metrics));
    }
    await car.screenshot({path:path.join(OUTPUT,'g6-2026-'+name+'.png'),animations:'disabled'});
