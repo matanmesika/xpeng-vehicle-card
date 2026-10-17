@@ -127,7 +127,7 @@ async function main(){
  await page.evaluate(()=>{
    const card=document.querySelector('xpeng-vehicle-card');
    card.setConfig({type:'custom:xpeng-vehicle-card',prefix:'my_xpeng',model:'G6',year:'2026',
-      trim:'core_performance_awd',color:'arctic_white',interior:'light_gray',show_controls:false});
+      trim:'core_performance_awd',color:'arctic_white',interior:'light_gray',show_controls:true,enable_access_controls:true});
  });
  async function screen(name){
   console.log('Checking browser screen:',name);
@@ -161,6 +161,21 @@ async function main(){
  }
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
  await screen('vehicle-status');
+ // Desktop and mobile must contain exactly the same rendered actions and
+ // vehicle-status rows with the same simulated HA payload.
+ const contentSignature=async()=>car.evaluate(el=>{
+   const root=el.shadowRoot;
+   return {
+     actions:[...root.querySelectorAll('.xp-ux-dock-action')].map(b=>b.dataset.xpToggle||b.dataset.xpOpen),
+     infoRows:[...root.querySelectorAll('.xp-status-panel .xp-info-row')].map(r=>r.querySelector('.xp-info-copy small')?.textContent?.trim()),
+     soc:root.querySelector('.xp-overview-stat .xp-soc')?.textContent.trim(),
+     range:root.querySelector('.xp-overview-range .xp-range-num')?.textContent.trim()
+   };
+ });
+ const desktopContent=await contentSignature();
+ assert.deepEqual(desktopContent.actions,['climate','doors','windows','port','trunk','maintenance','map']);
+ assert.equal(desktopContent.infoRows.length,2);
+
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(true));
  await screen('charging');
  // Compact owner-review JPEG: GitHub's binary API cannot preview large PNGs.
@@ -225,6 +240,29 @@ async function main(){
      assert.equal(details.cables.filter(c=>c.visible).length,1,'Exactly one charging cable should show');
      assert.ok(details.cables.every(c=>c.stroke<=3),'Green cable must be thin at all breakpoints');
      console.log('Verified breakpoint charging imagery and cable:',JSON.stringify(details));
+   }
+   if(!charging){
+     const current=await contentSignature();
+     assert.deepEqual(current,desktopContent,'Home contents differ on '+width+'px Sections/iPhone card');
+     const geometry=await car.evaluate(el=>{
+       const root=el.shadowRoot,stage=root.querySelector('.xp-scene');
+       const d=stage.getBoundingClientRect(),panel=root.querySelector('.xp-status-panel');
+       const dock=root.querySelector('.xp-ux-dock-seven');
+       const boxes=[panel,dock,...root.querySelectorAll('.xp-ux-dock-action')].map(x=>({
+         className:x.className,rect:x.getBoundingClientRect().toJSON(),
+         displayed:getComputedStyle(x).display!=='none'
+       }));
+       const a=panel.getBoundingClientRect(),b=dock.getBoundingClientRect();
+       const overlap=Math.max(0,Math.min(a.right,b.right)-Math.max(a.left,b.left))*
+                     Math.max(0,Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top));
+       return {scene:d.toJSON(),boxes,overlap};
+     });
+     assert.equal(geometry.boxes.length,9,'seven controls plus two vehicle-status/nav containers required');
+     assert.ok(geometry.boxes.every(b=>b.displayed&&b.rect.width>0&&b.rect.height>0&&
+       b.rect.left>=geometry.scene.left-2&&b.rect.right<=geometry.scene.right+2&&
+       b.rect.top>=geometry.scene.top-2&&b.rect.bottom<=geometry.scene.bottom+2),
+       'Controls or vehicle status clipped on '+width+'px card: '+JSON.stringify(geometry));
+     assert.ok(geometry.overlap<1,'Vehicle status and seven quick actions overlap: '+JSON.stringify(geometry));
    }
    if(!charging && width<=520)assert.equal(layout.panelColumns,2,JSON.stringify(layout));
    if(viewportWidth===width)assert.equal(layout.horizontalOverflow,false,JSON.stringify(layout));
