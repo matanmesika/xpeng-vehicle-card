@@ -484,7 +484,6 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-ux-charge-limit span{display:flex;justify-content:space-between;font-size:13px}
 .xp-ux-charge-limit input{height:17px}
 @media(max-width:850px){
- .xp-overview:has(.xp-ux-dock) .xp-status-panel{bottom:18px}
  .xp-overview .xp-ux-dock{bottom:133px;gap:5px;padding:5px 7px}
  .xp-ux-dock-action{min-width:49px;min-height:51px;border-radius:18px;gap:2px}
  .xp-ux-dock-action small{font-size:9px}
@@ -763,7 +762,6 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 @container xpeng-layout (max-width:850px){.xp-overview .xp-car.xp-reference-cutout{left:-3%;bottom:27%;width:108%;max-height:42%}}
 @container xpeng-layout (max-width:400px){.xp-charge-meta>div{padding:0 7px}.xp-charge-heading{font-size:19px}.xp-charge-meta b{font-size:12px}.xp-overview-stat{top:219px}.xp-status-panel{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @container xpeng-layout (max-width:850px){
- .xp-overview:has(.xp-ux-dock) .xp-status-panel{bottom:18px}
  .xp-overview .xp-ux-dock{bottom:133px;gap:5px;padding:5px 7px}
  .xp-ux-dock-action{min-width:49px;min-height:51px;border-radius:18px;gap:2px}
  .xp-ux-dock-action small{font-size:9px}
