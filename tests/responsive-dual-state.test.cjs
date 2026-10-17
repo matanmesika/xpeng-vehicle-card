@@ -72,3 +72,12 @@ test('tyre pressure units exist only in card editor and never in vehicle screens
  assert.doesNotMatch(source,/data-xp-tire-unit|_xpTireUnit|xp-tire-units/);
  assert.match(source,/this\.vehicle\(\)\?\.tire_pressure_unit/);
 });
+
+test('the Home screen hides maintenance summaries but preserves a single dedicated shortcut',()=>{
+ assert.match(source,/const rows=\[\['pin','Location',this\.locationText\(\)\]\]/);
+ assert.doesNotMatch(source,/const rows=\[\['settings','תחזוקת הרכב'/);
+ assert.match(source,/xp-maintenance-home-button/);
+ assert.match(source,/\['maintenance','settings','תחזוקה'\]/);
+ assert.match(source,/page==='maintenance'\)body=this\.xpMaintenancePanel\(\)/);
+ assert.match(css,/\.xp-home-navigation \.xp-status-panel\{display:block;left:4%/);
+});
