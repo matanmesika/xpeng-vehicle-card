@@ -154,17 +154,40 @@ async function main(){
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-controls-desktop.png'),animations:'disabled'});
  await car.locator('button[data-xp-open="climate"]').first().click();
  assert.ok(await car.locator('.xp-ux-modal-climate').count(),'Climate modal missing');
+ await page.waitForFunction(()=>{const img=document.querySelector('xpeng-vehicle-card').shadowRoot.querySelector('img[data-cabin-art]');return img&&img.complete&&img.naturalWidth===752;});
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-climate-desktop.png'),animations:'disabled'});
+ // Same user's actual cabin photo, dark finish configured in card editor.
+ await page.evaluate(()=>{
+   const card=document.querySelector('xpeng-vehicle-card');
+   card.setConfig({type:'custom:xpeng-vehicle-card',prefix:'my_xpeng',model:'G6',year:'2026',
+     trim:'core_performance_awd',color:'arctic_white',interior:'dark_gray',enable_access_controls:true});
+ });
+ await page.waitForFunction(()=>{const img=document.querySelector('xpeng-vehicle-card').shadowRoot.querySelector('img[data-cabin-art]');return img&&img.complete&&img.naturalWidth===752&&img.src.includes('interior_dark_gray.webp');});
+ await car.screenshot({path:path.join(OUTPUT,'g6-2026-climate-dark-desktop.png'),animations:'disabled'});
  await car.locator('button[data-xp-close]').click();
  await page.setViewportSize({width:390,height:900});
  await page.evaluate(()=>{const w=document.querySelector('.card-wrap');w.style.width='390px';w.style.margin='0 auto';});
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-controls-mobile.png'),animations:'disabled'});
- for(const [action,name] of [['climate','climate-mobile'],['maintenance','maintenance-mobile']]){
-   await car.locator('button[data-xp-open="'+action+'"]').first().click();
-   assert.ok(await car.locator('.xp-ux-modal-'+action).count(),action+' modal missing');
+ // The first-tap actions use real states; demo contains no backend car connection.
+ for(const [action,name] of [['doors','doors-mobile'],['windows','windows-mobile'],['port','charge-port-mobile']]){
+   await page.evaluate(action=>{const card=document.querySelector('xpeng-vehicle-card');card._xpPanel=action;card.render();},action);
+   assert.ok(await car.locator('.xp-ux-modal-'+action).count(),action+' details modal missing');
    await car.screenshot({path:path.join(OUTPUT,'g6-2026-'+name+'.png'),animations:'disabled'});
    await car.locator('button[data-xp-close]').click();
  }
+ for(const [action,name] of [['climate','climate-mobile'],['maintenance','maintenance-mobile']]){
+   await car.locator('button[data-xp-open="'+action+'"]').first().click();
+   assert.ok(await car.locator('.xp-ux-modal-'+action).count(),action+' modal missing');
+   if(action==='climate')await page.waitForFunction(()=>{const img=document.querySelector('xpeng-vehicle-card').shadowRoot.querySelector('img[data-cabin-art]');return img&&img.complete&&img.naturalWidth===752;});
+   await car.screenshot({path:path.join(OUTPUT,'g6-2026-'+name+'.png'),animations:'disabled'});
+   await car.locator('button[data-xp-close]').click();
+ }
+ await page.evaluate(()=>{
+   const card=document.querySelector('xpeng-vehicle-card');card._xpPanel='climate';card.render();
+ });
+ await page.waitForFunction(()=>{const img=document.querySelector('xpeng-vehicle-card').shadowRoot.querySelector('img[data-cabin-art]');return img&&img.complete&&img.naturalWidth===752&&img.src.includes('interior_dark_gray.webp');});
+ await car.screenshot({path:path.join(OUTPUT,'g6-2026-climate-dark-mobile.png'),animations:'disabled'});
+ await car.locator('button[data-xp-close]').click();
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(true));
  assert.equal(await car.locator('.xp-ux-dock').count(),0,'Charging should have no visible quick action dock');
  assert.equal(await car.locator('.xp-ux-charge-actions').count(),0,'Charging controls must not overlay hero');

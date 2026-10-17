@@ -19,3 +19,5 @@ When either photo is absent, display a missing-asset message, NOT the old synthe
 - Existing charging scene and bundled model charge artwork are preserved. Two minimal shortcuts lead to charge-limit and read-only charging schedule data.
 - Charging schedule sensors are read-only; the integration does not support changing the charge schedule from the card.
 - The PR must remain draft until the two true photo files are present and verified visually.
+
+The owner's exact 752 × 1336 pixel WebP source images were committed and SHA-verified in the branch. Both obsolete G6 cabin SVGs were deleted. Browser capture loads both real variants and verifies natural image width before taking screenshots.
