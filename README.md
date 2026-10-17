@@ -72,3 +72,13 @@ The real installation must still confirm the native HA map loads tiles and GPS, 
 
 The same card retains the complete model-year/paint catalogue. Original non-G6 artwork policy and source tracking:
 [Artwork status](docs/ARTWORK_STATUS.md) · [G6 generations](docs/G6_GENERATIONS.md) · [Artwork map](docs/ARTWORK_MAPPING.md) · [Release history](docs/CHANGELOG.md).
+
+## Legacy captures and Sensor mapping
+
+The v1.0.2 gallery remains available for comparison; these files are intentionally preserved alongside the newer G6 screenshots:
+
+| Vehicle status v1.0.2 | Charging v1.0.2 | Maintenance v1.0.2 |
+| --- | --- | --- |
+| ![Original vehicle status](docs/screenshots/g6-2026-vehicle-status.png) | ![Original charge](docs/screenshots/g6-2026-charging.png) | ![Original maintenance](docs/screenshots/g6-2026-maintenance-desktop.png) |
+
+**Sensor mapping:** the card automatically resolves available Xpengtk entities by the configured prefix. For legacy setups you can keep manual entity mapping in existing YAML; never invent live readings when a sensor is missing. Update the prefix to match your G6 entities. Opening/unlocking operations require explicit Access opt-in.
