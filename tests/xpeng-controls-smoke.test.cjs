@@ -472,10 +472,10 @@ test('G6 home controls default visible but still allow explicit hiding',()=>{
  card.setConfig({type:'custom:xpeng-vehicle-card',model:'G6',year:'2026',prefix:'xpeng_g6',show_controls:false});
  assert.equal(card.xpUiEnabled(),false);
 });
-test('G6 charging preserves original panel layout with approved front-oriented car',()=>{
+test('G6 restores original separate charging image and metrics panel',()=>{
  const {card}=createCard({show_controls:undefined});
  card._view='charging';
- assert.match(card.assetSpec().src,/\/g6\/2026\/[^/]+\/front\.webp$/);
+ assert.match(card.assetSpec().src,/\/g6\/2026\/[^/]+\/charging\.webp$/);
  card.render();
  const h=card.shadowRoot.innerHTML;
  assert.match(h,/data-xp-open="charge_controls"/);
@@ -833,9 +833,9 @@ test('G6 multilingual text and icon contract covers all new user-facing actions'
  assert.match(card.charging(),/data-xp-open="charge_schedule"/);
  assert.match(src,/auto:'mdi:autorenew'/);
  assert.match(src,/fan:'mdi:fan'/);
- assert.match(src,/horn:'<path/);
- assert.match(src,/flash:'<path/);
- assert.match(src,/windscreen:'<path/);
+ assert.match(src,/horn:'mdi:bullhorn'/);
+ assert.match(src,/flash:'mdi:car-light-high'/);
+ assert.match(src,/windscreen:'mdi:car-defrost-front'/);
 });
 
 test('all action icons are native HA Material Design Icons, including the full fan',()=>{
