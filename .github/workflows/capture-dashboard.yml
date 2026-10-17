@@ -63,12 +63,13 @@ jobs:
               else:
                   assert 300 <= w <= 500 and h >= 700 and len(b) > 10_000, (p,w,h,len(b))
               print('verified',p,w,h,len(b))
+          PY
           # The smaller JPEG is used for direct visual inspection on mobile.
           python - <<'PY'
           from pathlib import Path
           p=Path('docs/screenshots/g6-2026-charging-review-desktop.jpg')
           b=p.read_bytes()
-          assert b.startswith(b'\\xff\\xd8\\xff') and len(b)>25_000,(p,len(b))
+          assert b.startswith(bytes([0xff,0xd8,0xff])) and len(b)>25_000,(p,len(b))
           print('verified desktop review JPEG',p,len(b))
           PY
 
