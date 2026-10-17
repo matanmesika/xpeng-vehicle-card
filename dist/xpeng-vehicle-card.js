@@ -546,16 +546,16 @@ class XpengVehicleCard extends HTMLElement{
      
      if(b.hasAttribute('data-xp-close')){this._xpPanel=null;this._xpSeatFocus=null;this._xpNotice='';this.render();return;}
      if(b.hasAttribute('data-xp-page')){this._xpPanel=b.dataset.xpPage;this._xpSeatFocus=null;this._xpNotice='';this.render();return;}
-     if(b.hasAttribute('data-xp-seat')){this._xpPanel='seats';this._xpSeatFocus=b.dataset.xpSeat;this.render();return;}
+     if(b.hasAttribute('data-xp-seat')){this._xpPanel='climate';this._xpSeatFocus=b.dataset.xpSeat;this._xpNotice='';this.render();return;}
+      if(b.hasAttribute('data-xp-clear-seat')){this._xpSeatFocus=null;this.render();return;}
      if(b.hasAttribute('data-xp-open')){
        const action=b.dataset.xpOpen;
-       if(action==='climate'||action==='seats'){this._xpPanel=action;this._xpSeatFocus=null;this._xpNotice='';this.render();}
-       else if(action==='port'){this._xpPanel='port';this._xpNotice='';this.render();}
-       else if(action==='locks'){this._xpPanel='vehicle';this._xpNotice='';this.render();}
-       else if(action==='map')this.xpDetails('location','device_tracker');
+       if(['climate','port','doors','windows','map'].includes(action)){
+         this._xpPanel=action;this._xpSeatFocus=null;this._xpNotice='';this.render();
+       }
        return;
-     }
-     if(b.hasAttribute('data-xp-port')){
+      }
+      if(b.hasAttribute('data-xp-port')){
        const suffix=b.dataset.xpPort==='open'?'open_charge_port':b.dataset.xpPort==='close'?'close_charge_port':null;
        if(suffix)this.xpSend('button','press',suffix);
        return;
@@ -577,7 +577,22 @@ class XpengVehicleCard extends HTMLElement{
        if(command)this.xpSend(...command);
        return;
      }
-     if(b.hasAttribute('data-xp-temp')){this.xpDoTemperature(Number(b.dataset.xpTemp));return;}
+     if(b.hasAttribute('data-xp-access')){
+        const act=b.dataset.xpAccess;
+        const allowed=this._config.enable_access_controls===true||this.vehicle()?.enable_access_controls===true;
+        if(!allowed)return;
+        if(act==='unlock')this.xpSend('lock','unlock','door_lock');
+        if(act==='open_windows')this.xpSend('button','press','open_windows');
+        return;
+      }
+      if(b.hasAttribute('data-xp-door-lock')){this.xpSend('lock','lock','door_lock');return;}
+      if(b.hasAttribute('data-xp-window-close')){this.xpSend('button','press','close_windows');return;}
+      if(b.hasAttribute('data-xp-map-action')){
+        const action=b.dataset.xpMapAction;
+        if(['honk_horn','flash_lights'].includes(action))this.xpSend('button','press',action);
+        return;
+      }
+      if(b.hasAttribute('data-xp-temp')){this.xpDoTemperature(Number(b.dataset.xpTemp));return;}
      if(b.hasAttribute('data-xp-climate')){
        this.xpSend('climate',b.dataset.xpClimate==='on'?'turn_on':'turn_off','cabin_climate');return;
      }
@@ -669,15 +684,15 @@ class XpengVehicleCard extends HTMLElement{
  xpDock(){
   if(!this.xpUiEnabled())return '';
   const features=[
-   ['climate','fan','מיזוג',this.xpLive('climate','cabin_climate')],
-   ['seats','thermometer','מושבים',this.xpLive('select','driver_seat_heat_select')||this.xpLive('select','steering_wheel_heat_select')],
    ['port','plug','שקע טעינה',this.xpLive('button','open_charge_port')||this.xpLive('button','close_charge_port')],
-   ['locks','lock','נעילה',this.xpLive('lock','door_lock')],
-   ['map','pin','מיקום',this.xpLive('device_tracker','location')]
+   ['climate','fan','מיזוג',this.xpLive('climate','cabin_climate')],
+   ['doors','unlock','דלתות',this.xpLive('lock','door_lock')],
+   ['windows','car','חלונות',this.xpLive('button','open_windows')||this.xpLive('button','close_windows')]
   ];
-  return '<nav class="xp-ux-dock" aria-label="בקרות הרכב" dir="rtl">'+features.filter(item=>item[3]).map(item=>
-   '<button class="xp-ux-dock-action" type="button" data-xp-open="'+item[0]+'" aria-label="'+item[2]+'">'
-    +xpIcon(item[1],21)+'<small>'+item[2]+'</small></button>').join('')+'</nav>';
+  return '<nav class="xp-ux-dock xp-ux-dock-four" aria-label="בקרות רכב" dir="rtl">'
+    +features.map(([action,icon,title,entity])=>'<button class="xp-ux-dock-action" type="button" data-xp-open="'+action+'" aria-label="'+title+'" '
+     +(entity?'':'disabled title="אין ישות זמינה"')+'>'+xpIcon(icon,21)+'<small>'+title+'</small></button>').join('')
+    +'</nav>';
  }
  xpCabinHotspots(){
   const controls=[
@@ -894,7 +909,7 @@ class XpengVehicleCard extends HTMLElement{
   if(service==='set_value')data.value=value;
   else if(service==='set_temperature')data.temperature=value;
   else if(service==='select_option')data.option=value;
-  const sensitive=(domain==='lock'||suffix==='stop_charge'||suffix==='open_charge_port'||suffix==='close_charge_port'||suffix==='close_trunk'||suffix==='close_windows'||suffix==='honk_horn'||suffix==='flash_lights'||suffix==='sentinel_switch');
+  const sensitive=(domain==='lock'||suffix==='stop_charge'||suffix==='open_charge_port'||suffix==='close_charge_port'||suffix==='close_trunk'||suffix==='close_windows'||suffix==='open_windows'||suffix==='honk_horn'||suffix==='flash_lights'||suffix==='sentinel_switch');
   if(sensitive&&typeof window.confirm==='function'
      &&!window.confirm('לשלוח את הפקודה לרכב?'))return;
   try{
