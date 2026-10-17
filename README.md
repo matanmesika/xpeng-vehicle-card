@@ -185,7 +185,7 @@ grid_options:
 
 ### Vehicle screen
 
-Exactly four buttons appear on the home screen: **Charge flap**, **A/C**, **Doors**, and **Windows**. A/C includes the interior image, all seat/steering hotspots and cabin climate controls on the same screen; tapping one hotspot expands just that seat or wheel controls. The charge flap opens a popup with Open and Close; it is not cable release. The car map opens from the existing Location row rather than taking up a fifth home button. Its only two actions are Horn and Flash lights. Door unlock and window opening are visible but disabled until the owner opts in and Xpengtk Access permissions allow them.
+Exactly four buttons appear on the home screen: **Charge flap**, **A/C**, **Doors**, and **Windows**. A/C includes the interior image, separate compact heat/ventilation buttons on supported seats, and cabin climate controls on the same screen. **Tapping a heat or ventilation icon directly cycles Off → level 1 → level 2 → level 3 → Off**; steering wheel uses Off → Low → Medium → High → Off, without a second sheet or page. The charge flap opens a popup with Open and Close; it is not cable release. The car map opens from the existing Location row rather than taking up a fifth home button. Its only two actions are Horn and Flash lights. Door unlock and window opening are visible but disabled until the owner opts in and Xpengtk Access permissions allow them.
 
 ### Climate, steering, seats
 
@@ -258,3 +258,7 @@ The old approved exterior/charging artwork and automatic screen switch remain un
 
 **Release gate:** the smoke test `photo files must be committed before releasing this draft`
 intentionally fails until both WebP files are present in GitHub.
+
+### Direct seat/wheel control (without extra sheet)
+
+The G6 cabin artwork has separate heat and ventilation icons on seats when the corresponding select entity is available. Each tap uses a verified Xpengtk `select.select_option` option: 1, 2, 3, then Off on the fourth tap. Wheel heating cycles Low, Medium, High, then Off. The card queues rapid taps per control while the integration processes each command, because Xpengtk may send an Off-first step with a delay. Unsupported front passenger heat Off remains deliberately blocked and visibly explained instead of claiming success. No model-agnostic undocumented seat command is emitted.
