@@ -158,3 +158,66 @@ test('photo files must be committed before releasing this draft', () => {
     assert.ok(fs.existsSync(path.join(root,name)),name+' is not yet in GitHub');
   }
 });
+
+
+test('home screen presents exactly four controls, with no separate seats or map dock item', () => {
+  const {card}=createCard();
+  for(const [key,domain,suffix,state] of [
+    ['port','button','open_charge_port','button.open_flap'],
+    ['climate','climate','cabin_climate','climate.renamed_hvac'],
+    ['doors','lock','door_lock','lock.user_lock'],
+    ['windows','button','open_windows','button.open_windows']]){
+    card._xpengByKey[domain+'.'+suffix]=state;
+    card._hass.states[state] ??= {state:domain==='button'?'unknown':'locked',attributes:{}};
+  }
+  const nav=card.xpDock();
+  assert.equal((nav.match(/data-xp-open=/g)||[]).length,4);
+  for(const key of ['port','climate','doors','windows'])assert.match(nav,new RegExp('data-xp-open="'+key+'"'));
+  assert.doesNotMatch(nav,/data-xp-open="(?:map|seats)"/);
+});
+test('tapping a cabin zone reveals that zone in the climate screen, not a separate seats page',()=>{
+  const {card}=createCard();
+  card._xpPanel='climate';
+  assert.match(card.xpModal(),/xp-ux-climate-bottom/);
+  assert.doesNotMatch(card.xpModal(),/xp-ux-seat-sheet/);
+  card._xpSeatFocus='driver';
+  assert.match(card.xpModal(),/xp-ux-seat-sheet/);
+  assert.match(card.xpModal(),/Heat 2/);
+  assert.doesNotMatch(card.xpModal(),/data-xp-page="seats"/);
+});
+test('opening doors and windows requires explicit owner opt-in plus upstream Access policy',()=>{
+  const {card}=createCard();
+  card._xpengByKey['lock.door_lock']='lock.user_lock';
+  card._xpengByKey['button.open_windows']='button.user_windows';
+  card._hass.states['lock.user_lock']={state:'locked',attributes:{}};
+  card._hass.states['button.user_windows']={state:'unknown',attributes:{}};
+  assert.match(card.xpDoorsPanel(),/data-xp-access="unlock" disabled/);
+  assert.match(card.xpWindowsPanel(),/data-xp-access="open_windows" disabled/);
+  card.setConfig({type:'custom:xpeng-vehicle-card',model:'G6',year:'2026',prefix:'xpeng_g6',show_controls:true,enable_access_controls:true});
+  assert.doesNotMatch(card.xpDoorsPanel(),/data-xp-access="unlock" disabled/);
+  assert.doesNotMatch(card.xpWindowsPanel(),/data-xp-access="open_windows" disabled/);
+});
+test('map contains only horn and flash buttons, each resolved through Xpengtk',async()=>{
+  const {card,commands}=createCard();
+  card._xpengByKey['button.honk_horn']='button.user_horn';
+  card._xpengByKey['button.flash_lights']='button.user_flash';
+  card._hass.states['button.user_horn']={state:'unknown',attributes:{}};
+  card._hass.states['button.user_flash']={state:'unknown',attributes:{}};
+  const map=card.xpMapPanel();
+  assert.equal((map.match(/data-xp-map-action=/g)||[]).length,2);
+  assert.match(map,/data-xp-map-action="honk_horn"/);
+  assert.match(map,/data-xp-map-action="flash_lights"/);
+  await card.xpSend('button','press','honk_horn');
+  await card.xpSend('button','press','flash_lights');
+  assert.deepEqual(JSON.parse(JSON.stringify(commands)),[
+    {domain:'button',service:'press',data:{entity_id:'button.user_horn'}},
+    {domain:'button',service:'press',data:{entity_id:'button.user_flash'}}
+  ]);
+});
+test('charging never labels Stop charging as cable release',()=>{
+  const {card}=createCard();
+  const charge=card.xpChargeControls();
+  assert.match(charge,/הפסק טעינה/);
+  assert.doesNotMatch(charge,/שחרר.*כבל/);
+  assert.equal((charge.match(/data-xp-command="stop_charge"/g)||[]).length,1);
+});
