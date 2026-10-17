@@ -523,6 +523,42 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-ux-port-action{display:flex;align-items:center;justify-content:center;gap:10px;border-radius:18px;background:#145069;border:1px solid #36a6bc;padding:14px 18px;min-height:48px;flex:1}
 @media(max-width:450px){.xp-ux-port-panel{padding:5px}.xp-ux-port-action{font-size:13px}.xp-ux-cabin-portrait .xp-ux-hotspot{width:44px;height:44px}}
 
+/* Four dedicated home controls plus seat, access and map interactions. */
+.xp-ux-dock-four{gap:clamp(3px,1vw,13px);max-width:92%}
+.xp-ux-dock-four .xp-ux-dock-action{flex:1 1 0;min-width:51px;max-width:94px;padding:6px 8px}
+.xp-ux-dock-action:disabled{opacity:.4;cursor:not-allowed}
+.xp-location-row{width:100%;text-align:inherit;background:transparent;border:0;color:inherit}
+.xp-ux-climate-bottom{margin-top:12px}
+.xp-ux-seat-sheet{margin:12px 0;padding:12px;background:#14253adf;border:1px solid #4a88ad;border-radius:18px}
+.xp-ux-sheet-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.xp-ux-sheet-title button{border:1px solid #507d99;background:#19354b;padding:8px 12px;border-radius:12px}
+.xp-ux-access-panel{padding:16px 3px}
+.xp-ux-access-head{display:flex;align-items:center;gap:15px;border-bottom:1px solid #51748c50;padding:12px}
+.xp-ux-access-head h3{margin:0 0 6px;font-size:21px}
+.xp-ux-access-head p{margin:0;color:#abc1d2}
+.xp-ux-access-states{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}
+.xp-ux-access-state{border:1px solid #61849a59;background:#173047ab;border-radius:12px;padding:11px;display:flex;justify-content:space-between;gap:7px}
+.xp-ux-access-state span{color:#aec4d5}
+.xp-ux-access-buttons{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.xp-ux-access-buttons button{border:1px solid #467e9a;background:#12445a;padding:12px 16px;border-radius:14px;display:inline-flex;align-items:center;gap:8px;min-height:48px;flex:1}
+.xp-ux-access-buttons button:disabled{opacity:.4;cursor:not-allowed}
+.xp-ux-map-stage{min-height:260px;border-radius:14px;overflow:hidden;background:#0c2237;display:flex;align-items:center;justify-content:center}
+.xp-ux-map-stage hui-map-card{display:block;width:100%;min-height:300px}
+.xp-ux-map-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0 7px}
+.xp-ux-map-actions button{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;border:1px solid #4d89ae;background:#133b5b;border-radius:14px;min-height:48px}
+.xp-ux-map-actions button:disabled{opacity:.4;cursor:not-allowed}
+@media(max-width:600px){
+ .xp-ux-dock-four{max-width:97%;gap:4px}
+ .xp-ux-dock-four .xp-ux-dock-action{min-width:49px;max-width:none;padding:6px 5px}
+ .xp-ux-access-panel{padding:8px 0}
+ .xp-ux-map-stage{min-height:250px}
+ .xp-ux-map-actions button{font-size:12px;padding:10px 6px}
+}
+@container xpeng-card (max-width:430px){
+ .xp-ux-dock-four{bottom:132px;gap:4px}
+ .xp-ux-dock-four .xp-ux-dock-action{min-width:43px;min-height:48px;padding:5px 3px}
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -1262,8 +1298,11 @@ class XpengVehicleCard extends HTMLElement{
     <aside class="xp-status-panel" aria-label="Vehicle information">
       ${rows.map(([icon,label,val])=>icon==='tire'
       ?`<button class="xp-info-row xp-tire-row" type="button" data-tire-toggle aria-expanded="${this._tireOpen?'true':'false'}" aria-label="View all four tire pressures"><span class="xp-info-icon">${xpIcon(icon,31)}</span><span class="xp-info-copy"><small>${xpEsc(label)}</small><b>${xpEsc(val)}</b></span><span class="xp-chevron">${xpIcon('arrow',19)}</span></button>`
-      :`<div class="xp-info-row"><div class="xp-info-icon">${xpIcon(icon,31)}</div>
-      <div class="xp-info-copy"><small>${xpEsc(label)}</small><b>${xpEsc(val)}</b></div><span class="xp-chevron">${xpIcon('arrow',19)}</span></div>`).join('')}
+      :icon==='pin'&&this.xpLive('device_tracker','location')
+       ?`<button type="button" class="xp-info-row xp-location-row" data-xp-open="map" aria-label="מפת מיקום הרכב"><div class="xp-info-icon">${xpIcon(icon,31)}</div>
+       <div class="xp-info-copy"><small>${xpEsc(label)}</small><b>${xpEsc(val)}</b></div><span class="xp-chevron">${xpIcon('arrow',19)}</span></button>`
+       :`<div class="xp-info-row"><div class="xp-info-icon">${xpIcon(icon,31)}</div>
+       <div class="xp-info-copy"><small>${xpEsc(label)}</small><b>${xpEsc(val)}</b></div><span class="xp-chevron">${xpIcon('arrow',19)}</span></div>`).join('')}
     </aside>`;
  }
  charging(){
@@ -1291,6 +1330,7 @@ class XpengVehicleCard extends HTMLElement{
    ${this.sceneBackdrop()}${this.header()}${isCharging?this.charging():this._tireOpen?this.title()+this.tireScreen():this.overview()}${!isCharging&&!this._tireOpen?this.xpDock():""}${this.xpModal()}
    
    </div></ha-card>`;
+  if(this._xpPanel==='map')this.xpMountMap();
  }
 }
 const XP_MAPPABLE_FIELDS = Object.freeze([{"key":"charging","label":"Charging state"},{"key":"soc","label":"Battery level (%)"},{"key":"range","label":"Estimated range (km)"},{"key":"power","label":"Charging power (kW)"},{"key":"remaining","label":"Time remaining (minutes)"},{"key":"target","label":"Charging limit (%)"},{"key":"plugged","label":"Cable connected"},{"key":"odometer","label":"Odometer (km)"},{"key":"tire_fl","label":"Tire front left (kPa)"},{"key":"tire_fr","label":"Tire front right (kPa)"},{"key":"tire_rl","label":"Tire rear left (kPa)"},{"key":"tire_rr","label":"Tire rear right (kPa)"},{"key":"location","label":"Vehicle location"},{"key":"last_update","label":"Last update"},{"key":"connection","label":"Connection status"}]);
