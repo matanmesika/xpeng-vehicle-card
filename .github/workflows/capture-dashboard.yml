@@ -4,8 +4,10 @@ on:
   push:
     branches:
       - fix/appearance-generations-dashboard-gallery
+      - feat/g6-responsive-container-layout-20261017
     paths:
       - scripts/capture-dashboard.cjs
+      - src/xpeng-vehicle-card.js
   workflow_dispatch:
 
 permissions:
@@ -43,13 +45,19 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           import struct
-          names = ['vehicle-status','charging','tire-pressure']
+          names = ['vehicle-status','charging','tire-pressure',
+                   'mobile-vehicle-status','mobile-charging',
+                   'small-mobile-vehicle-status','small-mobile-charging',
+                   'sections-vehicle-status']
           for name in names:
               p = Path('docs/screenshots/g6-2026-' + name + '.png')
               b = p.read_bytes()
               assert b[:8] == b'\x89PNG\r\n\x1a\n', p
               w,h = struct.unpack('>II',b[16:24])
-              assert w >= 1100 and h >= 620 and len(b) > 80_000, (p,w,h,len(b))
+              if name in ['vehicle-status','charging','tire-pressure']:
+                  assert w >= 1100 and h >= 620 and len(b) > 80_000, (p,w,h,len(b))
+              else:
+                  assert 300 <= w <= 500 and h >= 700 and len(b) > 10_000, (p,w,h,len(b))
               print('verified',p,w,h,len(b))
           PY
 

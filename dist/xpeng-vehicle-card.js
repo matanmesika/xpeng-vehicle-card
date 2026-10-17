@@ -270,7 +270,7 @@ function xpLocalArtworkPath(value){return typeof value==='string'&&/^\/(?:local|
 const XP_CSS = `
 :host{display:block;color:#fff;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;--xp-mint:#00efbe;--xp-sky:#6aaaff}
 *{box-sizing:border-box}
-ha-card{background:transparent!important;border:0!important;box-shadow:none!important;overflow:visible!important}
+ha-card{display:block;width:100%;container-type:inline-size;container-name:xpeng-layout;background:transparent!important;border:0!important;box-shadow:none!important;overflow:visible!important}
 button{font:inherit;color:inherit;cursor:pointer}
 button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-scene{position:relative;width:100%;min-height:620px;aspect-ratio:16/9;overflow:hidden;background:#020b16;isolation:isolate;direction:ltr}
@@ -682,6 +682,139 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 @media(max-width:600px){.xp-extra-schedule-line{flex-wrap:wrap}
  .xp-extra-schedule-line .xp-extra-line{flex-basis:100%}
  .xp-extra-schedule-toggle{width:100%}}
+
+
+/* Automatic card-width adaptation even when Home Assistant Sections renders a narrow
+   card on a wide desktop monitor. Legacy viewport media rules above remain as fallback. */
+@container xpeng-layout (max-width:850px){
+.xp-scene{min-height:800px;aspect-ratio:auto}
+.xp-header{top:16px;left:4%;right:4%}
+.xp-brand{font-size:13px;letter-spacing:.12em}
+.xp-header-right{gap:9px}
+.xp-title{left:5%;top:89px}
+.xp-title h1{font-size:34px}
+.xp-subtitle{font-size:18px}
+.xp-car{width:106%;left:-2%;bottom:29%;max-height:48%;object-fit:contain}
+.xp-overview-stat{left:5%;top:220px;width:43%}
+.xp-batt-glyph{height:56px;width:37px;border-width:2px;padding:4px}
+.xp-batt-glyph:before{height:5px;top:-7px;border-width:2px}
+.xp-batt-line{gap:9px}
+.xp-soc{font-size:40px}
+.xp-stat-label{font-size:13px}
+.xp-progress{height:8px}
+.xp-overview-range{margin-top:14px}
+.xp-range-num{font-size:26px;margin-top:4px}
+.xp-status-panel{width:90%;min-width:0;left:5%;right:5%;bottom:24px;border-radius:16px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));padding:7px}
+.xp-info-row{min-width:0;display:block;padding:7px 10px;border-bottom:0;border-right:1px solid #56708a43;min-height:88px}
+.xp-info-row:last-child{border-right:0}
+.xp-info-icon{display:none}
+.xp-info-copy small{font-size:11px}
+.xp-info-copy b{font-size:12px;white-space:normal;overflow-wrap:anywhere}
+.xp-status-panel .xp-chevron{display:none}
+.xp-charge .xp-title{left:5%;top:83px}
+.xp-charge-card{top:225px;left:5%;width:90%;padding:18px}
+.xp-charge-heading{font-size:22px;margin-bottom:15px}
+.xp-charge-card .xp-progress{height:13px}
+.xp-charge-main{margin-top:13px}
+.xp-charge-main .xp-soc{font-size:42px}
+.xp-charge-range b{font-size:20px}
+.xp-charge-divider{height:45px}
+.xp-charge-meta{margin-top:15px;padding-top:15px}
+.xp-charge-meta small{font-size:10px;white-space:normal}
+.xp-charge-meta b{font-size:14px}
+.xp-charge .xp-car{width:96%;left:2%;bottom:9%;max-height:36%}
+.xp-station{right:5%;bottom:22%;height:13%;min-width:40px;font-size:16px}
+}
+@container xpeng-layout (max-width:850px){.xp-header-right{gap:8px}.xp-wifi{width:38px;height:38px;padding:7px}.xp-meta-popover{top:calc(100% + 8px)}}
+@container xpeng-layout (max-width:850px){.xp-tire-screen{inset:23% 3% 4%}.xp-tire-actions{top:-52px;right:3px}
+.xp-tire-actions button{font-size:12px;padding:8px 10px}
+.xp-tire-stage{grid-template-columns:minmax(80px,1fr) minmax(116px,40%) minmax(80px,1fr);gap:5px}
+.xp-tire-reading{padding:12px 4px;border-radius:13px}.xp-tire-reading strong{font-size:24px}.xp-tire-reading small{font-size:11px}.xp-tire-reading span{font-size:12px}}
+@container xpeng-layout (max-width:400px){.xp-tire-stage{grid-template-columns:minmax(70px,1fr) minmax(107px,40%) minmax(70px,1fr)}.xp-tire-reading strong{font-size:21px}}
+@container xpeng-layout (max-width:850px){.xp-tire-row{min-height:88px;padding:7px 10px;border:0;border-right:1px solid #56708a43}}
+@container xpeng-layout (max-width:850px){.xp-overview .xp-car.xp-reference-cutout{left:-3%;bottom:27%;width:108%;max-height:42%}}
+@container xpeng-layout (max-width:400px){.xp-charge-meta>div{padding:0 7px}.xp-charge-heading{font-size:19px}.xp-charge-meta b{font-size:12px}.xp-overview-stat{top:219px}.xp-status-panel{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@container xpeng-layout (max-width:850px){
+ .xp-overview:has(.xp-ux-dock) .xp-status-panel{bottom:18px}
+ .xp-overview .xp-ux-dock{bottom:133px;gap:5px;padding:5px 7px}
+ .xp-ux-dock-action{min-width:49px;min-height:51px;border-radius:18px;gap:2px}
+ .xp-ux-dock-action small{font-size:9px}
+ .xp-ux-modal{inset:1.5% 2%;padding:13px}
+ .xp-ux-cabin{max-height:290px}
+ .xp-ux-cabin svg,.xp-ux-cabin-picture{max-height:285px}
+ .xp-ux-seats-grid{grid-template-columns:1fr}
+ .xp-ux-charge-actions{bottom:8%;left:4%;right:4%;gap:8px}
+ .xp-ux-charge-stop{font-size:12px;padding:6px 10px}
+ .xp-ux-charge-limit{min-width:0}
+ .xp-charge.xp-has-controls .xp-car{bottom:21%;max-height:26%}
+}
+@container xpeng-layout (max-width:390px){
+ .xp-ux-dock{gap:3px}
+ .xp-ux-dock-action{min-width:46px;min-height:48px}
+ .xp-ux-dock-action small{font-size:8.5px}
+ .xp-ux-charge-actions{flex-wrap:wrap;bottom:3%}
+ .xp-ux-charge-stop,.xp-ux-charge-limit{flex:1 1 100%}
+ .xp-charge.xp-has-controls .xp-car{bottom:29%;max-height:24%}
+ .xp-ux-seat-line{align-items:flex-start;flex-direction:column}
+}
+@container xpeng-layout (max-width:600px){.xp-ux-cabin-art .xp-ux-hotspot{width:32px;height:32px;padding:5px}.xp-ux-cabin-art .xp-ux-cabin-disclaimer{font-size:9px}}
+@container xpeng-layout (max-width:600px){.xp-ux-vehicle-statuses,.xp-ux-vehicle-buttons{grid-template-columns:repeat(2,minmax(0,1fr))}.xp-ux-vehicle-buttons button{min-height:50px;padding:9px 7px;font-size:12px}}
+@container xpeng-layout (max-width:450px){.xp-ux-port-panel{padding:5px}.xp-ux-port-action{font-size:13px}.xp-ux-cabin-portrait .xp-ux-hotspot{width:44px;height:44px}}
+@container xpeng-layout (max-width:600px){
+ .xp-ux-dock-four{max-width:97%;gap:4px}
+ .xp-ux-dock-four .xp-ux-dock-action{min-width:49px;max-width:none;padding:6px 5px}
+ .xp-ux-access-panel{padding:8px 0}
+ .xp-ux-map-stage{min-height:250px}
+ .xp-ux-map-actions button{font-size:12px;padding:10px 6px}
+}
+@container xpeng-layout (max-width:600px){
+ .xp-ux-cabin-art .xp-ux-hotspot-zone{gap:2px}
+ .xp-ux-cycle{width:37px;min-width:37px;height:44px;min-height:44px;padding:3px;gap:2px}
+ .xp-ux-cycle svg{width:15px;height:15px}
+ .xp-ux-cycle .xp-ux-level{font-size:12px}
+}
+@container xpeng-layout (max-width:600px){.xp-more-trigger{width:40px;height:40px}.xp-extra-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .xp-extra-tile{min-height:120px;padding:11px 6px;gap:8px}.xp-extra-tile b{font-size:14px}
+ .xp-extra-body{margin:10px auto 0}}
+@container xpeng-layout (max-width:600px){
+ .xp-ux-modal-climate .xp-ux-cabin-art.xp-ux-cabin-portrait{width:min(280px,100%);margin:5px auto 10px}
+ .xp-ux-modal-climate .xp-ux-temp-line{margin:8px auto}
+ .xp-ux-modal-climate .xp-ux-climate-card{padding:11px}
+ .xp-ux-modal-climate .xp-ux-cycle{min-height:44px}
+}
+@container xpeng-layout (max-width:600px){.xp-ux-climate-features{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+ .xp-ux-climate-feature{min-height:95px;padding:9px 4px;gap:7px}
+ .xp-ux-climate-feature span{font-size:11px}
+ .xp-ux-climate-feature small{font-size:9px;line-height:1.3}}
+@container xpeng-layout (max-width:600px){.xp-extra-schedule-line{flex-wrap:wrap}
+ .xp-extra-schedule-line .xp-extra-line{flex-basis:100%}
+ .xp-extra-schedule-toggle{width:100%}}
+@container xpeng-layout (max-width:520px){
+ .xp-scene{min-height:780px}
+ .xp-title{top:84px}
+ .xp-title h1{font-size:30px}
+ .xp-overview-stat{left:5%;top:207px;width:53%;max-width:none}
+ .xp-overview .xp-car.xp-reference-cutout{left:-3%;width:106%;bottom:29%;max-height:38%}
+ .xp-status-panel{left:4%;right:4%;width:92%;bottom:14px;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;padding:5px 10px}
+ .xp-info-row{min-height:57px;padding:8px 7px}
+ .xp-info-row:nth-child(2){border-right:0}
+ .xp-info-row:last-child{grid-column:1/-1;min-height:48px;border-top:1px solid #56708a43;padding-left:10px;border-right:0}
+ .xp-info-copy b{font-size:12px}
+ .xp-charge-card{left:4%;width:92%;top:206px;padding:16px 14px}
+ .xp-charge-heading{margin-bottom:15px}
+ .xp-charge .xp-car{width:105%;left:-2.5%;bottom:5%;max-height:30%}
+ .xp-station{right:4%;bottom:16%;height:12%}
+ .xp-ux-dock{bottom:177px}
+}
+@container xpeng-layout (max-width:360px){
+ .xp-title h1{font-size:28px}
+ .xp-overview-stat{width:58%}
+ .xp-charge-main{gap:10px}
+ .xp-charge-range b{font-size:17px}
+ .xp-charge-meta>div{padding:0 5px}
+ .xp-charge-meta b{font-size:12px}
+ .xp-status-panel{padding:5px 7px}
+}
 
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.

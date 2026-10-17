@@ -86,6 +86,44 @@ async function main(){
  await car.locator('button[data-tire-toggle]').first().click();
  assert.ok(await car.locator('.xp-tire-screen').count(),'Top view was not opened');
  await screen('tire-pressure');
+ // Exercise both HA-driven screens at phone widths and within a narrow
+ // Home Assistant Sections column on a wide desktop viewport.
+ async function responsiveShot(width,charging,name,viewportWidth=width){
+   await page.setViewportSize({width:viewportWidth,height:900});
+   await page.evaluate(w=>{
+     const wrap=document.querySelector('.card-wrap');
+     wrap.style.width=w+'px';wrap.style.margin='0 auto';wrap.style.maxWidth='100%';
+   },width);
+   // Charging true first dismisses any previously open tyre-detail view.
+   if(!charging)await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(true));
+   await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(charging));
+   await page.waitForFunction(()=>{
+     const root=document.querySelector('xpeng-vehicle-card').shadowRoot;
+     const img=root.querySelector('[data-car-art]');
+     return img && img.complete && img.naturalWidth>200;
+   },null,{timeout:12000});
+   const layout=await car.evaluate(element=>{
+     const scene=element.shadowRoot.querySelector('.xp-scene');
+     const panel=element.shadowRoot.querySelector('.xp-status-panel');
+     return {sceneWidth:scene.getBoundingClientRect().width,
+       sceneHeight:scene.getBoundingClientRect().height,
+       panelColumns:panel?getComputedStyle(panel).gridTemplateColumns.trim().split(/\\s+/).length:0,
+       charging:scene.classList.contains('xp-charge'),
+       horizontalOverflow:document.documentElement.scrollWidth>innerWidth+2};
+   });
+   assert.ok(layout.sceneWidth<=width+2 && layout.sceneWidth>=width-2,JSON.stringify(layout));
+   assert.ok(layout.sceneHeight>=700,JSON.stringify(layout));
+   assert.equal(layout.charging,charging,JSON.stringify(layout));
+   if(!charging && width<=520)assert.equal(layout.panelColumns,2,JSON.stringify(layout));
+   if(viewportWidth===width)assert.equal(layout.horizontalOverflow,false,JSON.stringify(layout));
+   await car.screenshot({path:path.join(OUTPUT,'g6-2026-'+name+'.png'),animations:'disabled'});
+   console.log('Responsive capture '+name,JSON.stringify(layout));
+ }
+ await responsiveShot(390,false,'mobile-vehicle-status');
+ await responsiveShot(390,true,'mobile-charging');
+ await responsiveShot(320,false,'small-mobile-vehicle-status');
+ await responsiveShot(320,true,'small-mobile-charging');
+ await responsiveShot(420,false,'sections-vehicle-status',1200);
  assert.equal(errors.length,0,errors.join('\n'));
  assert.ok(imagesServed>=4,'Expected bundled vehicle and background assets to be loaded');
  await browser.close();
