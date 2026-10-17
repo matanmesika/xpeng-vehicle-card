@@ -120,7 +120,7 @@ const XP_CONTROL_FALLBACKS=Object.freeze({
  'select.right_rear_seat_ventilation_select':'right_rear_seat_ventilation',
  'select.steering_wheel_heat_select':'steering_wheel_heating',
  'sensor.slow_charge_port':'slow_charge_port',
- 'binary_sensor.windows':'any_window_open',
+ 'binary_sensor.windows':'windows',
  'switch.defrost_switch':'front_defrost',
  'switch.sentinel_switch':'x_guard',
  'number.sentinel_sensitivity_control':'sentinel_sensitivity',
@@ -930,6 +930,9 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-ux-map-actions button{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px}
 .xp-ux-modal-trunk .xp-ux-access-buttons button{min-height:48px}
 
+.xp-tire-units{position:absolute;z-index:6;top:0;right:12px;display:flex;align-items:center;gap:7px;color:#c5d9f1;font-size:12px}
+.xp-tire-units select{background:#112940;border:1px solid #4c80a1;border-radius:8px;color:#fff;padding:6px;min-height:34px}
+@container xpeng-layout (max-width:600px){.xp-ux-modal-maintenance .xp-tire-units{position:relative;justify-content:flex-end;margin:6px 0 9px}}
 /* Mobile scroll: modal is an independent touch-scrolling surface inside the scene. */
 .xp-ux-modal{overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;
  touch-action:pan-y;overscroll-behavior-y:contain;max-height:96%;box-sizing:border-box}
@@ -1129,6 +1132,11 @@ class XpengVehicleCard extends HTMLElement{
      if(output)output.textContent=slider.value+(slider.dataset.xpRange==='charge_limit_control'?'%':'');
    });
    this.shadowRoot.addEventListener('change',ev=>{
+     const unitSelect=ev.target.closest('select[data-xp-tire-unit]');
+     if(unitSelect){
+       if(['bar','psi','kpa'].includes(unitSelect.value)){this._xpTireUnit=unitSelect.value;this.render();}
+       return;
+     }
      const slider=ev.target.closest('input[data-xp-range]');
      if(!slider)return;
      const key=slider.dataset.xpRange;
@@ -1165,19 +1173,37 @@ class XpengVehicleCard extends HTMLElement{
    this._xpengRegistryPending=false;
   }
  }
+ /* Discover a single vehicle's standard Xpengtk VIN-based entity prefix.
+  * Never guess when more than one vehicle is present. Renames use Entity Registry.
+  */
+ xpAutoVehiclePrefix(){
+  const ids=Object.keys(this._hass?.states||{});
+  const find=pattern=>[...new Set(ids.map(id=>pattern.exec(id)?.[1]).filter(Boolean))];
+  const trackers=find(/^device_tracker\.(xpeng_[a-z0-9]{6})_location$/);
+  if(trackers.length>1)return null;
+  if(trackers.length===1)return trackers[0];
+  const batteries=find(/^sensor\.(xpeng_[a-z0-9]{6})_battery$/);
+  return batteries.length===1?batteries[0]:null;
+ }
+ xpPrefixes(){return [...new Set([this.prefix(),this.xpAutoVehiclePrefix()].filter(Boolean))];}
  xpengEntity(domain,suffix){
   const key=domain+'.'+suffix;
-  const equivalent=key==='binary_sensor.windows'?'binary_sensor.any_window_open':null;
-  const candidates=[
-    this._xpengByKey?.[key],equivalent?this._xpengByKey?.[equivalent]:null,
-    domain+'.'+this.prefix()+'_'+(XP_CONTROL_FALLBACKS[key]||suffix),
-    domain+'.'+this.prefix()+'_'+suffix,
-    ...(key==='sensor.slow_charge_port'?[domain+'.'+this.prefix()+'_charge_port']:[])
-  ].filter(Boolean);
-  return candidates.find(id=>this._hass?.states?.[id]&&!XP_INVALID.has(String(this._hass.states[id].state).trim().toLowerCase()))
-    ||candidates.find(id=>this._hass?.states?.[id])||null;
+  const extra={
+   'binary_sensor.windows':['any_window_open'],
+   'binary_sensor.locked':['lock'],
+   'sensor.slow_charge_port':['charge_port'],
+   'sensor.maintenance':['next_maintenance']
+  }[key]||[];
+  const tails=[XP_CONTROL_FALLBACKS[key],suffix,...extra].filter(Boolean);
+  const registryKeys=[key,...extra.map(x=>domain+'.'+x)];
+  const candidates=[...new Set([
+   ...registryKeys.map(k=>this._xpengByKey?.[k]),
+   ...this.xpPrefixes().flatMap(prefix=>tails.map(t=>domain+'.'+prefix+'_'+t))
+  ].filter(Boolean))];
+  const states=this._hass?.states||{};
+  return candidates.find(id=>states[id]&&!XP_INVALID.has(String(states[id].state).trim().toLowerCase()))
+    ||candidates.find(id=>states[id])||null;
  }
-
 
  xpUiEnabled(){const v=this.vehicle()?.show_controls??this._config.show_controls;return v===undefined?this.model()==='G6':v===true||v==='true';}
  xpLive(domain,suffix){
@@ -1936,8 +1962,10 @@ class XpengVehicleCard extends HTMLElement{
    const custom=override?xpParseEntityMapping(override):null;
    const ids=custom?[custom.id]:[
      ...(XP_UNIQUE_KEYS[key]||[]).map(([domain,suffix])=>this._xpengByKey?.[domain+'.'+suffix]).filter(Boolean),
-     ...spec.slice(1).map(s=>spec[0]+'.'+this.prefix()+'_'+s),
-     ...(XP_XPENGTK_KEYS[key]||[]).map(([domain,suffix])=>domain+'.'+this.prefix()+'_'+suffix)
+     ...this.xpPrefixes().flatMap(prefix=>[
+       ...spec.slice(1).map(s=>spec[0]+'.'+prefix+'_'+s),
+       ...(XP_XPENGTK_KEYS[key]||[]).map(([domain,suffix])=>domain+'.'+prefix+'_'+suffix)
+     ])
    ];
    const id=ids.find(x=>this._hass?.states?.[x]&&!XP_INVALID.has(String(this._hass.states[x].state).trim().toLowerCase()))
      ||ids.find(x=>this._hass?.states?.[x])||ids[0];
@@ -2014,10 +2042,20 @@ class XpengVehicleCard extends HTMLElement{
     return bar!==null&&bar>=0.5&&bar<=6?bar:null;
   }
 
+ tirePressureUnit(){
+  const raw=String(this._xpTireUnit||this.vehicle()?.tire_pressure_unit||this._config.tire_pressure_unit||'bar').toLowerCase();
+  return ['bar','psi','kpa'].includes(raw)?raw:'bar';
+ }
+ tirePressureDisplay(key){
+  const bar=this.tirePressureBar(key),unit=this.tirePressureUnit();
+  if(bar===null)return {value:'—',unit};
+  return {value:xpNum(unit==='psi'?bar*14.5037738:unit==='kpa'?bar*100:bar,unit==='bar'?2:0),unit};
+ }
  tireSummary(){
   const values=['tire_fl','tire_fr','tire_rl','tire_rr'].map(k=>this.tirePressureBar(k));
   if(values.some(v=>v===null))return '—';
-  return xpNum(values.reduce((a,b)=>a+b,0)/4,2)+' bar';
+  const bar=values.reduce((a,b)=>a+b,0)/4,unit=this.tirePressureUnit();
+  return xpNum(unit==='psi'?bar*14.5037738:unit==='kpa'?bar*100:bar,unit==='bar'?2:0)+' '+(unit==='kpa'?'kPa':unit==='psi'?'PSI':'bar');
  }
  locationText(){
   const d=this.data('location');const raw=d?.value;
@@ -2120,11 +2158,16 @@ class XpengVehicleCard extends HTMLElement{
   tireScreen(showBack=true){
     const a=this.appearance(),photo=Array.isArray(this._config.vehicles)&&this._config.vehicles.length
       ?this.vehicle()?.top_image:this.vehicle()?.top_image||this._config.top_image;
-    const wheel=(key,label)=>{const bar=this.tirePressureBar(key);
+    const unit=this.tirePressureUnit();
+    const wheel=(key,label)=>{const reading=this.tirePressureDisplay(key);
       return `<div class="xp-tire-reading" data-wheel="${key}"><small>${label}</small>
-        <strong>${bar===null?'—':xpEsc(xpNum(bar,2))}</strong><span>${bar===null?'לא זמין':'bar'}</span></div>`;};
+        <strong>${xpEsc(reading.value)}</strong><span>${reading.value==='—'?'לא זמין':unit==='kpa'?'kPa':unit==='psi'?'PSI':'bar'}</span></div>`;};
     return `<section class="xp-tire-screen" role="region" aria-label="Tire pressure from above">
        ${showBack?`<div class="xp-tire-actions"><button type="button" data-tire-toggle aria-label="Back to vehicle status">${xpIcon('back',20)} Back to vehicle</button></div>`:''}
+       <label class="xp-tire-units">יחידות <select data-xp-tire-unit aria-label="יחידות לחץ צמיגים">
+         <option value="bar" ${unit==='bar'?'selected':''}>bar</option>
+         <option value="psi" ${unit==='psi'?'selected':''}>PSI</option>
+         <option value="kpa" ${unit==='kpa'?'selected':''}>kPa</option></select></label>
        <div class="xp-tire-stage"><div class="xp-tire-center">${this.topCarArt()}</div>
          ${wheel('tire_fl',showBack?'Front left':'קדמי שמאל')}${wheel('tire_fr',showBack?'Front right':'קדמי ימין')}
          ${wheel('tire_rl',showBack?'Rear left':'אחורי שמאל')}${wheel('tire_rr',showBack?'Rear right':'אחורי ימין')}</div>
@@ -2258,6 +2301,7 @@ class XpengVehicleCardEditor extends HTMLElement{
      ${select('trim','Trim · display only',xpAllowedTrims(v.model,v.year))}
      ${select('color','Exterior paint',xpAllowedPaints(v.model,v.year))}
      ${select('interior','Interior finish · צבע פנים הרכב',xpAllowedInteriors(v.model,v.year))}
+     ${select('tire_pressure_unit','יחידות לחץ צמיגים',[{id:'bar',label:'bar'},{id:'psi',label:'PSI'},{id:'kpa',label:'kPa'}],v.tire_pressure_unit||'bar')}
      ${select('show_controls','Control buttons', [{id:'true',label:'Visible · seven main actions'},{id:'false',label:'Hidden · original status-only view'}],String(v.show_controls===undefined?v.model==='G6':v.show_controls===true||v.show_controls==='true'))}
      ${select('enable_access_controls','Access actions (unlock / windows)',[{id:'false',label:'Off (safe default)'},{id:'true',label:'On (requires Xpengtk Access permission)'}],String(v.enable_access_controls===true||v.enable_access_controls==='true'))}
      <p>Years sharing the same exterior/facelift are grouped. Select a specific year only when paint availability differs. Trim labels never change vehicle pictures.</p>
