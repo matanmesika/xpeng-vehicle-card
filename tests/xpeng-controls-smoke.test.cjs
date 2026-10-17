@@ -817,6 +817,10 @@ test('G6 multilingual text and icon contract covers all new user-facing actions'
  card._hass.states['binary_sensor.trunk_for_translation']={state:'off',attributes:{}};
  card._hass.states['button.open_trunk_translation']={state:'unknown',attributes:{}};
  card._hass.states['button.close_trunk_translation']={state:'unknown',attributes:{}};
+ card._xpengByKey['binary_sensor.windows']='binary_sensor.window_for_translation';
+ card._xpengByKey['button.open_windows']='button.open_windows_translation';
+ card._hass.states['binary_sensor.window_for_translation']={state:'off',attributes:{}};
+ card._hass.states['button.open_windows_translation']={state:'unknown',attributes:{}};
  for(const name of ['מיזוג','טעינה','תחזוקה','מיקום','חלונות','פתח תא מטען'])
    assert.ok(card.xpDock().includes(name),'Missing correct Hebrew action: '+name);
  assert.match(card.xpTrunkPanel(),/תא המטען/);
