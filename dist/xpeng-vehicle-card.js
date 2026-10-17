@@ -49,6 +49,24 @@ const XP_XPENGTK_KEYS = Object.freeze({
  location:[['device_tracker','location']]
 });
 
+
+function xpNextSeatOption(current,choices,suffix){
+ if(!Array.isArray(choices)||!choices.includes('Off'))return null;
+ const levels=suffix==='steering_wheel_heat_select'?['Low','Medium','High']
+   :suffix.includes('ventilation')?['Ventilation 1','Ventilation 2','Ventilation 3']
+   :['Heat 1','Heat 2','Heat 3'];
+ const valid=levels.filter(o=>choices.includes(o));
+ if(!valid.length)return null;
+ if(current==='Off')return valid[0];
+ const i=valid.indexOf(current);
+ if(i<0)return null;
+ return i===valid.length-1?'Off':valid[i+1];
+}
+function xpSeatLevel(option){
+ if(option==='Off')return '0';
+ return ({Low:'1',Medium:'2',High:'3'})[option]||/ [123]$/.exec(option||'')?.[0]?.trim()||'—';
+}
+
 const XP_UNIQUE_KEYS=Object.freeze({
  soc:[['sensor','battery_soc']],range:[['sensor','range']],odometer:[['sensor','odometer']],
  connection:[['binary_sensor','mqtt_connected']],charging:[['binary_sensor','charging']],
@@ -583,8 +601,8 @@ class XpengVehicleCard extends HTMLElement{
      
      if(b.hasAttribute('data-xp-close')){this._xpPanel=null;this._xpSeatFocus=null;this._xpNotice='';this.render();return;}
      if(b.hasAttribute('data-xp-page')){this._xpPanel=b.dataset.xpPage;this._xpSeatFocus=null;this._xpNotice='';this.render();return;}
-     if(b.hasAttribute('data-xp-seat')){this._xpPanel='climate';this._xpSeatFocus=b.dataset.xpSeat;this._xpNotice='';this.render();return;}
-      if(b.hasAttribute('data-xp-clear-seat')){this._xpSeatFocus=null;this.render();return;}
+     if(b.hasAttribute('data-xp-cycle')){this.xpCycleSeat(b.dataset.xpCycle);return;}
+      
      if(b.hasAttribute('data-xp-open')){
        const action=b.dataset.xpOpen;
        if(['climate','port','doors','windows','map'].includes(action)){
@@ -732,25 +750,89 @@ class XpengVehicleCard extends HTMLElement{
      +(entity?'':'disabled title="אין ישות זמינה"')+'>'+xpIcon(icon,21)+'<small>'+title+'</small></button>').join('')
     +'</nav>';
  }
+ xpSeatShownState(suffix){
+   const e=this.xpLive('select',suffix);if(!e)return null;
+   const old=e.state.state,pending=this._xpSeatPending?.[suffix];
+   if(!pending)return old;
+   if(old===pending.option||Date.now()-pending.at>90000){
+     delete this._xpSeatPending[suffix];return old;
+   }
+   return pending.option;
+ }
+ xpSeatButtons(){
+   const zones=[
+     ['wheel','הגה',['steering_wheel_heat_select']],
+     ['driver','נהג',['driver_seat_heat_select','driver_seat_ventilation_select']],
+     ['passenger','נוסע',['passenger_seat_heat_select','passenger_seat_ventilation_select']],
+     ['rear_left','אחורי שמאל',['left_rear_seat_heat_select','left_rear_seat_ventilation_select']],
+     ['rear_right','אחורי ימין',['right_rear_seat_heat_select','right_rear_seat_ventilation_select']]
+   ];
+   return zones.map(([zone,label,keys])=>{
+     const buttons=keys.map(key=>{
+       const e=this.xpLive('select',key);
+       if(!e)return '';
+       const state=this.xpSeatShownState(key);
+       const active=state&&state!=='Off';
+       const vent=key.includes('ventilation');
+       const type=vent?'xp-ux-cycle-vent':'xp-ux-cycle-heat';
+       const title=(vent?'אוורור ':'חימום ')+label;
+       const busy=this._xpSeatBusy?.[key];
+       return '<button type="button" class="xp-ux-cycle '+type
+         +(active?' xp-ux-cycle-on':'')+(busy?' xp-ux-cycle-busy':'')
+         +'" data-xp-cycle="'+xpEsc(key)+'" aria-label="'+xpEsc(title+', דרגה '+xpSeatLevel(state))
+         +'" title="'+xpEsc(title)+'">'+xpIcon(vent?'fan':'thermometer',17)
+         +'<span class="xp-ux-level">'+xpSeatLevel(state)+'</span></button>';
+     }).filter(Boolean).join('');
+     return buttons?'<div class="xp-ux-hotspot-zone xp-ux-'+zone+'" data-xp-zone="'+zone
+       +'" role="group" aria-label="'+label+'">'+buttons+'</div>':'';
+   }).join('');
+ }
+ async xpCycleSeat(suffix){
+   const allowed=new Set([
+     'driver_seat_heat_select','passenger_seat_heat_select',
+     'driver_seat_ventilation_select','passenger_seat_ventilation_select',
+     'left_rear_seat_heat_select','right_rear_seat_heat_select',
+     'left_rear_seat_ventilation_select','right_rear_seat_ventilation_select',
+     'steering_wheel_heat_select'
+   ]);
+   if(!allowed.has(suffix))return;
+   const e=this.xpLive('select',suffix);
+   const choices=e?.state.attributes?.options;
+   if(!e||!Array.isArray(choices))return;
+   const next=xpNextSeatOption(this.xpSeatShownState(suffix),choices,suffix);
+   if(!next){this._xpNotice='רמת החימום או האוורור אינה זמינה כעת.';this.render();return;}
+   if(suffix==='passenger_seat_heat_select'&&next==='Off'){
+     this._xpNotice='כיבוי חימום מושב הנוסע הקדמי אינו נתמך כרגע ב־Xpengtk. ניתן לכבות מתוך הרכב.';
+     this.render();return;
+   }
+   this._xpSeatPending??=Object.create(null);
+   this._xpSeatPending[suffix]={option:next,at:Date.now()};
+   this._xpNotice='';
+   this.render();
+   if(this._xpSeatBusy?.[suffix])return;
+   this._xpSeatBusy??=Object.create(null);
+   this._xpSeatBusy[suffix]=true;
+   let lastSent=null;
+   try{
+     while(this._xpSeatPending?.[suffix]){
+       const target=this._xpSeatPending[suffix].option;
+       if(target===lastSent)break;
+       const ent=this.xpLive('select',suffix);
+       if(!ent?.state.attributes?.options?.includes(target))throw Error('הדרגה אינה נתמכת כעת.');
+       if(typeof this._hass?.callService!=='function')throw Error('שירות HA אינו זמין.');
+       await this._hass.callService('select','select_option',{entity_id:ent.id,option:target});
+       lastSent=target;
+     }
+   }catch(error){
+     delete this._xpSeatPending[suffix];
+     this._xpNotice='פקודת המושב נכשלה: '+(error?.message||'שגיאה');
+   }finally{
+     delete this._xpSeatBusy[suffix];
+     this.render();
+   }
+ }
  xpCabinHotspots(){
-  const controls=[
-    ['wheel','חימום הגה',[['select','steering_wheel_heat_select']]],
-    ['driver','מושב נהג',[['select','driver_seat_heat_select'],['select','driver_seat_ventilation_select']]],
-    ['passenger','מושב נוסע',[['select','passenger_seat_heat_select'],['select','passenger_seat_ventilation_select']]],
-    ['rear_left','מושב אחורי שמאל',[['select','left_rear_seat_heat_select'],['select','left_rear_seat_ventilation_select']]],
-    ['rear_right','מושב אחורי ימין',[['select','right_rear_seat_heat_select'],['select','right_rear_seat_ventilation_select']]]
-  ];
-  return controls.map(([key,title,options])=>{
-    const entities=options.map(([domain,suffix])=>({suffix,entity:this.xpLive(domain,suffix)})).filter(item=>item.entity);
-    if(!entities.length)return '';
-    const isOff=state=>/^(off|0)$/i.test(state);
-    const active=entities.some(item=>!isOff(item.entity.state.state));
-    const vent=entities.some(item=>item.suffix.includes('ventilation')&&!isOff(item.entity.state.state));
-    const heat=entities.some(item=>!item.suffix.includes('ventilation')&&!isOff(item.entity.state.state));
-    const css='xp-ux-hotspot xp-ux-'+key+(heat?' xp-ux-active-heat':'')+(vent?' xp-ux-active-vent':'');
-    return '<button type="button" class="'+css+'" data-xp-seat="'+key+'" aria-label="'+title
-      +(active?' — פעיל':'')+'" title="'+title+'">'+xpIcon(key==='wheel'?'thermometer':'fan',17)+'</button>';
-  }).join('');
+   return this.xpSeatButtons();
  }
  xpCabinView(){
    const a=this.appearance();
@@ -789,7 +871,7 @@ class XpengVehicleCard extends HTMLElement{
    +'<path d="M'+(x+15)+' '+(y+h*.48)+'h'+(w-30)+'" stroke="'+shade+'" stroke-width="6" opacity=".48"/></g>';
   const seatHtml=seatShape(105,112,130,151)+seatShape(447,112,130,151)
     +seatShape(105,278,130,87)+seatShape(276,278,130,87)+seatShape(447,278,130,87);
-  return '<div class="xp-ux-cabin" dir="ltr"><svg viewBox="0 0 680 390" role="img" aria-label="'+xpEsc('איור פנים רכב '+a.model+' — '+finish.label)+'">'
+  return '<div class="xp-ux-cabin xp-ux-cabin-art xp-ux-cabin-fallback" dir="ltr"><svg viewBox="0 0 680 390" role="img" aria-label="'+xpEsc('איור פנים רכב '+a.model+' — '+finish.label)+'">'
     +'<rect x="43" y="7" width="594" height="375" rx="87" fill="#0c1e30" stroke="#6c859c" stroke-width="4"/>'
     +'<path d="M91 55Q340 5 589 55L605 104H75Z" fill="#1b324a" stroke="#5c819c" stroke-width="3"/>'
     +'<rect x="294" y="78" width="92" height="39" rx="8" fill="#101620" stroke="#407197" stroke-width="2"/>'
@@ -797,10 +879,7 @@ class XpengVehicleCard extends HTMLElement{
     +'<path d="M151 77h38m-19 0v30" stroke="'+shade+'" stroke-width="4"/>'
     +'<rect x="288" y="122" width="104" height="153" rx="18" fill="#1c2c39" stroke="#5a778d"/>'
     +seatHtml+'</svg>'
-    +'<button type="button" class="xp-ux-hotspot xp-ux-wheel" data-xp-seat="wheel" aria-label="חימום הגה">♨</button>'
-    +'<button type="button" class="xp-ux-hotspot xp-ux-driver" data-xp-seat="driver" aria-label="מושב נהג">♨</button>'
-    +'<button type="button" class="xp-ux-hotspot xp-ux-passenger" data-xp-seat="passenger" aria-label="מושב נוסע">♨</button>'
-    +'<button type="button" class="xp-ux-hotspot xp-ux-rear" data-xp-seat="rear" aria-label="מושבים אחוריים">♨</button>'
+    +this.xpSeatButtons()
     +'<small class="xp-ux-cabin-disclaimer">תצוגה מאוירת · '+xpEsc(finish.label)+'</small></div>';
  }
  xpTempControl(){
@@ -947,9 +1026,6 @@ class XpengVehicleCard extends HTMLElement{
    let body='';
    if(page==='climate'){
      body=this.xpCabinView();
-     if(this._xpSeatFocus)body+='<section class="xp-ux-seat-sheet" aria-label="חימום ואוורור מושב">'
-       +'<div class="xp-ux-sheet-title"><strong>מושב / הגה</strong><button type="button" data-xp-clear-seat>סגור ✕</button></div>'
-       +this.xpSeatControls()+'</section>';
      body+='<section class="xp-ux-climate-bottom" aria-label="בקרת אקלים">'
        +this.xpTempControl()+this.xpFanControl()+'</section>';
    }else if(page==='port')body=this.xpPortPanel();
