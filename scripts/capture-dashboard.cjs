@@ -29,6 +29,12 @@ function demo(charging){
   'button.my_xpeng_close_charge_port':state('unknown'),
   'button.my_xpeng_stop_charging':state('unknown'),
   'number.my_xpeng_charge_limit':state('90',{min:50,max:100,step:5}),
+  'binary_sensor.my_xpeng_windows':state('off'),
+  'sensor.my_xpeng_slow_charge_port':state('Closed'),
+  'sensor.my_xpeng_next_maintenance':state('20 days',{next_date:'2027-01-10',km_remaining:2450}),
+  'sensor.my_xpeng_vehicle_identity':state('G6',{vin_masked:'L1N******123456',model_year:'2026'}),
+  'sensor.my_xpeng_charge_schedule_start':state('23:00'),
+  'sensor.my_xpeng_charge_schedule_end':state('06:30'),
   'sensor.my_xpeng_tire_pressure_front_left_kpa':state('250'),
   'sensor.my_xpeng_tire_pressure_front_right_kpa':state('251'),
   'sensor.my_xpeng_tire_pressure_rear_left_kpa':state('248'),
@@ -68,7 +74,7 @@ async function main(){
  });
  async function screen(name){
   console.log('Checking browser screen:',name);
-  const selector=name==='tire-pressure'?'[data-top-art]':'[data-car-art]';
+  const selector=name==='maintenance-desktop'?'[data-top-art]':'[data-car-art]';
   await page.waitForFunction(selector=>{
    const root=document.querySelector('xpeng-vehicle-card').shadowRoot;
    const img=root.querySelector(selector);
@@ -91,9 +97,10 @@ async function main(){
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(true));
  await screen('charging');
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
- await car.locator('button[data-tire-toggle]').first().click();
- assert.ok(await car.locator('.xp-tire-screen').count(),'Top view was not opened');
- await screen('tire-pressure');
+ await car.locator('button[data-xp-open="maintenance"]').first().click();
+ assert.ok(await car.locator('.xp-ux-modal-maintenance').count(),'Maintenance modal was not opened');
+ await screen('maintenance-desktop');
+ await car.locator('button[data-xp-close]').click();
  // Exercise both HA-driven screens at phone widths and within a narrow
  // Home Assistant Sections column on a wide desktop viewport.
  async function responsiveShot(width,charging,name,viewportWidth=width){
@@ -143,7 +150,7 @@ async function main(){
  });
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
  assert.equal(await car.locator('.xp-ux-dock-action').count(),4,'Four quick actions missing');
- assert.equal(await car.locator('.xp-ux-dock-action:not([disabled])').count(),4,'Demo HA controls unresolved');
+ assert.equal(await car.locator('.xp-ux-dock-action:not([disabled])').count(),3,'Unknown/unpermitted controls must remain disabled');
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-controls-desktop.png'),animations:'disabled'});
  await car.locator('button[data-xp-open="climate"]').first().click();
  assert.ok(await car.locator('.xp-ux-modal-climate').count(),'Climate modal missing');
@@ -152,7 +159,7 @@ async function main(){
  await page.setViewportSize({width:390,height:900});
  await page.evaluate(()=>{const w=document.querySelector('.card-wrap');w.style.width='390px';w.style.margin='0 auto';});
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-controls-mobile.png'),animations:'disabled'});
- for(const [action,name] of [['doors','doors-mobile'],['windows','windows-mobile'],['port','charge-port-mobile'],['climate','climate-mobile']]){
+ for(const [action,name] of [['climate','climate-mobile'],['maintenance','maintenance-mobile']]){
    await car.locator('button[data-xp-open="'+action+'"]').first().click();
    assert.ok(await car.locator('.xp-ux-modal-'+action).count(),action+' modal missing');
    await car.screenshot({path:path.join(OUTPUT,'g6-2026-'+name+'.png'),animations:'disabled'});
@@ -161,11 +168,16 @@ async function main(){
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(true));
  assert.equal(await car.locator('.xp-ux-dock').count(),0,'Charging should have no visible quick action dock');
  assert.equal(await car.locator('.xp-ux-charge-actions').count(),0,'Charging controls must not overlay hero');
- assert.equal(await car.locator('button[data-xp-open="charge_controls"]').count(),1,'Charging heading should open controls');
+ assert.equal(await car.locator('button[data-xp-open="charge_controls"]').count(),1,'Charge limit control missing');
+ assert.equal(await car.locator('button[data-xp-open="charge_schedule"]').count(),1,'Charge schedules shortcut missing');
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-charging-reference-mobile.png'),animations:'disabled'});
  await car.locator('button[data-xp-open="charge_controls"]').click();
  assert.ok(await car.locator('.xp-ux-modal-charge_controls').count(),'Charging modal missing');
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-charging-actions-mobile.png'),animations:'disabled'});
+ await car.locator('button[data-xp-close]').click();
+ await car.locator('button[data-xp-open="charge_schedule"]').click();
+ assert.ok(await car.locator('.xp-ux-modal-charge_schedule').count(),'Charging schedules modal missing');
+ await car.screenshot({path:path.join(OUTPUT,'g6-2026-charge-schedule-mobile.png'),animations:'disabled'});
  assert.equal(errors.length,0,errors.join('\n'));
  assert.ok(imagesServed>=4,'Expected bundled vehicle and background assets to be loaded');
  await browser.close();

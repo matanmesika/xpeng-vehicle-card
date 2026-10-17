@@ -28,8 +28,8 @@ test('original desktop composition, vehicle artwork and automatic charge logic s
  assert.match(source,/interior:'dark_gray'/);
 });
 
-test('owner charging hero stays free of overview dock CSS and uses the front cutout',()=>{
+test('existing charge view keeps its own model artwork and no overview dock',()=>{
  assert.match(source,/this\.xpUiEnabled\(\)&&!isCharging\?'xp-has-controls':''/);
  assert.match(source,/xp-charge-heading-action/);
- assert.match(source,/a\.model==='G6'\?'front'/);
+ assert.match(source,/view==='rear'\?'charging':'front'/);
 });

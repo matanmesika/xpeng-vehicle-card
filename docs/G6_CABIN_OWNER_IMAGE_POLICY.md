@@ -11,3 +11,11 @@ Both photos reside directly in `assets/vehicles/g6` as the owner requested. Ever
 The documented Xpengtk integration currently does **not** publish interior upholstery colour. Only a valid, selected-vehicle Xpengtk Entity Registry colour entry can override the explicit card-editor finish; never guess from exterior paint, trim, or another vehicle. Without one, the card editor setting controls the photo.
 
 When either photo is absent, display a missing-asset message, NOT the old synthetic SVG image. Do not release until both photos are actually committed and browser screenshot review passes. This branch must not modify the vehicle status and charging scene compositions.
+
+## Consolidated owner feature checklist
+- The old synthetic G6 climate cabin SVGs are deprecated; the two user-supplied WebP photos are the only approved G6 cabin images.
+- Four home actions: climate opens modal; locks/windows/charge flap send exactly one action on user tap, derived from valid live HA state; unsafe/unknown states stay disabled. Opening locks or windows requires Access permission.
+- Maintenance collects TPMS overhead screen, odometer, next service and identity with vin_masked only.
+- Existing charging scene and bundled model charge artwork are preserved. Two minimal shortcuts lead to charge-limit and read-only charging schedule data.
+- Charging schedule sensors are read-only; the integration does not support changing the charge schedule from the card.
+- The PR must remain draft until the two true photo files are present and verified visually.

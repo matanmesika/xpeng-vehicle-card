@@ -70,7 +70,7 @@ test('interior artwork respects selected colour; original background unchanged',
 test('never hide unpressed HA button entities whose states are unknown', () => {
   const {card} = createCard();
   assert.ok(card.xpLive('button', 'open_charge_port'));
-  assert.match(card.xpDock(), /data-xp-open="port"/);
+  assert.match(card.xpDock(), /data-xp-toggle="port"/);
   assert.match(card.xpChargeControls(), /stop_charge/);
   assert.match(card.xpChargeControls(), /charge_limit_control/);
 });
@@ -134,11 +134,11 @@ test('charge flap panel includes both separate commands and a cable-release disc
   const {card} = createCard();
   card._xpengByKey['button.close_charge_port']='button.close_flap';
   card._hass.states['button.close_flap']={state:'unknown',attributes:{}};
-  assert.match(card.xpPortPanel(), /data-xp-port="open"/);
-  assert.match(card.xpPortPanel(), /data-xp-port="close"/);
+  assert.match(card.xpPortPanel(), /data-xp-toggle="port"/);
+  assert.match(card.xpPortPanel(), /data-xp-toggle="port"/);
   assert.match(card.xpPortPanel(), /לא לשחרור נעילת הכבל/);
   card._xpPanel='port';card.render();
-  assert.match(card.shadowRoot.innerHTML, /data-xp-port="close"/);
+  assert.match(card.shadowRoot.innerHTML, /data-xp-toggle="port"/);
   assert.doesNotMatch(card.shadowRoot.innerHTML, /data-xp-page="seats"/);
 });
 test('G6 photo mapping keeps other XPENG model artwork unchanged', () => {
@@ -170,8 +170,9 @@ test('home screen presents exactly four controls, with no separate seats or map 
     card._hass.states[state] ??= {state:domain==='button'?'unknown':'locked',attributes:{}};
   }
   const nav=card.xpDock();
-  assert.equal((nav.match(/data-xp-open=/g)||[]).length,4);
-  for(const key of ['port','climate','doors','windows'])assert.match(nav,new RegExp('data-xp-open="'+key+'"'));
+  assert.equal((nav.match(/data-xp-(?:open|toggle)=/g)||[]).length,4);
+  for(const key of ['port','doors','windows'])assert.match(nav,new RegExp('data-xp-toggle="'+key+'"'));
+  assert.match(nav,/data-xp-open="climate"/);
   assert.doesNotMatch(nav,/data-xp-open="(?:map|seats)"/);
 });
 test('seat controls stay on cabin image and do not open a second sheet',()=>{
@@ -190,11 +191,11 @@ test('opening doors and windows requires explicit owner opt-in plus upstream Acc
   card._xpengByKey['button.open_windows']='button.user_windows';
   card._hass.states['lock.user_lock']={state:'locked',attributes:{}};
   card._hass.states['button.user_windows']={state:'unknown',attributes:{}};
-  assert.match(card.xpDoorsPanel(),/data-xp-access="unlock" disabled/);
-  assert.match(card.xpWindowsPanel(),/data-xp-access="open_windows" disabled/);
+  assert.match(card.xpDoorsPanel(),/data-xp-toggle="doors" disabled/);
+  assert.match(card.xpWindowsPanel(),/data-xp-toggle="windows" disabled/);
   card.setConfig({type:'custom:xpeng-vehicle-card',model:'G6',year:'2026',prefix:'xpeng_g6',show_controls:true,enable_access_controls:true});
-  assert.doesNotMatch(card.xpDoorsPanel(),/data-xp-access="unlock" disabled/);
-  assert.doesNotMatch(card.xpWindowsPanel(),/data-xp-access="open_windows" disabled/);
+  assert.doesNotMatch(card.xpDoorsPanel(),/data-xp-toggle="doors" disabled/);
+  assert.doesNotMatch(card.xpWindowsPanel(),/data-xp-toggle="windows" disabled/);
 });
 test('map contains only horn and flash buttons, each resolved through Xpengtk',async()=>{
   const {card,commands}=createCard();
@@ -289,7 +290,7 @@ test('extras menu has six categories and leaves home at exactly four actions',()
   card._xpPanel='extras';
   assert.match(card.header(),/data-xp-more/);
   assert.equal((card.xpExtrasPanel().match(/data-xp-extra-page=/g)||[]).length,6);
-  assert.equal((card.xpDock().match(/data-xp-open=/g)||[]).length,4);
+  assert.equal((card.xpDock().match(/data-xp-(?:open|toggle)=/g)||[]).length,4);
   for(const key of ['security','energy','schedule','power','maintenance','updates']){
     card._xpExtraSection=key;
     assert.match(card.xpModal(),/xp-extra-details/);
@@ -461,7 +462,7 @@ test('missing XPENG target and cabin telemetry must not be rendered as zero degr
 test('G6 home controls default visible but still allow explicit hiding',()=>{
  const {card}=createCard({show_controls:undefined});
  assert.equal(card.xpUiEnabled(),true);
- assert.equal((card.xpDock().match(/data-xp-open=/g)||[]).length,4);
+ assert.equal((card.xpDock().match(/data-xp-(?:open|toggle)=/g)||[]).length,4);
  assert.equal(card.xpAccessAllowed(),false);
  card.setConfig({type:'custom:xpeng-vehicle-card',model:'G6',year:'2026',prefix:'xpeng_g6',show_controls:false});
  assert.equal(card.xpUiEnabled(),false);
@@ -478,7 +479,7 @@ test('G6 charging uses front asset and defers active actions to a modal',()=>{
  assert.doesNotMatch(h,/class="xp-more-trigger"/);
  card._xpPanel='charge_controls';
  assert.match(card.xpModal(),/data-xp-command="stop_charge"/);
- assert.match(card.xpModal(),/data-xp-port="open"/);
+ assert.match(card.xpModal(),/data-xp-toggle="port"/);
 });
 
 test('all G6 generations use the same owner-photo slots',()=>{
@@ -509,4 +510,62 @@ test('only verified same-vehicle integration colour overrides G6 editor choice',
  assert.match(card.xpCabinView(),/interior_dark_gray\.webp/);
  card._hass.states['sensor.vehicle_colour'].state='unavailable';
  assert.equal(card.xpCabinFinish(),'light_gray');
+});
+
+test('one tap chooses an opposite action only from verified live state',async()=>{
+ const {card,commands}=createCard({show_controls:true,enable_access_controls:true});
+ const reg=card._xpengByKey;
+ reg['lock.door_lock']='lock.user_lock';
+ reg['binary_sensor.windows']='binary_sensor.user_windows';
+ reg['sensor.slow_charge_port']='sensor.user_port';
+ reg['button.close_windows']='button.user_close';
+ reg['button.open_windows']='button.user_open';
+ reg['button.open_charge_port']='button.user_flap_open';
+ reg['button.close_charge_port']='button.user_flap_close';
+ const st=card._hass.states;
+ st['lock.user_lock']={state:'locked',attributes:{}};
+ st['binary_sensor.user_windows']={state:'off',attributes:{}};
+ st['sensor.user_port']={state:'Closed',attributes:{}};
+ st['button.user_close']={state:'unknown',attributes:{}};
+ st['button.user_open']={state:'unknown',attributes:{}};
+ st['button.user_flap_open']={state:'unknown',attributes:{}};
+ st['button.user_flap_close']={state:'unknown',attributes:{}};
+ assert.equal(card.xpToggleTarget('doors').service,'unlock');
+ assert.equal(card.xpToggleTarget('windows').suffix,'open_windows');
+ assert.equal(card.xpToggleTarget('port').suffix,'open_charge_port');
+ card.xpToggle('doors');card.xpToggle('windows');card.xpToggle('port');
+ await new Promise(resolve=>setImmediate(resolve));
+ assert.deepEqual(JSON.parse(JSON.stringify(commands.slice(-3))),[
+  {domain:'lock',service:'unlock',data:{entity_id:'lock.user_lock'}},
+  {domain:'button',service:'press',data:{entity_id:'button.user_open'}},
+  {domain:'button',service:'press',data:{entity_id:'button.user_flap_open'}}
+ ]);
+ st['lock.user_lock'].state='unlocked';
+ st['binary_sensor.user_windows'].state='on';
+ st['sensor.user_port'].state='Open';
+ assert.equal(card.xpToggleTarget('doors').service,'lock');
+ assert.equal(card.xpToggleTarget('windows').suffix,'close_windows');
+ assert.equal(card.xpToggleTarget('port').suffix,'close_charge_port');
+ st['sensor.user_port'].state='Connected';
+ assert.equal(card.xpToggleTarget('port'),null);
+ st['binary_sensor.user_windows'].state='unknown';
+ assert.equal(card.xpToggleTarget('windows'),null);
+ st['lock.user_lock'].state='unknown';
+ assert.equal(card.xpToggleTarget('doors'),null);
+ const n=commands.length;card.xpToggle('port');card.xpToggle('windows');card.xpToggle('doors');
+ assert.equal(commands.length,n,'uncertain telemetry must never issue a vehicle command');
+});
+test('charge schedules are read-only, charge limit remains a real HA control',()=>{
+ const {card}=createCard();
+ card._xpengByKey['sensor.charge_schedule_start']='sensor.user_start';
+ card._xpengByKey['sensor.charge_schedule_end']='sensor.user_end';
+ card._hass.states['sensor.user_start']={state:'23:00',attributes:{}};
+ card._hass.states['sensor.user_end']={state:'06:30',attributes:{}};
+ assert.match(card.xpChargeSchedulesPanel(),/23:00/);
+ assert.match(card.xpChargeSchedulesPanel(),/06:30/);
+ assert.doesNotMatch(card.xpChargeSchedulesPanel(),/data-xp-(?:range|extra-action|command)/);
+ assert.match(card.xpChargeControls(),/charge_limit_control/);
+ card._view='charging';card.render();
+ assert.match(card.shadowRoot.innerHTML,/data-xp-open="charge_schedule"/);
+ assert.match(card.shadowRoot.innerHTML,/data-xp-open="charge_controls"/);
 });

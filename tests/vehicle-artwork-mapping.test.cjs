@@ -95,7 +95,7 @@ test('G6 front-facing charging reference overrides rear-only legacy asset', () =
  car._failedArtwork.add(front.src);
  assert.equal(car.assetSpec().tier,'silhouette');
  const charge=instance(cfg,true);
- assert.ok(charge.assetSpec().src.endsWith('/vehicles/g6/2026/graphite_gray/front.webp'));
+ assert.ok(charge.assetSpec().src.endsWith('/vehicles/g6/2026/graphite_gray/charging.webp'));
  const top=instance(cfg);
  assert.match(top.topCarArt(),/data-top-art/);
  top._failedArtwork.add(top.artworkUrl('vehicles/g6/2026/graphite_gray/top.webp'));
