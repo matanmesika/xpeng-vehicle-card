@@ -17,3 +17,6 @@ Screenshots include both direction states for lock/windows/charge port, both app
 - The charging page retains exactly two top-level shortcuts: **הגבלת טעינה** and **תזמונים**. The main English headings are part of the owner-approved picture style; action labels are in Hebrew.
 - Tests assert the Hebrew/English action contract, trunk permission gates, dark native map configuration, AUTO non-command safety, and 23 browser screenshots.
 - **Browser capture caveat:** The standalone Chromium harness cannot render HA's native map card because it doesn't include Home Assistant's `loadCardHelpers`. That is not proof of a defective map on real HA. Only a live Home Assistant test can confirm map rendering and command reception.
+
+## Desktop Location acceptance
+The HOME **Location** shortcut is clicked on a real desktop-sized Chromium card. Native HA map helpers are stubbed **only in the standalone test browser**: config includes `device_tracker.my_xpeng_location`, `dark_mode:true`, `default_zoom:11`. Browser also validates two distinct Horn/Flash actions, no duplicate navigation, a single visible Back button, 1400px stage geometry, and proper return to Home. A new screenshot `docs/screenshots/g6-2026-location-desktop.png` is marked as a simulation, **not** live map tiles. The actual map must be verified in the owner's Home Assistant before production deployment.

@@ -15,6 +15,7 @@ function demo(charging){
   'sensor.my_xpeng_soc':state('76'),
   'sensor.my_xpeng_range_km':state('420'),
   'sensor.my_xpeng_odometer_km':state('15284'),
+  'device_tracker.my_xpeng_location':state('not_home'),
   'sensor.my_xpeng_charge_power_kw':state('79.2'),
   'sensor.my_xpeng_charge_remaining_min':state('32'),
   'sensor.my_xpeng_charge_target':state('90'),
@@ -195,6 +196,58 @@ async function main(){
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-home-close-actions-desktop.png'),animations:'disabled'});
  // Restore reference states; this mock does not issue any vehicle commands.
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
+
+
+ // The actual HOME location button must open its page on a wide desktop.
+ // Native HA map helpers are stubbed here, because standalone Chromium lacks HA tiles.
+ await page.evaluate(()=>{
+   window.__xpengNativeMapRequest=null;
+   window.loadCardHelpers=async()=>({
+     createCardElement(config){
+       window.__xpengNativeMapRequest=config;
+       const el=document.createElement('hui-map-card');
+       el.dataset.qaNativeMap='true';
+       el.style.cssText='display:flex;width:100%;min-height:410px;align-items:center;justify-content:center;text-align:center;color:#d6e7f6;background:#0b253d;border:1px solid #3f698c;border-radius:14px;';
+       el.textContent='מפה במצב בדיקה • אריחי מפה חיים זמינים רק ב־Home Assistant';
+       return el;
+     }
+   });
+ });
+ assert.equal(await car.locator('button[data-xp-open="map"]').count(),1,'Desktop Location shortcut missing');
+ await car.locator('button[data-xp-open="map"]').click();
+ await car.locator('[data-xp-map-host] hui-map-card[data-qa-native-map="true"]').waitFor({state:'visible'});
+ const desktopMap=await car.evaluate(element=>{
+   const root=element.shadowRoot,host=root.querySelector('[data-xp-map-host]'),
+     map=host.querySelector('hui-map-card[data-qa-native-map]'),
+     r=host.getBoundingClientRect(),back=root.querySelector('[data-xp-close]'),
+     b=back?.getBoundingClientRect();
+   return {modal:!!root.querySelector('.xp-ux-modal-map'),
+     mapHasHass:map?.hass===element.hass,
+     horn:root.querySelectorAll('button[data-xp-map-action="honk_horn"]').length,
+     flash:root.querySelectorAll('button[data-xp-map-action="flash_lights"]').length,
+     back:root.querySelectorAll('button[data-xp-close]').length,
+     backVisible:!!b&&b.width>0&&b.height>0,
+     homeButtons:root.querySelectorAll('.xp-ux-dock-action').length,
+     stageWidth:Math.round(r.width),stageHeight:Math.round(r.height),
+     config:window.__xpengNativeMapRequest};
+ });
+ assert.equal(desktopMap.modal,true,'Desktop Location page missing');
+ assert.equal(desktopMap.mapHasHass,true,'Native map is not bound to HA');
+ assert.equal(desktopMap.horn,1,'Horn button missing in desktop map');
+ assert.equal(desktopMap.flash,1,'Flash button missing in desktop map');
+ assert.equal(desktopMap.back,1,'Desktop map should have exactly one Back');
+ assert.equal(desktopMap.backVisible,true,'Desktop Back is not visible');
+ assert.equal(desktopMap.homeButtons,0,'Home dock must hide in Location');
+ assert.ok(desktopMap.stageWidth>900&&desktopMap.stageHeight>=350,JSON.stringify(desktopMap));
+ assert.deepEqual(desktopMap.config,{
+   type:'map',entities:[{entity:'device_tracker.my_xpeng_location'}],
+   default_zoom:11,hours_to_show:0,dark_mode:true
+ },'Native dark map must use the real vehicle tracker entity');
+ await car.screenshot({path:path.join(OUTPUT,'g6-2026-location-desktop.png'),animations:'disabled'});
+ console.log('Desktop Location map + finder + Back:',JSON.stringify(desktopMap));
+ await car.locator('button[data-xp-close]').click();
+ assert.equal(await car.locator('.xp-ux-modal-map').count(),0,'Desktop Back must close Location');
+ assert.equal(await car.locator('.xp-ux-dock-action').count(),8,'Desktop Back must restore Home shortcuts');
 
  await car.locator('button[data-xp-open="climate"]').first().click();
  assert.ok(await car.locator('.xp-ux-modal-climate').count(),'Climate modal missing');

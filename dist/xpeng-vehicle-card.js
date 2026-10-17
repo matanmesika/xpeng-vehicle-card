@@ -583,6 +583,13 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-ux-access-buttons button:disabled{opacity:.4;cursor:not-allowed}
 .xp-ux-map-stage{min-height:260px;border-radius:14px;overflow:hidden;background:#0c2237;display:flex;align-items:center;justify-content:center}
 .xp-ux-map-stage hui-map-card{display:block;width:100%;min-height:300px}
+.xp-ux-modal-map .xp-ux-map-panel{width:100%;margin:12px auto 0}
+.xp-ux-modal-map .xp-ux-map-stage{min-height:clamp(350px,51vh,520px)}
+.xp-ux-modal-map .xp-ux-map-stage hui-map-card{display:block;align-self:stretch;width:100%;min-height:clamp(350px,51vh,520px)}
+@container xpeng-layout (max-width:600px){
+ .xp-ux-modal-map .xp-ux-map-stage{min-height:260px}
+ .xp-ux-modal-map .xp-ux-map-stage hui-map-card{min-height:260px}
+}
 .xp-ux-map-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0 7px}
 .xp-ux-map-actions button{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;border:1px solid #4d89ae;background:#133b5b;border-radius:14px;min-height:48px}
 .xp-ux-map-actions button:disabled{opacity:.4;cursor:not-allowed}

@@ -98,7 +98,7 @@ jobs:
           from pathlib import Path
           import struct
           names=[
-            'vehicle-status','charging','maintenance-desktop',
+            'vehicle-status','charging','maintenance-desktop','location-desktop',
             'mobile-vehicle-status','mobile-charging',
             'small-mobile-vehicle-status','small-mobile-charging','sections-vehicle-status',
             'controls-desktop','home-close-actions-desktop','climate-desktop','climate-dark-desktop',
@@ -111,14 +111,14 @@ jobs:
             b=f.read_bytes()
             assert b[:8]==b'\x89PNG\r\n\x1a\n' and len(b)>10000,(name,len(b))
             w,h=struct.unpack('>II',b[16:24])
-            if name in {'vehicle-status','charging','maintenance-desktop',
+            if name in {'vehicle-status','charging','maintenance-desktop','location-desktop',
                         'controls-desktop','home-close-actions-desktop',
                         'climate-desktop','climate-dark-desktop'}:
               assert w>=1100 and h>=620,(name,w,h)
             else:
               assert 300<=w<=500 and h>=700,(name,w,h)
             print('PASS screenshot',name,w,h)
-          print('PASS: all 23 browser captures valid')
+          print('PASS: all 24 browser captures valid')
           PY
 
       - name: Upload all G6 acceptance screenshots
