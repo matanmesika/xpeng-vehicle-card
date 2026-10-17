@@ -472,10 +472,10 @@ test('G6 home controls default visible but still allow explicit hiding',()=>{
  card.setConfig({type:'custom:xpeng-vehicle-card',model:'G6',year:'2026',prefix:'xpeng_g6',show_controls:false});
  assert.equal(card.xpUiEnabled(),false);
 });
-test('G6 charging preserves original panel layout with approved front-oriented car',()=>{
+test('G6 charging preserves metrics layout and uses rear-looking graphite-gray artwork',()=>{
  const {card}=createCard({show_controls:undefined});
  card._view='charging';
- assert.match(card.assetSpec().src,/\/g6\/2026\/[^/]+\/charging\.webp$/);
+ assert.match(card.assetSpec().src,/\/g6\/2026\/graphite_gray\/charging\.webp$/);
  card.render();
  const h=card.shadowRoot.innerHTML;
  assert.match(h,/data-xp-open="charge_controls"/);
@@ -916,17 +916,31 @@ test('ambiguous multi-vehicle Xpengtk prefixes must not select a random car',()=
  assert.equal(card.xpAutoVehiclePrefix(),null);
  assert.equal(card.val('soc'),null);
 });
-test('tyre pressure selector returns bar, PSI and kPa with real conversions and respects editor defaults',()=>{
+test('tyre unit setting is editor-only, persisted, and converts bar, PSI and kPa',()=>{
  const {card}=createCard({tire_pressure_unit:'psi'});
  card._hass.states['sensor.xpeng_g6_tire_pressure_front_left_kpa']={state:'250',attributes:{unit_of_measurement:'kPa'}};
  assert.equal(card.tirePressureBar('tire_fl'),2.5);
  assert.equal(card.tirePressureDisplay('tire_fl').value,'36');
- assert.match(card.tireScreen(false),/data-xp-tire-unit/);
  assert.match(card.tireScreen(false),/PSI/);
- card._xpTireUnit='kpa';
+ assert.doesNotMatch(card.tireScreen(false),/<select|data-xp-tire-unit/);
+ card.setConfig({type:'custom:xpeng-vehicle-card',model:'G6',year:'2026',
+   prefix:'xpeng_g6',show_controls:true,tire_pressure_unit:'kpa'});
  assert.equal(card.tirePressureDisplay('tire_fl').value,'250');
- card._xpTireUnit='bar';
+ card.setConfig({type:'custom:xpeng-vehicle-card',model:'G6',year:'2026',
+   prefix:'xpeng_g6',show_controls:true,tire_pressure_unit:'bar'});
  assert.equal(card.tirePressureDisplay('tire_fl').value,'2.5');
+ assert.doesNotMatch(card.xpMaintenancePanel(),/data-xp-tire-unit/);
+});
+test('charging preview ignores generic front image, respects dedicated image override and uses rear graphite',()=>{
+ const {card}=createCard({color:'arctic_white',image:'/local/test-front.png'});
+ card._view='charging';
+ assert.match(card.assetSpec().src,/\/g6\/2026\/graphite_gray\/charging\.webp$/);
+ card._view='overview';
+ assert.equal(card.assetSpec().src,'/local/test-front.png');
+ card.setConfig({type:'custom:xpeng-vehicle-card',model:'G6',year:'2026',color:'arctic_white',
+  prefix:'xpeng_g6',charging_image:'/local/owner-rear.png'});
+ card._view='charging';
+ assert.equal(card.assetSpec().src,'/local/owner-rear.png');
 });
 test('charging cable uses approved dedicated charging image and separate full-length native overlays',()=>{
  const {card}=createCard({show_controls:true});
@@ -935,8 +949,8 @@ test('charging cable uses approved dedicated charging image and separate full-le
  const html=card.charging();
  assert.match(html,/data-xp-cable="desktop"/);
  assert.match(html,/data-xp-cable="mobile"/);
- assert.match(html,/M357 632.*202 628/);
- assert.match(html,/M1310 452.*1090 439/);
+ assert.match(html,/M216 628.*354 627/);
+ assert.match(html,/M985 476.*1310 453/);
  card._hass.states['binary_sensor.is_charging'].state='off';
  assert.doesNotMatch(card.charging(),/data-xp-cable/);
 });
