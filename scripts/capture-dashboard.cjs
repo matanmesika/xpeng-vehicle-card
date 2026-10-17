@@ -334,6 +334,16 @@ async function main(){
  await page.setViewportSize({width:390,height:900});
  await page.evaluate(()=>{const w=document.querySelector('.card-wrap');w.style.width='390px';w.style.margin='0 auto';});
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-controls-mobile.png'),animations:'disabled'});
+ // Diagnose all entities associated with this card without invoking car commands.
+ await car.locator('button[data-xp-more]').click();
+ await car.locator('button[data-xp-extra-page="diagnostics"]').click();
+ assert.ok(await car.locator('.xp-ux-modal-extras').count(),'Diagnostics extra page missing');
+ const summary=await car.locator('.xp-entity-diagnostic').count();
+ assert.ok(summary>=30,'Expected mocked integration entities in diagnostics: '+summary);
+ await car.screenshot({path:path.join(OUTPUT,'g6-2026-diagnostics-mobile.png'),animations:'disabled'});
+ await car.locator('button[data-xp-close]').click();
+ assert.equal(await car.locator('.xp-ux-dock-action').count(),7);
+
  await page.evaluate(()=>{
    const card=document.querySelector('xpeng-vehicle-card'),h=card.hass;
    const states={...h.states};
