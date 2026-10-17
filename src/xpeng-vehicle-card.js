@@ -938,6 +938,22 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{min-height:48px}
  .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action small{font-size:9px}
 }
+/* Maintenance is reached via one navigation button only: never render a Home
+ * maintenance summary card. Keep the location status as a small independent row.
+ * In legacy status-only configuration, expose one dedicated Maintenance button. */
+.xp-maintenance-home-button{position:absolute;z-index:12;right:3%;bottom:3%;min-height:46px;display:flex;gap:7px;align-items:center;justify-content:center;padding:8px 16px;border-radius:14px;background:#102e47e8;border:1px solid #6a9db775;color:#e9fcff;cursor:pointer}
+.xp-maintenance-home-button:hover,.xp-maintenance-home-button:focus-visible{border-color:#20e1ca;background:#164b64}
+.xp-overview:not(.xp-has-controls) .xp-status-panel{bottom:14%}
+.xp-home-navigation .xp-status-panel{min-height:44px}
+@container xpeng-layout (max-width:850px){
+ .xp-home-navigation .xp-status-panel{display:block;left:4%;right:4%;width:92%;bottom:151px;padding:3px 9px}
+ .xp-home-navigation .xp-status-panel .xp-info-row{display:flex;align-items:center;grid-column:auto;min-height:43px;border:0;padding:5px 8px}
+ .xp-overview:not(.xp-has-controls) .xp-status-panel{bottom:84px}
+ .xp-overview:not(.xp-has-controls) .xp-maintenance-home-button{bottom:16px;right:4%}
+}
+@container xpeng-layout (max-width:360px){
+ .xp-home-navigation .xp-status-panel{bottom:148px}
+}
 /* Desktop climate = cabin + controls side by side; mobile = one scrolling page.
    The two owner photos remain unchanged and preserve their proportions. */
 .xp-ux-modal-climate .xp-climate-layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(300px,.9fr);gap:clamp(14px,2.5vw,42px);align-items:start;max-width:1180px;margin:12px auto 0;direction:ltr}
@@ -2249,7 +2265,9 @@ class XpengVehicleCard extends HTMLElement{
      </section>`;
   }
  overview(){
-  const rows=[['settings','תחזוקת הרכב','צמיגים · טיפולים · נתוני רכב'],['pin','Location',this.locationText()]];
+  // The Home screen shows only live vehicle summary and location.
+  // Maintenance data live exclusively inside the Maintenance page.
+  const rows=[['pin','Location',this.locationText()]];
   return `${this.title()}${this.carArt()}
     <section class="xp-overview-stat" aria-label="Battery and estimated range">
      <div class="xp-batt-line"><div class="xp-batt-glyph"><div class="xp-batt-fill" style="height:${xpPercent(this.val('soc'))??0}%"></div></div>
@@ -2257,14 +2275,13 @@ class XpengVehicleCard extends HTMLElement{
      ${this.progress()}<div class="xp-overview-range"><div class="xp-stat-label">Estimated range</div><div class="xp-range-num">${xpIcon('gauge',36)}<span>${xpEsc(this.num('range','km'))}</span></div></div>
     </section>
     <aside class="xp-status-panel" aria-label="Vehicle information">
-      ${rows.map(([icon,label,val])=>icon==='settings'
-       ?`<button type="button" class="xp-info-row xp-tire-row" data-xp-open="maintenance" aria-label="תחזוקת הרכב"><span class="xp-info-icon">${xpIcon(icon,31)}</span><span class="xp-info-copy"><small>${xpEsc(label)}</small><b>${xpEsc(val)}</b></span><span class="xp-chevron">${xpIcon('arrow',19)}</span></button>`
-       :icon==='pin'&&this.xpLive('device_tracker','location')
+      ${rows.map(([icon,label,val])=>icon==='pin'&&this.xpLive('device_tracker','location')
        ?`<button type="button" class="xp-info-row xp-location-row" data-xp-open="map" aria-label="מפת מיקום הרכב"><div class="xp-info-icon">${xpIcon(icon,31)}</div>
        <div class="xp-info-copy"><small>${xpEsc(label)}</small><b>${xpEsc(val)}</b></div><span class="xp-chevron">${xpIcon('arrow',19)}</span></button>`
        :`<div class="xp-info-row"><div class="xp-info-icon">${xpIcon(icon,31)}</div>
        <div class="xp-info-copy"><small>${xpEsc(label)}</small><b>${xpEsc(val)}</b></div></div>`).join('')}
-    </aside>`;
+    </aside>
+    ${!this.xpUiEnabled()?'<button type="button" class="xp-maintenance-home-button" data-xp-open="maintenance" aria-label="פתיחת תחזוקת הרכב">'+xpIcon('settings',21)+'<span>תחזוקה</span></button>':''}`;
  }
  charging(){
   return `${this.title()}
