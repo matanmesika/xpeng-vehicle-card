@@ -291,6 +291,7 @@ async function main(){
    const before=dock.scrollLeft;dock.scrollLeft=dock.scrollWidth;
    return {width:dock.clientWidth,scrollWidth:dock.scrollWidth,before,after:dock.scrollLeft};
  });
+ console.log('Mobile home dock measured:',JSON.stringify(dockScroll));
  assert.ok(dockScroll.scrollWidth>dockScroll.width+80,'Mobile Home shortcuts must scroll horizontally');
  assert.ok(dockScroll.after>50,JSON.stringify(dockScroll));
  console.log('Mobile dock horizontal scroll verified:',JSON.stringify(dockScroll));
