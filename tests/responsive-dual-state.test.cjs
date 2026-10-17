@@ -41,9 +41,10 @@ test('phone subpages are touch scrollable and maintenance grid stacks rows',()=>
  assert.match(css,/\.xp-ux-modal-maintenance \.xp-tire-stage\{display:grid;width:100%;height:auto/);
 });
 test('original charging art is restored and green cable only exists during charging',()=>{
- assert.match(source,/const candidate=xpVehicleAssetPath\(a,view==='rear'\?'charging':'front'\)/);
+ assert.match(source,/ownerCharging=a\.model==='G6'/);
+ assert.match(source,/chargingAppearance=ownerCharging/);
  assert.match(source,/this\.model\(\)==='G6'&&this\.xpChargingActive\(\)/);
- assert.match(css,/\.xp-charge-cable-live \.xp-charge-cable-halo\{stroke:#00f59c/);
+ assert.match(css,/\.xp-charge-cable-live \.xp-charge-cable-halo\{stroke:#00df90;stroke-width:5\.2/);
  assert.doesNotMatch(source,/\['charging','bolt','טעינה'\]/);
 });
 
@@ -66,8 +67,8 @@ test('desktop and mobile charging overlays use separate viewBox geometry',()=>{
  assert.match(css,/\.xp-charge-cable\.xp-cable-mobile\{display:none\}/);
  assert.match(css,/\.xp-charge-cable\.xp-cable-desktop\{display:none\}/);
 });
-test('TPMS unit picker is editable in the card and reacts to changes',()=>{
- assert.match(source,/data-xp-tire-unit/);
+test('tyre pressure units exist only in card editor and never in vehicle screens',()=>{
  assert.match(source,/select\('tire_pressure_unit'/);
- assert.match(source,/this\._xpTireUnit=unitSelect\.value;this\.render\(\)/);
+ assert.doesNotMatch(source,/data-xp-tire-unit|_xpTireUnit|xp-tire-units/);
+ assert.match(source,/this\.vehicle\(\)\?\.tire_pressure_unit/);
 });
