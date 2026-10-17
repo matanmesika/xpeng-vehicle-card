@@ -940,3 +940,27 @@ test('charging cable uses approved dedicated charging image and separate full-le
  card._hass.states['binary_sensor.is_charging'].state='off';
  assert.doesNotMatch(card.charging(),/data-xp-cable/);
 });
+
+test('diagnostics list real one-car HA entities, show unavailable and never expose a second car',()=>{
+ const {card}=createCard({prefix:'my_xpeng'});
+ card._xpengByKey={};
+ card._xpengEntities=[];
+ Object.assign(card._hass.states,{
+  'device_tracker.xpeng_abcdef_location':{state:'not_home',attributes:{}},
+  'sensor.xpeng_abcdef_battery':{state:'81',attributes:{}},
+  'binary_sensor.xpeng_abcdef_any_window_open':{state:'unavailable',attributes:{}},
+  'button.xpeng_abcdef_stop_charging':{state:'unknown',attributes:{}},
+  'sensor.xpeng_ghijkl_battery':{state:'40',attributes:{}}
+ });
+ const html=card.xpSensorDiagnosticsPanel();
+ assert.match(html,/sensor\.xpeng_abcdef_battery/);
+ assert.match(html,/binary_sensor\.xpeng_abcdef_any_window_open/);
+ assert.match(html,/לא זמין/);
+ assert.match(html,/כפתור פעולה/);
+ assert.doesNotMatch(html,/xpeng_ghijkl/);
+ assert.match(card.xpExtrasPanel(),/אבחון ישויות/);
+ card._xpengEntities=[{entity_id:'sensor.user_named_battery'},{entity_id:'binary_sensor.cable_present'}];
+ const renamed=card.xpSensorDiagnosticsPanel();
+ assert.match(renamed,/sensor\.user_named_battery/);
+ assert.doesNotMatch(renamed,/sensor\.xpeng_abcdef_battery/);
+});
