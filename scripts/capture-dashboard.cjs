@@ -288,12 +288,13 @@ async function main(){
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-controls-mobile.png'),animations:'disabled'});
  const dockScroll=await car.evaluate(el=>{
    const dock=el.shadowRoot.querySelector('.xp-ux-dock');
-   const before=dock.scrollLeft;dock.scrollLeft=dock.scrollWidth;
+   const before=dock.scrollLeft;dock.scrollLeft=-dock.scrollWidth;
    return {width:dock.clientWidth,scrollWidth:dock.scrollWidth,before,after:dock.scrollLeft};
  });
  console.log('Mobile home dock measured:',JSON.stringify(dockScroll));
  assert.ok(dockScroll.scrollWidth>dockScroll.width+80,'Mobile Home shortcuts must scroll horizontally');
- assert.ok(dockScroll.after>50,JSON.stringify(dockScroll));
+ assert.ok(Math.abs(dockScroll.after)>50,JSON.stringify(dockScroll));
+ await car.screenshot({path:path.join(OUTPUT,'g6-2026-controls-mobile-scrolled.png'),animations:'disabled'});
  console.log('Mobile dock horizontal scroll verified:',JSON.stringify(dockScroll));
  await page.evaluate(()=>{
    const card=document.querySelector('xpeng-vehicle-card'),h=card.hass;

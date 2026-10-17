@@ -927,6 +927,13 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_rr"]{grid-area:3/2}
  .xp-ux-modal-maintenance .xp-tire-reading{min-height:82px;padding:10px 5px;overflow-wrap:anywhere}
  .xp-ux-modal-maintenance .xp-tire-reading strong{font-size:clamp(18px,5vw,25px)}
+ /* Override the earlier more specific two-row Home grid on narrow cards. */
+ .xp-home-navigation .xp-ux-dock-seven{display:flex;flex-flow:row nowrap;
+  grid-template-columns:none;left:3%;right:3%;width:94%;max-width:none;
+  justify-content:flex-start;overflow-x:auto;touch-action:pan-x;
+  -webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}
+ .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{
+  flex:0 0 82px;width:82px;min-width:82px;max-width:82px;scroll-snap-align:start}
 }
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
