@@ -831,22 +831,98 @@ class XpengVehicleCard extends HTMLElement{
      +button('פתח דלתית','open',open)+button('סגור דלתית','close',close)
      +'</div><p class="xp-ux-note">הפעולות מיועדות לדלתית הטעינה בלבד, ולא לשחרור נעילת הכבל.</p></div>';
  }
- xpModal(){
-  if(!this.xpUiEnabled()||!this._xpPanel)return '';
-  const page=this._xpPanel;
-  if(page!=='climate'&&page!=='seats'&&page!=='vehicle'&&page!=='port')return '';
-  return '<section class="xp-ux-modal" role="dialog" aria-modal="true" aria-label="בקרות XPENG" dir="rtl">'
-   +'<header class="xp-ux-modal-head"><button type="button" data-xp-close aria-label="חזרה למסך הרכב">'+xpIcon('back',24)+'</button><h2>'+(page==='climate'?'מיזוג אוויר':page==='seats'?'מושבים והגה':page==='port'?'שקע טעינה':'בקרת רכב')+'</h2><span>'+xpEsc(this.appearance().model)+'</span></header>'
-   +((page==='vehicle'||page==='port')?'':'<div class="xp-ux-tabs"><button type="button" class="'+(page==='climate'?'xp-ux-selected':'')+'" data-xp-page="climate">מיזוג</button>'
-   +'<button type="button" class="'+(page==='seats'?'xp-ux-selected':'')+'" data-xp-page="seats">מושבים והגה</button></div>')
-   +(page==='vehicle'?this.xpVehiclePanel():page==='port'?this.xpPortPanel():this.xpCabinView()
-   +(page==='climate' ? this.xpTempControl()+this.xpFanControl()
-        +'<button class="xp-ux-nav-seats" type="button" data-xp-page="seats">חימום ואוורור מושבים והגה ←</button>'
-        :this.xpSeatControls()))
-   +(this._xpNotice?'<p class="xp-ux-notice" role="status">'+xpEsc(this._xpNotice)+'</p>':'')
-   +'</section>';
- }
 
+ xpAccessAllowed(){
+   return this.vehicle()?.enable_access_controls===true||this._config.enable_access_controls===true;
+ }
+ xpDoorsPanel(){
+   const entry=this.xpLive('lock','door_lock');
+   const doors=[['driver_door','דלת נהג'],['passenger_door','דלת נוסע'],
+      ['rear_left_door','אחורי שמאל'],['rear_right_door','אחורי ימין']];
+   const status=doors.map(([key,label])=>{
+     const e=this.xpLive('binary_sensor',key);if(!e)return '';
+     return '<div class="xp-ux-access-state"><span>'+label+'</span><strong>'
+      +(e.state.state==='on'?'פתוחה':e.state.state==='off'?'סגורה':xpEsc(e.state.state))+'</strong></div>';
+   }).join('');
+   const unlock=!!entry&&this.xpAccessAllowed();
+   return '<div class="xp-ux-access-panel"><div class="xp-ux-access-head">'
+    +xpIcon('lock',36)+'<div><h3>דלתות ונעילה</h3><p>'
+    +(entry?xpEsc(entry.state.state):'מצב הנעילה אינו זמין')+'</p></div></div>'
+    +'<div class="xp-ux-access-states">'+status+'</div>'
+    +'<div class="xp-ux-access-buttons">'
+    +'<button type="button" data-xp-access="unlock" '+(unlock?'':'disabled')
+    +'>'+xpIcon('unlock',19)+' פתיחת נעילה</button>'
+    +'<button type="button" data-xp-door-lock '+(entry?'':'disabled')
+    +'>'+xpIcon('lock',19)+' נעילת דלתות</button></div>'
+    +'<p class="xp-ux-note">פתיחת נעילה מחייבת הרשאת Access באינטגרציה והגדרה מפורשת enable_access_controls: true בכרטיס. אין פקודה מאומתת לפתיחת דלת פיזית.</p></div>';
+ }
+ xpWindowsPanel(){
+   const windows=this.xpLive('binary_sensor','windows');
+   const open=this.xpLive('button','open_windows');
+   const close=this.xpLive('button','close_windows');
+   const allowed=!!open&&this.xpAccessAllowed();
+   return '<div class="xp-ux-access-panel"><div class="xp-ux-access-head">'
+    +xpIcon('car',36)+'<div><h3>חלונות</h3><p>מצב: '
+    +(windows?xpEsc(windows.state.state==='on'?'פתוחים':windows.state.state==='off'?'סגורים':windows.state.state):'לא זמין')
+    +'</p></div></div><div class="xp-ux-access-buttons">'
+    +'<button type="button" data-xp-access="open_windows" '+(allowed?'':'disabled')
+    +'>פתיחת חלונות</button>'
+    +'<button type="button" data-xp-window-close '+(close?'':'disabled')
+    +'>סגירת חלונות</button></div>'
+    +'<p class="xp-ux-note">פתיחת חלונות דורשת הרשאת Access והגדרה מפורשת בכרטיס. אין עקיפה של הרשאות Xpengtk.</p></div>';
+ }
+ xpMapPanel(){
+   const location=this.xpLive('device_tracker','location');
+   const horn=this.xpLive('button','honk_horn');
+   const lights=this.xpLive('button','flash_lights');
+   return '<div class="xp-ux-map-panel"><div class="xp-ux-map-stage" data-xp-map-host>'
+    +(location?'טוען מפה…':'מיקום הרכב אינו זמין')+'</div>'
+    +'<div class="xp-ux-map-actions">'
+    +'<button type="button" data-xp-map-action="honk_horn" '+(horn?'':'disabled')
+    +'>'+xpIcon('info',20)+' צופר</button>'
+    +'<button type="button" data-xp-map-action="flash_lights" '+(lights?'':'disabled')
+    +'>'+xpIcon('sun',20)+' הבהוב אורות</button></div></div>';
+ }
+ async xpMountMap(){
+   if(this._xpPanel!=='map')return;
+   const host=this.shadowRoot?.querySelector?.('[data-xp-map-host]');
+   const gps=this.xpLive('device_tracker','location');
+   if(!host||!gps)return;
+   try{
+     // Use the Home Assistant native map card, not a hardcoded coordinate or third-party tile URL.
+     const helper=typeof window.loadCardHelpers==='function'?await window.loadCardHelpers():null;
+     if(!helper||this._xpPanel!=='map'||!this.shadowRoot?.contains?.(host))return;
+     const map=helper.createCardElement({type:'map',entities:[{entity:gps.id}],
+       default_zoom:11,hours_to_show:0,dark_mode:true});
+     map.hass=this._hass;
+     host.replaceChildren(map);
+   }catch(err){
+     host.textContent='המפה אינה זמינה בתוך הכרטיס כרגע.';
+   }
+ }
+ xpModal(){
+   if(!this.xpUiEnabled()||!this._xpPanel)return '';
+   const page=this._xpPanel;
+   if(!['climate','port','doors','windows','map'].includes(page))return '';
+   const labels={climate:'מיזוג אוויר',port:'שקע טעינה',doors:'דלתות',windows:'חלונות',map:'מיקום הרכב'};
+   let body='';
+   if(page==='climate'){
+     body=this.xpCabinView();
+     if(this._xpSeatFocus)body+='<section class="xp-ux-seat-sheet" aria-label="חימום ואוורור מושב">'
+       +'<div class="xp-ux-sheet-title"><strong>מושב / הגה</strong><button type="button" data-xp-clear-seat>סגור ✕</button></div>'
+       +this.xpSeatControls()+'</section>';
+     body+='<section class="xp-ux-climate-bottom" aria-label="בקרת אקלים">'
+       +this.xpTempControl()+this.xpFanControl()+'</section>';
+   }else if(page==='port')body=this.xpPortPanel();
+   else if(page==='doors')body=this.xpDoorsPanel();
+   else if(page==='windows')body=this.xpWindowsPanel();
+   else if(page==='map')body=this.xpMapPanel();
+   return '<section class="xp-ux-modal xp-ux-modal-'+page+'" role="dialog" aria-modal="true" aria-label="'+labels[page]+'" dir="rtl">'
+    +'<header class="xp-ux-modal-head"><button type="button" data-xp-close aria-label="חזרה לרכב">'+xpIcon('back',24)+'</button>'
+    +'<h2>'+labels[page]+'</h2><span>'+xpEsc(this.appearance().model)+'</span></header>'
+    +body+(this._xpNotice?'<p class="xp-ux-notice" role="status">'+xpEsc(this._xpNotice)+'</p>':'')
+    +'</section>';
+ }
  xpVehiclePanel(){
    // Display status only if Xpengtk provides the associated entity.
    const statuses=[
