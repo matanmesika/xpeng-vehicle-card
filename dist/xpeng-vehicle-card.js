@@ -892,6 +892,54 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action small{font-size:9px}
 }
 
+/* Home content parity: controls and status exist at every card width.
+ * Scale rather than hide; width is the HA card container, not browser viewport.
+ */
+.xp-home-navigation .xp-title h1{font-size:clamp(25px,3.25cqw,46px)}
+.xp-home-navigation .xp-subtitle{font-size:clamp(13px,1.35cqw,19px)}
+.xp-home-navigation .xp-overview .xp-car{width:50%;left:25%;bottom:18%;max-height:62%}
+.xp-home-navigation .xp-overview-stat{width:19%;top:38%;max-width:250px}
+.xp-home-navigation .xp-overview-stat .xp-batt-glyph{height:64px;width:44px}
+.xp-home-navigation .xp-overview-stat .xp-soc{font-size:clamp(32px,4cqw,59px)}
+.xp-home-navigation .xp-overview-stat .xp-range-num{font-size:clamp(21px,2.5cqw,34px)}
+.xp-home-navigation .xp-overview-stat .xp-range-num ha-icon{width:clamp(18px,2.1cqw,28px);height:clamp(18px,2.1cqw,28px);--mdc-icon-size:clamp(18px,2.1cqw,28px)}
+.xp-home-navigation .xp-status-panel{display:flex;flex-direction:column;right:3%;bottom:15%;width:21%;min-width:0;padding:3px 11px;border-radius:15px}
+.xp-home-navigation .xp-status-panel .xp-info-row{min-height:60px;gap:8px}
+.xp-home-navigation .xp-status-panel .xp-info-icon{width:24px}
+.xp-home-navigation .xp-status-panel .xp-info-icon ha-icon{width:23px;height:23px;--mdc-icon-size:23px}
+.xp-home-navigation .xp-status-panel .xp-info-copy small{font-size:clamp(10px,.9cqw,13px)}
+.xp-home-navigation .xp-status-panel .xp-info-copy b{font-size:clamp(11px,1cqw,15px)}
+.xp-home-navigation .xp-ux-dock-seven{max-width:94%;width:max-content;gap:6px;padding:5px 8px;bottom:2.5%;border-radius:19px}
+.xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{flex:0 1 70px;min-width:61px;max-width:76px;min-height:54px;padding:4px 5px;border-radius:14px}
+.xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action small{font-size:10px;line-height:1.15}
+.xp-home-navigation .xp-ux-dock-seven ha-icon{width:19px;height:19px;--mdc-icon-size:19px!important;--xp-icon-size:19px!important}
+@container xpeng-layout (max-width:850px){
+ .xp-home-navigation .xp-overview .xp-car{width:94%;left:3%;bottom:36%;max-height:31%}
+ .xp-home-navigation .xp-overview-stat{top:205px;left:5%;width:52%;max-width:none}
+ .xp-home-navigation .xp-status-panel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:92%;left:4%;right:4%;bottom:153px;padding:5px 8px}
+ .xp-home-navigation .xp-status-panel .xp-info-row{display:flex;min-height:62px;padding:6px 8px;border-right:1px solid #56708a43;gap:4px}
+ .xp-home-navigation .xp-status-panel .xp-info-row:last-child{border-right:0}
+ .xp-home-navigation .xp-status-panel .xp-info-icon{display:none}
+ .xp-home-navigation .xp-status-panel .xp-info-copy b{font-size:11px;white-space:normal}
+ .xp-home-navigation .xp-ux-dock-seven{bottom:19px;width:min(550px,94%);gap:5px;padding:7px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+ .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{width:100%;min-width:0;max-width:none;min-height:53px;padding:4px;gap:3px}
+}
+@container xpeng-layout (max-width:520px){
+ .xp-home-navigation .xp-overview .xp-car{left:0;width:100%;bottom:34%;max-height:23%}
+ .xp-home-navigation .xp-overview-stat{top:201px;width:55%}
+ .xp-home-navigation .xp-status-panel{grid-template-columns:repeat(2,minmax(0,1fr));bottom:155px;padding:5px 9px}
+ .xp-home-navigation .xp-status-panel .xp-info-row{min-height:51px;border-right:1px solid #56708a43;padding:5px 7px}
+ .xp-home-navigation .xp-status-panel .xp-info-row:nth-child(2){border-right:0}
+ .xp-home-navigation .xp-status-panel .xp-info-row:last-child{grid-column:1/-1;min-height:40px;border-right:0;border-top:1px solid #56708a43}
+ .xp-home-navigation .xp-ux-dock-seven{bottom:18px}
+}
+@container xpeng-layout (max-width:360px){
+ .xp-home-navigation .xp-overview .xp-car{bottom:35%;max-height:22%}
+ .xp-home-navigation .xp-status-panel{bottom:144px}
+ .xp-home-navigation .xp-ux-dock-seven{bottom:14px}
+ .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{min-height:48px}
+ .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action small{font-size:9px}
+}
 /* Desktop climate = cabin + controls side by side; mobile = one scrolling page.
    The two owner photos remain unchanged and preserve their proportions. */
 .xp-ux-modal-climate .xp-climate-layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(300px,.9fr);gap:clamp(14px,2.5vw,42px);align-items:start;max-width:1180px;margin:12px auto 0;direction:ltr}
@@ -2210,7 +2258,7 @@ class XpengVehicleCard extends HTMLElement{
        <div><div class="xp-stat-label">Battery</div><div class="xp-soc">${this.socHtml()}</div></div></div>
      ${this.progress()}<div class="xp-overview-range"><div class="xp-stat-label">Estimated range</div><div class="xp-range-num">${xpIcon('gauge',36)}<span>${xpEsc(this.num('range','km'))}</span></div></div>
     </section>
-    ${this.xpUiEnabled()?'':`    <aside class="xp-status-panel" aria-label="Vehicle information">
+    <aside class="xp-status-panel" aria-label="Vehicle information">
       ${rows.map(([icon,label,val])=>icon==='settings'
        ?`<button type="button" class="xp-info-row xp-tire-row" data-xp-open="maintenance" aria-label="תחזוקת הרכב"><span class="xp-info-icon">${xpIcon(icon,31)}</span><span class="xp-info-copy"><small>${xpEsc(label)}</small><b>${xpEsc(val)}</b></span><span class="xp-chevron">${xpIcon('arrow',19)}</span></button>`
        :icon==='pin'&&this.xpLive('device_tracker','location')
@@ -2218,7 +2266,7 @@ class XpengVehicleCard extends HTMLElement{
        <div class="xp-info-copy"><small>${xpEsc(label)}</small><b>${xpEsc(val)}</b></div><span class="xp-chevron">${xpIcon('arrow',19)}</span></button>`
        :`<div class="xp-info-row"><div class="xp-info-icon">${xpIcon(icon,31)}</div>
        <div class="xp-info-copy"><small>${xpEsc(label)}</small><b>${xpEsc(val)}</b></div></div>`).join('')}
-    </aside>`}`;
+    </aside>`;
  }
  charging(){
   return `${this.title()}
