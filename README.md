@@ -240,3 +240,23 @@ automatic return after cable unplug. A successful HA call is **not** proof
 that the physical vehicle executed a command.
 
 The opt-in **Vehicle controls** panel displays door/lock/window/trunk/security states and supports lock, close windows, close trunk, flash lights, horn and arming X-Guard only when Xpengtk exposes an authorized entity. It deliberately omits Access actions such as car unlock, opening trunk and disarming X-Guard.
+
+### Approved portrait-photo cabin assets (pending binary upload)
+
+The G6 2026 climate/seat overlay is wired to these assets (exact path and filename):
+
+- `assets/interiors/g6/2026/light_gray_photo.webp` — white/light interior
+- `assets/interiors/g6/2026/dark_gray_photo.webp` — black/dark interior
+
+The corresponding 752×1336 WebP binaries are bundled in `XPENG_G6_Photo_Assets_for_GitHub.zip`
+for GitHub's upload interface; the connected GitHub text-editing API does not yet
+carry their bytes. They are AI-generated representations inspired by the G6
+cabin, **not official XPENG interior photography**.
+
+The card selects these photographs by the per-vehicle `interior` finish,
+supports five portrait-aligned seat/steering hot spots, and gracefully
+falls back to the existing matching SVG if the photos have not yet been uploaded.
+The old approved exterior/charging artwork and automatic screen switch remain unchanged.
+
+**Release gate:** the smoke test `photo files must be committed before releasing this draft`
+intentionally fails until both WebP files are present in GitHub.
