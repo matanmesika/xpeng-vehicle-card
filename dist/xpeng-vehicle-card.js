@@ -145,7 +145,7 @@ const XP_ICONS=Object.freeze({
  thermometer:'mdi:thermometer',tire:'mdi:car-tire-alert',info:'mdi:information-outline',
  clock:'mdi:clock-outline',battery:'mdi:battery',power:'mdi:power',
  plug:'mdi:ev-plug-type2',check:'mdi:check',carfront:'mdi:car-front',
- shield:'mdi:shield-outline',sun:'mdi:weather-sunny',gauge:'mdi:speedometer'
+ shield:'mdi:shield-outline',sun:'mdi:weather-sunny',gauge:'mdi:speedometer',wifi:'mdi:wifi'
 });
 function xpIcon(name,size=22){
  const px=Number.isFinite(Number(size))?Math.max(12,Math.min(64,Number(size))):22;
@@ -2055,10 +2055,7 @@ class XpengVehicleCard extends HTMLElement{
        <button class="xp-wifi ${stateClass}" type="button" data-meta-toggle
          aria-label="Vehicle communication details" aria-expanded="${this._infoOpen?'true':'false'}"
          aria-controls="xp-last-update-details" title="Vehicle communication details">
-         <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor"
-           stroke-width="2.3" stroke-linecap="round" aria-hidden="true">
-           <path d="M2 8c5.7-5.6 14.3-5.6 20 0M5 12c4-3.6 10-3.6 14 0M9 16c1.8-1.4 4.2-1.4 6 0"/>
-           <circle cx="12" cy="20" r="1.3" fill="currentColor" stroke="none"/></svg></button>
+         ${xpIcon('wifi',24)}</button>
        ${this._infoOpen?`<div id="xp-last-update-details" class="xp-meta-popover" role="region"
          aria-label="Vehicle connection and last update">
            <div class="xp-meta-field"><small>Connection</small><strong>${xpEsc(status)}</strong></div>

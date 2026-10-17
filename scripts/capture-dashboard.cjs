@@ -335,7 +335,7 @@ async function main(){
      });
      assert.ok(metrics.scrolled>60,'Maintenance subpage must scroll vertically on mobile: '+JSON.stringify(metrics));
      assert.equal(metrics.columns,2,'Mobile TPMS must have two compact pressure columns');
-     assert.match(metrics.label,/250/);
+     assert.match(metrics.label,/2\.5bar/);
      await car.locator('select[data-xp-tire-unit]').selectOption('psi');
      assert.match(await car.locator('[data-wheel="tire_fl"]').innerText(),/36\.3/);
      await car.screenshot({path:path.join(OUTPUT,'g6-2026-maintenance-mobile-psi.png'),animations:'disabled'});

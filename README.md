@@ -82,3 +82,11 @@ The v1.0.2 gallery remains available for comparison; these files are intentional
 | ![Original vehicle status](docs/screenshots/g6-2026-vehicle-status.png) | ![Original charge](docs/screenshots/g6-2026-charging.png) | ![Original maintenance](docs/screenshots/g6-2026-maintenance-desktop.png) |
 
 **Sensor mapping:** the card automatically resolves available Xpengtk entities by the configured prefix. For legacy setups you can keep manual entity mapping in existing YAML; never invent live readings when a sensor is missing. Update the prefix to match your G6 entities. Opening/unlocking operations require explicit Access opt-in.
+
+## G6 mobile correction in PR #43 (pending release)
+
+The original three distinct model/paint images are: **front.webp** for Home, **charging.webp** for Charging, and **top.webp** for maintenance/TPMS. A previous version accidentally reused the front cutout for G6 Charging; this PR restores the original charging-specific image and removes the artificial glowing SVG cable. Vehicle pictures are NOT replaced by generic icons.
+
+Home actions now form a horizontally swipeable strip on narrow phone cards; other pages scroll vertically. The four tires on mobile display below the car picture in a two-column grid. Units can be changed directly in Maintenance or saved in the card editor as **bar, PSI or kPa**. Measurements are converted according to their actual Home Assistant entity units, not assumed to be PSI.
+
+All **action icons** use Home Assistant standard **Material Design Icons** (`ha-icon` with `mdi:`), including the complete fan icon. The UI skips unavailable aliases when another genuine Xpengtk sensor value exists. Real Xpengtk TPMS aliases: `tyre_pressure_fl`, `tyre_pressure_fr`, `tyre_pressure_rl`, `tyre_pressure_rr`; actual entity IDs may be renamed in HA. Confirm entity states under Developer Tools → States if a sensor still shows unavailable. This frontend update does not fix absent data from an offline integration or vehicle.
