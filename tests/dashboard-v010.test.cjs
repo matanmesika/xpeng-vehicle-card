@@ -424,34 +424,26 @@ test('card editor exposes the independent photographic background and preserves 
 });
 
 
-test('tire selection transforms central vehicle into overhead four-wheel view and back',()=>{
+test('maintenance entry groups TPMS, mileage, next service and masked VIN',()=>{
  const states=data(),card=setup(states),background=card.sceneBackdrop();
- assert.match(card.shadowRoot.innerHTML,/data-tire-toggle/);
- const toggle={hasAttribute:key=>key==='data-tire-toggle'};
- card.shadowRoot.handlers.click({target:{closest:()=>toggle}});
- let html=card.shadowRoot.innerHTML;
- assert.match(html,/class="xp-tire-screen"/);
- assert.match(html,/class="xp-subtitle">Tire pressure<\/div>/,'TPMS retains the main vehicle heading');
- assert.match(html,/class="xp-tire-actions"/,'back control stays in the same card layout');
- assert.doesNotMatch(html,/xp-tire-screen-head/,'TPMS must not show a second competing page header');
- assert.match(html,/class="xp-top-car"/);
- assert.doesNotMatch(html,/data-car-art/,'normal three-quarter vehicle must disappear during top view');
- assert.match(html,/Back to vehicle/);
+ states['sensor.my_xpeng_next_maintenance']={state:'20 days',attributes:{km_remaining:2450,next_date:'2027-01-10'}};
+ states['sensor.my_xpeng_vehicle_identity']={state:'G6',attributes:{vin_masked:'L1N******123456',model_year:'2026'}};
+ card.render();
+ assert.match(card.shadowRoot.innerHTML,/data-xp-open="maintenance"/);
+ assert.doesNotMatch(card.shadowRoot.innerHTML,/data-tire-toggle/,'TPMS must be under maintenance only');
+ const button={hasAttribute:k=>k==='data-xp-open',dataset:{xpOpen:'maintenance'}};
+ card.shadowRoot.handlers.click({target:{closest:()=>button}});
+ const html=card.shadowRoot.innerHTML;
+ assert.match(html,/xp-ux-modal-maintenance/);
  for(const wheel of ['tire_fl','tire_fr','tire_rl','tire_rr'])
-   assert.match(html,new RegExp('data-wheel="'+wheel+'"'));
- assert.equal((html.match(/<strong>2.5<\/strong>/g)||[]).length,4);
- assert.equal(card.sceneBackdrop(),background,'tire view cannot change approved scenery');
- assert.equal(card._view,'overview','tire detail is not a third vehicle status page');
- const wifi={hasAttribute:key=>key==='data-meta-toggle'};
- card.shadowRoot.handlers.click({target:{closest:()=>wifi}});
- assert.match(card.shadowRoot.innerHTML,/class="xp-tire-screen"/,'Wi-Fi details must not close TPMS');
- assert.match(card.shadowRoot.innerHTML,/id="xp-last-update-details"/,'Wi-Fi popover also works on tire view');
- card.shadowRoot.handlers.click({target:{closest:()=>wifi}});
- assert.doesNotMatch(card.shadowRoot.innerHTML,/id="xp-last-update-details"/);
- assert.match(card.shadowRoot.innerHTML,/class="xp-tire-screen"/);
- card.shadowRoot.handlers.click({target:{closest:()=>toggle}});
- assert.match(card.shadowRoot.innerHTML,/data-car-art/);
- assert.doesNotMatch(card.shadowRoot.innerHTML,/class="xp-tire-screen"/);
+  assert.match(html,new RegExp('data-wheel="'+wheel+'"'));
+ assert.match(html,/L1N\*\*\*\*\*\*123456/);
+ assert.match(html,/2450/);
+ assert.match(html,/12,548 km/);
+ assert.equal(card.sceneBackdrop(),background);
+ const close={hasAttribute:k=>k==='data-xp-close'};
+ card.shadowRoot.handlers.click({target:{closest:()=>close}});
+ assert.doesNotMatch(card.shadowRoot.innerHTML,/xp-ux-modal-maintenance/);
 });
 test('optional exact overhead art follows model/trim/paint and is cleared when choosing another paint',()=>{
  const CardEditor=tags.get('xpeng-vehicle-card-editor'),editor=new CardEditor();

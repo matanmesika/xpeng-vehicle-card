@@ -15,20 +15,45 @@ function demo(charging){
   'sensor.my_xpeng_soc':state('76'),
   'sensor.my_xpeng_range_km':state('420'),
   'sensor.my_xpeng_odometer_km':state('15284'),
+  'device_tracker.my_xpeng_location':state('not_home'),
   'sensor.my_xpeng_charge_power_kw':state('79.2'),
   'sensor.my_xpeng_charge_remaining_min':state('32'),
   'sensor.my_xpeng_charge_target':state('90'),
   'sensor.my_xpeng_last_update':state('2026-10-14T12:00:00'),
   'binary_sensor.my_xpeng_is_charging':state(charging?'on':'off'),
   'binary_sensor.my_xpeng_is_plugged_in':state(charging?'on':'off'),
-  'climate.my_xpeng_climate':state('heat_cool',{temperature:22,current_temperature:24,min_temp:16,max_temp:32,target_temp_step:0.5}),
+  'climate.my_xpeng_climate':state('heat_cool',{temperature:22,current_temperature:24,min_temp:16,max_temp:32,target_temp_step:0.5,hvac_modes:['off','heat_cool']}),
   'lock.my_xpeng_door_lock':state('locked'),
+  'binary_sensor.my_xpeng_trunk':state('off'),
+  'button.my_xpeng_open_trunk':state('unknown'),
+  'button.my_xpeng_close_trunk':state('unknown'),
+  'button.my_xpeng_honk_horn':state('unknown'),
+  'button.my_xpeng_flash_lights':state('unknown'),
+  'binary_sensor.my_xpeng_climate_auto':state('on'),
+  'binary_sensor.my_xpeng_mirror_heating':state('off'),
   'button.my_xpeng_open_windows':state('unknown'),
   'button.my_xpeng_close_windows':state('unknown'),
   'button.my_xpeng_open_charge_port':state('unknown'),
   'button.my_xpeng_close_charge_port':state('unknown'),
   'button.my_xpeng_stop_charging':state('unknown'),
   'number.my_xpeng_charge_limit':state('90',{min:50,max:100,step:5}),
+  // Preview explicitly includes verified Xpengtk comfort entities.
+  // Fan maximum is read from HA attributes, not forced to 10.
+  'number.my_xpeng_fan_speed':state('3',{min:1,max:8,step:1}),
+  'select.my_xpeng_driver_seat_heating':state('Heat 2',{options:['Off','Heat 1','Heat 2','Heat 3']}),
+  'select.my_xpeng_passenger_seat_heating':state('Heat 1',{options:['Off','Heat 1','Heat 2','Heat 3']}),
+  'select.my_xpeng_driver_seat_ventilation':state('Off',{options:['Off','Ventilation 1','Ventilation 2','Ventilation 3']}),
+  'select.my_xpeng_passenger_seat_ventilation':state('Off',{options:['Off','Ventilation 1','Ventilation 2','Ventilation 3']}),
+  'select.my_xpeng_left_rear_seat_heating':state('Heat 2',{options:['Off','Heat 1','Heat 2','Heat 3']}),
+  'select.my_xpeng_right_rear_seat_heating':state('Heat 1',{options:['Off','Heat 1','Heat 2','Heat 3']}),
+  'select.my_xpeng_steering_wheel_heating':state('Low',{options:['Off','Low','Medium','High']}),
+  'binary_sensor.my_xpeng_windows':state('off'),
+  'sensor.my_xpeng_slow_charge_port':state('Closed'),
+  'sensor.my_xpeng_charge_port':state('Closed'),
+  'sensor.my_xpeng_next_maintenance':state('20 days',{next_date:'2027-01-10',km_remaining:2450}),
+  'sensor.my_xpeng_vehicle_identity':state('G6',{vin_masked:'L1N******123456',model_year:'2026'}),
+  'sensor.my_xpeng_charge_schedule_start':state('23:00'),
+  'sensor.my_xpeng_charge_schedule_end':state('06:30'),
   'sensor.my_xpeng_tire_pressure_front_left_kpa':state('250'),
   'sensor.my_xpeng_tire_pressure_front_right_kpa':state('251'),
   'sensor.my_xpeng_tire_pressure_rear_left_kpa':state('248'),
@@ -68,7 +93,7 @@ async function main(){
  });
  async function screen(name){
   console.log('Checking browser screen:',name);
-  const selector=name==='tire-pressure'?'[data-top-art]':'[data-car-art]';
+  const selector=name==='maintenance-desktop'?'[data-top-art]':'[data-car-art]';
   await page.waitForFunction(selector=>{
    const root=document.querySelector('xpeng-vehicle-card').shadowRoot;
    const img=root.querySelector(selector);
@@ -91,9 +116,10 @@ async function main(){
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(true));
  await screen('charging');
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
- await car.locator('button[data-tire-toggle]').first().click();
- assert.ok(await car.locator('.xp-tire-screen').count(),'Top view was not opened');
- await screen('tire-pressure');
+ await car.locator('button[data-xp-open="maintenance"]').first().click();
+ assert.ok(await car.locator('.xp-ux-modal-maintenance').count(),'Maintenance modal was not opened');
+ await screen('maintenance-desktop');
+ await car.locator('button[data-xp-close]').click();
  // Exercise both HA-driven screens at phone widths and within a narrow
  // Home Assistant Sections column on a wide desktop viewport.
  async function responsiveShot(width,charging,name,viewportWidth=width){
@@ -139,33 +165,195 @@ async function main(){
    wrap.style.width='1400px';wrap.style.margin='18px auto';
    const card=document.querySelector('xpeng-vehicle-card');
    card.setConfig({type:'custom:xpeng-vehicle-card',prefix:'my_xpeng',model:'G6',year:'2026',
-     trim:'core_performance_awd',color:'arctic_white',interior:'light_gray'});
+     trim:'core_performance_awd',color:'arctic_white',interior:'light_gray',enable_access_controls:true});
  });
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
- assert.equal(await car.locator('.xp-ux-dock-action').count(),4,'Four quick actions missing');
- assert.equal(await car.locator('.xp-ux-dock-action:not([disabled])').count(),4,'Demo HA controls unresolved');
+ assert.equal(await car.locator('.xp-ux-dock-action').count(),8,'Seven home quick actions missing');
+ for(const action of ['charging','maintenance','map'])assert.equal(await car.locator('button[data-xp-open="'+action+'"]').count(),1,action+' home action missing');
+ assert.equal(await car.locator('.xp-ux-dock-action:not([disabled])').count(),8,'Mock owner has approved Access, so all seven actions must work');
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-controls-desktop.png'),animations:'disabled'});
+ const readActions=async()=>car.locator('.xp-ux-dock-action').allTextContents();
+ let quickLabels=(await readActions()).join(' ');
+ assert.match(quickLabels,/פתח נעילה/);
+ assert.match(quickLabels,/פתח חלונות/);
+ assert.match(quickLabels,/פתח שקע/);
+ assert.match(quickLabels,/פתח תא מטען/);
+ await page.evaluate(()=>{
+   const card=document.querySelector('xpeng-vehicle-card'),h=card.hass;
+   const states={...h.states};
+   states['lock.my_xpeng_door_lock']={...states['lock.my_xpeng_door_lock'],state:'unlocked'};
+   states['binary_sensor.my_xpeng_windows']={...states['binary_sensor.my_xpeng_windows'],state:'on'};
+   states['sensor.my_xpeng_slow_charge_port']={...states['sensor.my_xpeng_slow_charge_port'],state:'Open'};
+   states['sensor.my_xpeng_charge_port']={...states['sensor.my_xpeng_charge_port'],state:'Open'};
+   states['binary_sensor.my_xpeng_trunk']={...states['binary_sensor.my_xpeng_trunk'],state:'on'};
+   card.hass={...h,states};
+ });
+ quickLabels=(await readActions()).join(' ');
+ assert.match(quickLabels,/נעל/);
+ assert.match(quickLabels,/סגור חלונות/);
+ assert.match(quickLabels,/סגור שקע/);
+ assert.match(quickLabels,/סגור תא מטען/);
+ await car.screenshot({path:path.join(OUTPUT,'g6-2026-home-close-actions-desktop.png'),animations:'disabled'});
+ // Restore reference states; this mock does not issue any vehicle commands.
+ await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
+
+
+ // The actual HOME location button must open its page on a wide desktop.
+ // Native HA map helpers are stubbed here, because standalone Chromium lacks HA tiles.
+ await page.evaluate(()=>{
+   window.__xpengNativeMapRequest=null;
+   window.loadCardHelpers=async()=>({
+     createCardElement(config){
+       window.__xpengNativeMapRequest=config;
+       const el=document.createElement('hui-map-card');
+       el.dataset.qaNativeMap='true';
+       el.style.cssText='display:flex;width:100%;min-height:410px;align-items:center;justify-content:center;text-align:center;color:#d6e7f6;background:#0b253d;border:1px solid #3f698c;border-radius:14px;';
+       el.textContent='מפה במצב בדיקה • אריחי מפה חיים זמינים רק ב־Home Assistant';
+       return el;
+     }
+   });
+ });
+ assert.equal(await car.locator('button[data-xp-open="map"]').count(),1,'Desktop Location shortcut missing');
+ await car.locator('button[data-xp-open="map"]').click();
+ await car.locator('[data-xp-map-host] hui-map-card[data-qa-native-map="true"]').waitFor({state:'visible'});
+ const desktopMap=await car.evaluate(element=>{
+   const root=element.shadowRoot,host=root.querySelector('[data-xp-map-host]'),
+     map=host.querySelector('hui-map-card[data-qa-native-map]'),
+     r=host.getBoundingClientRect(),back=root.querySelector('[data-xp-close]'),
+     b=back?.getBoundingClientRect();
+   return {modal:!!root.querySelector('.xp-ux-modal-map'),
+     mapHasHass:map?.hass===element.hass,
+     horn:root.querySelectorAll('button[data-xp-map-action="honk_horn"]').length,
+     flash:root.querySelectorAll('button[data-xp-map-action="flash_lights"]').length,
+     back:root.querySelectorAll('button[data-xp-close]').length,
+     backVisible:!!b&&b.width>0&&b.height>0,
+     homeButtons:root.querySelectorAll('.xp-ux-dock-action').length,
+     stageWidth:Math.round(r.width),stageHeight:Math.round(r.height),
+     config:window.__xpengNativeMapRequest};
+ });
+ assert.equal(desktopMap.modal,true,'Desktop Location page missing');
+ assert.equal(desktopMap.mapHasHass,true,'Native map is not bound to HA');
+ assert.equal(desktopMap.horn,1,'Horn button missing in desktop map');
+ assert.equal(desktopMap.flash,1,'Flash button missing in desktop map');
+ assert.equal(desktopMap.back,1,'Desktop map should have exactly one Back');
+ assert.equal(desktopMap.backVisible,true,'Desktop Back is not visible');
+ assert.equal(desktopMap.homeButtons,0,'Home dock must hide in Location');
+ assert.ok(desktopMap.stageWidth>900&&desktopMap.stageHeight>=350,JSON.stringify(desktopMap));
+ assert.deepEqual(desktopMap.config,{
+   type:'map',entities:[{entity:'device_tracker.my_xpeng_location'}],
+   default_zoom:11,hours_to_show:0,dark_mode:true
+ },'Native dark map must use the real vehicle tracker entity');
+ await car.screenshot({path:path.join(OUTPUT,'g6-2026-location-desktop.png'),animations:'disabled'});
+ console.log('Desktop Location map + finder + Back:',JSON.stringify(desktopMap));
+ await car.locator('button[data-xp-close]').click();
+ assert.equal(await car.locator('.xp-ux-modal-map').count(),0,'Desktop Back must close Location');
+ assert.equal(await car.locator('.xp-ux-dock-action').count(),8,'Desktop Back must restore Home shortcuts');
+
  await car.locator('button[data-xp-open="climate"]').first().click();
  assert.ok(await car.locator('.xp-ux-modal-climate').count(),'Climate modal missing');
+ assert.equal(await car.locator('.xp-ux-dock').count(),0,'Climate must have Back only, no home menu');
+ assert.equal(await car.locator('[data-xp-close]').count(),1,'Climate must have one Back');
+ const expectedZones=['wheel','driver','passenger','rear_left','rear_right'];
+ for(const z of expectedZones){
+   assert.equal(await car.locator('.xp-ux-hotspot-zone[data-xp-zone="'+z+'"]').count(),1,'HVAC hotspot missing: '+z);
+ }
+ assert.equal(await car.locator('button[data-xp-cycle="left_rear_seat_heat_select"]').count(),1,'Missing rear left heater button');
+ assert.equal(await car.locator('[role="status"][aria-label="מצב AUTO: פעיל"]').count(),1,'Real AUTO feedback missing');
+ assert.equal(await car.locator('[data-xp-hvac-mode="auto"]').count(),0,'Do not invent executable AUTO');
+ assert.equal(await car.locator('[data-xp-swing-mode]').count(),0,'Do not invent remote airflow');
+ assert.equal(await car.locator('button[data-xp-cycle="right_rear_seat_heat_select"]').count(),1,'Missing rear right heater button');
+ const fan=await car.locator('[data-xp-range="fan_speed_control"]').first().evaluate(el=>({
+   min:el.min,max:el.max,value:el.value,step:el.step
+ }));
+ assert.deepEqual(fan,{min:'1',max:'8',value:'3',step:'1'},'Use actual integration fan-range, not an invented 10-speed slider');
+ console.log('HVAC validation: rear-left and rear-right heat visible; HA-provided fan-speed range',JSON.stringify(fan));
+ await page.waitForFunction(()=>{const img=document.querySelector('xpeng-vehicle-card').shadowRoot.querySelector('img[data-cabin-art]');return img&&img.complete&&img.naturalWidth===752;});
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-climate-desktop.png'),animations:'disabled'});
+ // Same user's actual cabin photo, dark finish configured in card editor.
+ await page.evaluate(()=>{
+   const card=document.querySelector('xpeng-vehicle-card');
+   card.setConfig({type:'custom:xpeng-vehicle-card',prefix:'my_xpeng',model:'G6',year:'2026',
+     trim:'core_performance_awd',color:'arctic_white',interior:'dark_gray',enable_access_controls:true});
+ });
+ await page.waitForFunction(()=>{const img=document.querySelector('xpeng-vehicle-card').shadowRoot.querySelector('img[data-cabin-art]');return img&&img.complete&&img.naturalWidth===752&&img.src.includes('interior_dark_gray.webp');});
+ await car.screenshot({path:path.join(OUTPUT,'g6-2026-climate-dark-desktop.png'),animations:'disabled'});
  await car.locator('button[data-xp-close]').click();
+ await page.evaluate(()=>{
+   const card=document.querySelector('xpeng-vehicle-card');
+   card.setConfig({type:'custom:xpeng-vehicle-card',prefix:'my_xpeng',model:'G6',year:'2026',
+     trim:'core_performance_awd',color:'arctic_white',interior:'light_gray',enable_access_controls:true});
+ });
  await page.setViewportSize({width:390,height:900});
  await page.evaluate(()=>{const w=document.querySelector('.card-wrap');w.style.width='390px';w.style.margin='0 auto';});
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-controls-mobile.png'),animations:'disabled'});
- for(const [action,name] of [['doors','doors-mobile'],['windows','windows-mobile'],['port','charge-port-mobile'],['climate','climate-mobile']]){
-   await car.locator('button[data-xp-open="'+action+'"]').first().click();
-   assert.ok(await car.locator('.xp-ux-modal-'+action).count(),action+' modal missing');
+ await page.evaluate(()=>{
+   const card=document.querySelector('xpeng-vehicle-card'),h=card.hass;
+   const states={...h.states};
+   states['lock.my_xpeng_door_lock']={...states['lock.my_xpeng_door_lock'],state:'unlocked'};
+   states['binary_sensor.my_xpeng_windows']={...states['binary_sensor.my_xpeng_windows'],state:'on'};
+   states['sensor.my_xpeng_slow_charge_port']={...states['sensor.my_xpeng_slow_charge_port'],state:'Open'};
+   states['sensor.my_xpeng_charge_port']={...states['sensor.my_xpeng_charge_port'],state:'Open'};
+   states['binary_sensor.my_xpeng_trunk']={...states['binary_sensor.my_xpeng_trunk'],state:'on'};
+   card.hass={...h,states};
+ });
+ assert.match((await readActions()).join(' '),/סגור חלונות/);
+ await car.screenshot({path:path.join(OUTPUT,'g6-2026-home-close-actions-mobile.png'),animations:'disabled'});
+ await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
+ // The first-tap actions use real states; demo contains no backend car connection.
+ for(const [action,name] of [['doors','doors-mobile'],['windows','windows-mobile'],['port','charge-port-mobile'],['trunk','trunk-mobile']]){
+   await page.evaluate(action=>{const card=document.querySelector('xpeng-vehicle-card');card._xpPanel=action;card.render();},action);
+   assert.ok(await car.locator('.xp-ux-modal-'+action).count(),action+' details modal missing');
    await car.screenshot({path:path.join(OUTPUT,'g6-2026-'+name+'.png'),animations:'disabled'});
    await car.locator('button[data-xp-close]').click();
  }
+ for(const [action,name] of [['climate','climate-mobile'],['maintenance','maintenance-mobile'],['map','location-mobile']]){
+   await car.locator('button[data-xp-open="'+action+'"]').first().click();
+   assert.ok(await car.locator('.xp-ux-modal-'+action).count(),action+' modal missing');
+   if(action==='map'){
+     assert.equal(await car.locator('button[data-xp-map-action="honk_horn"]').count(),1);
+     assert.equal(await car.locator('button[data-xp-map-action="flash_lights"]').count(),1);
+   }
+   if(action==='climate')await page.waitForFunction(()=>{const img=document.querySelector('xpeng-vehicle-card').shadowRoot.querySelector('img[data-cabin-art]');return img&&img.complete&&img.naturalWidth===752;});
+   await car.screenshot({path:path.join(OUTPUT,'g6-2026-'+name+'.png'),animations:'disabled'});
+   await car.locator('button[data-xp-close]').click();
+ }
+ await page.evaluate(()=>{
+   const card=document.querySelector('xpeng-vehicle-card');
+   card.setConfig({type:'custom:xpeng-vehicle-card',prefix:'my_xpeng',model:'G6',year:'2026',
+     trim:'core_performance_awd',color:'arctic_white',interior:'dark_gray',enable_access_controls:true});
+   card._xpPanel='climate';card.render();
+ });
+ await page.waitForFunction(()=>{const img=document.querySelector('xpeng-vehicle-card').shadowRoot.querySelector('img[data-cabin-art]');return img&&img.complete&&img.naturalWidth===752&&img.src.includes('interior_dark_gray.webp');},{timeout:12000});
+ await car.screenshot({path:path.join(OUTPUT,'g6-2026-climate-dark-mobile.png'),animations:'disabled'});
+ await car.locator('button[data-xp-close]').click();
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(true));
  assert.equal(await car.locator('.xp-ux-dock').count(),0,'Charging should have no visible quick action dock');
  assert.equal(await car.locator('.xp-ux-charge-actions').count(),0,'Charging controls must not overlay hero');
- assert.equal(await car.locator('button[data-xp-open="charge_controls"]').count(),1,'Charging heading should open controls');
+ assert.equal(await car.locator('button[data-xp-open="charge_controls"]').count(),1,'Charge limit control missing');
+ assert.equal(await car.locator('button[data-xp-open="charge_schedule"]').count(),1,'Charge schedules shortcut missing');
+ assert.equal(await car.locator('button[data-xp-home]').count(),1,'Charging needs one Back to home');
+ assert.equal(await car.locator('.xp-ux-dock').count(),0,'Charging must not have home dock');
+
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-charging-reference-mobile.png'),animations:'disabled'});
  await car.locator('button[data-xp-open="charge_controls"]').click();
  assert.ok(await car.locator('.xp-ux-modal-charge_controls').count(),'Charging modal missing');
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-charging-actions-mobile.png'),animations:'disabled'});
+ await car.locator('button[data-xp-close]').click();
+ await car.locator('button[data-xp-open="charge_schedule"]').click();
+ assert.ok(await car.locator('.xp-ux-modal-charge_schedule').count(),'Charging schedules modal missing');
+ await car.screenshot({path:path.join(OUTPUT,'g6-2026-charge-schedule-mobile.png'),animations:'disabled'});
+ // Automatic charging remains live, but Back returns Home until charging resets.
+ await car.locator('button[data-xp-close]').click();
+ await car.locator('button[data-xp-home]').click();
+ assert.equal(await car.locator('.xp-ux-dock-action').count(),8,'Back from live Charging should display Home menu');
+ assert.equal(await car.locator('button[data-xp-home]').count(),0,'Home should not have Back');
+ await car.screenshot({path:path.join(OUTPUT,'g6-2026-back-home-mobile.png'),animations:'disabled'});
+ // Charging is also a manually accessible destination, with the exact same scene.
+ await car.locator('button[data-xp-open="charging"]').click();
+ assert.equal(await car.locator('.xp-charge-card').count(),1,'Manual charging view did not open');
+ assert.equal(await car.locator('.xp-ux-dock').count(),0,'Manual charging must hide home dock');
+ await car.locator('button[data-xp-home]').click();
+ assert.equal(await car.locator('.xp-ux-dock-action').count(),8,'Back from manual Charging should return Home');
  assert.equal(errors.length,0,errors.join('\n'));
  assert.ok(imagesServed>=4,'Expected bundled vehicle and background assets to be loaded');
  await browser.close();
@@ -173,3 +361,5 @@ async function main(){
 main().catch(err=>{console.error(err);process.exit(1);});
 
 // Owner review captures: original charging hero remains unchanged by visible dock controls.
+
+// Rear-heat gallery: real G6 owner images and Xpengtk entities; no synthetic climate mockups.

@@ -87,7 +87,7 @@ test('year editor changes must invalidate old manual hero images, unlike trim ch
  assert.match(js, /\['model','year_group','year','color'\]\.includes\(key\)/);
  assert.doesNotMatch(js, /\['model','year','color','trim'\]\.includes\(key\)/);
 });
-test('G6 front-facing charging reference overrides rear-only legacy asset', () => {
+test('G6 charging keeps original metrics layout with front-looking artwork', () => {
  const cfg={model:'G6',year:'2026',color:'graphite_gray'};
  const car=instance(cfg);
  const front=car.assetSpec();
@@ -314,9 +314,9 @@ test('P7i keeps exact-year colour selection for the 2024-only paints',()=>{
  assert.equal(editor._cfg.color,'arctic_white');
 });
 
-test('the README dashboard gallery ships three real browser PNG captures',()=>{
+test('the README dashboard gallery ships overview, original charging and maintenance captures',()=>{
  const gallery=fs.readFileSync(path.join(ROOT,'README.md'),'utf8');
- const files=['vehicle-status','charging','tire-pressure'].map(view=>'g6-2026-'+view+'.png');
+ const files=['vehicle-status','charging','maintenance-desktop'].map(view=>'g6-2026-'+view+'.png');
  const sizes=[];
  for(const f of files){
   const relative='docs/screenshots/'+f;

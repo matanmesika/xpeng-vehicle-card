@@ -19,7 +19,15 @@ def run():
     derived=read("sources/derived-paint-views.json")
     exact={v["path"] for entry in art["entries"] for v in entry["views"].values() if v["status"]=="available"}
     present={str(p.relative_to(ROOT / "assets")) for p in (ROOT / "assets" / "vehicles").rglob("*.webp")}
-    assert exact==present, f"Artwork map/file mismatch: missing={sorted(exact-present)}, extra={sorted(present-exact)}"
+    # Cabin upholstery photos belong in assets/vehicles/g6 by owner request,
+    # but they are not model/year/paint exterior view assets.
+    cabin={"vehicles/g6/interior_light_gray.webp","vehicles/g6/interior_dark_gray.webp"}
+    for name in sorted(cabin):
+        p=ROOT/"assets"/name
+        data=p.read_bytes()
+        assert len(data)>10000 and data[:4]==b"RIFF" and data[8:12]==b"WEBP", f"Invalid G6 cabin source: {name}"
+    assert exact|cabin==present, (f"Artwork map/file mismatch: "
+        f"missing={sorted((exact|cabin)-present)}, extra={sorted(present-(exact|cabin))}")
     ai_paths=set(ai["paths"])
     unknown=set(unverified["paths"])
     assert len(ai_paths)==len(ai["paths"]), "Duplicate AI provenance paths"
