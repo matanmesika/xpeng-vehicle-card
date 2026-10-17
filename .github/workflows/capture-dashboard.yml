@@ -73,5 +73,16 @@ jobs:
           git add docs/screenshots/*.png
           if ! git diff --staged --quiet; then
             git commit -m "docs: add actual rendered XPENG card screenshots"
-            git push origin "HEAD:${GITHUB_REF_NAME}"
+            # Work safely with concurrent changes to this PR branch.
+            # Never force-push or discard updates made after checkout.
+            for attempt in 1 2 3; do
+              if git push origin "HEAD:${GITHUB_REF_NAME}"; then
+                echo "Screenshots published to ${GITHUB_REF_NAME}"
+                exit 0
+              fi
+              git fetch origin "refs/heads/${GITHUB_REF_NAME}:refs/remotes/origin/${GITHUB_REF_NAME}"
+              git rebase "origin/${GITHUB_REF_NAME}" || { git rebase --abort || true; exit 1; }
+            done
+            echo "::error::Could not publish updated screenshots after three safe retries"
+            exit 1
           fi
