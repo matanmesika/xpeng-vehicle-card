@@ -2258,7 +2258,7 @@ class XpengVehicleCardEditor extends HTMLElement{
      ${select('trim','Trim · display only',xpAllowedTrims(v.model,v.year))}
      ${select('color','Exterior paint',xpAllowedPaints(v.model,v.year))}
      ${select('interior','Interior finish · צבע פנים הרכב',xpAllowedInteriors(v.model,v.year))}
-     ${select('show_controls','Control buttons', [{id:'true',label:'Visible · four quick buttons'},{id:'false',label:'Hidden · original status-only view'}],String(v.show_controls===undefined?v.model==='G6':v.show_controls===true||v.show_controls==='true'))}
+     ${select('show_controls','Control buttons', [{id:'true',label:'Visible · seven main actions'},{id:'false',label:'Hidden · original status-only view'}],String(v.show_controls===undefined?v.model==='G6':v.show_controls===true||v.show_controls==='true'))}
      ${select('enable_access_controls','Access actions (unlock / windows)',[{id:'false',label:'Off (safe default)'},{id:'true',label:'On (requires Xpengtk Access permission)'}],String(v.enable_access_controls===true||v.enable_access_controls==='true'))}
      <p>Years sharing the same exterior/facelift are grouped. Select a specific year only when paint availability differs. Trim labels never change vehicle pictures.</p>
     <h3>Sensor mapping</h3>
