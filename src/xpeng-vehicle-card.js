@@ -781,7 +781,7 @@ class XpengVehicleCard extends HTMLElement{
    const e=this.xpLive('select',suffix);if(!e)return null;
    const old=e.state.state,pending=this._xpSeatPending?.[suffix];
    if(!pending)return old;
-   if(old===pending.option||Date.now()-pending.at>90000){
+   if((pending.sent===true&&old===pending.option)||Date.now()-pending.at>90000){
      delete this._xpSeatPending[suffix];return old;
    }
    return pending.option;
@@ -848,6 +848,7 @@ class XpengVehicleCard extends HTMLElement{
        if(!ent?.state.attributes?.options?.includes(target))throw Error('הדרגה אינה נתמכת כעת.');
        if(typeof this._hass?.callService!=='function')throw Error('שירות HA אינו זמין.');
        await this._hass.callService('select','select_option',{entity_id:ent.id,option:target});
+       if(this._xpSeatPending?.[suffix]?.option===target)this._xpSeatPending[suffix].sent=true;
        lastSent=target;
      }
    }catch(error){
