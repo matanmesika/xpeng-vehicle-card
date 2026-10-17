@@ -59,3 +59,15 @@ test('native MDI glyphs replace ALL hand-drawn dashboard controls',()=>{
  assert.doesNotMatch(source,/\.xp-ux-(?:dock-action|cycle|climate-feature) svg/);
  assert.match(css,/\.xp-mdi-icon\{display:inline-flex/);
 });
+
+test('desktop and mobile charging overlays use separate viewBox geometry',()=>{
+ assert.match(source,/viewBox="0 0 1400 788"/);
+ assert.match(source,/viewBox="0 0 390 780"/);
+ assert.match(css,/\.xp-charge-cable\.xp-cable-mobile\{display:none\}/);
+ assert.match(css,/\.xp-charge-cable\.xp-cable-desktop\{display:none\}/);
+});
+test('TPMS unit picker is editable in the card and reacts to changes',()=>{
+ assert.match(source,/data-xp-tire-unit/);
+ assert.match(source,/select\('tire_pressure_unit'/);
+ assert.match(source,/this\._xpTireUnit=unitSelect\.value;this\.render\(\)/);
+});
