@@ -29,6 +29,16 @@ function demo(charging){
   'button.my_xpeng_close_charge_port':state('unknown'),
   'button.my_xpeng_stop_charging':state('unknown'),
   'number.my_xpeng_charge_limit':state('90',{min:50,max:100,step:5}),
+  // Preview explicitly includes verified Xpengtk comfort entities.
+  // Fan maximum is read from HA attributes, not forced to 10.
+  'number.my_xpeng_fan_speed':state('3',{min:1,max:8,step:1}),
+  'select.my_xpeng_driver_seat_heating':state('Heat 2',{options:['Off','Heat 1','Heat 2','Heat 3']}),
+  'select.my_xpeng_passenger_seat_heating':state('Heat 1',{options:['Off','Heat 1','Heat 2','Heat 3']}),
+  'select.my_xpeng_driver_seat_ventilation':state('Off',{options:['Off','Ventilation 1','Ventilation 2','Ventilation 3']}),
+  'select.my_xpeng_passenger_seat_ventilation':state('Off',{options:['Off','Ventilation 1','Ventilation 2','Ventilation 3']}),
+  'select.my_xpeng_left_rear_seat_heating':state('Heat 2',{options:['Off','Heat 1','Heat 2','Heat 3']}),
+  'select.my_xpeng_right_rear_seat_heating':state('Heat 1',{options:['Off','Heat 1','Heat 2','Heat 3']}),
+  'select.my_xpeng_steering_wheel_heating':state('Low',{options:['Off','Low','Medium','High']}),
   'binary_sensor.my_xpeng_windows':state('off'),
   'sensor.my_xpeng_slow_charge_port':state('Closed'),
   'sensor.my_xpeng_charge_port':state('Closed'),
@@ -155,6 +165,17 @@ async function main(){
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-controls-desktop.png'),animations:'disabled'});
  await car.locator('button[data-xp-open="climate"]').first().click();
  assert.ok(await car.locator('.xp-ux-modal-climate').count(),'Climate modal missing');
+ const expectedZones=['wheel','driver','passenger','rear_left','rear_right'];
+ for(const z of expectedZones){
+   assert.equal(await car.locator('.xp-ux-hotspot-zone[data-xp-zone="'+z+'"]').count(),1,'HVAC hotspot missing: '+z);
+ }
+ assert.equal(await car.locator('button[data-xp-cycle="left_rear_seat_heat_select"]').count(),1,'Missing rear left heater button');
+ assert.equal(await car.locator('button[data-xp-cycle="right_rear_seat_heat_select"]').count(),1,'Missing rear right heater button');
+ const fan=await car.locator('[data-xp-range="fan_speed_control"]').first().evaluate(el=>({
+   min:el.min,max:el.max,value:el.value,step:el.step
+ }));
+ assert.deepEqual(fan,{min:'1',max:'8',value:'3',step:'1'},'Use actual integration fan-range, not an invented 10-speed slider');
+ console.log('HVAC validation: rear-left and rear-right heat visible; HA-provided fan-speed range',JSON.stringify(fan));
  await page.waitForFunction(()=>{const img=document.querySelector('xpeng-vehicle-card').shadowRoot.querySelector('img[data-cabin-art]');return img&&img.complete&&img.naturalWidth===752;});
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-climate-desktop.png'),animations:'disabled'});
  // Same user's actual cabin photo, dark finish configured in card editor.
