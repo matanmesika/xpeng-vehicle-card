@@ -358,3 +358,54 @@ test('without supported sensors extra pages contain no operative control',()=>{
     assert.doesNotMatch(card.xpExtraSectionContent(page),/data-xp-extra-action=/);
   }
 });
+
+
+test('climate image follows interior finish only in card settings',()=>{
+  const {card}=createCard({interior:'light_gray'});
+  card._xpPanel='climate';
+  assert.match(card.xpCabinView(),/light_gray_photo\.webp/);
+  assert.doesNotMatch(card.xpModal(),/data-key="interior"/);
+  card.setConfig({type:'custom:xpeng-vehicle-card',model:'G6',year:'2026',prefix:'xpeng_g6',interior:'dark_gray',show_controls:true});
+  assert.match(card.xpCabinView(),/dark_gray_photo\.webp/);
+  assert.doesNotMatch(card.xpModal(),/data-key="interior"/);
+});
+test('screenshot functions wired only when upstream Xpengtk offers native entity',()=>{
+  const {card}=createCard();
+  card._xpengByKey['switch.defrost_switch']='switch.real_defrost';
+  card._xpengByKey['calendar.hvac_schedule_calendar']='calendar.real_schedule';
+  card._hass.states['switch.real_defrost']={state:'off',attributes:{}};
+  card._hass.states['calendar.real_schedule']={state:'off',attributes:{}};
+  const html=card.xpClimateFeatures();
+  assert.equal((html.match(/class="xp-ux-climate-feature/g)||[]).length,3);
+  assert.match(html,/data-xp-climate="off"/);
+  assert.match(html,/data-xp-switch="defrost_switch"/);
+  assert.match(html,/data-xp-extra-page="schedule"/);
+  for(const fake of ['pet_mode','sterilisation','ac_cleaning','rear_defrost','quick_heat','quick_cool'])
+    assert.doesNotMatch(html,new RegExp('data-xp-[^=]+="'+fake+'"'));
+  card._xpPanel='climate';
+  assert.match(card.xpModal(),/xp-ux-climate-features/);
+  assert.match(card.xpModal(),/data-xp-temp/);
+});
+test('front defroster shows live state and calls only native HA switch service',async()=>{
+  const {card,commands}=createCard();
+  card._xpengByKey['switch.defrost_switch']='switch.real_defrost';
+  card._hass.states['switch.real_defrost']={state:'off',attributes:{}};
+  assert.match(card.xpClimateFeatures(),/data-xp-switch="defrost_switch" aria-pressed="false"/);
+  await card.xpSend('switch','toggle','defrost_switch');
+  assert.deepEqual(JSON.parse(JSON.stringify(commands)),[
+    {domain:'switch',service:'toggle',data:{entity_id:'switch.real_defrost'}}
+  ]);
+  card._hass.states['switch.real_defrost'].state='on';
+  assert.match(card.xpClimateFeatures(),/data-xp-switch="defrost_switch" aria-pressed="true"/);
+  card._hass.states['switch.real_defrost'].state='unavailable';
+  assert.doesNotMatch(card.xpClimateFeatures(),/data-xp-switch="defrost_switch"/);
+});
+test('no rear defrost/pet/sterilisation control is faked without a supported Xpengtk entity',()=>{
+  const {card}=createCard();
+  const html=card.xpClimateFeatures();
+  assert.doesNotMatch(html,/data-xp-pet/);
+  assert.doesNotMatch(html,/data-xp-rear-defrost/);
+  assert.doesNotMatch(html,/data-xp-sterilis/);
+  assert.doesNotMatch(html,/data-xp-clean/);
+  assert.doesNotMatch(html,/MAX/);
+});
