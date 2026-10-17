@@ -820,9 +820,9 @@ class XpengVehicleCard extends HTMLElement{
   if(!this.xpUiEnabled()||!this._xpPanel)return '';
   const page=this._xpPanel;
   if(page!=='climate'&&page!=='seats'&&page!=='vehicle'&&page!=='port')return '';
-  return '<section class="xp-ux-modal" role="dialog" aria-modal="true" aria-label="בקרות מיזוג ומושבים" dir="rtl">'
+  return '<section class="xp-ux-modal" role="dialog" aria-modal="true" aria-label="בקרות XPENG" dir="rtl">'
    +'<header class="xp-ux-modal-head"><button type="button" data-xp-close aria-label="חזרה למסך הרכב">'+xpIcon('back',24)+'</button><h2>'+(page==='climate'?'מיזוג אוויר':page==='seats'?'מושבים והגה':page==='port'?'שקע טעינה':'בקרת רכב')+'</h2><span>'+xpEsc(this.appearance().model)+'</span></header>'
-   +(page==='vehicle'?'':'<div class="xp-ux-tabs"><button type="button" class="'+(page==='climate'?'xp-ux-selected':'')+'" data-xp-page="climate">מיזוג</button>'
+   +((page==='vehicle'||page==='port')?'':'<div class="xp-ux-tabs"><button type="button" class="'+(page==='climate'?'xp-ux-selected':'')+'" data-xp-page="climate">מיזוג</button>'
    +'<button type="button" class="'+(page==='seats'?'xp-ux-selected':'')+'" data-xp-page="seats">מושבים והגה</button></div>')
    +(page==='vehicle'?this.xpVehiclePanel():page==='port'?this.xpPortPanel():this.xpCabinView()
    +(page==='climate' ? this.xpTempControl()+this.xpFanControl()
