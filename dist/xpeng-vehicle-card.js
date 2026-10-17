@@ -847,6 +847,25 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-ux-modal-maintenance .xp-tire-screen{height:250px;min-height:240px}
  .xp-ux-modal-maintenance .xp-tire-reading strong{font-size:18px}
 }
+
+/* The home dashboard owns the only navigation menu. Subpages show Back only. */
+.xp-ux-dock-seven{gap:clamp(4px,.6vw,10px);max-width:96%;padding:8px 10px;bottom:2.3%;border-radius:26px}
+.xp-ux-dock-seven .xp-ux-dock-action{flex:0 1 84px;min-width:66px;max-width:88px;min-height:63px;padding:6px 4px;border-radius:17px}
+.xp-ux-dock-seven .xp-ux-dock-action small{font-size:11px}
+.xp-page-back{position:absolute;z-index:22;top:10%;right:3.5%;min-height:44px;border:1px solid #6d9dbbba;border-radius:13px;background:#0b2c48e9;color:#effaff;display:flex;align-items:center;gap:9px;padding:8px 13px;cursor:pointer;direction:rtl}
+.xp-page-back:hover,.xp-page-back:focus-visible{background:#145371;border-color:#17dfcd}
+.xp-ux-modal-head{position:sticky;top:-16px;z-index:9;padding:8px 0 12px;background:linear-gradient(180deg,#071626 78%,#07162600)}
+@container xpeng-layout (max-width:850px){
+ .xp-home-navigation .xp-ux-dock-seven{bottom:22px;left:50%;max-width:94%;width:min(550px,94%);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;padding:7px;border-radius:18px}
+ .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{width:100%;min-width:0;max-width:none;min-height:53px;padding:4px;gap:3px}
+ .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action small{font-size:10px;white-space:normal;line-height:1.15}
+ .xp-page-back{top:22px;right:4%;padding:6px 10px}
+}
+@container xpeng-layout (max-width:360px){
+ .xp-home-navigation .xp-ux-dock-seven{bottom:20px;gap:3px}
+ .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{min-height:49px}
+ .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action small{font-size:9px}
+}
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -869,13 +888,19 @@ class XpengVehicleCard extends HTMLElement{
     const b=ev.target.closest('button');if(!b)return;
      
      if(b.hasAttribute('data-xp-close')){this._xpPanel=null;this._xpSeatFocus=null;this._xpNotice='';this.render();return;}
+     if(b.hasAttribute('data-xp-home')){this._xpPanel=null;this._xpSeatFocus=null;this._xpManualCharging=false;this._xpChargingDismissed=this.xpChargingActive();this._xpNotice='';this.render();return;}
      if(b.hasAttribute('data-xp-page')){this._xpPanel=b.dataset.xpPage;this._xpSeatFocus=null;this._xpNotice='';this.render();return;}
      if(b.hasAttribute('data-xp-cycle')){this.xpCycleSeat(b.dataset.xpCycle);return;}
       
      if(b.hasAttribute('data-xp-open')){
        const action=b.dataset.xpOpen;
-       if(['climate','port','doors','windows','map','maintenance','charge_controls','charge_schedule'].includes(action)){
-         this._xpPanel=action;this._xpSeatFocus=null;this._xpNotice='';this.render();
+       if(['climate','charging','port','doors','windows','map','maintenance','charge_controls','charge_schedule'].includes(action)){
+         if(action==='charging'){
+           this._xpManualCharging=true;this._xpChargingDismissed=false;this._xpPanel=null;
+         }else{
+           this._xpPanel=action;this._xpSeatFocus=null;
+         }
+         this._xpNotice='';this.render();
        }
        return;
       }
@@ -1107,23 +1132,24 @@ class XpengVehicleCard extends HTMLElement{
  }
  xpDock(){
    if(!this.xpUiEnabled())return '';
-   const features=[
-     ['port','plug','שקע טעינה'],
-     ['climate','fan','מיזוג'],
-     ['doors','lock','נעילה'],
-     ['windows','car','חלונות']
+   const items=[
+     ['climate','fan','מיזוג'],['charging','bolt','טעינה'],
+     ['doors','lock','נעילה'],['windows','car','חלונות'],
+     ['port','plug','שקע טעינה'],['maintenance','settings','תחזוקה'],
+     ['map','pin','מיקום']
    ];
-   return '<nav class="xp-ux-dock xp-ux-dock-four" aria-label="בקרות רכב" dir="rtl">'+
-     features.map(([action,icon,title])=>{
-       const target=this.xpToggleTarget(action);
-       const state=this.xpActionState(action);
-       const usable=action==='climate'?!!this.xpLive('climate','cabin_climate'):
-         !!(target&&this.xpLive(target.domain,target.suffix));
-       const label=action==='climate'?title:(target?.label||title);
+   return '<nav class="xp-ux-dock xp-ux-dock-seven" aria-label="מעבר בין מסכים" dir="rtl">'+
+     items.map(([action,icon,title])=>{
+       const toggle=['doors','windows','port'].includes(action);
+       const target=toggle?this.xpToggleTarget(action):null;
+       const available=toggle?!!(target&&this.xpLive(target.domain,target.suffix)):
+         action==='climate'?!!this.xpLive('climate','cabin_climate'):true;
+       const label=toggle?(target?.label||'מצב '+title+' אינו ידוע'):title;
+       const ico=action==='doors'&&this.xpActionState('doors')!=='open'?'unlock':icon;
        return '<button class="xp-ux-dock-action" type="button" '+
-         (action==='climate'?'data-xp-open="climate"':'data-xp-toggle="'+action+'"')+
-         ' aria-label="'+xpEsc(label)+'" title="'+xpEsc(label)+'" '+(usable?'':'disabled')+'>'+
-         xpIcon(icon,21)+'<small>'+xpEsc(title)+'</small></button>';
+         (toggle?'data-xp-toggle="'+action+'"':'data-xp-open="'+action+'"')+
+         ' aria-label="'+xpEsc(label)+'" title="'+xpEsc(label)+'" '+(available?'':'disabled')+'>'+
+         xpIcon(ico,21)+'<small>'+xpEsc(title)+'</small></button>';
      }).join('')+'</nav>';
  }
  xpSeatShownState(suffix){
@@ -1438,7 +1464,7 @@ class XpengVehicleCard extends HTMLElement{
    else if(page==='map')body=this.xpMapPanel();
    else if(page==='extras')body=this.xpExtrasPanel();
    return '<section class="xp-ux-modal xp-ux-modal-'+page+'" role="dialog" aria-modal="true" aria-label="'+labels[page]+'" dir="rtl">'
-    +'<header class="xp-ux-modal-head"><button type="button" data-xp-close aria-label="חזרה לרכב">'+xpIcon('back',24)+'</button>'
+    +'<header class="xp-ux-modal-head"><button type="button" data-xp-close aria-label="חזרה לבית">'+xpIcon('back',24)+'</button>'
     +'<h2>'+labels[page]+'</h2><span>'+xpEsc(this.appearance().model)+'</span></header>'
     +body+(this._xpNotice?'<p class="xp-ux-notice" role="status">'+xpEsc(this._xpNotice)+'</p>':'')
     +'</section>';
@@ -1700,15 +1726,19 @@ class XpengVehicleCard extends HTMLElement{
   if(config.image_path&&!/^\/(?:local|hacsfiles)\/[a-zA-Z0-9/_-]+\/?$/.test(config.image_path))throw Error('Invalid local image_path');
   if(config.background_image&&!xpLocalArtworkPath(config.background_image))throw Error('Invalid local background_image');
   const v={prefix:'my_xpeng',year:'2026',model:'G6',trim:'core_plus_rwd',color:'graphite_gray',interior:'dark_gray',theme:'dark',...config};
-  this._config=xpNormalizeAppearance(v);this._infoOpen=false;this._tireOpen=false;this.render();
+  this._config=xpNormalizeAppearance(v);this._infoOpen=false;this._tireOpen=false;this._xpManualCharging=false;this._xpChargingDismissed=false;this._xpLastActualCharging=false;this._xpPanel=null;this.render();
  }
  set hass(hass){
   this._hass=hass;
   if(!this._xpengRegistryLoaded)this.ensureXpengRegistry();
-  const mode=this.xpChargingActive()?'charging':'overview';
-  if(mode==='charging'&&this._view!=='charging'){this._xpPanel=null;this._xpSeatFocus=null;}
-  this._view=mode;
-  if(this._view==='charging')this._tireOpen=false;
+  const actualCharging=this.xpChargingActive();
+  if(actualCharging&&!this._xpLastActualCharging){
+    this._xpChargingDismissed=false;this._xpManualCharging=false;
+    this._xpPanel=null;this._xpSeatFocus=null;
+  }
+  if(!actualCharging)this._xpChargingDismissed=false;
+  this._xpLastActualCharging=actualCharging;
+  if(actualCharging&&!this._xpChargingDismissed)this._tireOpen=false;
   this.render();
  }
  get hass(){return this._hass;}
@@ -1946,7 +1976,7 @@ class XpengVehicleCard extends HTMLElement{
        <div><div class="xp-stat-label">Battery</div><div class="xp-soc">${this.socHtml()}</div></div></div>
      ${this.progress()}<div class="xp-overview-range"><div class="xp-stat-label">Estimated range</div><div class="xp-range-num">${xpIcon('gauge',36)}<span>${xpEsc(this.num('range','km'))}</span></div></div>
     </section>
-    <aside class="xp-status-panel" aria-label="Vehicle information">
+    ${this.xpUiEnabled()?'':`    <aside class="xp-status-panel" aria-label="Vehicle information">
       ${rows.map(([icon,label,val])=>icon==='settings'
        ?`<button type="button" class="xp-info-row xp-tire-row" data-xp-open="maintenance" aria-label="תחזוקת הרכב"><span class="xp-info-icon">${xpIcon(icon,31)}</span><span class="xp-info-copy"><small>${xpEsc(label)}</small><b>${xpEsc(val)}</b></span><span class="xp-chevron">${xpIcon('arrow',19)}</span></button>`
        :icon==='pin'&&this.xpLive('device_tracker','location')
@@ -1954,7 +1984,7 @@ class XpengVehicleCard extends HTMLElement{
        <div class="xp-info-copy"><small>${xpEsc(label)}</small><b>${xpEsc(val)}</b></div><span class="xp-chevron">${xpIcon('arrow',19)}</span></button>`
        :`<div class="xp-info-row"><div class="xp-info-icon">${xpIcon(icon,31)}</div>
        <div class="xp-info-copy"><small>${xpEsc(label)}</small><b>${xpEsc(val)}</b></div></div>`).join('')}
-    </aside>`;
+    </aside>`}`;
  }
  charging(){
   return `${this.title()}
@@ -1967,18 +1997,21 @@ class XpengVehicleCard extends HTMLElement{
        <div class="xp-charge-meta"><div><small>Charging power</small><b>${xpEsc(this.num('power','kW',1))}</b></div>
        <div><small>Time remaining</small><b>${xpEsc(this.remainingText())}</b></div>
        <div><small>Charge limit</small><b>${xpEsc(this.num('target','%'))}</b></div></div>
-    </section>${this.xpUiEnabled()?'<nav class="xp-charge-shortcuts" aria-label="בקרות טעינה" dir="rtl"><button type="button" data-xp-open="charge_controls">הגבלת טעינה</button><button type="button" data-xp-open="charge_schedule">תזמונים</button></nav>':''}`;
+    </section>${this.xpUiEnabled()&&!this._xpPanel?'<nav class="xp-charge-shortcuts" aria-label="בקרות טעינה" dir="rtl"><button type="button" data-xp-open="charge_controls">הגבלת טעינה</button><button type="button" data-xp-open="charge_schedule">תזמונים</button></nav>':''}
+    ${!this._xpPanel?'<button type="button" class="xp-page-back" data-xp-home aria-label="חזרה למסך הבית">'+xpIcon('back',20)+'<span>חזרה לבית</span></button>':''}`;
  }
  render(){
   if(!this.shadowRoot)return;
   this.toggleAttribute('data-expanded',this._expanded);
   // The charging entity is the single source of truth for choosing the screen.
   // Only an explicit 'on' shows Charging. 'off', unknown and unavailable show Overview.
-  const isCharging=this.xpChargingActive();
+  const actualCharging=this.xpChargingActive();
+  const isCharging=this._xpManualCharging||(actualCharging&&!this._xpChargingDismissed);
   this._view=isCharging?'charging':'overview';
   if(isCharging)this._tireOpen=false;
-  this.shadowRoot.innerHTML=`<style>${XP_CSS}</style><ha-card><div class="xp-scene ${isCharging?'xp-charge':this._tireOpen?'xp-overview xp-tire-mode':'xp-overview'} ${this.xpUiEnabled()&&!isCharging?'xp-has-controls':''}">
-   ${this.sceneBackdrop()}${this.header()}${isCharging?this.charging():this._tireOpen?this.title()+this.tireScreen():this.overview()}${!isCharging&&!this._tireOpen?this.xpDock():""}${this.xpModal()}
+  const onHome=!isCharging&&!this._tireOpen&&!this._xpPanel;
+  this.shadowRoot.innerHTML=`<style>${XP_CSS}</style><ha-card><div class="xp-scene ${isCharging?'xp-charge':this._tireOpen?'xp-overview xp-tire-mode':'xp-overview'} ${this.xpUiEnabled()&&!isCharging?'xp-has-controls':''} ${onHome&&this.xpUiEnabled()?'xp-home-navigation':''}">
+   ${this.sceneBackdrop()}${this.header()}${isCharging?this.charging():this._tireOpen?this.title()+this.tireScreen():this.overview()}${onHome?this.xpDock():""}${this.xpModal()}
    
    </div></ha-card>`;
   if(this._xpPanel==='map')this.xpMountMap();
