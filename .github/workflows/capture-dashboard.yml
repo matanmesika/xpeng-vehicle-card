@@ -6,6 +6,7 @@ on:
       - fix/appearance-generations-dashboard-gallery
       - feat/g6-responsive-container-layout-20261017
       - feat/g6-cabin-owner-photos-20261017
+      - fix/g6-mobile-sensors-charging-20261017
     paths:
       - scripts/capture-dashboard.cjs
       - src/xpeng-vehicle-card.js

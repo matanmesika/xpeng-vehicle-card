@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - feat/g6-cabin-owner-photos-20261017
+      - fix/g6-mobile-sensors-charging-20261017
   workflow_dispatch:
 
 permissions:

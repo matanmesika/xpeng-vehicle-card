@@ -639,9 +639,9 @@ test('only sensor state triggers charging; confirmed charge renders green cable'
  card._hass.states['binary_sensor.cable_present'].state='on';
  card.render();
  assert.match(card.shadowRoot.innerHTML,/class="xp-charge-card"/);
- assert.match(card.shadowRoot.innerHTML,/xp-charge-cable-live/);
+ assert.match(card.shadowRoot.innerHTML,/<svg class="xp-charge-cable xp-charge-cable-live"/);
  card._hass.states['binary_sensor.is_charging'].state='off';card.render();
- assert.doesNotMatch(card.shadowRoot.innerHTML,/xp-charge-cable-live/);
+ assert.doesNotMatch(card.shadowRoot.innerHTML,/<svg class="xp-charge-cable xp-charge-cable-live"/);
 });
 
 test('one-tap controls alter visible action labels, icons, and avoid duplicate confirms',async()=>{
@@ -872,13 +872,13 @@ test('upstream Xpengtk unique IDs resolve without guessed windows/port names',()
 test('upstream Xpengtk prefixed HA entity IDs work without registry access',()=>{
  const {card}=createCard(),st=card._hass.states;
  card._xpengByKey={};
- st['binary_sensor.my_xpeng_any_window_open']={state:'off',attributes:{}};
- st['sensor.my_xpeng_slow_charge_port']={state:'Closed',attributes:{}};
- st['lock.my_xpeng_door_lock']={state:'locked',attributes:{}};
+ st['binary_sensor.xpeng_g6_any_window_open']={state:'off',attributes:{}};
+ st['sensor.xpeng_g6_slow_charge_port']={state:'Closed',attributes:{}};
+ st['lock.xpeng_g6_door_lock']={state:'locked',attributes:{}};
  assert.equal(card.xpActionState('windows'),'closed');
  assert.equal(card.xpActionState('port'),'closed');
  assert.equal(card.xpActionState('doors'),'closed');
- st['binary_sensor.my_xpeng_any_window_open'].state='unavailable';
- st['binary_sensor.my_xpeng_windows']={state:'on',attributes:{}};
+ st['binary_sensor.xpeng_g6_any_window_open'].state='unavailable';
+ st['binary_sensor.xpeng_g6_windows']={state:'on',attributes:{}};
  assert.equal(card.xpActionState('windows'),'open');
 });
