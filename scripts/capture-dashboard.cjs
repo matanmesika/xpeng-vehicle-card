@@ -177,6 +177,7 @@ async function main(){
  const desktopContent=await contentSignature();
  assert.deepEqual(desktopContent.actions,['climate','doors','windows','port','trunk','maintenance','map']);
  assert.equal(desktopContent.infoRows.length,2);
+ console.log('Canonical desktop/phone content signature:',JSON.stringify(desktopContent));
 
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(true));
  await screen('charging');
