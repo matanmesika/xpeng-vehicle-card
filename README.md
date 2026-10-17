@@ -159,7 +159,7 @@ grid_options:
 
 Automatic mapping also recognizes Xpengtk's `sensor.xpeng_g6_battery`, `sensor.xpeng_g6_range`, `binary_sensor.xpeng_g6_charging`, `number.xpeng_g6_charge_limit`, the four `tyre_pressure_*` sensors, `binary_sensor.xpeng_g6_mqtt_connected`, and `sensor.xpeng_g6_last_data_timestamp`. If your Home Assistant registry uses different entity IDs, use the existing manual sensor-mapping editor.
 
-**Vehicle controls belong in separate native Home Assistant Sections cards:** `climate.xpeng_g6_climate` (thermostat), `lock.xpeng_g6_door_lock` (locking), `number.xpeng_g6_charge_limit` (numeric-input tile), `button.xpeng_g6_open_charge_port` / `button.xpeng_g6_close_charge_port` (charge flap), and `device_tracker.xpeng_g6_location` (map). `button.press`, `lock.lock`, etc. are standard Home Assistant actions; the card itself remains read-only. Xpengtk Safe Plus **does not allow door unlock**; keep unlock hidden unless Access commands are explicitly enabled. Open charge flap is **not** proof of charge cable release.
+**Optional in-card controls:** The `show_controls: true` setting adds exactly four compact actions on the original vehicle scene (Charge flap, A/C, Doors, Windows), native HA entity actions, and a car map opened by the existing location status row. The published v1.0.2 remains unchanged. Xpengtk Safe Plus does not allow Access commands such as door unlock and window opening. The card requires a second `enable_access_controls: true` opt-in for those buttons and never bypasses Xpengtk permissions. Flap opening is not charge-cable release.
 
 
 ## Optional native XPENG controls — G6 2026 pilot
@@ -185,9 +185,7 @@ grid_options:
 
 ### Vehicle screen
 
-Compact buttons open Climate, Seats/steering, native Home Assistant door-lock
-details and location details. The Charge port button opens the charge flap
-using the integration's button entity; it is not a cable release command.
+Exactly four buttons appear on the home screen: **Charge flap**, **A/C**, **Doors**, and **Windows**. A/C includes the interior image, all seat/steering hotspots and cabin climate controls on the same screen; tapping one hotspot expands just that seat or wheel controls. The charge flap opens a popup with Open and Close; it is not cable release. The car map opens from the existing Location row rather than taking up a fifth home button. Its only two actions are Horn and Flash lights. Door unlock and window opening are visible but disabled until the owner opts in and Xpengtk Access permissions allow them.
 
 ### Climate, steering, seats
 
@@ -239,7 +237,7 @@ seat and wheel feedback, charging stop/limit, charge-port opening and
 automatic return after cable unplug. A successful HA call is **not** proof
 that the physical vehicle executed a command.
 
-The opt-in **Vehicle controls** panel displays door/lock/window/trunk/security states and supports lock, close windows, close trunk, flash lights, horn and arming X-Guard only when Xpengtk exposes an authorized entity. It deliberately omits Access actions such as car unlock, opening trunk and disarming X-Guard.
+The in-card Doors and Windows popups display related state and controls when Xpengtk entities exist. Unlock doors / open windows are disabled by default. Set `enable_access_controls: true` and allow `Access` inside the Xpengtk integration to activate them; confirmation is still required. Separately, a secured legacy controls panel remains in code, but there is no extra home button for it. The map popup offers only Horn and Flash lights, each with command confirmation.
 
 ### Approved portrait-photo cabin assets (pending binary upload)
 
