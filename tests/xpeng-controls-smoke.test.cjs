@@ -62,7 +62,7 @@ test('interior artwork respects selected colour; original background unchanged',
   const photo=card.artworkUrl('interiors/g6/2026/light_gray_photo.webp');
   card._failedArtwork.add(photo);
   assert.match(card.xpCabinView(), /interiors\/g6\/2026\/light_gray\.svg/);
-  assert.equal((card.xpCabinView().match(/data-xp-seat=/g) || []).length, 2);
+  assert.equal((card.xpCabinView().match(/data-xp-cycle=/g) || []).length, 2);
   card.setConfig({type: 'custom:xpeng-vehicle-card', prefix: 'xpeng_g6', model: 'G6', year: '2026', interior: 'black', show_controls: true});
   assert.match(card.xpCabinView(), /interiors\/g6\/2026\/dark_gray_photo\.webp/);
   const artRoot = path.join(__dirname, '..', 'assets', 'interiors', 'g6', '2026');
@@ -111,7 +111,7 @@ test('controls are opt-in and have mobile breakpoints', () => {
 test('G6 driver, passenger, rear left/right and wheel have separate hotspots', () => {
   const {card} = createCard();
   const svg = card.xpCabinView();
-  assert.match(svg, /data-xp-seat="driver"/);
+  assert.match(svg, /data-xp-zone="driver"/);
   card._xpengByKey['select.passenger_seat_heat_select'] = 'select.passenger_heat';
   card._xpengByKey['select.left_rear_seat_heat_select'] = 'select.rear_left_heat';
   card._xpengByKey['select.right_rear_seat_heat_select'] = 'select.rear_right_heat';
@@ -119,11 +119,11 @@ test('G6 driver, passenger, rear left/right and wheel have separate hotspots', (
     card._hass.states[id]={state:'Off',attributes:{options:['Off','Heat 1','Heat 2','Heat 3']}};
   }
   const five=card.xpCabinView();
-  assert.match(five, /data-xp-seat="passenger"/);
-  assert.match(five, /data-xp-seat="rear_left"/);
-  assert.match(five, /data-xp-seat="rear_right"/);
-  assert.match(svg, /data-xp-seat="wheel"/);
-  assert.equal((five.match(/data-xp-seat=/g)||[]).length, 5);
+  assert.match(five, /data-xp-zone="passenger"/);
+  assert.match(five, /data-xp-zone="rear_left"/);
+  assert.match(five, /data-xp-zone="rear_right"/);
+  assert.match(svg, /data-xp-zone="wheel"/);
+  assert.equal((five.match(/data-xp-zone=/g)||[]).length, 5);
 });
 test('safe vehicle controls require only approved HA entities', () => {
   const {card} = createCard();
@@ -175,15 +175,15 @@ test('home screen presents exactly four controls, with no separate seats or map 
   for(const key of ['port','climate','doors','windows'])assert.match(nav,new RegExp('data-xp-open="'+key+'"'));
   assert.doesNotMatch(nav,/data-xp-open="(?:map|seats)"/);
 });
-test('tapping a cabin zone reveals that zone in the climate screen, not a separate seats page',()=>{
+test('seat controls stay on cabin image and do not open a second sheet',()=>{
   const {card}=createCard();
   card._xpPanel='climate';
-  assert.match(card.xpModal(),/xp-ux-climate-bottom/);
-  assert.doesNotMatch(card.xpModal(),/xp-ux-seat-sheet/);
-  card._xpSeatFocus='driver';
-  assert.match(card.xpModal(),/xp-ux-seat-sheet/);
-  assert.match(card.xpModal(),/Heat 2/);
-  assert.doesNotMatch(card.xpModal(),/data-xp-page="seats"/);
+  const html=card.xpModal();
+  assert.match(html,/xp-ux-climate-bottom/);
+  assert.match(html,/data-xp-cycle="driver_seat_heat_select"/);
+  assert.match(html,/data-xp-cycle="steering_wheel_heat_select"/);
+  assert.doesNotMatch(html,/xp-ux-seat-sheet/);
+  assert.doesNotMatch(html,/data-xp-page="seats"/);
 });
 test('opening doors and windows requires explicit owner opt-in plus upstream Access policy',()=>{
   const {card}=createCard();
@@ -220,4 +220,66 @@ test('charging never labels Stop charging as cable release',()=>{
   assert.match(charge,/הפסק טעינה/);
   assert.doesNotMatch(charge,/שחרר.*כבל/);
   assert.equal((charge.match(/data-xp-command="stop_charge"/g)||[]).length,1);
+});
+
+
+test('seat cycles through actual HA heat levels then genuinely sends Off',async()=>{
+  const {card,commands}=createCard();
+  card._hass.states['select.driver_heater'].state='Off';
+  for(let i=0;i<4;i++)await card.xpCycleSeat('driver_seat_heat_select');
+  assert.deepEqual(JSON.parse(JSON.stringify(commands.map(c=>c.data.option))),
+    ['Heat 1','Heat 2','Heat 3','Off']);
+});
+test('steering wheel cycles through Low Medium High then Off',async()=>{
+  const {card,commands}=createCard();
+  card._hass.states['select.wheel_heat'].state='Off';
+  for(let i=0;i<4;i++)await card.xpCycleSeat('steering_wheel_heat_select');
+  assert.deepEqual(JSON.parse(JSON.stringify(commands.map(c=>c.data.option))),
+    ['Low','Medium','High','Off']);
+});
+test('ventilation cycles independently of seat heating',async()=>{
+  const {card,commands}=createCard();
+  card._xpengByKey['select.driver_seat_ventilation_select']='select.driver_vent';
+  card._hass.states['select.driver_vent']={state:'Off',
+    attributes:{options:['Off','Ventilation 1','Ventilation 2','Ventilation 3']}};
+  for(let i=0;i<4;i++)await card.xpCycleSeat('driver_seat_ventilation_select');
+  assert.deepEqual(JSON.parse(JSON.stringify(commands.map(c=>c.data.option))),
+    ['Ventilation 1','Ventilation 2','Ventilation 3','Off']);
+  assert.match(card.xpCabinView(),/data-xp-cycle="driver_seat_heat_select"/);
+  assert.match(card.xpCabinView(),/data-xp-cycle="driver_seat_ventilation_select"/);
+});
+test('passenger heat Off is never sent when upstream does not support it',async()=>{
+  const {card,commands}=createCard();
+  card._xpengByKey['select.passenger_seat_heat_select']='select.passenger_heat';
+  card._hass.states['select.passenger_heat']={state:'Off',attributes:{options:['Off','Heat 1','Heat 2','Heat 3']}};
+  for(let i=0;i<4;i++)await card.xpCycleSeat('passenger_seat_heat_select');
+  assert.deepEqual(JSON.parse(JSON.stringify(commands.map(c=>c.data.option))),
+    ['Heat 1','Heat 2','Heat 3']);
+  assert.match(card._xpNotice,/אינו נתמך/);
+});
+test('rapid repeated taps serialize native HA commands by entity',async()=>{
+  const {card,commands}=createCard();
+  card._hass.states['select.driver_heater'].state='Off';
+  let done;
+  const blocker=new Promise(resolve=>{done=resolve});
+  let first=true;
+  card._hass.callService=async (domain,service,data)=>{
+    commands.push({domain,service,data});
+    if(first){first=false;await blocker;}
+  };
+  const one=card.xpCycleSeat('driver_seat_heat_select');
+  await Promise.resolve();
+  const two=card.xpCycleSeat('driver_seat_heat_select');
+  const three=card.xpCycleSeat('driver_seat_heat_select');
+  assert.equal(commands.length,1);
+  done();
+  await Promise.all([one,two,three]);
+  assert.deepEqual(JSON.parse(JSON.stringify(commands.map(c=>c.data.option))),
+    ['Heat 1','Heat 3']);
+});
+test('unknown or missing HA select options never trigger an invented seat command',async()=>{
+  const {card,commands}=createCard();
+  card._hass.states['select.driver_heater'].state='unavailable';
+  await card.xpCycleSeat('driver_seat_heat_select');
+  assert.equal(commands.length,0);
 });
