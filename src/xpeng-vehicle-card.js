@@ -933,7 +933,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-ux-modal-head{top:-11px}
  .xp-ux-modal-maintenance .xp-tire-screen{position:relative;inset:auto;
     height:auto!important;min-height:0!important;margin:8px 0 22px;overflow:visible}
- .xp-ux-modal-maintenance .xp-tire-stage{display:grid;width:100%;height:auto;
+ .xp-ux-modal-maintenance .xp-tire-stage{display:grid;width:100%;height:auto;direction:ltr;
     grid-template-columns:minmax(0,1fr) minmax(0,1fr);
     grid-template-rows:auto auto auto;gap:10px;align-items:stretch}
  .xp-ux-modal-maintenance .xp-tire-center{grid-area:1/1/2/3;height:195px;
@@ -2117,12 +2117,12 @@ class XpengVehicleCard extends HTMLElement{
       ?this.vehicle()?.top_image:this.vehicle()?.top_image||this._config.top_image;
     const wheel=(key,label)=>{const bar=this.tirePressureBar(key);
       return `<div class="xp-tire-reading" data-wheel="${key}"><small>${label}</small>
-        <strong>${bar===null?'—':xpEsc(xpNum(bar,2))}</strong><span>${bar===null?'Unavailable':'bar'}</span></div>`;};
+        <strong>${bar===null?'—':xpEsc(xpNum(bar,2))}</strong><span>${bar===null?'לא זמין':'bar'}</span></div>`;};
     return `<section class="xp-tire-screen" role="region" aria-label="Tire pressure from above">
        ${showBack?`<div class="xp-tire-actions"><button type="button" data-tire-toggle aria-label="Back to vehicle status">${xpIcon('back',20)} Back to vehicle</button></div>`:''}
        <div class="xp-tire-stage"><div class="xp-tire-center">${this.topCarArt()}</div>
-         ${wheel('tire_fl','Front left')}${wheel('tire_fr','Front right')}
-         ${wheel('tire_rl','Rear left')}${wheel('tire_rr','Rear right')}</div>
+         ${wheel('tire_fl',showBack?'Front left':'קדמי שמאל')}${wheel('tire_fr',showBack?'Front right':'קדמי ימין')}
+         ${wheel('tire_rl',showBack?'Rear left':'אחורי שמאל')}${wheel('tire_rr',showBack?'Rear right':'אחורי ימין')}</div>
        ${!xpLocalArtworkPath(photo)?'<div class="xp-tire-disclaimer">Illustrative overhead view · exact model artwork pending</div>':''}
      </section>`;
   }
