@@ -245,7 +245,7 @@ async function main(){
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-back-home-mobile.png'),animations:'disabled'});
  // Charging is also a manually accessible destination, with the exact same scene.
  await car.locator('button[data-xp-open="charging"]').click();
- assert.equal(await car.locator('.xp-ux-charge-card').count(),1,'Manual charging view did not open');
+ assert.equal(await car.locator('.xp-charge-card').count(),1,'Manual charging view did not open');
  assert.equal(await car.locator('.xp-ux-dock').count(),0,'Manual charging must hide home dock');
  await car.locator('button[data-xp-home]').click();
  assert.equal(await car.locator('.xp-ux-dock-action').count(),7,'Back from manual Charging should return Home');
