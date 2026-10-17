@@ -31,6 +31,7 @@ function demo(charging){
   'number.my_xpeng_charge_limit':state('90',{min:50,max:100,step:5}),
   'binary_sensor.my_xpeng_windows':state('off'),
   'sensor.my_xpeng_slow_charge_port':state('Closed'),
+  'sensor.my_xpeng_charge_port':state('Closed'),
   'sensor.my_xpeng_next_maintenance':state('20 days',{next_date:'2027-01-10',km_remaining:2450}),
   'sensor.my_xpeng_vehicle_identity':state('G6',{vin_masked:'L1N******123456',model_year:'2026'}),
   'sensor.my_xpeng_charge_schedule_start':state('23:00'),
@@ -146,11 +147,11 @@ async function main(){
    wrap.style.width='1400px';wrap.style.margin='18px auto';
    const card=document.querySelector('xpeng-vehicle-card');
    card.setConfig({type:'custom:xpeng-vehicle-card',prefix:'my_xpeng',model:'G6',year:'2026',
-     trim:'core_performance_awd',color:'arctic_white',interior:'light_gray'});
+     trim:'core_performance_awd',color:'arctic_white',interior:'light_gray',enable_access_controls:true});
  });
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
  assert.equal(await car.locator('.xp-ux-dock-action').count(),4,'Four quick actions missing');
- assert.equal(await car.locator('.xp-ux-dock-action:not([disabled])').count(),2,'Unavailable Access permissions must disable open/unlock');
+ assert.equal(await car.locator('.xp-ux-dock-action:not([disabled])').count(),4,'Mock owner has approved Access, so all four actions must work');
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-controls-desktop.png'),animations:'disabled'});
  await car.locator('button[data-xp-open="climate"]').first().click();
  assert.ok(await car.locator('.xp-ux-modal-climate').count(),'Climate modal missing');
@@ -165,6 +166,11 @@ async function main(){
  await page.waitForFunction(()=>{const img=document.querySelector('xpeng-vehicle-card').shadowRoot.querySelector('img[data-cabin-art]');return img&&img.complete&&img.naturalWidth===752&&img.src.includes('interior_dark_gray.webp');});
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-climate-dark-desktop.png'),animations:'disabled'});
  await car.locator('button[data-xp-close]').click();
+ await page.evaluate(()=>{
+   const card=document.querySelector('xpeng-vehicle-card');
+   card.setConfig({type:'custom:xpeng-vehicle-card',prefix:'my_xpeng',model:'G6',year:'2026',
+     trim:'core_performance_awd',color:'arctic_white',interior:'light_gray',enable_access_controls:true});
+ });
  await page.setViewportSize({width:390,height:900});
  await page.evaluate(()=>{const w=document.querySelector('.card-wrap');w.style.width='390px';w.style.margin='0 auto';});
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-controls-mobile.png'),animations:'disabled'});
