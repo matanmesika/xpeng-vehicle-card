@@ -915,8 +915,8 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
    glowing cable; telemetry remains DOM/HA-driven, never baked into image art. */
 .xp-charge-cable{position:absolute;inset:0;width:100%;height:100%;z-index:8;pointer-events:none;overflow:visible}
 .xp-charge-cable-halo,.xp-charge-cable-core{fill:none;stroke-linecap:round}
-.xp-charge-cable-halo{stroke:#00eebb;stroke-width:12;filter:drop-shadow(0 0 14px #00ffcc)}
-.xp-charge-cable-core{stroke:#c3fff2;stroke-width:3}
+.xp-charge-cable-halo{stroke:#00da88;stroke-width:5.2;opacity:.55;filter:drop-shadow(0 0 5px #00ed91)}
+.xp-charge-cable-core{stroke:#65ffc8;stroke-width:2.2;opacity:.92}
 .xp-charge-cable.xp-cable-mobile{display:none}
 @container xpeng-layout (max-width:850px){
  .xp-charge-cable.xp-cable-desktop{display:none}
@@ -930,9 +930,6 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-ux-map-actions button{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px}
 .xp-ux-modal-trunk .xp-ux-access-buttons button{min-height:48px}
 
-.xp-tire-units{position:absolute;z-index:6;top:0;right:12px;display:flex;align-items:center;gap:7px;color:#c5d9f1;font-size:12px}
-.xp-tire-units select{background:#112940;border:1px solid #4c80a1;border-radius:8px;color:#fff;padding:6px;min-height:34px}
-@container xpeng-layout (max-width:600px){.xp-ux-modal-maintenance .xp-tire-units{position:relative;justify-content:flex-start;margin:6px 0 9px;padding:0 8px}}
 .xp-diagnostics-scroll{max-height:min(440px,55vh);overflow-y:auto;overscroll-behavior:contain;display:grid;gap:5px;direction:ltr}
 .xp-entity-diagnostic{min-width:0;display:grid;grid-template-columns:minmax(0,3fr) minmax(70px,1fr);gap:9px;align-items:center;text-align:left}
 .xp-entity-diagnostic span{font-size:11px;overflow-wrap:anywhere}
@@ -964,9 +961,9 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-ux-modal-maintenance .xp-extra-line{min-width:0;overflow-wrap:anywhere}
  .xp-ux-modal-climate .xp-climate-layout{padding-bottom:55px}
 }
-.xp-charge-cable-live .xp-charge-cable-halo{stroke:#00f59c;stroke-width:13;
- filter:drop-shadow(0 0 12px #00ffab)}
-.xp-charge-cable-live .xp-charge-cable-core{stroke:#abffe6;stroke-width:3}
+.xp-charge-cable-live .xp-charge-cable-halo{stroke:#00df90;stroke-width:5.2;
+ filter:drop-shadow(0 0 5px #00ed91)}
+.xp-charge-cable-live .xp-charge-cable-core{stroke:#a5ffda;stroke-width:2.2}
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -1137,11 +1134,6 @@ class XpengVehicleCard extends HTMLElement{
      if(output)output.textContent=slider.value+(slider.dataset.xpRange==='charge_limit_control'?'%':'');
    });
    this.shadowRoot.addEventListener('change',ev=>{
-     const unitSelect=ev.target.closest('select[data-xp-tire-unit]');
-     if(unitSelect){
-       if(['bar','psi','kpa'].includes(unitSelect.value)){this._xpTireUnit=unitSelect.value;this.render();}
-       return;
-     }
      const slider=ev.target.closest('input[data-xp-range]');
      if(!slider)return;
      const key=slider.dataset.xpRange;
@@ -2027,7 +2019,7 @@ class XpengVehicleCard extends HTMLElement{
     const bundled=relative=>this.artworkUrl(relative);
     const profileArt=key=>Array.isArray(this._config.vehicles)&&this._config.vehicles.length
       ?this.vehicle()?.[key]:this.vehicle()?.[key]||this._config[key];
-    const chosen=(this._view==='charging'&&profileArt('charging_image'))||profileArt('image');
+    const chosen=this._view==='charging'?profileArt('charging_image'):profileArt('image');
     const a=this.appearance(),model=xpAssetModel(a.model),view=this._view==='charging'?'rear':'front';
     if(xpLocalArtworkPath(chosen)&&!this._failedArtwork.has(chosen))
       return {src:chosen,illustrative:false,studio:false,tier:'manual',view,view_status:'owner_supplied',
@@ -2035,9 +2027,13 @@ class XpengVehicleCard extends HTMLElement{
     // Prefer separately packaged and verified three-view assets when present.
     // A view must never silently reuse a front render as a rear or overhead render.
     // Preserve the existing separately supplied charging artwork and geometry.
-    // The owner approved the original left-side charging metrics layout but the
-    // reference shows a front three-quarter G6, never the rear-facing cutout.
-    const candidate=xpVehicleAssetPath(a,view==='rear'?'charging':'front');
+    // Owner-selected charging baseline for 2026 G6 is the graphite-gray,
+    // rear-three-quarter charging.webp with its real cable already pictured.
+    // A user-configured charging_image (above) may still override this choice.
+    // The overview continues to respect the editor's selected exterior paint.
+    const ownerCharging=a.model==='G6'&&String(a.year)==='2026'&&view==='rear';
+    const chargingAppearance=ownerCharging?{...a,color:'graphite_gray'}:a;
+    const candidate=xpVehicleAssetPath(chargingAppearance,view==='rear'?'charging':'front');
     if(candidate&&XP_ARTWORK_INDEX.has(candidate)&&!this._failedArtwork.has(bundled(candidate))){
       const generated=XP_ILLUSTRATIVE_ARTWORK_INDEX.has(candidate);
       return {src:bundled(candidate),illustrative:generated,studio:false,tier:generated?'generated-preview':'exact-view',view,
@@ -2079,7 +2075,7 @@ class XpengVehicleCard extends HTMLElement{
   }
 
  tirePressureUnit(){
-  const raw=String(this._xpTireUnit||this.vehicle()?.tire_pressure_unit||this._config.tire_pressure_unit||'bar').toLowerCase();
+  const raw=String(this.vehicle()?.tire_pressure_unit||this._config.tire_pressure_unit||'bar').toLowerCase();
   return ['bar','psi','kpa'].includes(raw)?raw:'bar';
  }
  tirePressureDisplay(key){
@@ -2200,10 +2196,6 @@ class XpengVehicleCard extends HTMLElement{
         <strong>${xpEsc(reading.value)}</strong><span>${reading.value==='—'?'לא זמין':unit==='kpa'?'kPa':unit==='psi'?'PSI':'bar'}</span></div>`;};
     return `<section class="xp-tire-screen" role="region" aria-label="Tire pressure from above">
        ${showBack?`<div class="xp-tire-actions"><button type="button" data-tire-toggle aria-label="Back to vehicle status">${xpIcon('back',20)} Back to vehicle</button></div>`:''}
-       <label class="xp-tire-units">יחידות <select data-xp-tire-unit aria-label="יחידות לחץ צמיגים">
-         <option value="bar" ${unit==='bar'?'selected':''}>bar</option>
-         <option value="psi" ${unit==='psi'?'selected':''}>PSI</option>
-         <option value="kpa" ${unit==='kpa'?'selected':''}>kPa</option></select></label>
        <div class="xp-tire-stage"><div class="xp-tire-center">${this.topCarArt()}</div>
          ${wheel('tire_fl',showBack?'Front left':'קדמי שמאל')}${wheel('tire_fr',showBack?'Front right':'קדמי ימין')}
          ${wheel('tire_rl',showBack?'Rear left':'אחורי שמאל')}${wheel('tire_rr',showBack?'Rear right':'אחורי ימין')}</div>
@@ -2232,8 +2224,8 @@ class XpengVehicleCard extends HTMLElement{
   return `${this.title()}
     <div class="xp-station" aria-hidden="true">✕</div>${this.carArt()}
     ${this.model()==='G6'&&this.xpChargingActive()?
-      '<svg class="xp-charge-cable xp-charge-cable-live xp-cable-desktop" data-xp-cable="desktop" aria-hidden="true" viewBox="0 0 1400 788" preserveAspectRatio="none"><path class="xp-charge-cable-halo" d="M1310 452 C1338 564 1322 602 1223 612 C1166 615 1095 585 1094 529 C1094 499 1104 472 1090 439"/><path class="xp-charge-cable-core" d="M1310 452 C1338 564 1322 602 1223 612 C1166 615 1095 585 1094 529 C1094 499 1104 472 1090 439"/></svg>'+
-      '<svg class="xp-charge-cable xp-charge-cable-live xp-cable-mobile" data-xp-cable="mobile" aria-hidden="true" viewBox="0 0 390 780" preserveAspectRatio="none"><path class="xp-charge-cable-halo" d="M357 632 C357 660 350 677 335 677 C303 677 288 655 262 642 C243 632 225 628 202 628"/><path class="xp-charge-cable-core" d="M357 632 C357 660 350 677 335 677 C303 677 288 655 262 642 C243 632 225 628 202 628"/></svg>':''}
+      '<svg class="xp-charge-cable xp-charge-cable-live xp-cable-desktop" data-xp-cable="desktop" aria-hidden="true" viewBox="0 0 1400 788" preserveAspectRatio="none"><path class="xp-charge-cable-halo" d="M985 476 C1002 505 1019 565 1045 608 C1070 641 1104 656 1140 659 S1230 670 1277 639 C1311 617 1317 562 1310 453"/><path class="xp-charge-cable-core" d="M985 476 C1002 505 1019 565 1045 608 C1070 641 1104 656 1140 659 S1230 670 1277 639 C1311 617 1317 562 1310 453"/></svg>'+
+      '<svg class="xp-charge-cable xp-charge-cable-live xp-cable-mobile" data-xp-cable="mobile" aria-hidden="true" viewBox="0 0 390 780" preserveAspectRatio="none"><path class="xp-charge-cable-halo" d="M216 628 C230 648 234 670 251 688 C271 711 290 714 311 709 C334 705 354 684 354 653 L354 627"/><path class="xp-charge-cable-core" d="M216 628 C230 648 234 670 251 688 C271 711 290 714 311 709 C334 705 354 684 354 653 L354 627"/></svg>':''}
     <section class="xp-charge-card" aria-label="Charging information">
        <div class="xp-charge-heading">${xpIcon('bolt',42)}<span>${xpEsc(this.chargeStatus())}</span></div>
        ${this.progress()}
