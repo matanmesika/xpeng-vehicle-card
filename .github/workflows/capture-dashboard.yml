@@ -6,6 +6,7 @@ on:
       - fix/appearance-generations-dashboard-gallery
       - feat/g6-responsive-container-layout-20261017
       - feat/g6-cabin-owner-photos-20261017
+      - fix/g6-mobile-sensors-charging-20261017
     paths:
       - scripts/capture-dashboard.cjs
       - src/xpeng-vehicle-card.js
@@ -33,7 +34,7 @@ jobs:
 
       - name: Install pinned Playwright and headless Chromium
         run: |
-          npm install --prefix /tmp/xpeng-capture --no-audit --no-fund playwright@1.56.1
+          npm install --prefix /tmp/xpeng-capture --no-audit --no-fund playwright@1.56.1 @mdi/js@7.4.47
           /tmp/xpeng-capture/node_modules/.bin/playwright install --with-deps chromium
 
       - name: Capture genuine card screenshots with DEMO sensor states
@@ -50,7 +51,7 @@ jobs:
                    'mobile-vehicle-status','mobile-charging',
                    'small-mobile-vehicle-status','small-mobile-charging',
                    'sections-vehicle-status','location-desktop','controls-desktop','home-close-actions-desktop','climate-desktop','climate-dark-desktop',
-                   'controls-mobile','home-close-actions-mobile','maintenance-mobile','trunk-mobile','location-mobile',
+                   'controls-mobile','home-close-actions-mobile','maintenance-mobile','climate-scrolled-mobile','maintenance-scrolled-mobile','trunk-mobile','location-mobile',
                    'climate-mobile','climate-dark-mobile','charging-reference-mobile','charging-actions-mobile','charge-schedule-mobile']
           for name in names:
               p = Path('docs/screenshots/g6-2026-' + name + '.png')
@@ -63,14 +64,34 @@ jobs:
                   assert 300 <= w <= 500 and h >= 700 and len(b) > 10_000, (p,w,h,len(b))
               print('verified',p,w,h,len(b))
           PY
+          # The smaller JPEG is used for direct visual inspection on mobile.
+          python - <<'PY'
+          from pathlib import Path
+          for name in ['charging-review-desktop','home-review-desktop','home-review-mobile']:
+              p=Path('docs/screenshots/g6-2026-'+name+'.jpg')
+              b=p.read_bytes()
+              assert b.startswith(bytes([0xff,0xd8,0xff])) and len(b)>18_000,(p,len(b))
+              print('verified owner review JPEG',p,len(b))
+          PY
 
       - name: Commit browser captures to the screenshot gallery
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/screenshots/*.png
+          git add docs/screenshots/*.png docs/screenshots/g6-2026-*-review-*.jpg
           if ! git diff --staged --quiet; then
             git commit -m "docs: add actual rendered XPENG card screenshots"
-            git push origin "HEAD:${GITHUB_REF_NAME}"
+            # Work safely with concurrent changes to this PR branch.
+            # Never force-push or discard updates made after checkout.
+            for attempt in 1 2 3; do
+              if git push origin "HEAD:${GITHUB_REF_NAME}"; then
+                echo "Screenshots published to ${GITHUB_REF_NAME}"
+                exit 0
+              fi
+              git fetch origin "refs/heads/${GITHUB_REF_NAME}:refs/remotes/origin/${GITHUB_REF_NAME}"
+              git rebase "origin/${GITHUB_REF_NAME}" || { git rebase --abort || true; exit 1; }
+            done
+            echo "::error::Could not publish updated screenshots after three safe retries"
+            exit 1
           fi

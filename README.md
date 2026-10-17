@@ -10,7 +10,7 @@ All images below were captured by Chromium while running the actual card JavaScr
 
 | Page | Desktop | Phone |
 | --- | --- | --- |
-| **Home: eight shortcuts** | ![G6 desktop dashboard](docs/screenshots/g6-2026-controls-desktop.png) | ![G6 mobile dashboard](docs/screenshots/g6-2026-controls-mobile.png) |
+| **Home: seven shortcuts (charging is automatic)** | ![G6 desktop dashboard](docs/screenshots/g6-2026-controls-desktop.png) | ![G6 mobile dashboard](docs/screenshots/g6-2026-controls-mobile.png) |
 | **Charging** | ![G6 charging desktop](docs/screenshots/g6-2026-charging.png) | ![G6 charging phone](docs/screenshots/g6-2026-mobile-charging.png) |
 | **Climate, light cabin** | ![Light cabin desktop](docs/screenshots/g6-2026-climate-desktop.png) | ![Light cabin phone](docs/screenshots/g6-2026-climate-mobile.png) |
 | **Climate, dark cabin** | ![Dark cabin desktop](docs/screenshots/g6-2026-climate-dark-desktop.png) | ![Dark cabin phone](docs/screenshots/g6-2026-climate-dark-mobile.png) |
@@ -44,7 +44,6 @@ The Xpengtk vehicle integration is a separate prerequisite; the card only sends 
 | Home shortcut | Behaviour |
 | --- | --- |
 | Climate / מיזוג | Temperature, HA-provided fan speed, power, front defrost, supported seat/wheel controls, AUTO feedback |
-| Charging / טעינה | Auto mode on real charging; charge limit and read-only schedule are exactly the two extra charging shortcuts |
 | Lock / נעילה | Lock or unlock based on actual lock state |
 | Windows / חלונות | Open or close based on actual window state |
 | Charge port / שקע טעינה | Open or close based on actual port sensor; do not close with connected cable |
@@ -60,7 +59,9 @@ The G6 cabin uses the two owner-provided photos, shared across all G6 year group
 
 Supported front seats have heat and ventilation; each rear seat independently supports heat; wheel heat uses its own integration entity. Controls only show for available HA entities. AUTO and mirror heat may be **read-only indicators**, not executable actions. Remote AUTO / airflow direction appears only if a writable climate mode is reported by HA. Fan range comes from HA attributes (often 1–8, never a fictional forced 1–10).
 
-The charging layout keeps its original live data card. The car art / decorative cable are not pixel-identical to the cinematic user reference. Scheduled charging is read-only unless Xpengtk supplies a verified edit service.
+The charging view opens **automatically** only when the real charging sensor is ON, with the original model/paint **charging.webp** photograph (never substituted with front.webp) and a green cable glow while charging. There is no manual Charging button on Home. The original live metrics card remains unchanged, and the two small buttons are Charge Limit and read-only Schedules. Scheduled charging is read-only unless Xpengtk supplies a verified edit service.
+
+On a phone, swipe **inside the opened Climate or Maintenance page** to reach all controls and vehicle details; the page scrolls vertically and keeps the Back button visible. In phone Maintenance, the car appears above a 2×2 tire-pressure grid with physically consistent left/right placement and Hebrew tire labels.
 
 ## Testing / what must be verified on the actual Home Assistant installation
 
@@ -82,3 +83,20 @@ The v1.0.2 gallery remains available for comparison; these files are intentional
 | ![Original vehicle status](docs/screenshots/g6-2026-vehicle-status.png) | ![Original charge](docs/screenshots/g6-2026-charging.png) | ![Original maintenance](docs/screenshots/g6-2026-maintenance-desktop.png) |
 
 **Sensor mapping:** the card automatically resolves available Xpengtk entities by the configured prefix. For legacy setups you can keep manual entity mapping in existing YAML; never invent live readings when a sensor is missing. Update the prefix to match your G6 entities. Opening/unlocking operations require explicit Access opt-in.
+
+## Xpengtk G6 entity mapping checks (mobile hotfix)
+
+When a sensor is displayed as `unavailable`, first check its actual state in Home Assistant **Developer Tools → States**, then ensure Xpengtk itself is current and successfully receiving vehicle data. This frontend resolves both renamed registry entities and these verified Xpengtk unique IDs:
+
+| Reading / action | Xpengtk stable unique ID suffix | HA type |
+| --- | --- | --- |
+| Any window open | `any_window_open` | `binary_sensor` |
+| Driver/passenger/rear doors | `driver_door`, `passenger_door`, `rear_left_door`, `rear_right_door` | `binary_sensor` |
+| Door lock control | `door_lock` | `lock` |
+| Fallback lock status (ON means **unlocked**) | `locked` | `binary_sensor` |
+| Charging-port flap / cable | `slow_charge_port` | `sensor` |
+| Actual charging | `charging` | `binary_sensor` |
+| Cable physically present | `plugged_in` | `binary_sensor` |
+| Tires (FL/FR/RL/RR) | `tyre_pressure_fl`, `tyre_pressure_fr`, `tyre_pressure_rl`, `tyre_pressure_rr` | `sensor` |
+
+The dashboard **cannot repair an integration sensor that is itself unavailable**; it only fixes wrong alias selection and avoids preferring stale unavailable entities over live equivalents. A connected charge cable never allows the flap to close.

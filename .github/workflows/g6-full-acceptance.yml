@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - feat/g6-cabin-owner-photos-20261017
+      - fix/g6-mobile-sensors-charging-20261017
   workflow_dispatch:
 
 permissions:
@@ -82,7 +83,7 @@ jobs:
 
       - name: Install pinned real Chromium / Playwright
         run: |
-          npm install --prefix /tmp/xpeng-g6-qa --no-audit --no-fund playwright@1.56.1
+          npm install --prefix /tmp/xpeng-g6-qa --no-audit --no-fund playwright@1.56.1 @mdi/js@7.4.47
           /tmp/xpeng-g6-qa/node_modules/.bin/playwright install --with-deps chromium
 
       - name: Full end-to-end browser capture (desktop, mobile, Sections, charge, cabin, one-tap and Back)
@@ -102,7 +103,7 @@ jobs:
             'mobile-vehicle-status','mobile-charging',
             'small-mobile-vehicle-status','small-mobile-charging','sections-vehicle-status',
             'controls-desktop','home-close-actions-desktop','climate-desktop','climate-dark-desktop',
-            'controls-mobile','home-close-actions-mobile','maintenance-mobile','trunk-mobile','location-mobile',
+            'controls-mobile','home-close-actions-mobile','maintenance-mobile','climate-scrolled-mobile','maintenance-scrolled-mobile','trunk-mobile','location-mobile',
             'climate-mobile','climate-dark-mobile','charging-reference-mobile',
             'charging-actions-mobile','charge-schedule-mobile','back-home-mobile'
           ]
@@ -118,7 +119,7 @@ jobs:
             else:
               assert 300<=w<=500 and h>=700,(name,w,h)
             print('PASS screenshot',name,w,h)
-          print('PASS: all 24 browser captures valid')
+          print('PASS: all 26 browser captures valid')
           PY
 
       - name: Upload all G6 acceptance screenshots

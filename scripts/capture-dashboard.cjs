@@ -8,6 +8,24 @@ const ROOT=path.resolve(__dirname,'..');
 const OUTPUT=path.join(ROOT,'docs','screenshots');
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 
+/* Only the standalone screenshot harness needs a HA icon preview.
+ * The shipped card uses HA's native <ha-icon>; here the OFFICIAL @mdi/js paths
+ * reproduce those very same MDI symbols without inventing any icon shapes.
+ */
+const MDI_MODULE=process.env.MDI_JS_MODULE||
+  path.join(path.dirname(process.env.PLAYWRIGHT_MODULE||require.resolve('playwright')),'@mdi/js');
+const officialMdi=require(MDI_MODULE);
+const cardSource=fs.readFileSync(path.join(ROOT,'src','xpeng-vehicle-card.js'),'utf8');
+const iconPaths={};
+for(const icon of new Set([...cardSource.matchAll(/mdi:[a-z0-9-]+/g)].map(match=>match[0]))){
+ const exportName='mdi'+icon.slice(4).split('-').map(part=>part[0].toUpperCase()+part.slice(1)).join('');
+ assert.equal(typeof officialMdi[exportName],'string','Missing official Material Design icon: '+icon+' ('+exportName+')');
+ iconPaths[icon]=officialMdi[exportName];
+}
+assert.ok(Object.keys(iconPaths).length>=25,'Expected all native dashboard icons');
+
+
+
 const state=(value,attrs={})=>({state:String(value),attributes:attrs});
 function demo(charging){
  return {states:{
@@ -47,7 +65,7 @@ function demo(charging){
   'select.my_xpeng_left_rear_seat_heating':state('Heat 2',{options:['Off','Heat 1','Heat 2','Heat 3']}),
   'select.my_xpeng_right_rear_seat_heating':state('Heat 1',{options:['Off','Heat 1','Heat 2','Heat 3']}),
   'select.my_xpeng_steering_wheel_heating':state('Low',{options:['Off','Low','Medium','High']}),
-  'binary_sensor.my_xpeng_windows':state('off'),
+  'binary_sensor.my_xpeng_any_window_open':state('off'),
   'sensor.my_xpeng_slow_charge_port':state('Closed'),
   'sensor.my_xpeng_charge_port':state('Closed'),
   'sensor.my_xpeng_next_maintenance':state('20 days',{next_date:'2027-01-10',km_remaining:2450}),
@@ -84,12 +102,32 @@ async function main(){
  body{font-family:Arial,sans-serif}
  .card-wrap{width:1400px;margin:18px auto}</style></head>
  <body><div class="card-wrap"><xpeng-vehicle-card></xpeng-vehicle-card></div></body></html>`);
+
+ // HA itself registers ha-icon; the standalone browser does not. Only the
+ // screenshot harness registers an equivalent test renderer using official paths.
+ await page.evaluate(paths=>{
+   if(window.customElements.get('ha-icon'))return;
+   class PreviewHomeAssistantIcon extends HTMLElement{
+     connectedCallback(){
+       const glyph=paths[this.getAttribute('icon')];
+       if(!glyph){this.setAttribute('data-mdi-missing','true');return;}
+       const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+       svg.setAttribute('viewBox','0 0 24 24');
+       svg.setAttribute('width','100%');svg.setAttribute('height','100%');
+       svg.setAttribute('fill','currentColor');
+       const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+       p.setAttribute('d',glyph);svg.append(p);
+       this.attachShadow({mode:'open'}).append(svg);
+     }
+   }
+   window.customElements.define('ha-icon',PreviewHomeAssistantIcon);
+ },iconPaths);
  await page.addScriptTag({path:path.join(ROOT,'src','xpeng-vehicle-card.js')});
  const car=page.locator('xpeng-vehicle-card');
  await page.evaluate(()=>{
    const card=document.querySelector('xpeng-vehicle-card');
    card.setConfig({type:'custom:xpeng-vehicle-card',prefix:'my_xpeng',model:'G6',year:'2026',
-      trim:'core_performance_awd',color:'arctic_white',interior:'light_gray',show_controls:false});
+      trim:'core_performance_awd',color:'arctic_white',interior:'light_gray',show_controls:true,enable_access_controls:true});
  });
  async function screen(name){
   console.log('Checking browser screen:',name);
@@ -107,14 +145,58 @@ async function main(){
   },selector);
   assert.ok(info.width>=1300&&info.height>=700,JSON.stringify(info));
   assert.ok(info.imageWidth>200,JSON.stringify(info));
+
+  const officialIcons=await car.evaluate(el=>{
+    const icons=[...el.shadowRoot.querySelectorAll('ha-icon')];
+    return {count:icons.length,missing:icons.filter(icon=>!icon.shadowRoot?.querySelector('svg path[d]'))
+      .map(icon=>icon.getAttribute('icon'))};
+  });
+  assert.ok(officialIcons.count>0,'At least one native HA icon should appear on every scene');
+  assert.deepEqual(officialIcons.missing,[],'All screenshot glyphs must use official MDI paths');
+  console.log('Native MDI icons validated:',officialIcons.count,'scene:',name);
+
   await page.waitForTimeout(600);
   await car.screenshot({path:path.join(OUTPUT,'g6-2026-'+name+'.png'),animations:'disabled'});
   console.log('Captured '+name,JSON.stringify(info));
  }
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
  await screen('vehicle-status');
+ await car.screenshot({path:path.join(OUTPUT,'g6-2026-home-review-desktop.jpg'),
+   type:'jpeg',quality:73,animations:'disabled'});
+ // Desktop and mobile must contain exactly the same rendered actions and
+ // vehicle-status rows with the same simulated HA payload.
+ const contentSignature=async()=>car.evaluate(el=>{
+   const root=el.shadowRoot;
+   return {
+     actions:[...root.querySelectorAll('.xp-ux-dock-action')].map(b=>b.dataset.xpToggle||b.dataset.xpOpen),
+     infoRows:[...root.querySelectorAll('.xp-status-panel .xp-info-row')].map(r=>r.querySelector('.xp-info-copy small')?.textContent?.trim()),
+     soc:root.querySelector('.xp-overview-stat .xp-soc')?.textContent.trim(),
+     range:root.querySelector('.xp-overview-range .xp-range-num')?.textContent.trim()
+   };
+ });
+ const desktopContent=await contentSignature();
+ assert.deepEqual(desktopContent.actions,['climate','doors','windows','port','trunk','maintenance','map']);
+ assert.deepEqual(desktopContent.infoRows,['Location']);
+ assert.equal(await car.locator('.xp-ux-dock-action[data-xp-open="maintenance"]').count(),1,'Only Home maintenance shortcut should remain');
+ assert.equal(await car.locator('.xp-status-panel [data-xp-open="maintenance"]').count(),0,'Home maintenance card must be absent');
+ console.log('Canonical desktop/phone content signature:',JSON.stringify(desktopContent));
+
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(true));
  await screen('charging');
+ // Compact owner-review JPEG: GitHub's binary API cannot preview large PNGs.
+ // Keep the existing full-resolution PNG too.
+ await car.screenshot({path:path.join(OUTPUT,'g6-2026-charging-review-desktop.jpg'),
+   type:'jpeg',quality:68,animations:'disabled'});
+ const rearArt=await car.locator('[data-car-art]').getAttribute('src');
+ assert.match(rearArt,/\/g6\/2026\/graphite_gray\/charging\.webp/,'Charge view must use owner-supplied grey rear-three-quarter artwork');
+ const overlays=await car.evaluate(el=>[...el.shadowRoot.querySelectorAll('svg[data-xp-cable]')].map(svg=>({
+  mode:svg.dataset.xpCable,visible:getComputedStyle(svg).display!=='none',
+  core:Number.parseFloat(getComputedStyle(svg.querySelector('.xp-charge-cable-core')).strokeWidth),
+  halo:Number.parseFloat(getComputedStyle(svg.querySelector('.xp-charge-cable-halo')).strokeWidth)
+ })));
+ assert.equal(overlays.filter(x=>x.visible).length,1,'Only one responsive charging cable may be visible');
+ assert.ok(overlays.every(x=>x.core<=3&&x.halo<=6),'Green cable must remain thin: '+JSON.stringify(overlays));
+ console.log('Owner-grey rear charging image and thin grounded cable:',JSON.stringify({rearArt,overlays}));
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
  await car.locator('button[data-xp-open="maintenance"]').first().click();
  assert.ok(await car.locator('.xp-ux-modal-maintenance').count(),'Maintenance modal was not opened');
@@ -141,19 +223,61 @@ async function main(){
      const panel=element.shadowRoot.querySelector('.xp-status-panel');
      return {sceneWidth:scene.getBoundingClientRect().width,
        sceneHeight:scene.getBoundingClientRect().height,
-       panelColumns:panel?getComputedStyle(panel).gridTemplateColumns.trim().split(/\s+/).length:0,
+       panelColumns:panel?(getComputedStyle(panel).display==='grid'
+         ?getComputedStyle(panel).gridTemplateColumns.trim().split(/\s+/).length:1):0,
        charging:scene.classList.contains('xp-charge'),
        horizontalOverflow:document.documentElement.scrollWidth>innerWidth+2};
    });
    assert.ok(layout.sceneWidth<=width+2 && layout.sceneWidth>=width-2,JSON.stringify(layout));
    assert.ok(layout.sceneHeight>=700,JSON.stringify(layout));
    assert.equal(layout.charging,charging,JSON.stringify(layout));
-   if(!charging && width<=520)assert.equal(layout.panelColumns,2,JSON.stringify(layout));
+   if(charging){
+     const details=await car.evaluate(el=>{
+       const r=el.shadowRoot,image=r.querySelector('[data-car-art]');
+       const cables=[...r.querySelectorAll('svg[data-xp-cable]')];
+       return {imageSrc:image?.getAttribute('src'),cables:cables.map(svg=>({
+         mode:svg.dataset.xpCable,visible:getComputedStyle(svg).display!=='none',
+         stroke:parseFloat(getComputedStyle(svg.querySelector('.xp-charge-cable-core')).strokeWidth)
+       }))};
+     });
+     assert.match(details.imageSrc||'',/\/g6\/2026\/graphite_gray\/charging\.webp/,
+       'All charging breakpoints must use owner-selected rear-grey image');
+     assert.equal(details.cables.length,2,'Both cable layouts must be defined');
+     assert.equal(details.cables.filter(c=>c.visible).length,1,'Exactly one charging cable should show');
+     assert.ok(details.cables.every(c=>c.stroke<=3),'Green cable must be thin at all breakpoints');
+     console.log('Verified breakpoint charging imagery and cable:',JSON.stringify(details));
+   }
+   if(!charging){
+     const current=await contentSignature();
+     assert.deepEqual(current,desktopContent,'Home contents differ on '+width+'px Sections/iPhone card');
+     const geometry=await car.evaluate(el=>{
+       const root=el.shadowRoot,stage=root.querySelector('.xp-scene');
+       const d=stage.getBoundingClientRect(),panel=root.querySelector('.xp-status-panel');
+       const dock=root.querySelector('.xp-ux-dock-seven');
+       const boxes=[panel,dock,...root.querySelectorAll('.xp-ux-dock-action')].map(x=>({
+         className:x.className,rect:x.getBoundingClientRect().toJSON(),
+         displayed:getComputedStyle(x).display!=='none'
+       }));
+       const a=panel.getBoundingClientRect(),b=dock.getBoundingClientRect();
+       const overlap=Math.max(0,Math.min(a.right,b.right)-Math.max(a.left,b.left))*
+                     Math.max(0,Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top));
+       return {scene:d.toJSON(),boxes,overlap};
+     });
+     assert.equal(geometry.boxes.length,9,'seven controls plus two vehicle-status/nav containers required');
+     assert.ok(geometry.boxes.every(b=>b.displayed&&b.rect.width>0&&b.rect.height>0&&
+       b.rect.left>=geometry.scene.left-2&&b.rect.right<=geometry.scene.right+2&&
+       b.rect.top>=geometry.scene.top-2&&b.rect.bottom<=geometry.scene.bottom+2),
+       'Controls or vehicle status clipped on '+width+'px card: '+JSON.stringify(geometry));
+     assert.ok(geometry.overlap<1,'Vehicle status and seven quick actions overlap: '+JSON.stringify(geometry));
+   }
+   if(!charging && width<=520)assert.equal(layout.panelColumns,1,JSON.stringify(layout));
    if(viewportWidth===width)assert.equal(layout.horizontalOverflow,false,JSON.stringify(layout));
    await car.screenshot({path:path.join(OUTPUT,'g6-2026-'+name+'.png'),animations:'disabled'});
    console.log('Responsive capture '+name,JSON.stringify(layout));
  }
  await responsiveShot(390,false,'mobile-vehicle-status');
+ await car.screenshot({path:path.join(OUTPUT,'g6-2026-home-review-mobile.jpg'),
+   type:'jpeg',quality:76,animations:'disabled'});
  await responsiveShot(390,true,'mobile-charging');
  await responsiveShot(320,false,'small-mobile-vehicle-status');
  await responsiveShot(320,true,'small-mobile-charging');
@@ -168,9 +292,9 @@ async function main(){
      trim:'core_performance_awd',color:'arctic_white',interior:'light_gray',enable_access_controls:true});
  });
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
- assert.equal(await car.locator('.xp-ux-dock-action').count(),8,'Seven home quick actions missing');
- for(const action of ['charging','maintenance','map'])assert.equal(await car.locator('button[data-xp-open="'+action+'"]').count(),1,action+' home action missing');
- assert.equal(await car.locator('.xp-ux-dock-action:not([disabled])').count(),8,'Mock owner has approved Access, so all seven actions must work');
+ assert.equal(await car.locator('.xp-ux-dock-action').count(),7,'Seven home quick actions missing');
+ for(const action of ['maintenance','map'])assert.equal(await car.locator('.xp-ux-dock-action[data-xp-open="'+action+'"]').count(),1,action+' home dock action missing');
+ assert.equal(await car.locator('.xp-ux-dock-action:not([disabled])').count(),7,'Mock owner has approved Access, so all seven actions must work');
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-controls-desktop.png'),animations:'disabled'});
  const readActions=async()=>car.locator('.xp-ux-dock-action').allTextContents();
  let quickLabels=(await readActions()).join(' ');
@@ -182,7 +306,7 @@ async function main(){
    const card=document.querySelector('xpeng-vehicle-card'),h=card.hass;
    const states={...h.states};
    states['lock.my_xpeng_door_lock']={...states['lock.my_xpeng_door_lock'],state:'unlocked'};
-   states['binary_sensor.my_xpeng_windows']={...states['binary_sensor.my_xpeng_windows'],state:'on'};
+   states['binary_sensor.my_xpeng_any_window_open']={...states['binary_sensor.my_xpeng_any_window_open'],state:'on'};
    states['sensor.my_xpeng_slow_charge_port']={...states['sensor.my_xpeng_slow_charge_port'],state:'Open'};
    states['sensor.my_xpeng_charge_port']={...states['sensor.my_xpeng_charge_port'],state:'Open'};
    states['binary_sensor.my_xpeng_trunk']={...states['binary_sensor.my_xpeng_trunk'],state:'on'};
@@ -213,8 +337,8 @@ async function main(){
      }
    });
  });
- assert.equal(await car.locator('button[data-xp-open="map"]').count(),1,'Desktop Location shortcut missing');
- await car.locator('button[data-xp-open="map"]').click();
+ assert.equal(await car.locator('.xp-ux-dock-action[data-xp-open="map"]').count(),1,'Desktop Location dock shortcut missing');
+ await car.locator('.xp-ux-dock-action[data-xp-open="map"]').click();
  await car.locator('[data-xp-map-host] hui-map-card[data-qa-native-map="true"]').waitFor({state:'visible'});
  const desktopMap=await car.evaluate(element=>{
    const root=element.shadowRoot,host=root.querySelector('[data-xp-map-host]'),
@@ -247,7 +371,7 @@ async function main(){
  console.log('Desktop Location map + finder + Back:',JSON.stringify(desktopMap));
  await car.locator('button[data-xp-close]').click();
  assert.equal(await car.locator('.xp-ux-modal-map').count(),0,'Desktop Back must close Location');
- assert.equal(await car.locator('.xp-ux-dock-action').count(),8,'Desktop Back must restore Home shortcuts');
+ assert.equal(await car.locator('.xp-ux-dock-action').count(),7,'Desktop Back must restore Home shortcuts');
 
  await car.locator('button[data-xp-open="climate"]').first().click();
  assert.ok(await car.locator('.xp-ux-modal-climate').count(),'Climate modal missing');
@@ -286,11 +410,21 @@ async function main(){
  await page.setViewportSize({width:390,height:900});
  await page.evaluate(()=>{const w=document.querySelector('.card-wrap');w.style.width='390px';w.style.margin='0 auto';});
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-controls-mobile.png'),animations:'disabled'});
+ // Diagnose all entities associated with this card without invoking car commands.
+ await car.locator('button[data-xp-more]').click();
+ await car.locator('button[data-xp-extra-page="diagnostics"]').click();
+ assert.ok(await car.locator('.xp-ux-modal-extras').count(),'Diagnostics extra page missing');
+ const summary=await car.locator('.xp-entity-diagnostic').count();
+ assert.ok(summary>=30,'Expected mocked integration entities in diagnostics: '+summary);
+ await car.screenshot({path:path.join(OUTPUT,'g6-2026-diagnostics-mobile.png'),animations:'disabled'});
+ await car.locator('button[data-xp-close]').click();
+ assert.equal(await car.locator('.xp-ux-dock-action').count(),7);
+
  await page.evaluate(()=>{
    const card=document.querySelector('xpeng-vehicle-card'),h=card.hass;
    const states={...h.states};
    states['lock.my_xpeng_door_lock']={...states['lock.my_xpeng_door_lock'],state:'unlocked'};
-   states['binary_sensor.my_xpeng_windows']={...states['binary_sensor.my_xpeng_windows'],state:'on'};
+   states['binary_sensor.my_xpeng_any_window_open']={...states['binary_sensor.my_xpeng_any_window_open'],state:'on'};
    states['sensor.my_xpeng_slow_charge_port']={...states['sensor.my_xpeng_slow_charge_port'],state:'Open'};
    states['sensor.my_xpeng_charge_port']={...states['sensor.my_xpeng_charge_port'],state:'Open'};
    states['binary_sensor.my_xpeng_trunk']={...states['binary_sensor.my_xpeng_trunk'],state:'on'};
@@ -314,6 +448,27 @@ async function main(){
      assert.equal(await car.locator('button[data-xp-map-action="flash_lights"]').count(),1);
    }
    if(action==='climate')await page.waitForFunction(()=>{const img=document.querySelector('xpeng-vehicle-card').shadowRoot.querySelector('img[data-cabin-art]');return img&&img.complete&&img.naturalWidth===752;});
+
+   if(action==='climate'||action==='maintenance'){
+     const scroll=await car.locator('.xp-ux-modal-'+action).evaluate((el,action)=>{
+       const start=el.scrollTop,clientHeight=el.clientHeight,scrollHeight=el.scrollHeight;
+       el.scrollTop=el.scrollHeight;
+       const target=action==='climate'
+         ?el.querySelector('.xp-ux-climate-feature:last-child')
+         :el.querySelector('.xp-maint-info .xp-extra-line:last-child');
+       const area=el.getBoundingClientRect(),end=target?.getBoundingClientRect();
+       return {start,position:el.scrollTop,clientHeight,scrollHeight,
+         visible:!!end&&end.top<area.bottom&&end.bottom>area.top};
+     },action);
+     assert.ok(scroll.scrollHeight>scroll.clientHeight+30,
+       action+' content must overflow vertically: '+JSON.stringify(scroll));
+     assert.ok(scroll.position>scroll.start+30,
+       action+' cannot scroll down on phone: '+JSON.stringify(scroll));
+     assert.equal(scroll.visible,true,action+' last control not visible after scrolling');
+     await car.screenshot({path:path.join(OUTPUT,'g6-2026-'+action+'-scrolled-mobile.png'),animations:'disabled'});
+     await car.locator('.xp-ux-modal-'+action).evaluate(el=>{el.scrollTop=0});
+   }
+
    await car.screenshot({path:path.join(OUTPUT,'g6-2026-'+name+'.png'),animations:'disabled'});
    await car.locator('button[data-xp-close]').click();
  }
@@ -345,15 +500,23 @@ async function main(){
  // Automatic charging remains live, but Back returns Home until charging resets.
  await car.locator('button[data-xp-close]').click();
  await car.locator('button[data-xp-home]').click();
- assert.equal(await car.locator('.xp-ux-dock-action').count(),8,'Back from live Charging should display Home menu');
+ assert.equal(await car.locator('.xp-ux-dock-action').count(),7,'Back from live Charging should display Home menu');
  assert.equal(await car.locator('button[data-xp-home]').count(),0,'Home should not have Back');
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-back-home-mobile.png'),animations:'disabled'});
- // Charging is also a manually accessible destination, with the exact same scene.
- await car.locator('button[data-xp-open="charging"]').click();
- assert.equal(await car.locator('.xp-charge-card').count(),1,'Manual charging view did not open');
- assert.equal(await car.locator('.xp-ux-dock').count(),0,'Manual charging must hide home dock');
- await car.locator('button[data-xp-home]').click();
- assert.equal(await car.locator('.xp-ux-dock-action').count(),8,'Back from manual Charging should return Home');
+ // An explicit Back suppresses the current charge; a NEW charge session reopens it.
+ assert.equal(await car.locator('button[data-xp-open="charging"]').count(),0);
+ await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
+ await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(true));
+ const greenDebug=await car.evaluate(e=>({active:e.xpChargingActive(),view:e._view,dismissed:e._xpChargingDismissed,last:e._xpLastActualCharging,charging:e.val('charging'),plugged:e.val('plugged'),svg:!!e.shadowRoot.querySelector('svg.xp-charge-cable-live')}));
+ console.log('Live cable after charge transition:',JSON.stringify(greenDebug));
+ assert.equal(await car.locator('.xp-charge-cable-live').count(),2,'Both breakpoint-specific charging overlays are present: '+JSON.stringify(greenDebug));
+ const liveCable=await car.evaluate(el=>{
+  const svgs=[...el.shadowRoot.querySelectorAll('svg[data-xp-cable]')];
+  return svgs.map(svg=>({mode:svg.dataset.xpCable,visible:getComputedStyle(svg).display!=='none',paths:svg.querySelectorAll('path').length}));
+ });
+ assert.equal(liveCable.filter(x=>x.visible).length,1,'Only the correct desktop/phone cable may be visible');
+ await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
+ assert.equal(await car.locator('.xp-charge-cable-live').count(),0,'Idle state removes green cable');
  assert.equal(errors.length,0,errors.join('\n'));
  assert.ok(imagesServed>=4,'Expected bundled vehicle and background assets to be loaded');
  await browser.close();
