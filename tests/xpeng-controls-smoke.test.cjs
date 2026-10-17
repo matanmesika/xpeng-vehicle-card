@@ -283,3 +283,78 @@ test('unknown or missing HA select options never trigger an invented seat comman
   await card.xpCycleSeat('driver_seat_heat_select');
   assert.equal(commands.length,0);
 });
+
+
+test('extras menu has six categories and leaves home at exactly four actions',()=>{
+  const {card}=createCard();
+  card._xpPanel='extras';
+  assert.match(card.header(),/data-xp-more/);
+  assert.equal((card.xpExtrasPanel().match(/data-xp-extra-page=/g)||[]).length,6);
+  assert.equal((card.xpDock().match(/data-xp-open=/g)||[]).length,4);
+  for(const key of ['security','energy','schedule','power','maintenance','updates']){
+    card._xpExtraSection=key;
+    assert.match(card.xpModal(),/xp-extra-details/);
+  }
+});
+test('extras menu disappears when optional controls are disabled',()=>{
+  const {card}=createCard({show_controls:false});
+  assert.doesNotMatch(card.header(),/data-xp-more/);
+  card._xpPanel='extras';
+  assert.equal(card.xpExtrasPanel().includes('data-xp-extra-page='),true);
+  assert.equal(card.xpModal(),'');
+});
+test('X-Guard arming and sensitivity are driven by real XPENG entities',async()=>{
+  const {card,commands}=createCard();
+  card._xpengByKey['switch.sentinel_switch']='switch.guard';
+  card._xpengByKey['number.sentinel_sensitivity_control']='number.guard_sensitivity';
+  card._hass.states['switch.guard']={state:'off',attributes:{}};
+  card._hass.states['number.guard_sensitivity']={state:'2',attributes:{min:1,max:3,step:1}};
+  assert.match(card.xpExtraSectionContent('security'),/data-xp-extra-action="guard_on"/);
+  assert.match(card.xpExtraSectionContent('security'),/data-xp-range="sentinel_sensitivity_control"/);
+  await card.xpSend('switch','turn_on','sentinel_switch');
+  await card.xpSend('number','set_value','sentinel_sensitivity_control',3);
+  assert.deepEqual(JSON.parse(JSON.stringify(commands)),[
+    {domain:'switch',service:'turn_on',data:{entity_id:'switch.guard'}},
+    {domain:'number',service:'set_value',data:{entity_id:'number.guard_sensitivity',value:3}}
+  ]);
+  card._hass.states['switch.guard'].state='on';
+  assert.match(card.xpExtraSectionContent('security'),/data-xp-extra-action="guard_off" disabled/);
+});
+test('V2L control uses supported switch and numeric timer only',async()=>{
+  const {card,commands}=createCard();
+  card._xpengByKey['switch.trunk_power_switch']='switch.v2l';
+  card._xpengByKey['number.trunk_power_timer_control']='number.v2l_timer';
+  card._hass.states['switch.v2l']={state:'off',attributes:{}};
+  card._hass.states['number.v2l_timer']={state:'60',attributes:{min:0,max:1440,step:30}};
+  assert.match(card.xpExtraSectionContent('power'),/data-xp-extra-action="v2l_on"/);
+  assert.match(card.xpExtraSectionContent('power'),/data-xp-range="trunk_power_timer_control"/);
+  await card.xpSend('switch','turn_on','trunk_power_switch');
+  await card.xpSend('number','set_value','trunk_power_timer_control',90);
+  assert.deepEqual(JSON.parse(JSON.stringify(commands)),[
+    {domain:'switch',service:'turn_on',data:{entity_id:'switch.v2l'}},
+    {domain:'number',service:'set_value',data:{entity_id:'number.v2l_timer',value:90}}
+  ]);
+});
+test('schedule, maintenance, energy and OTA views never invent readings',()=>{
+  const {card}=createCard();
+  card._xpengByKey['sensor.hvac_schedules']='sensor.real_schedules';
+  card._xpengByKey['sensor.maintenance']='sensor.real_maintenance';
+  card._xpengByKey['sensor.parked_consumption']='sensor.real_parked';
+  card._xpengByKey['sensor.ota_upgrade']='sensor.real_ota';
+  card._hass.states['sensor.real_schedules']={state:'1',attributes:{schedules:[{start_time:'07:30',days:['Mon'] }]}};
+  card._hass.states['sensor.real_maintenance']={state:'23 days',attributes:{km_remaining:3600}};
+  card._hass.states['sensor.real_parked']={state:'1.2',attributes:{unit_of_measurement:'kWh'}};
+  card._hass.states['sensor.real_ota']={state:'Up to date',attributes:{}};
+  assert.match(card.xpExtraSectionContent('schedule'),/07:30/);
+  assert.match(card.xpExtraSectionContent('maintenance'),/3600/);
+  assert.match(card.xpExtraSectionContent('energy'),/1.2/);
+  assert.match(card.xpExtraSectionContent('updates'),/Up to date/);
+  card._hass.states['sensor.real_parked'].state='unavailable';
+  assert.doesNotMatch(card.xpExtraSectionContent('energy'),/>1.2</);
+});
+test('without supported sensors extra pages contain no operative control',()=>{
+  const {card}=createCard();
+  for(const page of ['security','power','updates']){
+    assert.doesNotMatch(card.xpExtraSectionContent(page),/data-xp-extra-action=/);
+  }
+});
