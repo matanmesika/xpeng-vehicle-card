@@ -660,6 +660,21 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-ux-modal-climate .xp-ux-cabin-art.xp-ux-cabin-portrait{width:min(270px,100%)}
 }
 
+/* Verified Xpengtk A/C actions, intentionally excluding unsupported app tiles. */
+.xp-ux-climate-features{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin:13px 0 8px}
+.xp-ux-climate-feature{display:flex;flex-direction:column;align-items:center;justify-content:center;
+ gap:9px;min-height:105px;padding:12px 8px;border:1px solid #658cab80;border-radius:16px;
+ background:#0f2942dd;color:#f0f8ff;cursor:pointer;text-align:center}
+.xp-ux-climate-feature svg{color:#bbdbfa}
+.xp-ux-climate-feature span{font-size:14px;font-weight:650}
+.xp-ux-climate-feature small{font-size:11px;color:#b0c9db}
+.xp-ux-climate-feature:focus-visible{outline:2px solid #9ddaff;outline-offset:2px}
+@media(max-width:600px){.xp-ux-climate-features{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+ .xp-ux-climate-feature{min-height:95px;padding:9px 4px;gap:7px}
+ .xp-ux-climate-feature span{font-size:11px}
+ .xp-ux-climate-feature small{font-size:9px;line-height:1.3}}
+@container xpeng-card (max-width:390px){.xp-ux-climate-feature span{font-size:10px}}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -1017,9 +1032,7 @@ class XpengVehicleCard extends HTMLElement{
    +'<div class="xp-ux-climate-caption"><strong>מיזוג אוויר</strong><span>בתא הנוסעים: '+xpEsc(insideText)+'</span></div>'
    +'<div class="xp-ux-temp-line"><button type="button" data-xp-temp="-1" aria-label="הורד חצי מעלה">−</button>'
    +'<b>'+value+'</b><button type="button" data-xp-temp="1" aria-label="העלה חצי מעלה">+</button></div>'
-   +'<div class="xp-ux-pill-row"><button class="'+(running?'xp-ux-selected':'')+'" type="button" data-xp-climate="'+(running?'off':'on')+'">'+xpIcon('power',17)+(running?' כבה מיזוג':' הפעל מיזוג')+'</button>'
-   +(this.xpLive('switch','defrost_switch')?'<button type="button" data-xp-switch="defrost_switch">'+xpIcon('sun',17)+' הפשרת שמשה</button>':'')
-   +'</div></div>';
+   +'</div>';
  }
  xpFanControl(){
   const c=this.xpLive('number','fan_speed_control');
@@ -1030,6 +1043,39 @@ class XpengVehicleCard extends HTMLElement{
   return '<label class="xp-ux-range-row"><span>'+xpIcon('fan',18)+' עוצמת מאוורר <b>'+xpEsc(v)+'</b></span>'
    +'<input type="range" min="'+min+'" max="'+max+'" step="'+step+'" value="'+v+'" data-xp-range="fan_speed_control" aria-label="מהירות מאוורר"></label>';
  }
+
+ xpClimateFeatures(){
+   // All actionable tiles below correspond to native HA services supported
+   // by Xpengtk. Do not treat quick-heat/cool status telemetry as a command.
+   const climate=this.xpLive('climate','cabin_climate');
+   const defrost=this.xpLive('switch','defrost_switch');
+   const schedule=this.xpLive('calendar','hvac_schedule_calendar')||
+     this.xpLive('sensor','hvac_schedules');
+   const tiles=[];
+   if(climate){
+     const running=climate.state.state!=='off';
+     tiles.push('<button type="button" class="xp-ux-climate-feature'
+       +(running?' xp-ux-selected':'')+'" data-xp-climate="'+(running?'off':'on')
+       +'" aria-pressed="'+String(running)+'">'
+       +xpIcon('power',25)+'<span>A/C</span><small>'
+       +(running?'פעיל — לחץ לכיבוי':'כבוי — לחץ להפעלה')+'</small></button>');
+   }
+   if(defrost){
+     const active=defrost.state.state==='on';
+     tiles.push('<button type="button" class="xp-ux-climate-feature'
+       +(active?' xp-ux-selected':'')+'" data-xp-switch="defrost_switch" aria-pressed="'
+       +String(active)+'">'+xpIcon('sun',25)
+       +'<span>הפשרת שמשה קדמית</span><small>'
+       +(active?'פעיל':'כבוי')+'</small></button>');
+   }
+   if(schedule){
+     tiles.push('<button type="button" class="xp-ux-climate-feature" data-xp-extra-page="schedule">'
+       +xpIcon('clock',25)+'<span>תזמון מיזוג</span><small>הצג תזמונים קיימים</small></button>');
+   }
+   return tiles.length?'<div class="xp-ux-climate-features" role="group" aria-label="פונקציות מיזוג">'
+     +tiles.join('')+'</div>':'';
+ }
+
  xpSeatControls(){
   const slots=[
     ['driver','נהג','driver_seat_heat_select','driver_seat_ventilation_select'],
@@ -1148,7 +1194,7 @@ class XpengVehicleCard extends HTMLElement{
    if(page==='climate'){
      body=this.xpCabinView();
      body+='<section class="xp-ux-climate-bottom" aria-label="בקרת אקלים">'
-       +this.xpTempControl()+this.xpFanControl()+'</section>';
+       +this.xpTempControl()+this.xpFanControl()+this.xpClimateFeatures()+'</section>';
    }else if(page==='port')body=this.xpPortPanel();
    else if(page==='doors')body=this.xpDoorsPanel();
    else if(page==='windows')body=this.xpWindowsPanel();
@@ -1735,7 +1781,7 @@ class XpengVehicleCardEditor extends HTMLElement{
       ${xpYearNeedsSpecificChoice(v.model,v.year)?select('year','Model year · paint availability',xpYearsWithinGroup(v.model,v.year),xpYearsWithinGroup(v.model,v.year).some(y=>y.id===v.year)?v.year:xpYearsWithinGroup(v.model,v.year)[0]?.id):''}
      ${select('trim','Trim · display only',xpAllowedTrims(v.model,v.year))}
      ${select('color','Exterior paint',xpAllowedPaints(v.model,v.year))}
-     ${select('interior','Interior finish',xpAllowedInteriors(v.model,v.year))}
+     ${select('interior','Interior finish · צבע פנים הרכב',xpAllowedInteriors(v.model,v.year))}
      ${select('show_controls','Optional control pages', [{id:'false',label:'Disabled (original card)'},{id:'true',label:'Enabled (responsive controls)'}],String(v.show_controls===true||v.show_controls==='true'))}
      ${select('enable_access_controls','Access actions (unlock / windows)',[{id:'false',label:'Off (safe default)'},{id:'true',label:'On (requires Xpengtk Access permission)'}],String(v.enable_access_controls===true||v.enable_access_controls==='true'))}
      <p>Years sharing the same exterior/facelift are grouped. Select a specific year only when paint availability differs. Trim labels never change vehicle pictures.</p>
