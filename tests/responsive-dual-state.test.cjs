@@ -32,5 +32,6 @@ test('original desktop composition, vehicle artwork and automatic charge logic s
 test('existing charge view keeps its own model artwork and no overview dock',()=>{
  assert.match(source,/this\.xpUiEnabled\(\)&&!isCharging\?'xp-has-controls':''/);
  assert.match(source,/xp-charge-heading-action/);
- assert.match(source,/view==='rear'\?'charging':'front'/);
+ assert.match(source,/view=this\._view==='charging'\?'charging':'front'/);
+ assert.match(source,/const candidate=xpVehicleAssetPath\(a,view\)/);
 });
