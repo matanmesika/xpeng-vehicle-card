@@ -96,3 +96,10 @@ Official XPENG G6 material (including regional availability caveats) describes A
 | Pet Mode | No verified Xpengtk command | Hidden |
 
 These checks are based on the current upstream `climate.py`, `switch.py`, `number.py`, `button.py`, `select.py`, `calendar.py`, and documented `services.yaml`. OEM-app features can exist on the car without being available as remote controls to Home Assistant. The card never upgrades display-only telemetry to a button.
+
+
+### HVAC schedule creation: upstream capability and multi-car safety
+
+Xpengtk **does** register `xpeng.create_hvac_schedule`, `xpeng.update_hvac_schedule` and `xpeng.delete_hvac_schedule` in `services.yaml`/`services.py`. These accept local `HH:MM`, `days_of_week` (1=Monday ... 7=Sunday), `enabled`, and optionally a time zone; the existing `switch.hvac_schedule_<appointment_id>` entities support toggling individual schedules. The integration-wide service implementation currently resolves `_get_entry_data()` to the **first XPENG config entry** and does not take a target VIN in its service schema. Therefore the card only displays/controls already bound schedules in the selected vehicle, and does **not** expose creation/update/deletion buttons that might operate on a different car in a future multi-XPENG setup. Before adding those commands, require upstream vehicle-targeted service support and live tests.
+
+Missing climate target temperature is displayed as `—`, and +/- buttons are disabled rather than rendering 0°C or sending an invalid command.
