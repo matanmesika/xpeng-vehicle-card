@@ -141,6 +141,12 @@ const XP_ICONS = {
  car:'<path d="M4 16H2v-5l2-5h16l2 5v5h-2M4 16h16M4 16v3m16-3v3M2 11h20M7 6l-2 5m12-5 2 5"/><circle cx="6.5" cy="15" r=".8"/><circle cx="17.5" cy="15" r=".8"/>',
  windows:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16M3 10h18"/><path d="m7 15 2-2 2 2"/>',
  windows_open:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16M3 10h18"/><path d="m6.5 17 2-2 2 2m5-1 2-2 2 2"/>',
+ trunk:'<path d="M3 8h18v11H3zM4 8l2-4h12l2 4M4 14h16M10 17h4"/><path d="M8 19v2m8-2v2"/>',
+ trunk_open:'<path d="M3 12h18v7H3zM4 12l3-7h10l3 7M4 16h16M10 18h4"/><path d="m9 7 3-4 3 4"/>',
+ horn:'<path d="M3 10h4l8-5v14l-8-5H3v-4Zm12-1c2 1 2 5 0 6m3-9c4 3 4 9 0 12"/><path d="M6 14l1 5h3"/>',
+ flash:'<path d="M3 8c5-2 10-2 14 0v8c-4 2-9 2-14 0V8Zm17 1 2-2m-2 5h3m-3 3 2 2"/><path d="M7 10h6m-6 4h6"/>',
+ auto:'<path d="M20 8a8 8 0 0 0-14-3L4 7V3M4 7h4M4 16a8 8 0 0 0 14 3l2-2v4m0-4h-4"/><path d="m9 15 3-7 3 7m-5-2h4"/>',
+ windscreen:'<path d="m4 18 2-12h12l2 12H4Zm4-7 1-2m3 2 1-2m3 2 1-2M8 15l1-2m3 2 1-2m3 2 1-2"/>',
  port_open:'<rect x="4" y="7" width="16" height="13" rx="3"/><path d="m8 11 4-4 4 4m-4-4V2"/><path d="M8 17h8"/>',
  fan:'<path d="M12 12c6-2 7-9 3-9-3 0-3 6-3 9Zm0 0c4 5 11 3 9-1-2-3-6 0-9 1Zm0 0c-5 4-3 11 1 9 3-2 0-6-1-9Z"/>',
  bolt:'<path d="M13 2 4 13h7l-1 9 10-12h-7l1-8Z"/>',
@@ -931,7 +937,7 @@ class XpengVehicleCard extends HTMLElement{
       
      if(b.hasAttribute('data-xp-open')){
        const action=b.dataset.xpOpen;
-       if(['climate','charging','port','doors','windows','map','maintenance','charge_controls','charge_schedule'].includes(action)){
+       if(['climate','charging','port','doors','windows','trunk','map','maintenance','charge_controls','charge_schedule'].includes(action)){
          if(action==='charging'){
            this._xpManualCharging=true;this._xpChargingDismissed=false;this._xpPanel=null;
          }else{
@@ -943,7 +949,7 @@ class XpengVehicleCard extends HTMLElement{
       }
       if(b.hasAttribute('data-xp-toggle')){
        const action=b.dataset.xpToggle;
-       if(['doors','windows','port'].includes(action))this.xpToggle(action);
+       if(['doors','windows','port','trunk'].includes(action))this.xpToggle(action);
        return;
      }
      if(b.hasAttribute('data-xp-port')){
@@ -1139,6 +1145,10 @@ class XpengVehicleCard extends HTMLElement{
      const state=this.xpLive('lock','door_lock')?.state?.state;
      return state==='locked'?'closed':state==='unlocked'?'open':null;
    }
+   if(action==='trunk'){
+     const state=this.xpLive('binary_sensor','trunk')?.state?.state;
+     return state==='off'?'closed':state==='on'?'open':null;
+   }
    if(action==='windows'){
      const state=this.xpLive('binary_sensor','windows')?.state?.state;
      return state==='off'?'closed':state==='on'?'open':null;
@@ -1160,6 +1170,9 @@ class XpengVehicleCard extends HTMLElement{
    if(action==='windows')return state==='open'
      ?{domain:'button',service:'press',suffix:'close_windows',label:'סגירת חלונות'}
      :this.xpAccessAllowed()?{domain:'button',service:'press',suffix:'open_windows',label:'פתיחת חלונות'}:null;
+   if(action==='trunk')return state==='open'
+     ?{domain:'button',service:'press',suffix:'close_trunk',label:'סגירת תא מטען'}
+     :this.xpAccessAllowed()?{domain:'button',service:'press',suffix:'open_trunk',label:'פתיחת תא מטען'}:null;
    if(action==='port')return state==='open'
      ?{domain:'button',service:'press',suffix:'close_charge_port',label:'סגירת שקע טעינה'}
      :{domain:'button',service:'press',suffix:'open_charge_port',label:'פתיחת שקע טעינה'};
@@ -1177,19 +1190,19 @@ class XpengVehicleCard extends HTMLElement{
    const title=target?.label||(this.xpActionState(action)===null?'המצב אינו ידוע':'נדרשת הרשאת Access');
    return '<button type="button" data-xp-toggle="'+action+'" '+(usable?'':'disabled')+
      ' aria-label="'+xpEsc(title)+'" title="'+xpEsc(title)+'">'+
-     xpIcon(action==='doors'?(target?.service==='unlock'?'unlock':'lock'):action==='port'?(target?.suffix==='open_charge_port'?'port_open':'plug'):(target?.suffix==='open_windows'?'windows_open':'windows'),20)+'<span>'+xpEsc(title)+'</span></button>';
+     xpIcon(action==='doors'?(target?.service==='unlock'?'unlock':'lock'):action==='trunk'?(target?.suffix==='open_trunk'?'trunk_open':'trunk'):action==='port'?(target?.suffix==='open_charge_port'?'port_open':'plug'):(target?.suffix==='open_windows'?'windows_open':'windows'),20)+'<span>'+xpEsc(title)+'</span></button>';
  }
  xpDock(){
    if(!this.xpUiEnabled())return '';
    const items=[
      ['climate','fan','מיזוג'],['charging','bolt','טעינה'],
      ['doors','lock','נעילה'],['windows','windows','חלונות'],
-     ['port','plug','שקע טעינה'],['maintenance','settings','תחזוקה'],
-     ['map','pin','מיקום']
+     ['port','plug','שקע טעינה'],['trunk','trunk','תא מטען'],
+     ['maintenance','settings','תחזוקה'],['map','pin','מיקום']
    ];
    return '<nav class="xp-ux-dock xp-ux-dock-seven" aria-label="מעבר בין מסכים" dir="rtl">'+
      items.map(([action,icon,title])=>{
-       const toggle=['doors','windows','port'].includes(action);
+       const toggle=['doors','windows','port','trunk'].includes(action);
        const target=toggle?this.xpToggleTarget(action):null;
        const available=toggle?!!(target&&this.xpLive(target.domain,target.suffix)):
          action==='climate'?!!this.xpLive('climate','cabin_climate'):true;
@@ -1197,11 +1210,13 @@ class XpengVehicleCard extends HTMLElement{
        const compact=toggle?({
          'נעילת הרכב':'נעל','שחרור נעילה':'פתח נעילה',
          'סגירת חלונות':'סגור חלונות','פתיחת חלונות':'פתח חלונות',
-         'סגירת שקע טעינה':'סגור שקע','פתיחת שקע טעינה':'פתח שקע'
+         'סגירת שקע טעינה':'סגור שקע','פתיחת שקע טעינה':'פתח שקע',
+         'סגירת תא מטען':'סגור תא מטען','פתיחת תא מטען':'פתח תא מטען'
        }[label]||'לא זמין'):title;
        const ico=action==='doors'?(target?.service==='unlock'?'unlock':'lock'):
          action==='windows'?(target?.suffix==='open_windows'?'windows_open':'windows'):
-         action==='port'?(target?.suffix==='open_charge_port'?'port_open':'plug'):icon;
+         action==='port'?(target?.suffix==='open_charge_port'?'port_open':'plug'):
+         action==='trunk'?(target?.suffix==='open_trunk'?'trunk_open':'trunk'):icon;
        return '<button class="xp-ux-dock-action" type="button" '+
          (toggle?'data-xp-toggle="'+action+'"':'data-xp-open="'+action+'"')+
          ' aria-label="'+xpEsc(label)+'" title="'+xpEsc(label)+'" '+(available?'':'disabled')+'>'+
@@ -1488,6 +1503,14 @@ class XpengVehicleCard extends HTMLElement{
      '<div class="xp-ux-access-buttons">'+this.xpToggleButton('windows')+'</div>'+
      '<p class="xp-ux-note">פתיחת חלונות דורשת הרשאת Access. אין פקודה כאשר מצבם אינו ידוע.</p></div>';
  }
+ xpTrunkPanel(){
+   const state=this.xpActionState('trunk');
+   const status=state==='open'?'פתוח':state==='closed'?'סגור':'לא ידוע';
+   return '<div class="xp-ux-access-panel"><div class="xp-ux-access-head">'+xpIcon('trunk',36)+
+     '<div><h3>תא המטען</h3><p>מצב נוכחי: '+xpEsc(status)+'</p></div></div>'+
+     '<div class="xp-ux-access-buttons">'+this.xpToggleButton('trunk')+'</div>'+
+     '<p class="xp-ux-note">פתיחת תא המטען מחייבת הרשאת Access. אם החיישן לא מדווח מצב ברור, לא תישלח פקודה.</p></div>';
+ }
  xpMapPanel(){
    const location=this.xpLive('device_tracker','location');
    const horn=this.xpLive('button','honk_horn');
@@ -1521,8 +1544,8 @@ class XpengVehicleCard extends HTMLElement{
  xpModal(){
    if(!this._xpPanel||(!this.xpUiEnabled()&&!['maintenance','map'].includes(this._xpPanel)))return '';
    const page=this._xpPanel;
-   if(!['climate','port','doors','windows','map','maintenance','charge_controls','charge_schedule','extras'].includes(page))return '';
-   const labels={climate:'מיזוג אוויר',port:'שקע טעינה',doors:'דלתות',windows:'חלונות',charge_controls:'פעולות טעינה',charge_schedule:'תזמוני טעינה',maintenance:'תחזוקת הרכב',map:'מיקום הרכב',extras:'אפשרויות נוספות'};
+   if(!['climate','port','doors','windows','trunk','map','maintenance','charge_controls','charge_schedule','extras'].includes(page))return '';
+   const labels={climate:'מיזוג אוויר',port:'שקע טעינה',doors:'דלתות',windows:'חלונות',charge_controls:'פעולות טעינה',charge_schedule:'תזמוני טעינה',maintenance:'תחזוקת הרכב',trunk:'תא מטען',map:'מיקום הרכב',extras:'אפשרויות נוספות'};
    let body='';
    if(page==='climate'){
      body='<div class="xp-climate-layout">'+this.xpCabinView()+
@@ -1534,6 +1557,7 @@ class XpengVehicleCard extends HTMLElement{
    else if(page==='port')body=this.xpPortPanel();
    else if(page==='doors')body=this.xpDoorsPanel();
    else if(page==='windows')body=this.xpWindowsPanel();
+   else if(page==='trunk')body=this.xpTrunkPanel();
    else if(page==='map')body=this.xpMapPanel();
    else if(page==='extras')body=this.xpExtrasPanel();
    return '<section class="xp-ux-modal xp-ux-modal-'+page+'" role="dialog" aria-modal="true" aria-label="'+labels[page]+'" dir="rtl">'
@@ -1769,13 +1793,13 @@ class XpengVehicleCard extends HTMLElement{
   else if(service==='select_option')data.option=value;
   else if(service==='set_hvac_mode')data.hvac_mode=value;
   else if(service==='set_swing_mode')data.swing_mode=value;
-  const sensitive=(domain==='lock'||suffix==='stop_charge'||suffix==='open_charge_port'||suffix==='close_charge_port'||suffix==='close_trunk'||suffix==='close_windows'||suffix==='open_windows'||suffix==='honk_horn'||suffix==='flash_lights'||suffix==='sentinel_switch'||suffix.startsWith('hvac_schedule_'));
+  const sensitive=(domain==='lock'||suffix==='stop_charge'||suffix==='open_trunk'||suffix==='open_charge_port'||suffix==='close_charge_port'||suffix==='close_trunk'||suffix==='close_windows'||suffix==='open_windows'||suffix==='honk_horn'||suffix==='flash_lights'||suffix==='sentinel_switch'||suffix.startsWith('hvac_schedule_'));
   // One-tap means one click for verified status-driven lock/windows/flap actions.
   // Never bypass confirmation for arbitrary callers or other sensitive operations.
   const directAllowed=verifiedDirectTap&&(
     (domain==='lock'&&suffix==='door_lock'&&['lock','unlock'].includes(service))||
     (domain==='button'&&service==='press'&&
-      ['open_windows','close_windows','open_charge_port','close_charge_port'].includes(suffix))
+      ['open_windows','close_windows','open_charge_port','close_charge_port','open_trunk','close_trunk'].includes(suffix))
   );
   if((sensitive||['trunk_power_switch','auto_upgrade_switch','sentinel_sensitivity_control','trunk_power_timer_control'].includes(suffix))
      &&!directAllowed&&typeof window.confirm==='function'
