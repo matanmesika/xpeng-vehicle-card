@@ -917,10 +917,10 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-charge-cable-halo,.xp-charge-cable-core{fill:none;stroke-linecap:round}
 .xp-charge-cable-halo{stroke:#00eebb;stroke-width:12;filter:drop-shadow(0 0 14px #00ffcc)}
 .xp-charge-cable-core{stroke:#c3fff2;stroke-width:3}
-.xp-cable-mobile{display:none}
+.xp-charge-cable.xp-cable-mobile{display:none}
 @container xpeng-layout (max-width:850px){
- .xp-cable-desktop{display:none}
- .xp-cable-mobile{display:block}
+ .xp-charge-cable.xp-cable-desktop{display:none}
+ .xp-charge-cable.xp-cable-mobile{display:block}
 }
 .xp-ux-dock-seven .xp-ux-dock-action small{font-size:10px;white-space:normal;line-height:1.12}
 .xp-ux-dock-seven .xp-ux-dock-action:disabled{opacity:.48}
@@ -2195,7 +2195,9 @@ class XpengVehicleCard extends HTMLElement{
  charging(){
   return `${this.title()}
     <div class="xp-station" aria-hidden="true">✕</div>${this.carArt()}
-    ${this.model()==='G6'&&this.xpChargingActive()?'<svg class="xp-charge-cable xp-charge-cable-live" aria-hidden="true" viewBox="0 0 1536 864" preserveAspectRatio="none"><path class="xp-charge-cable-halo xp-cable-desktop" d="M1443 500C1464 647 1366 663 1235 625S1174 522 1185 479"/><path class="xp-charge-cable-core xp-cable-desktop" d="M1443 500C1464 647 1366 663 1235 625S1174 522 1185 479"/><path class="xp-charge-cable-halo xp-cable-mobile" d="M1440 685Q1408 747 1300 714"/><path class="xp-charge-cable-core xp-cable-mobile" d="M1440 685Q1408 747 1300 714"/></svg>':''}
+    ${this.model()==='G6'&&this.xpChargingActive()?
+      '<svg class="xp-charge-cable xp-charge-cable-live xp-cable-desktop" data-xp-cable="desktop" aria-hidden="true" viewBox="0 0 1400 788" preserveAspectRatio="none"><path class="xp-charge-cable-halo" d="M1310 452 C1338 564 1322 602 1223 612 C1166 615 1095 585 1094 529 C1094 499 1104 472 1090 439"/><path class="xp-charge-cable-core" d="M1310 452 C1338 564 1322 602 1223 612 C1166 615 1095 585 1094 529 C1094 499 1104 472 1090 439"/></svg>'+
+      '<svg class="xp-charge-cable xp-charge-cable-live xp-cable-mobile" data-xp-cable="mobile" aria-hidden="true" viewBox="0 0 390 780" preserveAspectRatio="none"><path class="xp-charge-cable-halo" d="M357 632 C357 660 350 677 335 677 C303 677 288 655 262 642 C243 632 225 628 202 628"/><path class="xp-charge-cable-core" d="M357 632 C357 660 350 677 335 677 C303 677 288 655 262 642 C243 632 225 628 202 628"/></svg>':''}
     <section class="xp-charge-card" aria-label="Charging information">
        <div class="xp-charge-heading">${xpIcon('bolt',42)}<span>${xpEsc(this.chargeStatus())}</span></div>
        ${this.progress()}
