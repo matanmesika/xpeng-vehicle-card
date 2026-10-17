@@ -171,3 +171,5 @@ async function main(){
  await browser.close();
 }
 main().catch(err=>{console.error(err);process.exit(1);});
+
+// Owner review captures: original charging hero remains unchanged by visible dock controls.
