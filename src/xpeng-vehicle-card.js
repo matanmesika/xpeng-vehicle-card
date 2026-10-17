@@ -1726,7 +1726,7 @@ class XpengVehicleCard extends HTMLElement{
   if(config.image_path&&!/^\/(?:local|hacsfiles)\/[a-zA-Z0-9/_-]+\/?$/.test(config.image_path))throw Error('Invalid local image_path');
   if(config.background_image&&!xpLocalArtworkPath(config.background_image))throw Error('Invalid local background_image');
   const v={prefix:'my_xpeng',year:'2026',model:'G6',trim:'core_plus_rwd',color:'graphite_gray',interior:'dark_gray',theme:'dark',...config};
-  this._config=xpNormalizeAppearance(v);this._infoOpen=false;this._tireOpen=false;this._xpManualCharging=false;this._xpChargingDismissed=false;this._xpLastActualCharging=false;this._xpPanel=null;this.render();
+  this._config=xpNormalizeAppearance(v);this._infoOpen=false;this._tireOpen=false;this._xpManualCharging=false;this._xpChargingDismissed=false;this._xpLastActualCharging=false;this.render();
  }
  set hass(hass){
   this._hass=hass;
