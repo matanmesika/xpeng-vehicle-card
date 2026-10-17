@@ -101,6 +101,7 @@ const XP_CONTROL_FALLBACKS=Object.freeze({
  'select.left_rear_seat_ventilation_select':'left_rear_seat_ventilation',
  'select.right_rear_seat_ventilation_select':'right_rear_seat_ventilation',
  'select.steering_wheel_heat_select':'steering_wheel_heating',
+ 'sensor.slow_charge_port':'charge_port',
  'switch.defrost_switch':'front_defrost'
 });
 
@@ -857,7 +858,7 @@ class XpengVehicleCard extends HTMLElement{
   return '<div class="xp-ux-seats-grid">'+(controls||'<p>לא נמצאו בקרות מושבים נתמכות לרכב זה.</p>')+'</div>';
  }
  xpPortPanel(){
-   const status=this.xpLive('sensor','charge_port')?.state?.state;
+   const status=(this.xpLive('sensor','slow_charge_port')||this.xpLive('sensor','charge_port'))?.state?.state;
    const open=this.xpLive('button','open_charge_port');
    const close=this.xpLive('button','close_charge_port');
    const button=(label,act,available)=>!available?'':'<button type="button" class="xp-ux-port-action" data-xp-port="'+act+'">'+xpIcon('plug',20)+label+'</button>';
