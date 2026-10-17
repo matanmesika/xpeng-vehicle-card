@@ -436,3 +436,25 @@ test('existing HVAC schedules use Xpengtk appointment-specific switches only',as
   card._hass.states['switch.weekend'].state='unavailable';
   assert.doesNotMatch(card.xpExtraSectionContent('schedule'),/data-xp-hvac-schedule="88"/);
 });
+
+
+test('missing XPENG target and cabin telemetry must not be rendered as zero degrees',async()=>{
+  const {card,commands}=createCard();
+  const climate=card._hass.states['climate.renamed_hvac'];
+  climate.attributes.temperature=null;
+  climate.attributes.current_temperature=undefined;
+  const html=card.xpTempControl();
+  assert.match(html,/<b>—<\/b>/);
+  assert.match(html,/data-xp-temp="-1"[^>]*disabled/);
+  assert.match(html,/data-xp-temp="1"[^>]*disabled/);
+  card.xpDoTemperature(1);
+  assert.equal(commands.length,0);
+  climate.attributes.temperature=22;
+  const restored=card.xpTempControl();
+  assert.match(restored,/<b>22\.0°C<\/b>/);
+  assert.doesNotMatch(restored,/data-xp-temp="1"[^>]*disabled/);
+  card.xpDoTemperature(1);
+  assert.deepEqual(JSON.parse(JSON.stringify(commands)),[
+    {domain:'climate',service:'set_temperature',data:{entity_id:'climate.renamed_hvac',temperature:22.5}}
+  ]);
+});
