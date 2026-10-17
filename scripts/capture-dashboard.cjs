@@ -163,6 +163,20 @@ async function main(){
  await screen('vehicle-status');
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(true));
  await screen('charging');
+ // Compact owner-review JPEG: GitHub's binary API cannot preview large PNGs.
+ // Keep the existing full-resolution PNG too.
+ await car.screenshot({path:path.join(OUTPUT,'g6-2026-charging-review-desktop.jpg'),
+   type:'jpeg',quality:68,animations:'disabled'});
+ const rearArt=await car.locator('[data-car-art]').getAttribute('src');
+ assert.match(rearArt,/\/g6\/2026\/graphite_gray\/charging\.webp/,'Charge view must use owner-supplied grey rear-three-quarter artwork');
+ const overlays=await car.evaluate(el=>[...el.shadowRoot.querySelectorAll('svg[data-xp-cable]')].map(svg=>({
+  mode:svg.dataset.xpCable,visible:getComputedStyle(svg).display!=='none',
+  core:Number.parseFloat(getComputedStyle(svg.querySelector('.xp-charge-cable-core')).strokeWidth),
+  halo:Number.parseFloat(getComputedStyle(svg.querySelector('.xp-charge-cable-halo')).strokeWidth)
+ })));
+ assert.equal(overlays.filter(x=>x.visible).length,1,'Only one responsive charging cable may be visible');
+ assert.ok(overlays.every(x=>x.core<=3&&x.halo<=6),'Green cable must remain thin: '+JSON.stringify(overlays));
+ console.log('Owner-grey rear charging image and thin grounded cable:',JSON.stringify({rearArt,overlays}));
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
  await car.locator('button[data-xp-open="maintenance"]').first().click();
  assert.ok(await car.locator('.xp-ux-modal-maintenance').count(),'Maintenance modal was not opened');
