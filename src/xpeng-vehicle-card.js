@@ -1077,6 +1077,16 @@ class XpengVehicleCard extends HTMLElement{
      if(output)output.textContent=slider.value+(slider.dataset.xpRange==='charge_limit_control'?'%':'');
    });
    this.shadowRoot.addEventListener('change',ev=>{
+     const pressure=ev.target.closest('select[data-xp-tire-unit]');
+     if(pressure){
+       if(!['bar','psi','kPa'].includes(pressure.value))return;
+       this._xpTireUnit=pressure.value;
+       const offset=this.shadowRoot.querySelector('.xp-ux-modal')?.scrollTop||0;
+       this.render();
+       const modal=this.shadowRoot.querySelector('.xp-ux-modal');
+       if(modal)modal.scrollTop=offset;
+       return;
+     }
      const slider=ev.target.closest('input[data-xp-range]');
      if(!slider)return;
      const key=slider.dataset.xpRange;
@@ -1597,7 +1607,10 @@ class XpengVehicleCard extends HTMLElement{
      line('יצרן',attrs.manufacturer||'XPENG'),
      line('גרסת XOS',this.xpLive('sensor','xos_version')?.state?.state||'—')
    ].join('');
-   return '<div class="xp-maintenance-page"><h3>לחץ אוויר בארבעת הצמיגים</h3>'+
+   return '<div class="xp-maintenance-page"><div class="xp-maintenance-head"><h3>לחץ אוויר בארבעת הצמיגים</h3>'+
+     '<label class="xp-tire-units">יחידות לחץ <select data-xp-tire-unit aria-label="יחידות לחץ בצמיגים">'+
+     ['bar','psi','kPa'].map(u=>'<option value="'+u+'"'+(this.tireUnit()===u?' selected':'')+'>'+u+'</option>').join('')+
+     '</select></label></div>'+
       this.tireScreen(false)+'<h3>תחזוקה ופרטי רכב</h3><div class="xp-maint-info">'+info+'</div>'+
       '<p class="xp-ux-note">הערכים מתעדכנים לפי Home Assistant. מספר השלדה המלא אינו חשוף באינטגרציה.</p></div>';
  }
@@ -1844,7 +1857,7 @@ class XpengVehicleCard extends HTMLElement{
   if(config.image_path&&!/^\/(?:local|hacsfiles)\/[a-zA-Z0-9/_-]+\/?$/.test(config.image_path))throw Error('Invalid local image_path');
   if(config.background_image&&!xpLocalArtworkPath(config.background_image))throw Error('Invalid local background_image');
   const v={prefix:'my_xpeng',year:'2026',model:'G6',trim:'core_plus_rwd',color:'graphite_gray',interior:'dark_gray',theme:'dark',...config};
-  this._config=xpNormalizeAppearance(v);this._infoOpen=false;this._tireOpen=false;this._xpManualCharging=false;this._xpChargingDismissed=false;this._xpLastActualCharging=false;this.render();
+  this._config=xpNormalizeAppearance(v);this._xpTireUnit=null;this._infoOpen=false;this._tireOpen=false;this._xpManualCharging=false;this._xpChargingDismissed=false;this._xpLastActualCharging=false;this.render();
  }
  set hass(hass){
   this._hass=hass;
@@ -1956,10 +1969,20 @@ class XpengVehicleCard extends HTMLElement{
     return bar!==null&&bar>=0.5&&bar<=6?bar:null;
   }
 
+ tireUnit(){
+   const unit=this._xpTireUnit||this.vehicle()?.tire_pressure_unit||this._config.tire_pressure_unit||'bar';
+   return ['bar','psi','kPa'].includes(unit)?unit:'bar';
+ }
+ tirePressureDisplay(bar){
+   if(bar===null||!Number.isFinite(Number(bar)))return '—';
+   const unit=this.tireUnit();
+   const value=unit==='psi'?bar*14.5037738:unit==='kPa'?bar*100:bar;
+   return xpNum(value,unit==='bar'?2:unit==='psi'?1:0);
+ }
  tireSummary(){
   const values=['tire_fl','tire_fr','tire_rl','tire_rr'].map(k=>this.tirePressureBar(k));
   if(values.some(v=>v===null))return '—';
-  return xpNum(values.reduce((a,b)=>a+b,0)/4,2)+' bar';
+  return this.tirePressureDisplay(values.reduce((a,b)=>a+b,0)/4)+' '+this.tireUnit();
  }
  locationText(){
   const d=this.data('location');const raw=d?.value;
@@ -2067,12 +2090,12 @@ class XpengVehicleCard extends HTMLElement{
       ?this.vehicle()?.top_image:this.vehicle()?.top_image||this._config.top_image;
     const wheel=(key,label)=>{const bar=this.tirePressureBar(key);
       return `<div class="xp-tire-reading" data-wheel="${key}"><small>${label}</small>
-        <strong>${bar===null?'—':xpEsc(xpNum(bar,2))}</strong><span>${bar===null?'Unavailable':'bar'}</span></div>`;};
+        <strong>${xpEsc(this.tirePressureDisplay(bar))}</strong><span>${bar===null?'לא זמין':this.tireUnit()}</span></div>`;};
     return `<section class="xp-tire-screen" role="region" aria-label="Tire pressure from above">
        ${showBack?`<div class="xp-tire-actions"><button type="button" data-tire-toggle aria-label="Back to vehicle status">${xpIcon('back',20)} Back to vehicle</button></div>`:''}
        <div class="xp-tire-stage"><div class="xp-tire-center">${this.topCarArt()}</div>
-         ${wheel('tire_fl','Front left')}${wheel('tire_fr','Front right')}
-         ${wheel('tire_rl','Rear left')}${wheel('tire_rr','Rear right')}</div>
+         ${wheel('tire_fl','קדמי שמאל')}${wheel('tire_fr','קדמי ימין')}
+         ${wheel('tire_rl','אחורי שמאל')}${wheel('tire_rr','אחורי ימין')}</div>
        ${!xpLocalArtworkPath(photo)?'<div class="xp-tire-disclaimer">Illustrative overhead view · exact model artwork pending</div>':''}
      </section>`;
   }
@@ -2202,7 +2225,8 @@ class XpengVehicleCardEditor extends HTMLElement{
      ${select('trim','Trim · display only',xpAllowedTrims(v.model,v.year))}
      ${select('color','Exterior paint',xpAllowedPaints(v.model,v.year))}
      ${select('interior','Interior finish · צבע פנים הרכב',xpAllowedInteriors(v.model,v.year))}
-     ${select('show_controls','Control buttons', [{id:'true',label:'Visible · four quick buttons'},{id:'false',label:'Hidden · original status-only view'}],String(v.show_controls===undefined?v.model==='G6':v.show_controls===true||v.show_controls==='true'))}
+     ${select('tire_pressure_unit','Tire pressure units / יחידות לחץ צמיגים',[{id:'bar',label:'bar'},{id:'psi',label:'PSI'},{id:'kPa',label:'kPa'}],v.tire_pressure_unit||'bar')}
+     ${select('show_controls','Control buttons', [{id:'true',label:'Visible · eight quick buttons'},{id:'false',label:'Hidden · original status-only view'}],String(v.show_controls===undefined?v.model==='G6':v.show_controls===true||v.show_controls==='true'))}
      ${select('enable_access_controls','Access actions (unlock / windows)',[{id:'false',label:'Off (safe default)'},{id:'true',label:'On (requires Xpengtk Access permission)'}],String(v.enable_access_controls===true||v.enable_access_controls==='true'))}
      <p>Years sharing the same exterior/facelift are grouped. Select a specific year only when paint availability differs. Trim labels never change vehicle pictures.</p>
     <h3>Sensor mapping</h3>
