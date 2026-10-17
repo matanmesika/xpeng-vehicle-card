@@ -76,3 +76,23 @@ command results are checked against a real vehicle.
 ## Automatic parking and remote movement
 
 Official XPENG G6 material (including regional availability caveats) describes APA, AEP and remote parking. The Xpengtk `services.py`, `button.py` and `command_policy.py` inspected for this change contain **no documented or verified park/move/remote summon command**. The card must not infer movement commands from MQTT internals or pretend that service success implies movement safety. No remote parking command is added. Future support requires an upstream supported API with appropriate user presence, safety supervision and jurisdiction/vehicle compatibility checks.
+
+
+## Climate page feature parity with owner-supplied XPENG screenshot (2026-10-17)
+
+**Interior colour is chosen exclusively in the vehicle card editor** (`Interior finish · צבע פנים הרכב`), or card `interior` YAML, not inside the climate panel. `xpCabinView()` displays the matching `light_gray` or `dark_gray` interior automatically; the generated photo WebP assets are still missing from this draft branch and the already-committed SVG art is the fallback.
+
+| OEM-app feature | Verified Xpengtk entity/API | Card behaviour |
+| --- | --- | --- |
+| A/C toggle | `climate.cabin_climate` (`turn_on`, `turn_off`) | Action tile below cabin + target temperature controls |
+| Target temperature | `climate.cabin_climate` (`set_temperature`) | 0.5°C incremental controls, 16–32°C when available |
+| Fan level | `number.fan_speed_control` (`set_value`) | Native slider with entity min/max/step |
+| Front windscreen defrost | `switch.defrost_switch` (`toggle`) | Action tile with live on/off state |
+| HVAC schedule | `calendar.hvac_schedule_calendar` or `sensor.hvac_schedules` | Open in-card existing schedule view; no fake schedule creation |
+| Front/rear seat heat and ventilation, steering heat | Native Xpengtk `select` entities | Direct in-image 1→2→3→Off on each supported control, with passenger front heat Off limited by upstream |
+| Heating MAX / Cooling MAX | No distinct Xpengtk *command* verified. Some telemetry may describe quick warm/cool *state*. | No actionable tile |
+| Refresh / sterilisation / A/C cleaning | No verified Xpengtk entity/service action | Hidden, never send undocumented MQTT |
+| Rear window defroster | No verified separate Xpengtk remote *switch* | Hidden; mirror-heating status is not a rear-defrost command |
+| Pet Mode | No verified Xpengtk command | Hidden |
+
+These checks are based on the current upstream `climate.py`, `switch.py`, `number.py`, `button.py`, `select.py`, `calendar.py`, and documented `services.yaml`. OEM-app features can exist on the car without being available as remote controls to Home Assistant. The card never upgrades display-only telemetry to a button.
