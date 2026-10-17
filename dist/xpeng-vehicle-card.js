@@ -127,6 +127,9 @@ const XP_CONTROL_FALLBACKS=Object.freeze({
  'number.trunk_power_timer_control':'trunk_power_timer',
  'switch.auto_upgrade_switch':'ota_auto_upgrade',
  'sensor.maintenance':'next_maintenance',
+ 'sensor.vehicle_identity':'vehicle_identity',
+ 'sensor.charge_schedule_start':'charge_schedule_start',
+ 'sensor.charge_schedule_end':'charge_schedule_end',
  'sensor.ota_upgrade':'ota_update',
  'calendar.hvac_schedule_calendar':'hvac_schedule'
 });
@@ -824,6 +827,26 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-ux-modal-charge_controls .xp-ux-charge-actions{position:static;inset:auto;display:flex;flex-wrap:wrap;margin:12px 0 20px}
 .xp-ux-modal-charge_controls .xp-ux-charge-limit{max-width:none}
 .xp-ux-modal-charge_controls .xp-ux-port-panel{margin-top:15px}
+/* Owner's original charging scene stays intact; only two compact shortcuts added. */
+.xp-charge-shortcuts{position:absolute;z-index:12;bottom:3.1%;left:3%;display:flex;gap:10px}
+.xp-charge-shortcuts button{min-height:44px;padding:8px 16px;border:1px solid #1cbec7;border-radius:13px;color:#e7fcff;background:#082e46e8;cursor:pointer}
+.xp-maintenance-page{max-width:940px;margin:0 auto}
+.xp-maintenance-page h3{font-size:17px;margin:15px 0 8px;color:#d8f5fa}
+.xp-ux-modal-maintenance .xp-tire-screen{position:relative;inset:auto;display:block;height:300px;min-height:260px;margin:0 auto 16px;width:100%}
+.xp-ux-modal-maintenance .xp-tire-stage{width:min(690px,100%);height:100%;min-height:0;grid-template-columns:minmax(60px,1fr) minmax(100px,43%) minmax(60px,1fr);grid-template-rows:1fr 1fr;gap:7px}
+.xp-ux-modal-maintenance .xp-tire-reading{padding:7px 4px;border-radius:12px}
+.xp-ux-modal-maintenance .xp-tire-reading strong{font-size:clamp(17px,2vw,27px)}
+.xp-maint-info{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.xp-ux-modal-maintenance .xp-extra-line{overflow-wrap:anywhere;gap:9px}
+.xp-ux-charge-schedule{max-width:590px;margin:20px auto}
+.xp-ux-access-buttons button:disabled,.xp-ux-port-actions button:disabled{opacity:.45;cursor:not-allowed}
+@container xpeng-layout (max-width:520px){
+ .xp-charge-shortcuts{bottom:3%;left:3%;right:3%;justify-content:center;gap:7px}
+ .xp-charge-shortcuts button{font-size:12px;padding:8px 10px;min-height:44px}
+ .xp-maint-info{grid-template-columns:1fr}
+ .xp-ux-modal-maintenance .xp-tire-screen{height:250px;min-height:240px}
+ .xp-ux-modal-maintenance .xp-tire-reading strong{font-size:18px}
+}
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -851,12 +874,17 @@ class XpengVehicleCard extends HTMLElement{
       
      if(b.hasAttribute('data-xp-open')){
        const action=b.dataset.xpOpen;
-       if(['climate','port','doors','windows','map','charge_controls'].includes(action)){
+       if(['climate','port','doors','windows','map','maintenance','charge_controls','charge_schedule'].includes(action)){
          this._xpPanel=action;this._xpSeatFocus=null;this._xpNotice='';this.render();
        }
        return;
       }
-      if(b.hasAttribute('data-xp-port')){
+      if(b.hasAttribute('data-xp-toggle')){
+       const action=b.dataset.xpToggle;
+       if(['doors','windows','port'].includes(action))this.xpToggle(action);
+       return;
+     }
+     if(b.hasAttribute('data-xp-port')){
        const suffix=b.dataset.xpPort==='open'?'open_charge_port':b.dataset.xpPort==='close'?'close_charge_port':null;
        if(suffix)this.xpSend('button','press',suffix);
        return;
@@ -1032,18 +1060,71 @@ class XpengVehicleCard extends HTMLElement{
   if(this.bool('plugged')===false)return false;
   return xpChargingActive(this.val('charging'))===true;
  }
+ xpActionState(action){
+   if(action==='doors'){
+     const state=this.xpLive('lock','door_lock')?.state?.state;
+     return state==='locked'?'closed':state==='unlocked'?'open':null;
+   }
+   if(action==='windows'){
+     const state=this.xpLive('binary_sensor','windows')?.state?.state;
+     return state==='off'?'closed':state==='on'?'open':null;
+   }
+   if(action==='port'){
+     // Xpengtk slow-charge-port enum: Closed / Open / Connected (with optional raw 0/1/2).
+     const raw=this.xpLive('sensor','slow_charge_port')||this.xpLive('sensor','charge_port');
+     const val=String(raw?.state?.state??'').trim().toLowerCase();
+     return ['closed','0'].includes(val)?'closed':['open','1'].includes(val)?'open':null;
+   }
+   return null;
+ }
+ xpToggleTarget(action){
+   const state=this.xpActionState(action);
+   if(state===null)return null;
+   if(action==='doors')return state==='open'
+     ?{domain:'lock',service:'lock',suffix:'door_lock',label:'נעילת הרכב'}
+     :this.xpAccessAllowed()?{domain:'lock',service:'unlock',suffix:'door_lock',label:'שחרור נעילה'}:null;
+   if(action==='windows')return state==='open'
+     ?{domain:'button',service:'press',suffix:'close_windows',label:'סגירת חלונות'}
+     :this.xpAccessAllowed()?{domain:'button',service:'press',suffix:'open_windows',label:'פתיחת חלונות'}:null;
+   if(action==='port')return state==='open'
+     ?{domain:'button',service:'press',suffix:'close_charge_port',label:'סגירת שקע טעינה'}
+     :{domain:'button',service:'press',suffix:'open_charge_port',label:'פתיחת שקע טעינה'};
+   return null;
+ }
+ xpToggle(action){
+   const target=this.xpToggleTarget(action);
+   if(!target||!this.xpLive(target.domain,target.suffix))return;
+   // Only a user click reaches this function. No sensor-state listener issues car commands.
+   this.xpSend(target.domain,target.service,target.suffix);
+ }
+ xpToggleButton(action){
+   const target=this.xpToggleTarget(action);
+   const usable=target&&this.xpLive(target.domain,target.suffix);
+   const title=target?.label||(this.xpActionState(action)===null?'המצב אינו ידוע':'נדרשת הרשאת Access');
+   return '<button type="button" data-xp-toggle="'+action+'" '+(usable?'':'disabled')+
+     ' aria-label="'+xpEsc(title)+'" title="'+xpEsc(title)+'">'+
+     xpIcon(action==='doors'?'lock':action==='port'?'plug':'car',20)+'<span>'+xpEsc(title)+'</span></button>';
+ }
  xpDock(){
-  if(!this.xpUiEnabled())return '';
-  const features=[
-   ['port','plug','שקע טעינה',this.xpLive('button','open_charge_port')||this.xpLive('button','close_charge_port')],
-   ['climate','fan','מיזוג',this.xpLive('climate','cabin_climate')],
-   ['doors','unlock','דלתות',this.xpLive('lock','door_lock')],
-   ['windows','car','חלונות',this.xpLive('button','open_windows')||this.xpLive('button','close_windows')]
-  ];
-  return '<nav class="xp-ux-dock xp-ux-dock-four" aria-label="בקרות רכב" dir="rtl">'
-    +features.map(([action,icon,title,entity])=>'<button class="xp-ux-dock-action" type="button" data-xp-open="'+action+'" aria-label="'+title+'" '
-     +(entity?'':'disabled title="אין ישות זמינה"')+'>'+xpIcon(icon,21)+'<small>'+title+'</small></button>').join('')
-    +'</nav>';
+   if(!this.xpUiEnabled())return '';
+   const features=[
+     ['port','plug','שקע טעינה'],
+     ['climate','fan','מיזוג'],
+     ['doors','lock','נעילה'],
+     ['windows','car','חלונות']
+   ];
+   return '<nav class="xp-ux-dock xp-ux-dock-four" aria-label="בקרות רכב" dir="rtl">'+
+     features.map(([action,icon,title])=>{
+       const target=this.xpToggleTarget(action);
+       const state=this.xpActionState(action);
+       const usable=action==='climate'?!!this.xpLive('climate','cabin_climate'):
+         !!(target&&this.xpLive(target.domain,target.suffix));
+       const label=action==='climate'?title:(target?.label||title);
+       return '<button class="xp-ux-dock-action" type="button" '+
+         (action==='climate'?'data-xp-open="climate"':'data-xp-toggle="'+action+'"')+
+         ' aria-label="'+xpEsc(label)+'" title="'+xpEsc(label)+'" '+(usable?'':'disabled')+'>'+
+         xpIcon(icon,21)+'<small>'+xpEsc(title)+'</small></button>';
+     }).join('')+'</nav>';
  }
  xpSeatShownState(suffix){
    const e=this.xpLive('select',suffix);if(!e)return null;
@@ -1149,7 +1230,6 @@ class XpengVehicleCard extends HTMLElement{
    const multi=Array.isArray(this._config.vehicles)&&this._config.vehicles.length>0;
    const photos=multi?this.vehicle()?.interior_images:this._config.interior_images;
    const custom=photos&&typeof photos==='object'?photos[a.interior]:null;
-   const group=xpYearGroupFor(a.model,a.year)?.id;
    // Both owner photos are shared by every G6 year/trim and never replaced by SVG.
    const known=a.model==='G6';
    const photo=known?this.artworkUrl('vehicles/g6/interior_'+a.interior+'.webp'):null;
@@ -1276,56 +1356,38 @@ class XpengVehicleCard extends HTMLElement{
   return '<div class="xp-ux-seats-grid">'+(controls||'<p>לא נמצאו בקרות מושבים נתמכות לרכב זה.</p>')+'</div>';
  }
  xpPortPanel(){
-   const status=(this.xpLive('sensor','slow_charge_port')||this.xpLive('sensor','charge_port'))?.state?.state;
-   const open=this.xpLive('button','open_charge_port');
-   const close=this.xpLive('button','close_charge_port');
-   const button=(label,act,available)=>!available?'':'<button type="button" class="xp-ux-port-action" data-xp-port="'+act+'">'+xpIcon('plug',20)+label+'</button>';
-   return '<div class="xp-ux-port-panel"><div class="xp-ux-port-state">'
-     +xpIcon('plug',34)+'<div><strong>דלתית שקע הטעינה</strong><small>'
-     +(status?xpEsc(status):'מצב הדלתית אינו זמין')+'</small></div></div>'
-     +'<div class="xp-ux-port-actions">'
-     +button('פתח דלתית','open',open)+button('סגור דלתית','close',close)
-     +'</div><p class="xp-ux-note">הפעולות מיועדות לדלתית הטעינה בלבד, ולא לשחרור נעילת הכבל.</p></div>';
+   const status=this.xpLive('sensor','slow_charge_port')||this.xpLive('sensor','charge_port');
+   const readable=this.xpActionState('port');
+   const msg=readable===null?'מצב הדלתית אינו זמין או שכבל מחובר':readable==='open'?'דלתית פתוחה':'דלתית סגורה';
+   return '<div class="xp-ux-port-panel"><div class="xp-ux-port-state">'+xpIcon('plug',34)+
+     '<div><strong>דלתית שקע הטעינה</strong><small>'+xpEsc(msg)+'</small></div></div>'+
+     '<div class="xp-ux-port-actions">'+this.xpToggleButton('port')+'</div>'+
+     '<p class="xp-ux-note">לחיצה אחת הופכת את מצב הדלתית על סמך חיווי Xpengtk. אין שחרור כבל.</p></div>';
  }
-
  xpAccessAllowed(){
-   const opt=this.vehicle()?.enable_access_controls??this._config.enable_access_controls??false;return opt===true||opt==='true';
+   const opt=this.vehicle()?.enable_access_controls??this._config.enable_access_controls??false;
+   return opt===true||opt==='true';
  }
  xpDoorsPanel(){
    const entry=this.xpLive('lock','door_lock');
-   const doors=[['driver_door','דלת נהג'],['passenger_door','דלת נוסע'],
-      ['rear_left_door','אחורי שמאל'],['rear_right_door','אחורי ימין']];
+   const doors=[['driver_door','דלת נהג'],['passenger_door','דלת נוסע'],['rear_left_door','אחורי שמאל'],['rear_right_door','אחורי ימין']];
    const status=doors.map(([key,label])=>{
      const e=this.xpLive('binary_sensor',key);if(!e)return '';
-     return '<div class="xp-ux-access-state"><span>'+label+'</span><strong>'
-      +(e.state.state==='on'?'פתוחה':e.state.state==='off'?'סגורה':xpEsc(e.state.state))+'</strong></div>';
+     return '<div class="xp-ux-access-state"><span>'+label+'</span><strong>'+
+       (e.state.state==='on'?'פתוחה':e.state.state==='off'?'סגורה':xpEsc(e.state.state))+'</strong></div>';
    }).join('');
-   const unlock=!!entry&&this.xpAccessAllowed();
-   return '<div class="xp-ux-access-panel"><div class="xp-ux-access-head">'
-    +xpIcon('lock',36)+'<div><h3>דלתות ונעילה</h3><p>'
-    +(entry?xpEsc(entry.state.state):'מצב הנעילה אינו זמין')+'</p></div></div>'
-    +'<div class="xp-ux-access-states">'+status+'</div>'
-    +'<div class="xp-ux-access-buttons">'
-    +'<button type="button" data-xp-access="unlock" '+(unlock?'':'disabled')
-    +'>'+xpIcon('unlock',19)+' פתיחת נעילה</button>'
-    +'<button type="button" data-xp-door-lock '+(entry?'':'disabled')
-    +'>'+xpIcon('lock',19)+' נעילת דלתות</button></div>'
-    +'<p class="xp-ux-note">פתיחת נעילה מחייבת הרשאת Access באינטגרציה והגדרה מפורשת enable_access_controls: true בכרטיס. אין פקודה מאומתת לפתיחת דלת פיזית.</p></div>';
+   return '<div class="xp-ux-access-panel"><div class="xp-ux-access-head">'+xpIcon('lock',36)+
+     '<div><h3>נעילת רכב</h3><p>'+xpEsc(entry?.state?.state||'לא זמין')+'</p></div></div>'+
+     '<div class="xp-ux-access-states">'+status+'</div><div class="xp-ux-access-buttons">'+
+     this.xpToggleButton('doors')+'</div>'+
+     '<p class="xp-ux-note">נעילה ושחרור נעילה מתבצעים בלחיצה אחת, בהתאם למצב. שחרור מחייב הרשאת Access.</p></div>';
  }
  xpWindowsPanel(){
-   const windows=this.xpLive('binary_sensor','windows');
-   const open=this.xpLive('button','open_windows');
-   const close=this.xpLive('button','close_windows');
-   const allowed=!!open&&this.xpAccessAllowed();
-   return '<div class="xp-ux-access-panel"><div class="xp-ux-access-head">'
-    +xpIcon('car',36)+'<div><h3>חלונות</h3><p>מצב: '
-    +(windows?xpEsc(windows.state.state==='on'?'פתוחים':windows.state.state==='off'?'סגורים':windows.state.state):'לא זמין')
-    +'</p></div></div><div class="xp-ux-access-buttons">'
-    +'<button type="button" data-xp-access="open_windows" '+(allowed?'':'disabled')
-    +'>פתיחת חלונות</button>'
-    +'<button type="button" data-xp-window-close '+(close?'':'disabled')
-    +'>סגירת חלונות</button></div>'
-    +'<p class="xp-ux-note">פתיחת חלונות דורשת הרשאת Access והגדרה מפורשת בכרטיס. אין עקיפה של הרשאות Xpengtk.</p></div>';
+   const status=this.xpActionState('windows');
+   return '<div class="xp-ux-access-panel"><div class="xp-ux-access-head">'+xpIcon('car',36)+
+     '<div><h3>חלונות</h3><p>'+xpEsc(status===null?'מצב לא ידוע':status==='open'?'פתוחים':'סגורים')+'</p></div></div>'+
+     '<div class="xp-ux-access-buttons">'+this.xpToggleButton('windows')+'</div>'+
+     '<p class="xp-ux-note">פתיחת חלונות דורשת הרשאת Access. אין פקודה כאשר מצבם אינו ידוע.</p></div>';
  }
  xpMapPanel(){
    const location=this.xpLive('device_tracker','location');
@@ -1360,14 +1422,16 @@ class XpengVehicleCard extends HTMLElement{
  xpModal(){
    if(!this.xpUiEnabled()||!this._xpPanel)return '';
    const page=this._xpPanel;
-   if(!['climate','port','doors','windows','map','charge_controls','extras'].includes(page))return '';
-   const labels={climate:'מיזוג אוויר',port:'שקע טעינה',doors:'דלתות',windows:'חלונות',charge_controls:'פעולות טעינה',map:'מיקום הרכב',extras:'אפשרויות נוספות'};
+   if(!['climate','port','doors','windows','map','maintenance','charge_controls','charge_schedule','extras'].includes(page))return '';
+   const labels={climate:'מיזוג אוויר',port:'שקע טעינה',doors:'דלתות',windows:'חלונות',charge_controls:'פעולות טעינה',charge_schedule:'תזמוני טעינה',maintenance:'תחזוקת הרכב',map:'מיקום הרכב',extras:'אפשרויות נוספות'};
    let body='';
    if(page==='climate'){
      body=this.xpCabinView();
      body+='<section class="xp-ux-climate-bottom" aria-label="בקרת אקלים">'
        +this.xpTempControl()+this.xpFanControl()+this.xpClimateFeatures()+'</section>';
    }else if(page==='charge_controls')body='<div class="xp-ux-charging-panel">'+(this.xpChargeControls()||'<p>אין פקודות טעינה זמינות לרכב כרגע.</p>')+this.xpPortPanel()+'</div>';
+   else if(page==='charge_schedule')body=this.xpChargeSchedulesPanel();
+   else if(page==='maintenance')body=this.xpMaintenancePanel();
    else if(page==='port')body=this.xpPortPanel();
    else if(page==='doors')body=this.xpDoorsPanel();
    else if(page==='windows')body=this.xpWindowsPanel();
@@ -1378,6 +1442,38 @@ class XpengVehicleCard extends HTMLElement{
     +'<h2>'+labels[page]+'</h2><span>'+xpEsc(this.appearance().model)+'</span></header>'
     +body+(this._xpNotice?'<p class="xp-ux-notice" role="status">'+xpEsc(this._xpNotice)+'</p>':'')
     +'</section>';
+ }
+
+ xpMaintenancePanel(){
+   const odometer=this.num('odometer','km');
+   const maint=this.xpLive('sensor','maintenance');
+   const ident=this.xpLive('sensor','vehicle_identity');
+   const attrs=ident?.state?.attributes||{};
+   const masked=typeof attrs.vin_masked==='string'&&attrs.vin_masked.trim()?attrs.vin_masked:'—';
+   const line=(name,value)=>'<div class="xp-extra-line"><span>'+xpEsc(name)+'</span><b>'+xpEsc(value)+'</b></div>';
+   const info=[
+     line('קילומטראז׳',odometer),
+     line('הטיפול הבא',maint?.state?.state||'—'),
+     line('תאריך טיפול',maint?.state?.attributes?.next_date||'—'),
+     line('ק״מ שנותרו לטיפול',maint?.state?.attributes?.km_remaining??'—'),
+     line('מספר שלדה (מוסתר)',masked),
+     line('דגם',attrs.vehicle_type_name||attrs.model_family||this.model()),
+     line('שנת דגם',attrs.model_year||this.year()),
+     line('יצרן',attrs.manufacturer||'XPENG'),
+     line('גרסת XOS',this.xpLive('sensor','xos_version')?.state?.state||'—')
+   ].join('');
+   return '<div class="xp-maintenance-page"><h3>לחץ אוויר בארבעת הצמיגים</h3>'+
+      this.tireScreen(false)+'<h3>תחזוקה ופרטי רכב</h3><div class="xp-maint-info">'+info+'</div>'+
+      '<p class="xp-ux-note">הערכים מתעדכנים לפי Home Assistant. מספר השלדה המלא אינו חשוף באינטגרציה.</p></div>';
+ }
+ xpChargeSchedulesPanel(){
+   const start=this.xpLive('sensor','charge_schedule_start');
+   const end=this.xpLive('sensor','charge_schedule_end');
+   const row=(label,v)=>'<div class="xp-extra-line"><span>'+label+'</span><b>'+xpEsc(v)+'</b></div>';
+   return '<div class="xp-ux-charge-schedule">'+
+     row('שעת התחלת טעינה',start?.state?.state||'—')+
+     row('שעת סיום טעינה',end?.state?.state||'—')+
+     '<p class="xp-ux-note">Xpengtk מספקת חיישני תזמון טעינה לקריאה בלבד. אין כרגע פקודת שינוי תזמון טעינה מאומתת.</p></div>';
  }
 
  xpExtraLive(domain,suffix){return this.xpLive(domain,suffix);}
@@ -1475,7 +1571,7 @@ class XpengVehicleCard extends HTMLElement{
        }
        out+='<button type="button" class="xp-extra-action" data-xp-extra-detail="maintenance">פרטי תחזוקה ב־Home Assistant</button>';
      }
-     return out||'<p>עדיין אין נתוני תחזוקה זמינים.</p>';
+     return this.xpMaintenancePanel()+(out?'<div class="xp-maint-additional">'+out+'</div>':'');
    }
    if(section==='updates'){
      let out=this.xpExtraLine('גרסת XOS','sensor','xos_version');
@@ -1666,8 +1762,8 @@ class XpengVehicleCard extends HTMLElement{
         description:'Owner-supplied artwork for '+a.model+' '+a.color};
     // Prefer separately packaged and verified three-view assets when present.
     // A view must never silently reuse a front render as a rear or overhead render.
-    // Owner's G6 charging screenshot requires a front-facing vehicle; owner-supplied charging_image still wins.
-    const candidate=xpVehicleAssetPath(a,a.model==='G6'?'front':view==='rear'?'charging':'front');
+    // Preserve the existing separately supplied charging artwork and geometry.
+    const candidate=xpVehicleAssetPath(a,view==='rear'?'charging':'front');
     if(candidate&&XP_ARTWORK_INDEX.has(candidate)&&!this._failedArtwork.has(bundled(candidate))){
       const generated=XP_ILLUSTRATIVE_ARTWORK_INDEX.has(candidate);
       return {src:bundled(candidate),illustrative:generated,studio:false,tier:generated?'generated-preview':'exact-view',view,
@@ -1828,14 +1924,14 @@ class XpengVehicleCard extends HTMLElement{
     <path d="M70 537Q150 554 230 537" stroke="#fa4047" stroke-width="9" fill="none" stroke-linecap="round"/>
     </svg>`;
   }
-  tireScreen(){
+  tireScreen(showBack=true){
     const a=this.appearance(),photo=Array.isArray(this._config.vehicles)&&this._config.vehicles.length
       ?this.vehicle()?.top_image:this.vehicle()?.top_image||this._config.top_image;
     const wheel=(key,label)=>{const bar=this.tirePressureBar(key);
       return `<div class="xp-tire-reading" data-wheel="${key}"><small>${label}</small>
         <strong>${bar===null?'—':xpEsc(xpNum(bar,2))}</strong><span>${bar===null?'Unavailable':'bar'}</span></div>`;};
     return `<section class="xp-tire-screen" role="region" aria-label="Tire pressure from above">
-       <div class="xp-tire-actions"><button type="button" data-tire-toggle aria-label="Back to vehicle status">${xpIcon('back',20)} Back to vehicle</button></div>
+       ${showBack?`<div class="xp-tire-actions"><button type="button" data-tire-toggle aria-label="Back to vehicle status">${xpIcon('back',20)} Back to vehicle</button></div>`:''}
        <div class="xp-tire-stage"><div class="xp-tire-center">${this.topCarArt()}</div>
          ${wheel('tire_fl','Front left')}${wheel('tire_fr','Front right')}
          ${wheel('tire_rl','Rear left')}${wheel('tire_rr','Rear right')}</div>
@@ -1843,7 +1939,7 @@ class XpengVehicleCard extends HTMLElement{
      </section>`;
   }
  overview(){
-  const rows=[['gauge','Odometer',this.num('odometer','km')],['tire','Tire pressure',this.tireSummary()],['pin','Location',this.locationText()]];
+  const rows=[['settings','תחזוקת הרכב','צמיגים · טיפולים · נתוני רכב'],['pin','Location',this.locationText()]];
   return `${this.title()}${this.carArt()}
     <section class="xp-overview-stat" aria-label="Battery and estimated range">
      <div class="xp-batt-line"><div class="xp-batt-glyph"><div class="xp-batt-fill" style="height:${xpPercent(this.val('soc'))??0}%"></div></div>
@@ -1851,27 +1947,27 @@ class XpengVehicleCard extends HTMLElement{
      ${this.progress()}<div class="xp-overview-range"><div class="xp-stat-label">Estimated range</div><div class="xp-range-num">${xpIcon('gauge',36)}<span>${xpEsc(this.num('range','km'))}</span></div></div>
     </section>
     <aside class="xp-status-panel" aria-label="Vehicle information">
-      ${rows.map(([icon,label,val])=>icon==='tire'
-      ?`<button class="xp-info-row xp-tire-row" type="button" data-tire-toggle aria-expanded="${this._tireOpen?'true':'false'}" aria-label="View all four tire pressures"><span class="xp-info-icon">${xpIcon(icon,31)}</span><span class="xp-info-copy"><small>${xpEsc(label)}</small><b>${xpEsc(val)}</b></span><span class="xp-chevron">${xpIcon('arrow',19)}</span></button>`
-      :icon==='pin'&&this.xpLive('device_tracker','location')
+      ${rows.map(([icon,label,val])=>icon==='settings'
+       ?`<button type="button" class="xp-info-row xp-tire-row" data-xp-open="maintenance" aria-label="תחזוקת הרכב"><span class="xp-info-icon">${xpIcon(icon,31)}</span><span class="xp-info-copy"><small>${xpEsc(label)}</small><b>${xpEsc(val)}</b></span><span class="xp-chevron">${xpIcon('arrow',19)}</span></button>`
+       :icon==='pin'&&this.xpLive('device_tracker','location')
        ?`<button type="button" class="xp-info-row xp-location-row" data-xp-open="map" aria-label="מפת מיקום הרכב"><div class="xp-info-icon">${xpIcon(icon,31)}</div>
        <div class="xp-info-copy"><small>${xpEsc(label)}</small><b>${xpEsc(val)}</b></div><span class="xp-chevron">${xpIcon('arrow',19)}</span></button>`
        :`<div class="xp-info-row"><div class="xp-info-icon">${xpIcon(icon,31)}</div>
-       <div class="xp-info-copy"><small>${xpEsc(label)}</small><b>${xpEsc(val)}</b></div><span class="xp-chevron">${xpIcon('arrow',19)}</span></div>`).join('')}
+       <div class="xp-info-copy"><small>${xpEsc(label)}</small><b>${xpEsc(val)}</b></div></div>`).join('')}
     </aside>`;
  }
  charging(){
   return `${this.title()}
     <div class="xp-station" aria-hidden="true">✕</div>${this.carArt()}
     <section class="xp-charge-card" aria-label="Charging information">
-       <button class="xp-charge-heading xp-charge-heading-action" type="button" data-xp-open="charge_controls" aria-label="פעולות טעינה" title="הקש לפתיחת פעולות טעינה">${xpIcon('bolt',42)}<span>${xpEsc(this.chargeStatus())}</span></button>
+       <div class="xp-charge-heading">${xpIcon('bolt',42)}<span>${xpEsc(this.chargeStatus())}</span></div>
        ${this.progress()}
        <div class="xp-charge-main"><div class="xp-soc">${this.socHtml()}</div><div class="xp-charge-divider"></div>
           <div class="xp-charge-range"><div class="xp-stat-label">Estimated range</div><b>${xpEsc(this.num('range','km'))}</b></div></div>
        <div class="xp-charge-meta"><div><small>Charging power</small><b>${xpEsc(this.num('power','kW',1))}</b></div>
        <div><small>Time remaining</small><b>${xpEsc(this.remainingText())}</b></div>
        <div><small>Charge limit</small><b>${xpEsc(this.num('target','%'))}</b></div></div>
-    </section>`;
+    </section>${this.xpUiEnabled()?'<nav class="xp-charge-shortcuts" aria-label="בקרות טעינה" dir="rtl"><button type="button" data-xp-open="charge_controls">הגבלת טעינה</button><button type="button" data-xp-open="charge_schedule">תזמונים</button></nav>':''}`;
  }
  render(){
   if(!this.shadowRoot)return;
