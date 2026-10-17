@@ -40,7 +40,7 @@ Verified captures of the complete running Lovelace card (desktop/mobile, status/
 ## User-approved design
 
 - One **fixed approved night-time lake/house/mountain photo** as the full-screen background. Vehicle artwork is a separate foreground layer. Do not change the background without owner approval.
-- Two principal modes: **Vehicle status**, and **Charging** only when the mapped Home Assistant charging sensor reports active charging. No extra control, weather, climate, seat, door or map pages.
+- Two principal modes remain **Vehicle status** and automatic **Charging**. Optional climate and seat overlays are available with `show_controls: true`, without changing the approved background or vehicle artwork.
 - In Vehicle status, tapping **Tire pressure** keeps the same approved scenic background, brand header and vehicle title, while replacing the central car with a colour-matched overhead view and four independently measured pressure values near the corresponding wheels. The readings use the same dark-glass style as the main information panel; **Back to vehicle** restores the hero. This is a detail mode within Vehicle status, not a third dashboard page. Until a verified overhead image is obtained, the vehicle artwork is explicitly labelled illustrative.
 - The top-right header has **one Wi-Fi button** (no separate connection text or info icon) on desktop and mobile. Its colour indicates the mapped connection state, without assuming a connection when the sensor is missing. Tap the Wi-Fi icon to open a popup with only **Connection** and **Last vehicle update** from mapped Home Assistant sensors. The date/time is shown explicitly when supplied by the vehicle-update sensor; a Home Assistant entity's generic `last_updated` metadata is not treated as a vehicle refresh. Tap the same icon to close. No cabin, model, paint or artwork metadata in the popup.
 - No hardcoded SOC, range, TPMS, charging data, location or update times. Missing values are displayed as unavailable/—.
@@ -78,7 +78,7 @@ grid_options:
   rows: auto
 ```
 
-Choose **Edit dashboard → Edit card** to select model, year, informational trim, paint and cabin finish. All appearance selectors stay **in the card editor**, never on the dashboard. The entire old **Data source** / picture-URL section was removed: car/charging/overhead/background image URLs, asset directories and the automatic prefix are no longer editable controls. Images are sourced from the packaged dashboard assets; old custom YAML paths remain supported for compatibility, but they are not shown in the visual editor. This is a read-only view; it neither authenticates with XPENG nor issues vehicle commands.
+Choose **Edit dashboard → Edit card** to select model, year, informational trim, paint and cabin finish. All appearance selectors stay **in the card editor**, never on the dashboard. The entire old **Data source** / picture-URL section was removed: car/charging/overhead/background image URLs, asset directories and the automatic prefix are no longer editable controls. Images are sourced from the packaged dashboard assets; old custom YAML paths remain supported for compatibility, but they are not shown in the visual editor. By default this is a read-only view. Opt-in `show_controls: true` calls native Home Assistant entity services; the card does not authenticate directly with XPENG.
 
 ### Sensor mapping — Automatic or Manual
 
@@ -141,3 +141,139 @@ A first pack for G6 **2023–2025** adds five exterior paints × front, charging
 ## Remaining model-specific camera angles
 
 The [master-view work queue](data/master-view-queue.json) tracks missing independent front, rear/charging and vertical-overhead photos for all 21 body-generation groups. [Build order](docs/ARTWORK_MASTER_PLAN.md). Generating correctly shaped master trios precedes any mass colour derivation; a missing camera view is never replaced with an alternate angle.
+
+## XPENG G6 + Xpengtk integration compatibility
+
+For [Xpengtk](https://github.com/xpengtoolkit/xpengtoolkit), configure the read-only vehicle card with:
+
+```yaml
+type: custom:xpeng-vehicle-card
+prefix: xpeng_g6
+model: G6
+year: "2026"
+sensor_mapping_mode: auto
+grid_options:
+  columns: full
+  rows: auto
+```
+
+Automatic mapping also recognizes Xpengtk's `sensor.xpeng_g6_battery`, `sensor.xpeng_g6_range`, `binary_sensor.xpeng_g6_charging`, `number.xpeng_g6_charge_limit`, the four `tyre_pressure_*` sensors, `binary_sensor.xpeng_g6_mqtt_connected`, and `sensor.xpeng_g6_last_data_timestamp`. If your Home Assistant registry uses different entity IDs, use the existing manual sensor-mapping editor.
+
+**Optional in-card controls:** The `show_controls: true` setting adds exactly four compact actions on the original vehicle scene (Charge flap, A/C, Doors, Windows), native HA entity actions, and a car map opened by the existing location status row. The published v1.0.2 remains unchanged. Xpengtk Safe Plus does not allow Access commands such as door unlock and window opening. The card requires a second `enable_access_controls: true` opt-in for those buttons and never bypasses Xpengtk permissions. Flap opening is not charge-cable release.
+
+
+## Optional native XPENG controls — G6 2026 pilot
+
+This is a **draft PR feature**, not included in the published v1.0.2 HACS release.
+The existing night-time mountain/lake background, vehicle cutouts, Wi-Fi status,
+TPMS details, and automatic charging-mode switch are preserved.
+
+Enable through the card editor (Optional control pages) or add to existing YAML:
+
+```yaml
+type: custom:xpeng-vehicle-card
+model: G6
+year: "2026"
+interior: light_gray       # white/light; use dark_gray for black/dark
+sensor_mapping_mode: auto
+show_controls: true
+prefix: xpeng_g6           # fallback if registry cannot be read
+grid_options:
+  columns: full
+  rows: auto
+```
+
+### Vehicle screen
+
+Exactly four buttons appear on the home screen: **Charge flap**, **A/C**, **Doors**, and **Windows**. A/C includes the interior image, separate compact heat/ventilation buttons on supported seats, and cabin climate controls on the same screen. **Tapping a heat or ventilation icon directly cycles Off → level 1 → level 2 → level 3 → Off**; steering wheel uses Off → Low → Medium → High → Off, without a second sheet or page. The charge flap opens a popup with Open and Close; it is not cable release. The car map opens from the existing Location row rather than taking up a fifth home button. Its only two actions are Horn and Flash lights. Door unlock and window opening are visible but disabled until the owner opts in and Xpengtk Access permissions allow them.
+
+### Climate, steering, seats
+
+Climate on/off, temperature +/- by 0.5°C, fan speed, front defrost, seat
+heating/ventilation and steering-wheel heating use Xpengtk entities through
+normal Home Assistant services. The UI does not send raw MQTT. Missing or
+disabled entities are hidden. Upstream rear-seat ventilation is disabled by
+default on unverified models. Front passenger seat-heating Off is disabled
+because the integration notes that this command is not verified on some cars.
+No unsupported Pet, Max, cleaning or sterilisation modes are presented.
+
+G6 2026 ships two original colour-matched *illustrative* SVG artworks
+(`assets/interiors/g6/2026/light_gray.svg` and `dark_gray.svg`) with matching
+seat/steering interaction positions; these are **not photographs**.
+Only the selected colour is loaded, based on the interior finish. `interior: white` is normalised to `light_gray`,
+and `interior: black` to `dark_gray`. Optional matching local images can be
+configured:
+
+```yaml
+interior_images:
+  light_gray: /local/xpeng/interiors/g6-2026-light.webp
+  dark_gray: /local/xpeng/interiors/g6-2026-dark.webp
+```
+
+Only the image for the selected finish is used. In multi-vehicle configurations,
+provide interior_images on the matching vehicle profile, never reuse images
+from another model or year without verification.
+
+### Charging mode
+
+The original charging view remains automatic. On a confirmed cable unplug,
+the main vehicle view returns even if the charging sensor is stale.
+While charging, compact controls show Stop charging and a percentage charge
+limit slider from the native number entity. Charge port opening belongs to
+the noncharging vehicle view. There is **no verified separate charging cable
+unlock command** in the installed integration, so it is not offered.
+
+### Permissions, auto mapping and testing
+
+Entity mapping uses stable Xpengtk unique IDs via the HA Entity Registry;
+renamed entities are supported. If registry access is unavailable to the
+current HA user, conventional ID fallbacks remain, and renamed fallback
+entities may need manual setup. All actions still respect Xpengtk permissions
+(Safe Plus does not enable vehicle unlock).
+
+Before releasing: test against the real G6 and HA permissions, check light/dark
+interiors, iPhone and desktop browser layouts, narrow Sections widths,
+seat and wheel feedback, charging stop/limit, charge-port opening and
+automatic return after cable unplug. A successful HA call is **not** proof
+that the physical vehicle executed a command.
+
+The in-card Doors and Windows popups display related state and controls when Xpengtk entities exist. Unlock doors / open windows are disabled by default. Set `enable_access_controls: true` and allow `Access` inside the Xpengtk integration to activate them; confirmation is still required. Separately, a secured legacy controls panel remains in code, but there is no extra home button for it. The map popup offers only Horn and Flash lights, each with command confirmation.
+
+### Approved portrait-photo cabin assets (pending binary upload)
+
+The G6 2026 climate/seat overlay is wired to these assets (exact path and filename):
+
+- `assets/interiors/g6/2026/light_gray_photo.webp` — white/light interior
+- `assets/interiors/g6/2026/dark_gray_photo.webp` — black/dark interior
+
+The corresponding 752×1336 WebP binaries are bundled in `XPENG_G6_Photo_Assets_for_GitHub.zip`
+for GitHub's upload interface; the connected GitHub text-editing API does not yet
+carry their bytes. They are AI-generated representations inspired by the G6
+cabin, **not official XPENG interior photography**.
+
+The card selects these photographs by the per-vehicle `interior` finish,
+supports five portrait-aligned seat/steering hot spots, and gracefully
+falls back to the existing matching SVG if the photos have not yet been uploaded.
+The old approved exterior/charging artwork and automatic screen switch remain unchanged.
+
+**Release gate:** the smoke test `photo files must be committed before releasing this draft`
+intentionally fails until both WebP files are present in GitHub.
+
+### Direct seat/wheel control (without extra sheet)
+
+The G6 cabin artwork has separate heat and ventilation icons on seats when the corresponding select entity is available. Each tap uses a verified Xpengtk `select.select_option` option: 1, 2, 3, then Off on the fourth tap. Wheel heating cycles Low, Medium, High, then Off. The card queues rapid taps per control while the integration processes each command, because Xpengtk may send an Off-first step with a delay. Unsupported front passenger heat Off remains deliberately blocked and visibly explained instead of claiming success. No model-agnostic undocumented seat command is emitted.
+
+## Six-category optional controls (review stage)
+
+With the original `show_controls: true` setting, the XPENG card keeps exactly **four compact home buttons** and its approved vehicle / charging scenes. An extra **settings icon** in the header opens six additional categories **inside** the same card:
+
+- **X-Guard:** actual `switch.sentinel_switch`, sensitivity `number.sentinel_sensitivity_control`. Turning guard off requires separate `enable_access_controls` opt-in and upstream Xpengtk Access permissions.
+- **HVAC scheduling:** `sensor.hvac_schedules` appointments and native `calendar.hvac_schedule_calendar` more-info; no invented appointment creation.
+- **Energy:** available real vehicle sensors, including 7-day average, parked energy, last charge and odometer; no fake graph samples.
+- **V2L:** `switch.trunk_power_switch` and `number.trunk_power_timer_control`, only where exposed and authorized.
+- **Maintenance:** current `sensor.maintenance` and its next service/remaining distance attributes.
+- **Software:** XOS and OTA sensor readings and the upstream `switch.auto_upgrade_switch`, if present.
+
+Actions use standard Home Assistant `switch`/`number` services and require confirmation for physical changes; absent sensors produce explanatory unavailable states, never fabricated telemetry. The JavaScript source and HACS distribution are kept byte-identical. Narrow-card CSS includes a compact portrait cabin image so the A/C temperature controls remain accessible on mobile.
+
+Review and release gates: [PR #40](https://github.com/matanmesika/xpeng-vehicle-card/pull/40) remains draft. Two SVG fallback interiors are present in the repository; the approved realistic WebP files (`light_gray_photo.webp` / `dark_gray_photo.webp`) are **not committed to GitHub yet**. Live iOS Safari, Home Assistant Lovelace and physical G6 commands are not verified. Do not merge / release based only on simulated integration tests.
