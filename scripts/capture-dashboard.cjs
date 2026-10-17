@@ -238,3 +238,5 @@ async function main(){
 main().catch(err=>{console.error(err);process.exit(1);});
 
 // Owner review captures: original charging hero remains unchanged by visible dock controls.
+
+// Rear-heat gallery: real G6 owner images and Xpengtk entities; no synthetic climate mockups.
