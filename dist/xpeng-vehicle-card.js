@@ -39,10 +39,10 @@ const XP_XPENGTK_KEYS = Object.freeze({
  current:[['sensor','charge_current']],
  voltage:[['sensor','charge_voltage']],
  odometer:[['sensor','odometer']],
- tire_fl:[['sensor','tyre_pressure_front_left']],
- tire_fr:[['sensor','tyre_pressure_front_right']],
- tire_rl:[['sensor','tyre_pressure_rear_left']],
- tire_rr:[['sensor','tyre_pressure_rear_right']],
+ tire_fl:[['sensor','tyre_pressure_fl'],['sensor','tyre_pressure_front_left']],
+ tire_fr:[['sensor','tyre_pressure_fr'],['sensor','tyre_pressure_front_right']],
+ tire_rl:[['sensor','tyre_pressure_rl'],['sensor','tyre_pressure_rear_left']],
+ tire_rr:[['sensor','tyre_pressure_rr'],['sensor','tyre_pressure_rear_right']],
  last_update:[['sensor','last_data_timestamp'],['sensor','last_data_update']],
  cabin:[['sensor','cabin_temperature']],
  speed:[['sensor','speed']],
@@ -134,40 +134,23 @@ const XP_CONTROL_FALLBACKS=Object.freeze({
  'calendar.hvac_schedule_calendar':'hvac_schedule'
 });
 
-const XP_ICONS = {
- home:'<path d="M3 10.5 12 3l9 7.5V21h-6v-7H9v7H3Z"/>',
- lock:'<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
- unlock:'<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0V6a4 4 0 0 0-7-2"/>',
- car:'<path d="M4 16H2v-5l2-5h16l2 5v5h-2M4 16h16M4 16v3m16-3v3M2 11h20M7 6l-2 5m12-5 2 5"/><circle cx="6.5" cy="15" r=".8"/><circle cx="17.5" cy="15" r=".8"/>',
- windows:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16M3 10h18"/><path d="m7 15 2-2 2 2"/>',
- windows_open:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16M3 10h18"/><path d="m6.5 17 2-2 2 2m5-1 2-2 2 2"/>',
- trunk:'<path d="M3 8h18v11H3zM4 8l2-4h12l2 4M4 14h16M10 17h4"/><path d="M8 19v2m8-2v2"/>',
- trunk_open:'<path d="M3 12h18v7H3zM4 12l3-7h10l3 7M4 16h16M10 18h4"/><path d="m9 7 3-4 3 4"/>',
- horn:'<path d="M3 10h4l8-5v14l-8-5H3v-4Zm12-1c2 1 2 5 0 6m3-9c4 3 4 9 0 12"/><path d="M6 14l1 5h3"/>',
- flash:'<path d="M3 8c5-2 10-2 14 0v8c-4 2-9 2-14 0V8Zm17 1 2-2m-2 5h3m-3 3 2 2"/><path d="M7 10h6m-6 4h6"/>',
- auto:'<path d="M20 8a8 8 0 0 0-14-3L4 7V3M4 7h4M4 16a8 8 0 0 0 14 3l2-2v4m0-4h-4"/><path d="m9 15 3-7 3 7m-5-2h4"/>',
- windscreen:'<path d="m4 18 2-12h12l2 12H4Zm4-7 1-2m3 2 1-2m3 2 1-2M8 15l1-2m3 2 1-2m3 2 1-2"/>',
- port_open:'<rect x="4" y="7" width="16" height="13" rx="3"/><path d="m8 11 4-4 4 4m-4-4V2"/><path d="M8 17h8"/>',
- fan:'<path d="M12 12c6-2 7-9 3-9-3 0-3 6-3 9Zm0 0c4 5 11 3 9-1-2-3-6 0-9 1Zm0 0c-5 4-3 11 1 9 3-2 0-6-1-9Z"/>',
- bolt:'<path d="M13 2 4 13h7l-1 9 10-12h-7l1-8Z"/>',
- pin:'<path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2"/>',
- arrow:'<path d="m9 5 7 7-7 7"/>', back:'<path d="m15 5-7 7 7 7"/>',
- refresh:'<path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.5 9A7 7 0 0 1 18 7l2 5M4 12l2 5a7 7 0 0 0 12.5-2"/>',
- settings:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M19 5l-2 2M7 17l-2 2"/>',
- thermometer:'<path d="M10 14.5V5a2 2 0 1 1 4 0v9.5a4 4 0 1 1-4 0Z"/>',
- tire:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 4v5m8 3h-5m-3 8v-5m-8-3h5"/>',
- info:'<circle cx="12" cy="12" r="10"/><path d="M12 11v6m0-10v1"/>',
- clock:'<circle cx="12" cy="12" r="9"/><path d="M12 6v7l4 3"/>',
- battery:'<rect x="2" y="6" width="18" height="12" rx="2"/><path d="M22 10v4"/>',
- power:'<path d="M12 2v10m-5-8a9 9 0 1 0 10 0"/>',
- plug:'<path d="M8 2v6m8-6v6M5 8h14v5a7 7 0 0 1-14 0V8Zm7 12v2"/>',
- check:'<path d="m4 12 5 5L20 6"/>',
- carfront:'<path d="M5 17v3m14-3v3M3 13l3-8h12l3 8v4H3v-4Zm0 0h18m-14 2h1m8 0h1"/>',
- shield:'<path d="M12 2 3 6v6c0 5 4 8 9 10 5-2 9-5 9-10V6l-9-4Z"/>',
- sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l2 2m10 10 2 2M19 5l-2 2M7 17l-2 2"/>',
- gauge:'<path d="M4 18a9 9 0 1 1 16 0M12 16l4-7"/>'
-};
-function xpIcon(name,size=22){return `<svg viewBox="0 0 24 24" width="${size}" height="${size}" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">${XP_ICONS[name]||XP_ICONS.info}</svg>`;}
+/* Material Design Icons supplied by Home Assistant (no hand-drawn SVG icon paths). */
+const XP_ICONS=Object.freeze({
+ home:'mdi:home',lock:'mdi:lock',unlock:'mdi:lock-open-variant',car:'mdi:car',
+ windows:'mdi:car-door',windows_open:'mdi:car-door',trunk:'mdi:car-back',
+ trunk_open:'mdi:car-back',horn:'mdi:bullhorn',flash:'mdi:car-light-high',
+ auto:'mdi:autorenew',windscreen:'mdi:car-defrost-front',port_open:'mdi:ev-plug-type2',
+ fan:'mdi:fan',bolt:'mdi:lightning-bolt',pin:'mdi:map-marker',arrow:'mdi:chevron-right',
+ back:'mdi:arrow-left',refresh:'mdi:swap-horizontal',settings:'mdi:cog',
+ thermometer:'mdi:thermometer',tire:'mdi:car-tire-alert',info:'mdi:information-outline',
+ clock:'mdi:clock-outline',battery:'mdi:battery',power:'mdi:power',
+ plug:'mdi:ev-plug-type2',check:'mdi:check',carfront:'mdi:car-front',
+ shield:'mdi:shield-outline',sun:'mdi:weather-sunny',gauge:'mdi:speedometer',wifi:'mdi:wifi'
+});
+function xpIcon(name,size=22){
+ const px=Number.isFinite(Number(size))?Math.max(12,Math.min(64,Number(size))):22;
+ return '<ha-icon icon="'+(XP_ICONS[name]||XP_ICONS.info)+'" aria-hidden="true" style="--mdc-icon-size:'+px+'px;width:'+px+'px;height:'+px+'px;display:inline-flex;align-items:center;justify-content:center;flex:none"></ha-icon>';
+}
 function xpEsc(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
 function xpNum(v,dec=0){if(v===null||v===undefined||v===''||!Number.isFinite(Number(v)))return '—';return Number(v).toLocaleString('en-US',{maximumFractionDigits:dec});}
 function xpConnText(v){
@@ -920,6 +903,38 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-ux-dock-seven .xp-ux-dock-action{flex-basis:78px;min-width:61px;max-width:84px}
 .xp-ux-map-actions button{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px}
 .xp-ux-modal-trunk .xp-ux-access-buttons button{min-height:48px}
+
+/* Real phone scrolling: the home dock slides horizontally, and every subpage
+   (including climate/maintenance) permits vertical touch scrolling on iOS. */
+.xp-ux-modal{overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;touch-action:pan-y;overscroll-behavior-y:contain;min-height:0}
+.xp-ux-modal-head{position:sticky;top:-1px;z-index:3;padding:7px 0 12px;background:linear-gradient(180deg,#07182afc,#07182af5 88%,transparent)}
+.xp-ux-modal .xp-maintenance-page{min-height:0;overflow:visible}
+.xp-maintenance-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.xp-tire-units{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:#cadfed}
+.xp-tire-units select{background:#17344a;color:#fff;border:1px solid #5786a2;padding:7px 9px;border-radius:9px;min-height:42px}
+@container xpeng-layout (max-width:650px){
+ .xp-ux-dock{left:3%;right:3%;transform:none;max-width:none;width:94%;overflow-x:auto;justify-content:flex-start;touch-action:pan-x;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;scrollbar-width:thin;scrollbar-color:#5a9ac0 #0a2034;padding:6px 9px}
+ .xp-ux-dock-action{flex:0 0 72px;min-width:72px;scroll-snap-align:start}
+ .xp-ux-modal{inset:1.5% 2%;max-height:97%;padding:12px;touch-action:pan-y}
+ .xp-ux-modal .xp-maint-info{grid-template-columns:1fr}
+ .xp-ux-modal-maintenance .xp-tire-screen{position:relative;inset:auto;height:auto;min-height:0;margin:0 0 12px}
+ .xp-ux-modal-maintenance .xp-tire-stage{width:100%;height:auto;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:175px auto auto;gap:9px;align-items:stretch}
+ .xp-ux-modal-maintenance .xp-tire-center{grid-area:1/1/2/3;min-height:0}
+ .xp-ux-modal-maintenance .xp-top-car,.xp-ux-modal-maintenance .xp-top-cutout{height:170px;max-height:170px}
+ .xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_fl"]{grid-area:2/1}
+ .xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_fr"]{grid-area:2/2}
+ .xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_rl"]{grid-area:3/1}
+ .xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_rr"]{grid-area:3/2}
+ .xp-ux-modal-maintenance .xp-tire-reading{min-height:82px;padding:10px 5px;overflow-wrap:anywhere}
+ .xp-ux-modal-maintenance .xp-tire-reading strong{font-size:clamp(18px,5vw,25px)}
+ /* Override the earlier more specific two-row Home grid on narrow cards. */
+ .xp-home-navigation .xp-ux-dock-seven{display:flex;flex-flow:row nowrap;
+  grid-template-columns:none;left:3%;right:3%;width:94%;max-width:none;
+  justify-content:flex-start;overflow-x:auto;touch-action:pan-x;
+  -webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}
+ .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{
+  flex:0 0 82px;width:82px;min-width:82px;max-width:82px;scroll-snap-align:start}
+}
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -1094,6 +1109,16 @@ class XpengVehicleCard extends HTMLElement{
      if(output)output.textContent=slider.value+(slider.dataset.xpRange==='charge_limit_control'?'%':'');
    });
    this.shadowRoot.addEventListener('change',ev=>{
+     const pressure=ev.target.closest('select[data-xp-tire-unit]');
+     if(pressure){
+       if(!['bar','psi','kPa'].includes(pressure.value))return;
+       this._xpTireUnit=pressure.value;
+       const offset=this.shadowRoot.querySelector('.xp-ux-modal')?.scrollTop||0;
+       this.render();
+       const modal=this.shadowRoot.querySelector('.xp-ux-modal');
+       if(modal)modal.scrollTop=offset;
+       return;
+     }
      const slider=ev.target.closest('input[data-xp-range]');
      if(!slider)return;
      const key=slider.dataset.xpRange;
@@ -1614,7 +1639,10 @@ class XpengVehicleCard extends HTMLElement{
      line('יצרן',attrs.manufacturer||'XPENG'),
      line('גרסת XOS',this.xpLive('sensor','xos_version')?.state?.state||'—')
    ].join('');
-   return '<div class="xp-maintenance-page"><h3>לחץ אוויר בארבעת הצמיגים</h3>'+
+   return '<div class="xp-maintenance-page"><div class="xp-maintenance-head"><h3>לחץ אוויר בארבעת הצמיגים</h3>'+
+     '<label class="xp-tire-units">יחידות לחץ <select data-xp-tire-unit aria-label="יחידות לחץ בצמיגים">'+
+     ['bar','psi','kPa'].map(u=>'<option value="'+u+'"'+(this.tireUnit()===u?' selected':'')+'>'+u+'</option>').join('')+
+     '</select></label></div>'+
       this.tireScreen(false)+'<h3>תחזוקה ופרטי רכב</h3><div class="xp-maint-info">'+info+'</div>'+
       '<p class="xp-ux-note">הערכים מתעדכנים לפי Home Assistant. מספר השלדה המלא אינו חשוף באינטגרציה.</p></div>';
  }
@@ -1861,7 +1889,7 @@ class XpengVehicleCard extends HTMLElement{
   if(config.image_path&&!/^\/(?:local|hacsfiles)\/[a-zA-Z0-9/_-]+\/?$/.test(config.image_path))throw Error('Invalid local image_path');
   if(config.background_image&&!xpLocalArtworkPath(config.background_image))throw Error('Invalid local background_image');
   const v={prefix:'my_xpeng',year:'2026',model:'G6',trim:'core_plus_rwd',color:'graphite_gray',interior:'dark_gray',theme:'dark',...config};
-  this._config=xpNormalizeAppearance(v);this._infoOpen=false;this._tireOpen=false;this._xpManualCharging=false;this._xpChargingDismissed=false;this._xpLastActualCharging=false;this.render();
+  this._config=xpNormalizeAppearance(v);this._xpTireUnit=null;this._infoOpen=false;this._tireOpen=false;this._xpManualCharging=false;this._xpChargingDismissed=false;this._xpLastActualCharging=false;this.render();
  }
  set hass(hass){
   this._hass=hass;
@@ -1897,7 +1925,9 @@ class XpengVehicleCard extends HTMLElement{
      ...spec.slice(1).map(s=>spec[0]+'.'+this.prefix()+'_'+s),
      ...(XP_XPENGTK_KEYS[key]||[]).map(([domain,suffix])=>domain+'.'+this.prefix()+'_'+suffix)
    ];
-   const id=ids.find(x=>this._hass?.states?.[x])||ids[0];
+   const live=id=>{const v=this._hass?.states?.[id]?.state;
+     return v!==undefined&&!XP_INVALID.has(String(v).trim().toLowerCase());};
+   const id=ids.find(live)||ids.find(x=>this._hass?.states?.[x])||ids[0];
    const entity=this._hass?.states?.[id];
    const attribute=custom?.attribute;
    const attrs=entity?.attributes;
@@ -1921,7 +1951,7 @@ class XpengVehicleCard extends HTMLElement{
     const profileArt=key=>Array.isArray(this._config.vehicles)&&this._config.vehicles.length
       ?this.vehicle()?.[key]:this.vehicle()?.[key]||this._config[key];
     const chosen=(this._view==='charging'&&profileArt('charging_image'))||profileArt('image');
-    const a=this.appearance(),model=xpAssetModel(a.model),view=this._view==='charging'?'rear':'front';
+    const a=this.appearance(),model=xpAssetModel(a.model),view=this._view==='charging'?'charging':'front';
     if(xpLocalArtworkPath(chosen)&&!this._failedArtwork.has(chosen))
       return {src:chosen,illustrative:false,studio:false,tier:'manual',view,view_status:'owner_supplied',
         description:'Owner-supplied artwork for '+a.model+' '+a.color};
@@ -1930,7 +1960,7 @@ class XpengVehicleCard extends HTMLElement{
     // Preserve the existing separately supplied charging artwork and geometry.
     // The owner approved the original left-side charging metrics layout but the
     // reference shows a front three-quarter G6, never the rear-facing cutout.
-    const candidate=xpVehicleAssetPath(a,a.model==='G6'?'front':view==='rear'?'charging':'front');
+    const candidate=xpVehicleAssetPath(a,view);
     if(candidate&&XP_ARTWORK_INDEX.has(candidate)&&!this._failedArtwork.has(bundled(candidate))){
       const generated=XP_ILLUSTRATIVE_ARTWORK_INDEX.has(candidate);
       return {src:bundled(candidate),illustrative:generated,studio:false,tier:generated?'generated-preview':'exact-view',view,
@@ -1971,10 +2001,20 @@ class XpengVehicleCard extends HTMLElement{
     return bar!==null&&bar>=0.5&&bar<=6?bar:null;
   }
 
+ tireUnit(){
+   const unit=this._xpTireUnit||this.vehicle()?.tire_pressure_unit||this._config.tire_pressure_unit||'bar';
+   return ['bar','psi','kPa'].includes(unit)?unit:'bar';
+ }
+ tirePressureDisplay(bar){
+   if(bar===null||!Number.isFinite(Number(bar)))return '—';
+   const unit=this.tireUnit();
+   const value=unit==='psi'?bar*14.5037738:unit==='kPa'?bar*100:bar;
+   return xpNum(value,unit==='bar'?2:unit==='psi'?1:0);
+ }
  tireSummary(){
   const values=['tire_fl','tire_fr','tire_rl','tire_rr'].map(k=>this.tirePressureBar(k));
   if(values.some(v=>v===null))return '—';
-  return xpNum(values.reduce((a,b)=>a+b,0)/4,2)+' bar';
+  return this.tirePressureDisplay(values.reduce((a,b)=>a+b,0)/4)+' '+this.tireUnit();
  }
  locationText(){
   const d=this.data('location');const raw=d?.value;
@@ -2015,10 +2055,7 @@ class XpengVehicleCard extends HTMLElement{
        <button class="xp-wifi ${stateClass}" type="button" data-meta-toggle
          aria-label="Vehicle communication details" aria-expanded="${this._infoOpen?'true':'false'}"
          aria-controls="xp-last-update-details" title="Vehicle communication details">
-         <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor"
-           stroke-width="2.3" stroke-linecap="round" aria-hidden="true">
-           <path d="M2 8c5.7-5.6 14.3-5.6 20 0M5 12c4-3.6 10-3.6 14 0M9 16c1.8-1.4 4.2-1.4 6 0"/>
-           <circle cx="12" cy="20" r="1.3" fill="currentColor" stroke="none"/></svg></button>
+         ${xpIcon('wifi',24)}</button>
        ${this._infoOpen?`<div id="xp-last-update-details" class="xp-meta-popover" role="region"
          aria-label="Vehicle connection and last update">
            <div class="xp-meta-field"><small>Connection</small><strong>${xpEsc(status)}</strong></div>
@@ -2080,15 +2117,17 @@ class XpengVehicleCard extends HTMLElement{
   tireScreen(showBack=true){
     const a=this.appearance(),photo=Array.isArray(this._config.vehicles)&&this._config.vehicles.length
       ?this.vehicle()?.top_image:this.vehicle()?.top_image||this._config.top_image;
+    const catalogTop=xpVehicleAssetPath(a,'top');
+    const topArtworkExists=xpLocalArtworkPath(photo)||(catalogTop&&XP_ARTWORK_INDEX.has(catalogTop));
     const wheel=(key,label)=>{const bar=this.tirePressureBar(key);
       return `<div class="xp-tire-reading" data-wheel="${key}"><small>${label}</small>
-        <strong>${bar===null?'—':xpEsc(xpNum(bar,2))}</strong><span>${bar===null?'Unavailable':'bar'}</span></div>`;};
+        <strong>${xpEsc(this.tirePressureDisplay(bar))}</strong><span>${bar===null?'לא זמין':this.tireUnit()}</span></div>`;};
     return `<section class="xp-tire-screen" role="region" aria-label="Tire pressure from above">
        ${showBack?`<div class="xp-tire-actions"><button type="button" data-tire-toggle aria-label="Back to vehicle status">${xpIcon('back',20)} Back to vehicle</button></div>`:''}
        <div class="xp-tire-stage"><div class="xp-tire-center">${this.topCarArt()}</div>
-         ${wheel('tire_fl','Front left')}${wheel('tire_fr','Front right')}
-         ${wheel('tire_rl','Rear left')}${wheel('tire_rr','Rear right')}</div>
-       ${!xpLocalArtworkPath(photo)?'<div class="xp-tire-disclaimer">Illustrative overhead view · exact model artwork pending</div>':''}
+         ${wheel('tire_fl','קדמי שמאל')}${wheel('tire_fr','קדמי ימין')}
+         ${wheel('tire_rl','אחורי שמאל')}${wheel('tire_rr','אחורי ימין')}</div>
+       ${!topArtworkExists?'<div class="xp-tire-disclaimer">תמונת מבט־על לא זמינה לדגם זה</div>':''}
      </section>`;
   }
  overview(){
@@ -2112,7 +2151,6 @@ class XpengVehicleCard extends HTMLElement{
  charging(){
   return `${this.title()}
     <div class="xp-station" aria-hidden="true">✕</div>${this.carArt()}
-    ${this.model()==='G6'?'<svg class="xp-charge-cable" aria-hidden="true" viewBox="0 0 1536 864" preserveAspectRatio="none"><path class="xp-charge-cable-halo xp-cable-desktop" d="M1443 500C1464 647 1366 663 1235 625S1174 522 1185 479"/><path class="xp-charge-cable-core xp-cable-desktop" d="M1443 500C1464 647 1366 663 1235 625S1174 522 1185 479"/><path class="xp-charge-cable-halo xp-cable-mobile" d="M1440 685Q1408 747 1300 714"/><path class="xp-charge-cable-core xp-cable-mobile" d="M1440 685Q1408 747 1300 714"/></svg>':''}
     <section class="xp-charge-card" aria-label="Charging information">
        <div class="xp-charge-heading">${xpIcon('bolt',42)}<span>${xpEsc(this.chargeStatus())}</span></div>
        ${this.progress()}
@@ -2218,7 +2256,8 @@ class XpengVehicleCardEditor extends HTMLElement{
      ${select('trim','Trim · display only',xpAllowedTrims(v.model,v.year))}
      ${select('color','Exterior paint',xpAllowedPaints(v.model,v.year))}
      ${select('interior','Interior finish · צבע פנים הרכב',xpAllowedInteriors(v.model,v.year))}
-     ${select('show_controls','Control buttons', [{id:'true',label:'Visible · four quick buttons'},{id:'false',label:'Hidden · original status-only view'}],String(v.show_controls===undefined?v.model==='G6':v.show_controls===true||v.show_controls==='true'))}
+     ${select('tire_pressure_unit','Tire pressure units / יחידות לחץ צמיגים',[{id:'bar',label:'bar'},{id:'psi',label:'PSI'},{id:'kPa',label:'kPa'}],v.tire_pressure_unit||'bar')}
+     ${select('show_controls','Control buttons', [{id:'true',label:'Visible · eight quick buttons'},{id:'false',label:'Hidden · original status-only view'}],String(v.show_controls===undefined?v.model==='G6':v.show_controls===true||v.show_controls==='true'))}
      ${select('enable_access_controls','Access actions (unlock / windows)',[{id:'false',label:'Off (safe default)'},{id:'true',label:'On (requires Xpengtk Access permission)'}],String(v.enable_access_controls===true||v.enable_access_controls==='true'))}
      <p>Years sharing the same exterior/facelift are grouped. Select a specific year only when paint availability differs. Trim labels never change vehicle pictures.</p>
     <h3>Sensor mapping</h3>

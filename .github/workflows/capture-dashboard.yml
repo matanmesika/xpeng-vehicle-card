@@ -6,6 +6,7 @@ on:
       - fix/appearance-generations-dashboard-gallery
       - feat/g6-responsive-container-layout-20261017
       - feat/g6-cabin-owner-photos-20261017
+      - fix/g6-mobile-charging-icons-mapping-20261017
     paths:
       - scripts/capture-dashboard.cjs
       - src/xpeng-vehicle-card.js
@@ -33,7 +34,7 @@ jobs:
 
       - name: Install pinned Playwright and headless Chromium
         run: |
-          npm install --prefix /tmp/xpeng-capture --no-audit --no-fund playwright@1.56.1
+          npm install --prefix /tmp/xpeng-capture --no-audit --no-fund playwright@1.56.1 @mdi/js@7.4.47
           /tmp/xpeng-capture/node_modules/.bin/playwright install --with-deps chromium
 
       - name: Capture genuine card screenshots with DEMO sensor states
@@ -50,7 +51,7 @@ jobs:
                    'mobile-vehicle-status','mobile-charging',
                    'small-mobile-vehicle-status','small-mobile-charging',
                    'sections-vehicle-status','location-desktop','controls-desktop','home-close-actions-desktop','climate-desktop','climate-dark-desktop',
-                   'controls-mobile','home-close-actions-mobile','maintenance-mobile','trunk-mobile','location-mobile',
+                   'controls-mobile','controls-mobile-scrolled','home-close-actions-mobile','maintenance-mobile','maintenance-mobile-psi','trunk-mobile','location-mobile',
                    'climate-mobile','climate-dark-mobile','charging-reference-mobile','charging-actions-mobile','charge-schedule-mobile']
           for name in names:
               p = Path('docs/screenshots/g6-2026-' + name + '.png')

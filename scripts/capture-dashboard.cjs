@@ -7,6 +7,18 @@ const assert=require('node:assert/strict');
 const ROOT=path.resolve(__dirname,'..');
 const OUTPUT=path.join(ROOT,'docs','screenshots');
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
+// The stand-alone screenshot harness doesn't load HA's native ha-icon element.
+// Provide the SAME official @mdi/js Material Design paths for accurate previews.
+const mdi=require(path.join(path.dirname(process.env.PLAYWRIGHT_MODULE||require.resolve('playwright')),'@mdi','js'));
+const sourceText=fs.readFileSync(path.join(ROOT,'src','xpeng-vehicle-card.js'),'utf8');
+const mdiNames=[...new Set([...sourceText.matchAll(/'mdi:([a-z0-9-]+)'/g)].map(match=>match[1]))];
+const missingMdi=[];
+const mdiPaths=Object.fromEntries(mdiNames.map(name=>{
+ const exportName='mdi'+name.split('-').map(piece=>piece[0].toUpperCase()+piece.slice(1)).join('');
+ if(!mdi[exportName])missingMdi.push(name);
+ return ['mdi:'+name,mdi[exportName]||mdi.mdiHelpCircleOutline];
+}));
+assert.deepEqual(missingMdi,[],'Unknown Material Design Icons in frontend source: '+missingMdi.join(', '));
 
 const state=(value,attrs={})=>({state:String(value),attributes:attrs});
 function demo(charging){
@@ -54,10 +66,10 @@ function demo(charging){
   'sensor.my_xpeng_vehicle_identity':state('G6',{vin_masked:'L1N******123456',model_year:'2026'}),
   'sensor.my_xpeng_charge_schedule_start':state('23:00'),
   'sensor.my_xpeng_charge_schedule_end':state('06:30'),
-  'sensor.my_xpeng_tire_pressure_front_left_kpa':state('250'),
-  'sensor.my_xpeng_tire_pressure_front_right_kpa':state('251'),
-  'sensor.my_xpeng_tire_pressure_rear_left_kpa':state('248'),
-  'sensor.my_xpeng_tire_pressure_rear_right_kpa':state('250'),
+  'sensor.my_xpeng_tyre_pressure_fl':state('250'),
+  'sensor.my_xpeng_tyre_pressure_fr':state('251'),
+  'sensor.my_xpeng_tyre_pressure_rl':state('248'),
+  'sensor.my_xpeng_tyre_pressure_rr':state('250'),
  }};
 }
 async function main(){
@@ -84,6 +96,19 @@ async function main(){
  body{font-family:Arial,sans-serif}
  .card-wrap{width:1400px;margin:18px auto}</style></head>
  <body><div class="card-wrap"><xpeng-vehicle-card></xpeng-vehicle-card></div></body></html>`);
+ await page.evaluate(iconPaths=>{
+   if(customElements.get('ha-icon'))return;
+   customElements.define('ha-icon',class extends HTMLElement{
+     static get observedAttributes(){return ['icon'];}
+     connectedCallback(){this.renderIcon();}
+     attributeChangedCallback(){this.renderIcon();}
+     renderIcon(){
+       const path=iconPaths[this.getAttribute('icon')];
+       this.innerHTML=path?
+         '<svg viewBox="0 0 24 24" width="100%" height="100%" fill="currentColor" aria-hidden="true"><path d="'+path+'"/></svg>':'';
+     }
+   });
+ },mdiPaths);
  await page.addScriptTag({path:path.join(ROOT,'src','xpeng-vehicle-card.js')});
  const car=page.locator('xpeng-vehicle-card');
  await page.evaluate(()=>{
@@ -286,6 +311,16 @@ async function main(){
  await page.setViewportSize({width:390,height:900});
  await page.evaluate(()=>{const w=document.querySelector('.card-wrap');w.style.width='390px';w.style.margin='0 auto';});
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-controls-mobile.png'),animations:'disabled'});
+ const dockScroll=await car.evaluate(el=>{
+   const dock=el.shadowRoot.querySelector('.xp-ux-dock');
+   const before=dock.scrollLeft;dock.scrollLeft=-dock.scrollWidth;
+   return {width:dock.clientWidth,scrollWidth:dock.scrollWidth,before,after:dock.scrollLeft};
+ });
+ console.log('Mobile home dock measured:',JSON.stringify(dockScroll));
+ assert.ok(dockScroll.scrollWidth>dockScroll.width+80,'Mobile Home shortcuts must scroll horizontally');
+ assert.ok(Math.abs(dockScroll.after)>50,JSON.stringify(dockScroll));
+ await car.screenshot({path:path.join(OUTPUT,'g6-2026-controls-mobile-scrolled.png'),animations:'disabled'});
+ console.log('Mobile dock horizontal scroll verified:',JSON.stringify(dockScroll));
  await page.evaluate(()=>{
    const card=document.querySelector('xpeng-vehicle-card'),h=card.hass;
    const states={...h.states};
@@ -314,6 +349,31 @@ async function main(){
      assert.equal(await car.locator('button[data-xp-map-action="flash_lights"]').count(),1);
    }
    if(action==='climate')await page.waitForFunction(()=>{const img=document.querySelector('xpeng-vehicle-card').shadowRoot.querySelector('img[data-cabin-art]');return img&&img.complete&&img.naturalWidth===752;});
+   if(action==='maintenance'){
+     const metrics=await car.evaluate(el=>{
+       const root=el.shadowRoot,modal=root.querySelector('.xp-ux-modal-maintenance'),
+        stage=root.querySelector('.xp-tire-stage'),wheel=root.querySelector('[data-wheel="tire_fl"]');
+       modal.scrollTop=modal.scrollHeight;
+       return {height:modal.clientHeight,scrollHeight:modal.scrollHeight,scrolled:modal.scrollTop,
+         columns:getComputedStyle(stage).gridTemplateColumns.split(/\s+/).length,
+         label:wheel.textContent.trim()};
+     });
+     assert.ok(metrics.scrolled>60,'Maintenance subpage must scroll vertically on mobile: '+JSON.stringify(metrics));
+     assert.equal(metrics.columns,2,'Mobile TPMS must have two compact pressure columns');
+     assert.match(metrics.label,/2\.5bar/);
+     await car.locator('select[data-xp-tire-unit]').selectOption('psi');
+     assert.match(await car.locator('[data-wheel="tire_fl"]').innerText(),/36\.3/);
+     await car.evaluate(el=>{el.shadowRoot.querySelector('.xp-ux-modal-maintenance').scrollTop=0;});
+     await car.screenshot({path:path.join(OUTPUT,'g6-2026-maintenance-mobile-psi.png'),animations:'disabled'});
+     await car.locator('select[data-xp-tire-unit]').selectOption('kPa');
+     assert.match(await car.locator('[data-wheel="tire_fl"]').innerText(),/250/);
+     await car.evaluate(el=>{el.shadowRoot.querySelector('.xp-ux-modal-maintenance').scrollTop=0;});
+     await page.waitForFunction(()=>{
+       const img=document.querySelector('xpeng-vehicle-card').shadowRoot.querySelector('.xp-ux-modal-maintenance img[data-top-art]');
+       return img&&img.complete&&img.naturalWidth>100;
+     });
+     console.log('Mobile maintenance vertical scrolling and PSI/kPa conversion:',JSON.stringify(metrics));
+   }
    await car.screenshot({path:path.join(OUTPUT,'g6-2026-'+name+'.png'),animations:'disabled'});
    await car.locator('button[data-xp-close]').click();
  }
