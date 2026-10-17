@@ -161,6 +161,8 @@ async function main(){
  }
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
  await screen('vehicle-status');
+ await car.screenshot({path:path.join(OUTPUT,'g6-2026-home-review-desktop.jpg'),
+   type:'jpeg',quality:73,animations:'disabled'});
  // Desktop and mobile must contain exactly the same rendered actions and
  // vehicle-status rows with the same simulated HA payload.
  const contentSignature=async()=>car.evaluate(el=>{
@@ -270,6 +272,8 @@ async function main(){
    console.log('Responsive capture '+name,JSON.stringify(layout));
  }
  await responsiveShot(390,false,'mobile-vehicle-status');
+ await car.screenshot({path:path.join(OUTPUT,'g6-2026-home-review-mobile.jpg'),
+   type:'jpeg',quality:76,animations:'disabled'});
  await responsiveShot(390,true,'mobile-charging');
  await responsiveShot(320,false,'small-mobile-vehicle-status');
  await responsiveShot(320,true,'small-mobile-charging');
