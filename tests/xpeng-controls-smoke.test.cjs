@@ -608,6 +608,7 @@ test('rear heating controls render on the cabin only when matching G6 integratio
 
 test('one navigation bar on Home, single Back and no dock on all subpages',()=>{
  const {card}=createCard({enable_access_controls:true});
+ card._hass.states['binary_sensor.is_charging'].state='off';
  const h=card.shadowRoot;
  card.render();
  assert.equal((h.innerHTML.match(/class="xp-ux-dock-action"/g)||[]).length,7);
