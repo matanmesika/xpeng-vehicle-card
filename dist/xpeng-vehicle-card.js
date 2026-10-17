@@ -135,40 +135,47 @@ const XP_CONTROL_FALLBACKS=Object.freeze({
  'calendar.hvac_schedule_calendar':'hvac_schedule'
 });
 
-const XP_ICONS = {
- home:'<path d="M3 10.5 12 3l9 7.5V21h-6v-7H9v7H3Z"/>',
- lock:'<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
- unlock:'<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0V6a4 4 0 0 0-7-2"/>',
- car:'<path d="M4 16H2v-5l2-5h16l2 5v5h-2M4 16h16M4 16v3m16-3v3M2 11h20M7 6l-2 5m12-5 2 5"/><circle cx="6.5" cy="15" r=".8"/><circle cx="17.5" cy="15" r=".8"/>',
- windows:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16M3 10h18"/><path d="m7 15 2-2 2 2"/>',
- windows_open:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16M3 10h18"/><path d="m6.5 17 2-2 2 2m5-1 2-2 2 2"/>',
- trunk:'<path d="M3 8h18v11H3zM4 8l2-4h12l2 4M4 14h16M10 17h4"/><path d="M8 19v2m8-2v2"/>',
- trunk_open:'<path d="M3 12h18v7H3zM4 12l3-7h10l3 7M4 16h16M10 18h4"/><path d="m9 7 3-4 3 4"/>',
- horn:'<path d="M3 10h4l8-5v14l-8-5H3v-4Zm12-1c2 1 2 5 0 6m3-9c4 3 4 9 0 12"/><path d="M6 14l1 5h3"/>',
- flash:'<path d="M3 8c5-2 10-2 14 0v8c-4 2-9 2-14 0V8Zm17 1 2-2m-2 5h3m-3 3 2 2"/><path d="M7 10h6m-6 4h6"/>',
- auto:'<path d="M20 8a8 8 0 0 0-14-3L4 7V3M4 7h4M4 16a8 8 0 0 0 14 3l2-2v4m0-4h-4"/><path d="m9 15 3-7 3 7m-5-2h4"/>',
- windscreen:'<path d="m4 18 2-12h12l2 12H4Zm4-7 1-2m3 2 1-2m3 2 1-2M8 15l1-2m3 2 1-2m3 2 1-2"/>',
- port_open:'<rect x="4" y="7" width="16" height="13" rx="3"/><path d="m8 11 4-4 4 4m-4-4V2"/><path d="M8 17h8"/>',
- fan:'<circle cx="12" cy="12" r="10"/><ellipse cx="12" cy="7.8" rx="2.5" ry="3.5"/><ellipse cx="12" cy="7.8" rx="2.5" ry="3.5" transform="rotate(120 12 12)"/><ellipse cx="12" cy="7.8" rx="2.5" ry="3.5" transform="rotate(240 12 12)"/><circle cx="12" cy="12" r="1.5"/>',
- bolt:'<path d="M13 2 4 13h7l-1 9 10-12h-7l1-8Z"/>',
- pin:'<path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2"/>',
- arrow:'<path d="m9 5 7 7-7 7"/>', back:'<path d="m15 5-7 7 7 7"/>',
- refresh:'<path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.5 9A7 7 0 0 1 18 7l2 5M4 12l2 5a7 7 0 0 0 12.5-2"/>',
- settings:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M19 5l-2 2M7 17l-2 2"/>',
- thermometer:'<path d="M10 14.5V5a2 2 0 1 1 4 0v9.5a4 4 0 1 1-4 0Z"/>',
- tire:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 4v5m8 3h-5m-3 8v-5m-8-3h5"/>',
- info:'<circle cx="12" cy="12" r="10"/><path d="M12 11v6m0-10v1"/>',
- clock:'<circle cx="12" cy="12" r="9"/><path d="M12 6v7l4 3"/>',
- battery:'<rect x="2" y="6" width="18" height="12" rx="2"/><path d="M22 10v4"/>',
- power:'<path d="M12 2v10m-5-8a9 9 0 1 0 10 0"/>',
- plug:'<path d="M8 2v6m8-6v6M5 8h14v5a7 7 0 0 1-14 0V8Zm7 12v2"/>',
- check:'<path d="m4 12 5 5L20 6"/>',
- carfront:'<path d="M5 17v3m14-3v3M3 13l3-8h12l3 8v4H3v-4Zm0 0h18m-14 2h1m8 0h1"/>',
- shield:'<path d="M12 2 3 6v6c0 5 4 8 9 10 5-2 9-5 9-10V6l-9-4Z"/>',
- sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l2 2m10 10 2 2M19 5l-2 2M7 17l-2 2"/>',
- gauge:'<path d="M4 18a9 9 0 1 1 16 0M12 16l4-7"/>'
-};
-function xpIcon(name,size=22){return `<svg viewBox="0 0 24 24" width="${size}" height="${size}" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">${XP_ICONS[name]||XP_ICONS.info}</svg>`;}
+const XP_ICONS = Object.freeze({
+ home:'mdi:home',
+ lock:'mdi:lock',
+ unlock:'mdi:lock-open-variant',
+ car:'mdi:car',
+ windows:'mdi:window-closed',
+ windows_open:'mdi:window-open',
+ trunk:'mdi:car-back',
+ trunk_open:'mdi:car-back',
+ horn:'mdi:bullhorn',
+ flash:'mdi:car-light-high',
+ auto:'mdi:autorenew',
+ windscreen:'mdi:car-defrost-front',
+ port_open:'mdi:power-plug-outline',
+ fan:'mdi:fan',
+ bolt:'mdi:lightning-bolt',
+ pin:'mdi:map-marker',
+ arrow:'mdi:chevron-right',
+ back:'mdi:chevron-left',
+ refresh:'mdi:refresh',
+ settings:'mdi:cog',
+ thermometer:'mdi:thermometer',
+ tire:'mdi:tire',
+ info:'mdi:information-outline',
+ clock:'mdi:clock-outline',
+ battery:'mdi:battery',
+ power:'mdi:power',
+ plug:'mdi:power-plug',
+ check:'mdi:check',
+ carfront:'mdi:car',
+ shield:'mdi:shield-check',
+ sun:'mdi:white-balance-sunny',
+ gauge:'mdi:speedometer',
+ wifi:'mdi:wifi'
+});
+/** Render native Home Assistant MDI glyphs, never home-made SVG icons. */
+function xpIcon(name,size=22){
+ const mdi=XP_ICONS[name]||XP_ICONS.info;
+ const px=Math.max(12,Math.min(80,Number(size)||22));
+ return `<ha-icon class="xp-mdi-icon" icon="${mdi}" style="--xp-icon-size:${px}px" aria-hidden="true"></ha-icon>`;
+}
 function xpEsc(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
 function xpNum(v,dec=0){if(v===null||v===undefined||v===''||!Number.isFinite(Number(v)))return '—';return Number(v).toLocaleString('en-US',{maximumFractionDigits:dec});}
 function xpConnText(v){
@@ -293,8 +300,9 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-brand{display:flex;align-items:center;gap:14px;font-weight:600;letter-spacing:.31em;font-size:clamp(14px,1.4vw,23px);white-space:nowrap}
 .xp-x-mark{font-size:26px;letter-spacing:-.13em;transform:scaleX(1.4)}
 .xp-header-right{display:flex;align-items:center;gap:12px;min-width:0;font-size:clamp(12px,1.2vw,20px)}
+.xp-mdi-icon{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;flex:0 0 auto;width:var(--xp-icon-size,22px);height:var(--xp-icon-size,22px);--mdc-icon-size:var(--xp-icon-size,22px);color:inherit}
 .xp-wifi{display:grid;place-items:center;width:42px;height:42px;flex:none;padding:8px;border-radius:13px;border:1px solid #7399c077;background:#03172bba;color:#a8b3c4;transition:background .15s,border-color .15s}
-.xp-wifi svg{display:block;flex:none}
+.xp-wifi ha-icon{display:block;flex:none}
 .xp-wifi.xp-connected{color:#66a9ff;border-color:#4e96d699}
 .xp-wifi.xp-error{color:#ffb16a;border-color:#d99b6388}
 .xp-wifi:hover,.xp-wifi:focus-visible{background:#194465;border-color:#8bc1fa}
@@ -331,7 +339,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-status-panel .xp-chevron{color:#dceeff;opacity:.75}
 .xp-charge-card{position:absolute;z-index:6;left:2.8%;top:33.5%;width:40.8%;border:1px solid #2089ce88;border-radius:22px;background:linear-gradient(130deg,#041422e8,#06162acb);backdrop-filter:blur(14px);box-shadow:0 10px 55px #0007;padding:clamp(16px,2.4vw,36px) clamp(17px,2.7vw,43px)}
 .xp-charge-heading{display:flex;align-items:center;gap:17px;color:var(--xp-mint);font-weight:630;font-size:clamp(17px,2.6vw,40px);margin:0 0 22px}
-.xp-charge-heading svg{flex:none;width:clamp(26px,3.6vw,56px);height:clamp(26px,3.6vw,56px)}
+.xp-charge-heading ha-icon{flex:none;width:clamp(26px,3.6vw,56px);height:clamp(26px,3.6vw,56px);--mdc-icon-size:clamp(26px,3.6vw,56px)}
 .xp-charge-card .xp-progress{height:20px}
 .xp-charge-main{display:flex;align-items:center;gap:18px;justify-content:space-between;margin-top:23px}
 .xp-charge-main .xp-soc{font-size:clamp(40px,5.4vw,86px)}
@@ -433,7 +441,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 /* Opt-in XPENG controls. Keep all existing hero and charging artwork unchanged. */
 .xp-ux-dock{position:absolute;z-index:12;bottom:2.5%;left:50%;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;gap:10px;padding:8px 12px;border:1px solid #6598b45c;border-radius:40px;background:#06162acb;backdrop-filter:blur(18px);max-width:96%}
 .xp-ux-dock-action{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:60px;min-height:58px;border:1px solid #78a1b84b;background:#132b4587;border-radius:24px;color:#effbff}
-.xp-ux-dock-action svg{color:#99caff}
+.xp-ux-dock-action ha-icon{color:#99caff}
 .xp-ux-dock-action small{font-size:10px;white-space:nowrap}
 .xp-ux-dock-action:hover,.xp-ux-dock-action:focus-visible{border-color:#1debca;background:#124965}
 .xp-ux-modal{position:absolute;z-index:35;inset:2% 2.5%;padding:16px 20px 25px;overflow:auto;overscroll-behavior:contain;border:1px solid #5e91b078;border-radius:23px;background:linear-gradient(165deg,#060d19f8,#081e34fa);box-shadow:0 28px 75px #000d;backdrop-filter:blur(22px);direction:rtl}
@@ -611,7 +619,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  */
 .xp-ux-cabin-art .xp-ux-hotspot-zone{position:absolute;z-index:4;display:flex;align-items:center;justify-content:center;gap:4px;transform:translate(-50%,-50%);width:auto;height:auto;max-width:44%;background:transparent;box-shadow:none}
 .xp-ux-cycle{border:1px solid #608ead;background:#0c243fdc;color:#ebf6ff;width:42px;height:44px;min-width:42px;min-height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:3px;box-shadow:0 3px 15px #06111e70;cursor:pointer;touch-action:manipulation}
-.xp-ux-cycle svg{width:17px;height:17px}
+.xp-ux-cycle ha-icon{width:17px;height:17px;--mdc-icon-size:17px}
 .xp-ux-cycle .xp-ux-level{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;min-width:8px}
 .xp-ux-cycle-heat.xp-ux-cycle-on{background:#963746ed;border-color:#ff8b8b;color:#fff;box-shadow:0 0 12px #ff5b5780}
 .xp-ux-cycle-vent.xp-ux-cycle-on{background:#145b9de9;border-color:#6cd3ff;color:#fff;box-shadow:0 0 12px #47aeff80}
@@ -625,7 +633,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 @media(max-width:600px){
  .xp-ux-cabin-art .xp-ux-hotspot-zone{gap:2px}
  .xp-ux-cycle{width:37px;min-width:37px;height:44px;min-height:44px;padding:3px;gap:2px}
- .xp-ux-cycle svg{width:15px;height:15px}
+ .xp-ux-cycle ha-icon{width:15px;height:15px;--mdc-icon-size:15px}
  .xp-ux-cycle .xp-ux-level{font-size:12px}
 }
 @container xpeng-card (max-width:430px){
@@ -644,7 +652,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  text-align:center;min-height:150px;padding:14px 8px;border:1px solid #4c87ab9c;border-radius:19px;
  background:linear-gradient(155deg,#142b44e3,#071a2eea);color:#f0f8ff;cursor:pointer}
 .xp-extra-tile:hover{background:#163959}
-.xp-extra-tile svg{color:#77d7fb}
+.xp-extra-tile ha-icon{color:#77d7fb}
 .xp-extra-tile b{font-size:16px}
 .xp-extra-tile small{font-size:11px;color:#a8c6de;line-height:1.4}
 .xp-extra-heading{display:flex;align-items:center;gap:14px;font-size:19px;margin-bottom:15px}
@@ -685,7 +693,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-ux-climate-feature{display:flex;flex-direction:column;align-items:center;justify-content:center;
  gap:9px;min-height:105px;padding:12px 8px;border:1px solid #658cab80;border-radius:16px;
  background:#0f2942dd;color:#f0f8ff;cursor:pointer;text-align:center}
-.xp-ux-climate-feature svg{color:#bbdbfa}
+.xp-ux-climate-feature ha-icon{color:#bbdbfa}
 .xp-ux-climate-feature span{font-size:14px;font-weight:650}
 .xp-ux-climate-feature small{font-size:11px;color:#b0c9db}
 .xp-ux-climate-feature:focus-visible{outline:2px solid #9ddaff;outline-offset:2px}
@@ -790,7 +798,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 @container xpeng-layout (max-width:600px){
  .xp-ux-cabin-art .xp-ux-hotspot-zone{gap:2px}
  .xp-ux-cycle{width:37px;min-width:37px;height:44px;min-height:44px;padding:3px;gap:2px}
- .xp-ux-cycle svg{width:15px;height:15px}
+ .xp-ux-cycle ha-icon{width:15px;height:15px;--mdc-icon-size:15px}
  .xp-ux-cycle .xp-ux-level{font-size:12px}
 }
 @container xpeng-layout (max-width:600px){.xp-more-trigger{width:40px;height:40px}.xp-extra-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
@@ -2050,10 +2058,7 @@ class XpengVehicleCard extends HTMLElement{
        <button class="xp-wifi ${stateClass}" type="button" data-meta-toggle
          aria-label="Vehicle communication details" aria-expanded="${this._infoOpen?'true':'false'}"
          aria-controls="xp-last-update-details" title="Vehicle communication details">
-         <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor"
-           stroke-width="2.3" stroke-linecap="round" aria-hidden="true">
-           <path d="M2 8c5.7-5.6 14.3-5.6 20 0M5 12c4-3.6 10-3.6 14 0M9 16c1.8-1.4 4.2-1.4 6 0"/>
-           <circle cx="12" cy="20" r="1.3" fill="currentColor" stroke="none"/></svg></button>
+         ${xpIcon('wifi',24)}</button>
        ${this._infoOpen?`<div id="xp-last-update-details" class="xp-meta-popover" role="region"
          aria-label="Vehicle connection and last update">
            <div class="xp-meta-field"><small>Connection</small><strong>${xpEsc(status)}</strong></div>
