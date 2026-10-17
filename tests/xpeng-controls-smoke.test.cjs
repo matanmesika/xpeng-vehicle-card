@@ -159,7 +159,7 @@ test('photo files must be committed before releasing this draft', {
 });
 
 
-test('home screen presents eight compact controls including charging, maintenance and map', () => {
+test('home screen presents seven compact controls with auto charging mode', () => {
   const {card}=createCard();
   for(const [key,domain,suffix,state] of [
     ['port','button','open_charge_port','button.open_flap'],
@@ -170,12 +170,12 @@ test('home screen presents eight compact controls including charging, maintenanc
     card._hass.states[state] ??= {state:domain==='button'?'unknown':'locked',attributes:{}};
   }
   const nav=card.xpDock();
-  assert.equal((nav.match(/data-xp-(?:open|toggle)=/g)||[]).length,8);
+  assert.equal((nav.match(/data-xp-(?:open|toggle)=/g)||[]).length,7);
   for(const key of ['port','doors','windows'])assert.match(nav,new RegExp('data-xp-toggle="'+key+'"'));
   assert.match(nav,/data-xp-open="climate"/);
-  for(const key of ['charging','maintenance','map'])assert.match(nav,new RegExp('data-xp-open="'+key+'"'));
+  for(const key of ['maintenance','map'])assert.match(nav,new RegExp('data-xp-open="'+key+'"'));
  assert.match(nav,/data-xp-toggle="trunk"/);
-  assert.doesNotMatch(nav,/data-xp-open="seats"/);
+  assert.doesNotMatch(nav,/data-xp-open="seats"|data-xp-open="charging"/);
 });
 test('seat controls stay on cabin image and do not open a second sheet',()=>{
   const {card}=createCard();
@@ -289,13 +289,13 @@ test('unknown or missing HA select options never trigger an invented seat comman
 });
 
 
-test('extras menu has six categories and home preserves eight actions',()=>{
+test('extras menu has six categories and home preserves seven actions',()=>{
   const {card}=createCard();
   assert.match(card.header(),/data-xp-more/);
   card._xpPanel='extras';
   assert.doesNotMatch(card.header(),/data-xp-more/,'subpages must expose only Back');
   assert.equal((card.xpExtrasPanel().match(/data-xp-extra-page=/g)||[]).length,6);
-  assert.equal((card.xpDock().match(/data-xp-(?:open|toggle)=/g)||[]).length,8);
+  assert.equal((card.xpDock().match(/data-xp-(?:open|toggle)=/g)||[]).length,7);
   for(const key of ['security','energy','schedule','power','maintenance','updates']){
     card._xpExtraSection=key;
     assert.match(card.xpModal(),/xp-extra-details/);
@@ -467,7 +467,7 @@ test('missing XPENG target and cabin telemetry must not be rendered as zero degr
 test('G6 home controls default visible but still allow explicit hiding',()=>{
  const {card}=createCard({show_controls:undefined});
  assert.equal(card.xpUiEnabled(),true);
- assert.equal((card.xpDock().match(/data-xp-(?:open|toggle)=/g)||[]).length,8);
+ assert.equal((card.xpDock().match(/data-xp-(?:open|toggle)=/g)||[]).length,7);
  assert.equal(card.xpAccessAllowed(),false);
  card.setConfig({type:'custom:xpeng-vehicle-card',model:'G6',year:'2026',prefix:'xpeng_g6',show_controls:false});
  assert.equal(card.xpUiEnabled(),false);
@@ -613,7 +613,7 @@ test('one navigation bar on Home, single Back and no dock on all subpages',()=>{
  card._hass.states['binary_sensor.is_charging'].state='off';
  const h=card.shadowRoot;
  card.render();
- assert.equal((h.innerHTML.match(/class="xp-ux-dock-action"/g)||[]).length,8);
+ assert.equal((h.innerHTML.match(/class="xp-ux-dock-action"/g)||[]).length,7);
  assert.doesNotMatch(h.innerHTML,/data-xp-home/);
  for(const page of ['climate','maintenance','map','port','windows','doors','trunk']){
    card._xpPanel=page;card.render();
@@ -622,7 +622,7 @@ test('one navigation bar on Home, single Back and no dock on all subpages',()=>{
    assert.doesNotMatch(h.innerHTML,/class="xp-ux-dock-action"/);
    assert.doesNotMatch(h.innerHTML,/data-xp-home/);
  }
- card._xpPanel=null;card._xpManualCharging=true;card.render();
+ card._xpPanel=null;card._hass.states['binary_sensor.is_charging'].state='on';card.render();
  assert.match(h.innerHTML,/data-xp-home/);
  assert.doesNotMatch(h.innerHTML,/class="xp-ux-dock-action"/);
  card._xpPanel='charge_schedule';card.render();
@@ -630,14 +630,18 @@ test('one navigation bar on Home, single Back and no dock on all subpages',()=>{
  assert.doesNotMatch(h.innerHTML,/data-xp-home/);
  assert.doesNotMatch(h.innerHTML,/class="xp-ux-dock-action"/);
 });
-test('charging view can be opened manually and return to Home while charging stays live',()=>{
+test('only sensor state triggers charging; confirmed charge renders green cable',()=>{
  const {card}=createCard();
- card._xpManualCharging=true;card.render();
- assert.match(card.shadowRoot.innerHTML,/data-xp-home/);
- card._xpManualCharging=false;card._xpChargingDismissed=true;card.render();
- assert.match(card.shadowRoot.innerHTML,/class="xp-ux-dock-action"/);
- assert.doesNotMatch(card.shadowRoot.innerHTML,/data-xp-home/);
- card._xpChargingDismissed=false;
+ card._hass.states['binary_sensor.is_charging'].state='off';
+ card.render();
+ assert.doesNotMatch(card.xpDock(),/data-xp-open="charging"/);
+ card._hass.states['binary_sensor.is_charging'].state='on';
+ card._hass.states['binary_sensor.is_plugged_in'].state='off';
+ card.render();
+ assert.match(card.shadowRoot.innerHTML,/class="xp-charge-card"/);
+ assert.match(card.shadowRoot.innerHTML,/xp-charge-cable-live/);
+ card._hass.states['binary_sensor.is_charging'].state='off';card.render();
+ assert.doesNotMatch(card.shadowRoot.innerHTML,/xp-charge-cable-live/);
 });
 
 test('one-tap controls alter visible action labels, icons, and avoid duplicate confirms',async()=>{
@@ -835,4 +839,46 @@ test('G6 multilingual text and icon contract covers all new user-facing actions'
  assert.match(src,/horn:'<path/);
  assert.match(src,/flash:'<path/);
  assert.match(src,/windscreen:'<path/);
+});
+
+test('upstream Xpengtk unique IDs resolve without guessed windows/port names',()=>{
+ const {card}=createCard({enable_access_controls:true}),st=card._hass.states;
+ Object.assign(card._xpengByKey,{
+  'binary_sensor.any_window_open':'binary_sensor.real_any_window_open',
+  'binary_sensor.locked':'binary_sensor.real_locked',
+  'sensor.slow_charge_port':'sensor.real_slow_charge_port',
+  'binary_sensor.driver_door':'binary_sensor.real_driver_door',
+  'binary_sensor.passenger_door':'binary_sensor.real_passenger_door'
+ });
+ Object.assign(st,{
+  'binary_sensor.real_any_window_open':{state:'on',attributes:{}},
+  'binary_sensor.real_locked':{state:'off',attributes:{}},
+  'sensor.real_slow_charge_port':{state:'Open',attributes:{}},
+  'binary_sensor.real_driver_door':{state:'on',attributes:{}},
+  'binary_sensor.real_passenger_door':{state:'off',attributes:{}}
+ });
+ assert.equal(card.xpengEntity('binary_sensor','windows'),'binary_sensor.real_any_window_open');
+ assert.equal(card.xpActionState('windows'),'open');
+ assert.equal(card.xpActionState('port'),'open');
+ assert.match(card.xpDoorsPanel(),/דלת נהג/);
+ assert.match(card.xpDoorsPanel(),/דלת נוסע/);
+ delete card._xpengByKey['lock.door_lock'];delete st['lock.user_lock'];
+ assert.equal(card.xpActionState('doors'),'closed','Xpengtk locked binary ON means unlocked');
+ st['sensor.real_slow_charge_port'].state='Connected';
+ assert.equal(card.xpToggleTarget('port'),null,'connected cable blocks flap close');
+ st['sensor.real_slow_charge_port'].state='unavailable';
+ assert.equal(card.xpActionState('port'),null);
+});
+test('upstream Xpengtk prefixed HA entity IDs work without registry access',()=>{
+ const {card}=createCard(),st=card._hass.states;
+ card._xpengByKey={};
+ st['binary_sensor.my_xpeng_any_window_open']={state:'off',attributes:{}};
+ st['sensor.my_xpeng_slow_charge_port']={state:'Closed',attributes:{}};
+ st['lock.my_xpeng_door_lock']={state:'locked',attributes:{}};
+ assert.equal(card.xpActionState('windows'),'closed');
+ assert.equal(card.xpActionState('port'),'closed');
+ assert.equal(card.xpActionState('doors'),'closed');
+ st['binary_sensor.my_xpeng_any_window_open'].state='unavailable';
+ st['binary_sensor.my_xpeng_windows']={state:'on',attributes:{}};
+ assert.equal(card.xpActionState('windows'),'open');
 });
