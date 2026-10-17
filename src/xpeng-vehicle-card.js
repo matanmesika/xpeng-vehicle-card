@@ -578,6 +578,33 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-ux-dock-four .xp-ux-dock-action{min-width:43px;min-height:48px;padding:5px 3px}
 }
 
+/* Tap to cycle each seat's actual Xpengtk select entity (not another page).
+ * Zones line up with both paired cabin image palettes and shrink with the card.
+ */
+.xp-ux-cabin-art .xp-ux-hotspot-zone{position:absolute;z-index:4;display:flex;align-items:center;justify-content:center;gap:4px;transform:translate(-50%,-50%);width:auto;height:auto;max-width:44%;background:transparent;box-shadow:none}
+.xp-ux-cycle{border:1px solid #608ead;background:#0c243fdc;color:#ebf6ff;width:42px;height:44px;min-width:42px;min-height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:3px;box-shadow:0 3px 15px #06111e70;cursor:pointer;touch-action:manipulation}
+.xp-ux-cycle svg{width:17px;height:17px}
+.xp-ux-cycle .xp-ux-level{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;min-width:8px}
+.xp-ux-cycle-heat.xp-ux-cycle-on{background:#963746ed;border-color:#ff8b8b;color:#fff;box-shadow:0 0 12px #ff5b5780}
+.xp-ux-cycle-vent.xp-ux-cycle-on{background:#145b9de9;border-color:#6cd3ff;color:#fff;box-shadow:0 0 12px #47aeff80}
+.xp-ux-cycle-busy{outline:1px dotted #dce9f2;outline-offset:2px}
+.xp-ux-cycle:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.xp-ux-cabin-fallback .xp-ux-wheel{top:21%;left:26%}
+.xp-ux-cabin-fallback .xp-ux-driver{top:49%;left:26%}
+.xp-ux-cabin-fallback .xp-ux-passenger{top:49%;left:74%}
+.xp-ux-cabin-fallback .xp-ux-rear_left{top:86%;left:26%}
+.xp-ux-cabin-fallback .xp-ux-rear_right{top:86%;left:74%}
+@media(max-width:600px){
+ .xp-ux-cabin-art .xp-ux-hotspot-zone{gap:2px}
+ .xp-ux-cycle{width:37px;min-width:37px;height:44px;min-height:44px;padding:3px;gap:2px}
+ .xp-ux-cycle svg{width:15px;height:15px}
+ .xp-ux-cycle .xp-ux-level{font-size:12px}
+}
+@container xpeng-card (max-width:430px){
+ .xp-ux-cycle{width:33px;min-width:33px;height:44px;min-height:44px;padding:2px}
+ .xp-ux-hotspot-zone{gap:2px}
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
