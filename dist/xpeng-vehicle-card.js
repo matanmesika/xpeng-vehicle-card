@@ -1986,7 +1986,7 @@ class XpengVehicleCard extends HTMLElement{
     const override=Array.isArray(this._config.vehicles)&&this._config.vehicles.length
       ?this.vehicle()?.interior_image:this.vehicle()?.interior_image||this._config.interior_image;
     const image=a.model==='G6'?this.artworkUrl('vehicles/g6/interior_'+a.interior+'.webp'):override;
-    if(xpLocalArtworkPath(image))
+    if(a.model==='G6'||xpLocalArtworkPath(image))
       return '<img class="xp-cabin-mini" src="'+xpEsc(image)+'" loading="lazy" alt="'+xpEsc(a.model+' '+finish.label+' interior')+'">';
     return '<p class="xp-cabin-mini" role="status">תמונת פנים לא זמינה לדגם זה.</p>';
  }

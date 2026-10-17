@@ -700,8 +700,8 @@ test('native AUTO and airflow buttons only render and execute when advertised by
 });
 test('G6 editor preview uses only owner cabin photos, never the old schematic',()=>{
  const {card}=createCard({interior:'light_gray'});
- assert.match(card.interiorPreview(),/vehicles\\/g6\\/interior_light_gray\\.webp/);
+ assert.ok(card.interiorPreview().includes('vehicles/g6/interior_light_gray.webp'));
  assert.doesNotMatch(card.interiorPreview(),/<svg/);
  card.setConfig({type:'custom:xpeng-vehicle-card',prefix:'xpeng_g6',model:'G6',year:'2026',interior:'dark_gray'});
- assert.match(card.interiorPreview(),/vehicles\\/g6\\/interior_dark_gray\\.webp/);
+ assert.ok(card.interiorPreview().includes('vehicles/g6/interior_dark_gray.webp'));
 });
