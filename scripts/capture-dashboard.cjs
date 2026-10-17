@@ -47,7 +47,7 @@ function demo(charging){
   'select.my_xpeng_left_rear_seat_heating':state('Heat 2',{options:['Off','Heat 1','Heat 2','Heat 3']}),
   'select.my_xpeng_right_rear_seat_heating':state('Heat 1',{options:['Off','Heat 1','Heat 2','Heat 3']}),
   'select.my_xpeng_steering_wheel_heating':state('Low',{options:['Off','Low','Medium','High']}),
-  'binary_sensor.my_xpeng_windows':state('off'),
+  'binary_sensor.my_xpeng_any_window_open':state('off'),
   'sensor.my_xpeng_slow_charge_port':state('Closed'),
   'sensor.my_xpeng_charge_port':state('Closed'),
   'sensor.my_xpeng_next_maintenance':state('20 days',{next_date:'2027-01-10',km_remaining:2450}),
@@ -168,9 +168,9 @@ async function main(){
      trim:'core_performance_awd',color:'arctic_white',interior:'light_gray',enable_access_controls:true});
  });
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
- assert.equal(await car.locator('.xp-ux-dock-action').count(),8,'Seven home quick actions missing');
- for(const action of ['charging','maintenance','map'])assert.equal(await car.locator('button[data-xp-open="'+action+'"]').count(),1,action+' home action missing');
- assert.equal(await car.locator('.xp-ux-dock-action:not([disabled])').count(),8,'Mock owner has approved Access, so all seven actions must work');
+ assert.equal(await car.locator('.xp-ux-dock-action').count(),7,'Seven home quick actions missing');
+ for(const action of ['maintenance','map'])assert.equal(await car.locator('button[data-xp-open="'+action+'"]').count(),1,action+' home action missing');
+ assert.equal(await car.locator('.xp-ux-dock-action:not([disabled])').count(),7,'Mock owner has approved Access, so all seven actions must work');
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-controls-desktop.png'),animations:'disabled'});
  const readActions=async()=>car.locator('.xp-ux-dock-action').allTextContents();
  let quickLabels=(await readActions()).join(' ');
@@ -182,7 +182,7 @@ async function main(){
    const card=document.querySelector('xpeng-vehicle-card'),h=card.hass;
    const states={...h.states};
    states['lock.my_xpeng_door_lock']={...states['lock.my_xpeng_door_lock'],state:'unlocked'};
-   states['binary_sensor.my_xpeng_windows']={...states['binary_sensor.my_xpeng_windows'],state:'on'};
+   states['binary_sensor.my_xpeng_any_window_open']={...states['binary_sensor.my_xpeng_any_window_open'],state:'on'};
    states['sensor.my_xpeng_slow_charge_port']={...states['sensor.my_xpeng_slow_charge_port'],state:'Open'};
    states['sensor.my_xpeng_charge_port']={...states['sensor.my_xpeng_charge_port'],state:'Open'};
    states['binary_sensor.my_xpeng_trunk']={...states['binary_sensor.my_xpeng_trunk'],state:'on'};
@@ -247,7 +247,7 @@ async function main(){
  console.log('Desktop Location map + finder + Back:',JSON.stringify(desktopMap));
  await car.locator('button[data-xp-close]').click();
  assert.equal(await car.locator('.xp-ux-modal-map').count(),0,'Desktop Back must close Location');
- assert.equal(await car.locator('.xp-ux-dock-action').count(),8,'Desktop Back must restore Home shortcuts');
+ assert.equal(await car.locator('.xp-ux-dock-action').count(),7,'Desktop Back must restore Home shortcuts');
 
  await car.locator('button[data-xp-open="climate"]').first().click();
  assert.ok(await car.locator('.xp-ux-modal-climate').count(),'Climate modal missing');
@@ -290,7 +290,7 @@ async function main(){
    const card=document.querySelector('xpeng-vehicle-card'),h=card.hass;
    const states={...h.states};
    states['lock.my_xpeng_door_lock']={...states['lock.my_xpeng_door_lock'],state:'unlocked'};
-   states['binary_sensor.my_xpeng_windows']={...states['binary_sensor.my_xpeng_windows'],state:'on'};
+   states['binary_sensor.my_xpeng_any_window_open']={...states['binary_sensor.my_xpeng_any_window_open'],state:'on'};
    states['sensor.my_xpeng_slow_charge_port']={...states['sensor.my_xpeng_slow_charge_port'],state:'Open'};
    states['sensor.my_xpeng_charge_port']={...states['sensor.my_xpeng_charge_port'],state:'Open'};
    states['binary_sensor.my_xpeng_trunk']={...states['binary_sensor.my_xpeng_trunk'],state:'on'};
@@ -314,6 +314,27 @@ async function main(){
      assert.equal(await car.locator('button[data-xp-map-action="flash_lights"]').count(),1);
    }
    if(action==='climate')await page.waitForFunction(()=>{const img=document.querySelector('xpeng-vehicle-card').shadowRoot.querySelector('img[data-cabin-art]');return img&&img.complete&&img.naturalWidth===752;});
+
+   if(action==='climate'||action==='maintenance'){
+     const scroll=await car.locator('.xp-ux-modal-'+action).evaluate(el=>{
+       const start=el.scrollTop,clientHeight=el.clientHeight,scrollHeight=el.scrollHeight;
+       el.scrollTop=el.scrollHeight;
+       const target=action==='climate'
+         ?el.querySelector('.xp-ux-climate-feature:last-child')
+         :el.querySelector('.xp-maint-info .xp-extra-line:last-child');
+       const area=el.getBoundingClientRect(),end=target?.getBoundingClientRect();
+       return {start,position:el.scrollTop,clientHeight,scrollHeight,
+         visible:!!end&&end.top<area.bottom&&end.bottom>area.top};
+     });
+     assert.ok(scroll.scrollHeight>scroll.clientHeight+30,
+       action+' content must overflow vertically: '+JSON.stringify(scroll));
+     assert.ok(scroll.position>scroll.start+30,
+       action+' cannot scroll down on phone: '+JSON.stringify(scroll));
+     assert.equal(scroll.visible,true,action+' last control not visible after scrolling');
+     await car.screenshot({path:path.join(OUTPUT,'g6-2026-'+action+'-scrolled-mobile.png'),animations:'disabled'});
+     await car.locator('.xp-ux-modal-'+action).evaluate(el=>{el.scrollTop=0});
+   }
+
    await car.screenshot({path:path.join(OUTPUT,'g6-2026-'+name+'.png'),animations:'disabled'});
    await car.locator('button[data-xp-close]').click();
  }
@@ -345,15 +366,15 @@ async function main(){
  // Automatic charging remains live, but Back returns Home until charging resets.
  await car.locator('button[data-xp-close]').click();
  await car.locator('button[data-xp-home]').click();
- assert.equal(await car.locator('.xp-ux-dock-action').count(),8,'Back from live Charging should display Home menu');
+ assert.equal(await car.locator('.xp-ux-dock-action').count(),7,'Back from live Charging should display Home menu');
  assert.equal(await car.locator('button[data-xp-home]').count(),0,'Home should not have Back');
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-back-home-mobile.png'),animations:'disabled'});
- // Charging is also a manually accessible destination, with the exact same scene.
- await car.locator('button[data-xp-open="charging"]').click();
- assert.equal(await car.locator('.xp-charge-card').count(),1,'Manual charging view did not open');
- assert.equal(await car.locator('.xp-ux-dock').count(),0,'Manual charging must hide home dock');
- await car.locator('button[data-xp-home]').click();
- assert.equal(await car.locator('.xp-ux-dock-action').count(),8,'Back from manual Charging should return Home');
+ // Charge mode cannot be opened manually; it always follows real charging telemetry.
+ assert.equal(await car.locator('button[data-xp-open="charging"]').count(),0);
+ await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(true));
+ assert.equal(await car.locator('.xp-charge-cable-live').count(),1,'Real charge turns cable green');
+ await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
+ assert.equal(await car.locator('.xp-charge-cable-live').count(),0,'Idle state removes green cable');
  assert.equal(errors.length,0,errors.join('\n'));
  assert.ok(imagesServed>=4,'Expected bundled vehicle and background assets to be loaded');
  await browser.close();
