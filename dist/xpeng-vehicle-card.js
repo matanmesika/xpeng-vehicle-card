@@ -908,7 +908,11 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 }
 .xp-ux-dock-seven .xp-ux-dock-action small{font-size:10px;white-space:normal;line-height:1.12}
 .xp-ux-dock-seven .xp-ux-dock-action:disabled{opacity:.48}
-/* The Home quick actions change text and icon only after HA reports a new state. */
+/* Use live HA state for labels and icon; status-only climate feedback stays inert. */
+.xp-ux-climate-readonly{cursor:default;opacity:.80;border-style:dashed}
+.xp-ux-dock-seven .xp-ux-dock-action{flex-basis:78px;min-width:61px;max-width:84px}
+.xp-ux-map-actions button{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px}
+.xp-ux-modal-trunk .xp-ux-access-buttons button{min-height:48px}
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -1406,7 +1410,7 @@ class XpengVehicleCard extends HTMLElement{
      tiles.push('<button type="button" class="xp-ux-climate-feature'
        +(running?' xp-ux-selected':'')+'" data-xp-climate="'+(running?'off':'on')
        +'" aria-pressed="'+String(running)+'">'
-       +xpIcon('power',25)+'<span>A/C</span><small>'
+       +xpIcon('power',25)+'<span>מיזוג A/C</span><small>'
        +(running?'פעיל — לחץ לכיבוי':'כבוי — לחץ להפעלה')+'</small></button>');
    }
    if(climate){
@@ -1415,7 +1419,7 @@ class XpengVehicleCard extends HTMLElement{
      if(hvacModes.includes('auto')){
        const active=climate.state.state==='auto';
        tiles.push('<button type="button" class="xp-ux-climate-feature'+(active?' xp-ux-selected':'')
-         +'" data-xp-hvac-mode="auto" aria-pressed="'+String(active)+'">'+xpIcon('fan',25)
+         +'" data-xp-hvac-mode="auto" aria-pressed="'+String(active)+'">'+xpIcon('auto',25)
          +'<span>AUTO</span><small>'+(active?'פעיל':'מצב אוטומטי')+'</small></button>');
      }
      if(Array.isArray(a.swing_modes)&&a.swing_modes.length>1){
@@ -1426,11 +1430,29 @@ class XpengVehicleCard extends HTMLElement{
          +'<span>כיוון אוויר</span><small>'+xpEsc(current)+'</small></button>');
      }
    }
+   // Xpengtk reports AUTO telemetry but normally only off/heat_cool remote modes.
+   // A live indicator is not a fake control.
+   if(climate&&!climate.state.attributes?.hvac_modes?.includes('auto')){
+     const auto=this.xpLive('binary_sensor','climate_auto');
+     if(auto&&['on','off'].includes(auto.state.state)){
+       const on=auto.state.state==='on';
+       tiles.push('<span class="xp-ux-climate-feature xp-ux-climate-readonly'+
+         (on?' xp-ux-selected':'')+'" role="status" aria-label="מצב AUTO: '+(on?'פעיל':'כבוי')+'">'+
+         xpIcon('auto',25)+'<span>AUTO</span><small>'+
+         (on?'פעיל • חיווי בלבד':'כבוי • חיווי בלבד')+'</small></span>');
+     }
+   }
+   const mirror=this.xpLive('binary_sensor','mirror_heating');
+   if(mirror&&['on','off'].includes(mirror.state.state)){
+     tiles.push('<span class="xp-ux-climate-feature xp-ux-climate-readonly" role="status">'+
+       xpIcon('windscreen',25)+'<span>חימום מראות</span><small>'+
+       (mirror.state.state==='on'?'פעיל • חיווי בלבד':'כבוי • חיווי בלבד')+'</small></span>');
+   }
    if(defrost){
      const active=defrost.state.state==='on';
      tiles.push('<button type="button" class="xp-ux-climate-feature'
        +(active?' xp-ux-selected':'')+'" data-xp-switch="defrost_switch" aria-pressed="'
-       +String(active)+'">'+xpIcon('sun',25)
+       +String(active)+'">'+xpIcon('windscreen',25)
        +'<span>הפשרת שמשה קדמית</span><small>'
        +(active?'פעיל':'כבוי')+'</small></button>');
    }
@@ -1515,13 +1537,13 @@ class XpengVehicleCard extends HTMLElement{
    const location=this.xpLive('device_tracker','location');
    const horn=this.xpLive('button','honk_horn');
    const lights=this.xpLive('button','flash_lights');
-   return '<div class="xp-ux-map-panel"><div class="xp-ux-map-stage" data-xp-map-host>'
+   return '<div class="xp-ux-map-panel"><div class="xp-ux-map-stage" role="region" aria-label="מפת מיקום הרכב" data-xp-map-host>'
     +(location?'טוען מפה…':'מיקום הרכב אינו זמין')+'</div>'
     +'<div class="xp-ux-map-actions">'
     +'<button type="button" data-xp-map-action="honk_horn" '+(horn?'':'disabled')
-    +'>'+xpIcon('info',20)+' צופר</button>'
+    +'>'+xpIcon('horn',20)+' צופר</button>'
     +'<button type="button" data-xp-map-action="flash_lights" '+(lights?'':'disabled')
-    +'>'+xpIcon('sun',20)+' הבהוב אורות</button></div></div>';
+    +'>'+xpIcon('flash',20)+' הבהוב</button></div></div>';
  }
  async xpMountMap(){
    if(this._xpPanel!=='map')return;
