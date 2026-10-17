@@ -285,7 +285,7 @@ async function main(){
  });
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
  assert.equal(await car.locator('.xp-ux-dock-action').count(),7,'Seven home quick actions missing');
- for(const action of ['maintenance','map'])assert.equal(await car.locator('button[data-xp-open="'+action+'"]').count(),1,action+' home action missing');
+ for(const action of ['maintenance','map'])assert.equal(await car.locator('.xp-ux-dock-action[data-xp-open="'+action+'"]').count(),1,action+' home dock action missing');
  assert.equal(await car.locator('.xp-ux-dock-action:not([disabled])').count(),7,'Mock owner has approved Access, so all seven actions must work');
  await car.screenshot({path:path.join(OUTPUT,'g6-2026-controls-desktop.png'),animations:'disabled'});
  const readActions=async()=>car.locator('.xp-ux-dock-action').allTextContents();
@@ -329,8 +329,8 @@ async function main(){
      }
    });
  });
- assert.equal(await car.locator('button[data-xp-open="map"]').count(),1,'Desktop Location shortcut missing');
- await car.locator('button[data-xp-open="map"]').click();
+ assert.equal(await car.locator('.xp-ux-dock-action[data-xp-open="map"]').count(),1,'Desktop Location dock shortcut missing');
+ await car.locator('.xp-ux-dock-action[data-xp-open="map"]').click();
  await car.locator('[data-xp-map-host] hui-map-card[data-qa-native-map="true"]').waitFor({state:'visible'});
  const desktopMap=await car.evaluate(element=>{
    const root=element.shadowRoot,host=root.querySelector('[data-xp-map-host]'),
