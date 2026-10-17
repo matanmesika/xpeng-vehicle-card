@@ -1041,16 +1041,16 @@ class XpengVehicleCard extends HTMLElement{
   const c=this.xpLive('climate','cabin_climate');
   if(!c)return '<p>בקרת המיזוג אינה זמינה כרגע.</p>';
   const attrs=c.state.attributes||{};
-  const target=Number(attrs.temperature);
-  const actual=Number.isFinite(target)?target:22;
-  const inside=Number(attrs.current_temperature);
-  const insideText=Number.isFinite(inside)?xpNum(inside,1)+'°C':this.num('cabin','°C',1);
+  const target=attrs.temperature===null||attrs.temperature===undefined||attrs.temperature===''?null:Number(attrs.temperature);
+  const inside=attrs.current_temperature===null||attrs.current_temperature===undefined||attrs.current_temperature===''?null:Number(attrs.current_temperature);
+  const insideText=inside!==null&&Number.isFinite(inside)?xpNum(inside,1)+'°C':this.num('cabin','°C',1);
   const running=c.state.state!=='off';
-  const value=Number.isFinite(target)?xpNum(target,1)+'°C':'—';
+  const known=target!==null&&Number.isFinite(target)&&target>=Number(attrs.min_temp??16)&&target<=Number(attrs.max_temp??32);
+  const value=known?xpNum(target,1)+'°C':'—';
   return '<div class="xp-ux-climate-card">'
    +'<div class="xp-ux-climate-caption"><strong>מיזוג אוויר</strong><span>בתא הנוסעים: '+xpEsc(insideText)+'</span></div>'
-   +'<div class="xp-ux-temp-line"><button type="button" data-xp-temp="-1" aria-label="הורד חצי מעלה">−</button>'
-   +'<b>'+value+'</b><button type="button" data-xp-temp="1" aria-label="העלה חצי מעלה">+</button></div>'
+   +'<div class="xp-ux-temp-line"><button type="button" data-xp-temp="-1" aria-label="הורד חצי מעלה" '+(known?'':'disabled')+'>−</button>'
+   +'<b>'+value+'</b><button type="button" data-xp-temp="1" aria-label="העלה חצי מעלה" '+(known?'':'disabled')+'>+</button></div>'
    +'</div>';
  }
  xpFanControl(){
@@ -1433,9 +1433,10 @@ class XpengVehicleCard extends HTMLElement{
  xpDoTemperature(direction){
   const c=this.xpLive('climate','cabin_climate');
   if(!c)return;
-  const a=c.state.attributes||{},now=Number(a.temperature);
-  const step=Number(a.target_temp_step)||.5;
-  if(!Number.isFinite(now))return;
+  const a=c.state.attributes||{};
+  if(a.temperature===null||a.temperature===undefined||a.temperature==='')return;
+  const now=Number(a.temperature),step=Number(a.target_temp_step)||.5;
+  if(!Number.isFinite(now)||now<Number(a.min_temp??16)||now>Number(a.max_temp??32))return;
   const target=Math.round(Math.max(Number(a.min_temp??16),Math.min(Number(a.max_temp??32),now+direction*step))*10)/10;
   if(target!==now)this.xpSend('climate','set_temperature','cabin_climate',target);
  }
