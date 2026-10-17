@@ -895,6 +895,11 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-charge-cable-halo,.xp-charge-cable-core{fill:none;stroke-linecap:round}
 .xp-charge-cable-halo{stroke:#00eebb;stroke-width:12;filter:drop-shadow(0 0 14px #00ffcc)}
 .xp-charge-cable-core{stroke:#c3fff2;stroke-width:3}
+.xp-cable-mobile{display:none}
+@container xpeng-layout (max-width:850px){
+ .xp-cable-desktop{display:none}
+ .xp-cable-mobile{display:block}
+}
 .xp-ux-dock-seven .xp-ux-dock-action small{font-size:10px;white-space:normal;line-height:1.12}
 .xp-ux-dock-seven .xp-ux-dock-action:disabled{opacity:.48}
 /* The Home quick actions change text and icon only after HA reports a new state. */
@@ -2054,7 +2059,7 @@ class XpengVehicleCard extends HTMLElement{
  charging(){
   return `${this.title()}
     <div class="xp-station" aria-hidden="true">✕</div>${this.carArt()}
-    ${this.model()==='G6'?'<svg class="xp-charge-cable" aria-hidden="true" viewBox="0 0 1536 864" preserveAspectRatio="none"><path class="xp-charge-cable-halo" d="M1443 500C1464 647 1366 663 1235 625S1174 522 1185 479"/><path class="xp-charge-cable-core" d="M1443 500C1464 647 1366 663 1235 625S1174 522 1185 479"/></svg>':''}
+    ${this.model()==='G6'?'<svg class="xp-charge-cable" aria-hidden="true" viewBox="0 0 1536 864" preserveAspectRatio="none"><path class="xp-charge-cable-halo xp-cable-desktop" d="M1443 500C1464 647 1366 663 1235 625S1174 522 1185 479"/><path class="xp-charge-cable-core xp-cable-desktop" d="M1443 500C1464 647 1366 663 1235 625S1174 522 1185 479"/><path class="xp-charge-cable-halo xp-cable-mobile" d="M1440 685Q1408 747 1300 714"/><path class="xp-charge-cable-core xp-cable-mobile" d="M1440 685Q1408 747 1300 714"/></svg>':''}
     <section class="xp-charge-card" aria-label="Charging information">
        <div class="xp-charge-heading">${xpIcon('bolt',42)}<span>${xpEsc(this.chargeStatus())}</span></div>
        ${this.progress()}
