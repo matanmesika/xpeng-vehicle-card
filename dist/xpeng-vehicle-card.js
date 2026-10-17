@@ -1130,23 +1130,35 @@ class XpengVehicleCard extends HTMLElement{
  xpCabinHotspots(){
    return this.xpSeatButtons();
  }
+ // Xpengtk currently does not publish an interior-colour sensor.
+ // Only a colour from the selected vehicle's actual entity registry may
+ // supersede the editor setting, otherwise the editor stays authoritative.
+ xpCabinFinish(){
+   const selected=this.appearance().interior;
+   if(this.model()!=='G6')return selected;
+   const entityId=this._xpengByKey?.['sensor.interior_color']||this._xpengByKey?.['sensor.cabin_color'];
+   const entry=entityId?this._hass?.states?.[entityId]:null;
+   const raw=String(entry?.state??'').trim().toLowerCase().replace(/[ -]+/g,'_');
+   if(['white','light','light_gray','light_grey'].includes(raw))return 'light_gray';
+   if(['black','dark','dark_gray','dark_grey'].includes(raw))return 'dark_gray';
+   return selected;
+ }
  xpCabinView(){
-   const a=this.appearance();
+   const a={...this.appearance(),interior:this.xpCabinFinish()};
    const finish=XP_INTERIORS.find(x=>x.id===a.interior)||XP_INTERIORS[0];
    const multi=Array.isArray(this._config.vehicles)&&this._config.vehicles.length>0;
    const photos=multi?this.vehicle()?.interior_images:this._config.interior_images;
    const custom=photos&&typeof photos==='object'?photos[a.interior]:null;
    const group=xpYearGroupFor(a.model,a.year)?.id;
-   // Model/year-specific assets only; never render G6 cabin artwork for G9/P7.
-   const known=a.model==='G6'&&group==='2026';
+   // Both owner photos are shared by every G6 year/trim and never replaced by SVG.
+   const known=a.model==='G6';
    const photo=known?this.artworkUrl('interiors/g6/2026/'+a.interior+'_photo.webp'):null;
-   const drawing=known?this.artworkUrl('interiors/g6/2026/'+a.interior+'.svg'):null;
    const candidates=[
      ...(xpLocalArtworkPath(custom)?[{src:custom,portrait:!(this._config.interior_images_landscape===true),caption:'תמונת פנים לפי הגדרות הרכב'}]:[]),
-     ...(photo?[{src:photo,portrait:true,caption:'תצוגת פנים פוטוריאליסטית בהמחשה · XPENG G6'}]:[]),
-     ...(drawing?[{src:drawing,portrait:false,caption:'איור פנים חלופי · XPENG G6'}]:[])
+     ...(photo?[{src:photo,portrait:true,caption:'תמונת פנים בעל הרכב · XPENG G6'}]:[])
    ];
    const found=candidates.find(x=>!this._failedArtwork.has(x.src));
+   if(!found&&known)return '<div class="xp-ux-cabin xp-ux-cabin-art xp-ux-cabin-missing" role="status" dir="rtl">תמונת פנים G6 בצבע שנבחר עדיין לא צורפה לפרויקט. לא מוצגת הדמיה חלופית.</div>';
    if(!found)return this.xpCabinFallback();
    const orientation=found.portrait?' xp-ux-cabin-portrait':'';
    return '<div class="xp-ux-cabin xp-ux-cabin-art'+orientation+'" dir="ltr"><img class="xp-ux-cabin-picture" data-cabin-art src="'+xpEsc(found.src)

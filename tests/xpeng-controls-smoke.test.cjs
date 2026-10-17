@@ -486,3 +486,33 @@ test('G6 charging uses front asset and defers active actions to a modal',()=>{
  assert.match(card.xpModal(),/data-xp-command="stop_charge"/);
  assert.match(card.xpModal(),/data-xp-port="open"/);
 });
+
+test('all G6 generations use the same owner-photo slots',()=>{
+ for(const year of ['2023','2024','2025','2026']){
+   const {card}=createCard({model:'G6',year,interior:'light_gray'});
+   assert.match(card.xpCabinView(),/interiors\/g6\/2026\/light_gray_photo\.webp/);
+   card.setConfig({type:'custom:xpeng-vehicle-card',model:'G6',year,interior:'dark_gray',show_controls:true});
+   assert.match(card.xpCabinView(),/interiors\/g6\/2026\/dark_gray_photo\.webp/);
+ }
+ const {card}=createCard({model:'G9',year:'2026'});
+ assert.doesNotMatch(card.xpCabinView(),/interiors\/g6\/2026\//);
+});
+test('missing G6 photo must never show old synthetic SVG',()=>{
+ const {card}=createCard({model:'G6',year:'2026',interior:'light_gray'});
+ card._failedArtwork.add(card.artworkUrl('interiors/g6/2026/light_gray_photo.webp'));
+ const html=card.xpCabinView();
+ assert.match(html,/xp-ux-cabin-missing/);
+ assert.doesNotMatch(html,/\.svg|<svg|xp-ux-cabin-fallback/);
+});
+test('only verified same-vehicle integration colour overrides G6 editor choice',()=>{
+ const {card}=createCard({model:'G6',year:'2026',interior:'light_gray'});
+ assert.equal(card.xpCabinFinish(),'light_gray');
+ card._hass.states['sensor.another_vehicle_colour']={state:'black',attributes:{}};
+ assert.equal(card.xpCabinFinish(),'light_gray');
+ card._xpengByKey['sensor.interior_color']='sensor.vehicle_colour';
+ card._hass.states['sensor.vehicle_colour']={state:'black',attributes:{}};
+ assert.equal(card.xpCabinFinish(),'dark_gray');
+ assert.match(card.xpCabinView(),/dark_gray_photo\.webp/);
+ card._hass.states['sensor.vehicle_colour'].state='unavailable';
+ assert.equal(card.xpCabinFinish(),'light_gray');
+});
