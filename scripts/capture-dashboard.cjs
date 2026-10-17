@@ -153,6 +153,7 @@ async function main(){
   });
   assert.ok(officialIcons.count>0,'At least one native HA icon should appear on every scene');
   assert.deepEqual(officialIcons.missing,[],'All screenshot glyphs must use official MDI paths');
+  console.log('Native MDI icons validated:',officialIcons.count,'scene:',name);
 
   await page.waitForTimeout(600);
   await car.screenshot({path:path.join(OUTPUT,'g6-2026-'+name+'.png'),animations:'disabled'});
