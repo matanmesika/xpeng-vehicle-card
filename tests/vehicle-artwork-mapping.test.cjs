@@ -87,7 +87,7 @@ test('year editor changes must invalidate old manual hero images, unlike trim ch
  assert.match(js, /\['model','year_group','year','color'\]\.includes\(key\)/);
  assert.doesNotMatch(js, /\['model','year','color','trim'\]\.includes\(key\)/);
 });
-test('G6 charging keeps original metrics layout with front-looking artwork', () => {
+test('G6 charging keeps original metrics and correct rear-facing grey artwork', () => {
  const cfg={model:'G6',year:'2026',color:'graphite_gray'};
  const car=instance(cfg);
  const front=car.assetSpec();
@@ -96,6 +96,8 @@ test('G6 charging keeps original metrics layout with front-looking artwork', () 
  assert.equal(car.assetSpec().tier,'silhouette');
  const charge=instance(cfg,true);
  assert.ok(charge.assetSpec().src.endsWith('/vehicles/g6/2026/graphite_gray/charging.webp'));
+ const whiteCharging=instance({model:'G6',year:'2026',color:'arctic_white'},true);
+ assert.ok(whiteCharging.assetSpec().src.endsWith('/vehicles/g6/2026/graphite_gray/charging.webp'));
  const top=instance(cfg);
  assert.match(top.topCarArt(),/data-top-art/);
  top._failedArtwork.add(top.artworkUrl('vehicles/g6/2026/graphite_gray/top.webp'));
