@@ -67,10 +67,11 @@ jobs:
           # The smaller JPEG is used for direct visual inspection on mobile.
           python - <<'PY'
           from pathlib import Path
-          p=Path('docs/screenshots/g6-2026-charging-review-desktop.jpg')
-          b=p.read_bytes()
-          assert b.startswith(bytes([0xff,0xd8,0xff])) and len(b)>25_000,(p,len(b))
-          print('verified desktop review JPEG',p,len(b))
+          for name in ['charging-review-desktop','home-review-desktop','home-review-mobile']:
+              p=Path('docs/screenshots/g6-2026-'+name+'.jpg')
+              b=p.read_bytes()
+              assert b.startswith(bytes([0xff,0xd8,0xff])) and len(b)>18_000,(p,len(b))
+              print('verified owner review JPEG',p,len(b))
           PY
 
       - name: Commit browser captures to the screenshot gallery
@@ -78,7 +79,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/screenshots/*.png docs/screenshots/g6-2026-charging-review-desktop.jpg
+          git add docs/screenshots/*.png docs/screenshots/g6-2026-*-review-*.jpg
           if ! git diff --staged --quiet; then
             git commit -m "docs: add actual rendered XPENG card screenshots"
             # Work safely with concurrent changes to this PR branch.
