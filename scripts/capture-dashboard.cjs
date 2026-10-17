@@ -423,7 +423,12 @@ async function main(){
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(true));
  const greenDebug=await car.evaluate(e=>({active:e.xpChargingActive(),view:e._view,dismissed:e._xpChargingDismissed,last:e._xpLastActualCharging,charging:e.val('charging'),plugged:e.val('plugged'),svg:!!e.shadowRoot.querySelector('svg.xp-charge-cable-live')}));
  console.log('Live cable after charge transition:',JSON.stringify(greenDebug));
- assert.equal(await car.locator('.xp-charge-cable-live').count(),1,'Real charge turns cable green: '+JSON.stringify(greenDebug));
+ assert.equal(await car.locator('.xp-charge-cable-live').count(),2,'Both breakpoint-specific charging overlays are present: '+JSON.stringify(greenDebug));
+ const liveCable=await car.evaluate(el=>{
+  const svgs=[...el.shadowRoot.querySelectorAll('svg[data-xp-cable]')];
+  return svgs.map(svg=>({mode:svg.dataset.xpCable,visible:getComputedStyle(svg).display!=='none',paths:svg.querySelectorAll('path').length}));
+ });
+ assert.equal(liveCable.filter(x=>x.visible).length,1,'Only the correct desktop/phone cable may be visible');
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
  assert.equal(await car.locator('.xp-charge-cable-live').count(),0,'Idle state removes green cable');
  assert.equal(errors.length,0,errors.join('\n'));
