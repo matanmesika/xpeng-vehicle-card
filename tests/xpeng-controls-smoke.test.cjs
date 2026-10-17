@@ -58,10 +58,13 @@ test('renamed entity IDs resolve from Xpengtk stable unique IDs', () => {
 });
 test('interior artwork respects selected colour; original background unchanged', () => {
   const {card} = createCard();
+  assert.match(card.xpCabinView(), /interiors\/g6\/2026\/light_gray_photo\.webp/);
+  const photo=card.artworkUrl('interiors/g6/2026/light_gray_photo.webp');
+  card._failedArtwork.add(photo);
   assert.match(card.xpCabinView(), /interiors\/g6\/2026\/light_gray\.svg/);
   assert.equal((card.xpCabinView().match(/data-xp-seat=/g) || []).length, 2);
   card.setConfig({type: 'custom:xpeng-vehicle-card', prefix: 'xpeng_g6', model: 'G6', year: '2026', interior: 'black', show_controls: true});
-  assert.match(card.xpCabinView(), /interiors\/g6\/2026\/dark_gray\.svg/);
+  assert.match(card.xpCabinView(), /interiors\/g6\/2026\/dark_gray_photo\.webp/);
   const artRoot = path.join(__dirname, '..', 'assets', 'interiors', 'g6', '2026');
   const light = fs.readFileSync(path.join(artRoot, 'light_gray.svg'), 'utf8');
   const dark = fs.readFileSync(path.join(artRoot, 'dark_gray.svg'), 'utf8');
@@ -131,4 +134,27 @@ test('safe vehicle controls require only approved HA entities', () => {
   assert.match(card.xpVehiclePanel(), /data-xp-vehicle="lock.lock.door_lock"/);
   assert.match(card.xpVehiclePanel(), /data-xp-vehicle="button.press.close_windows"/);
   assert.doesNotMatch(card.xpVehiclePanel(), /data-xp-vehicle="lock.unlock/);
+});
+
+test('charge flap panel includes both separate commands and a cable-release disclaimer', () => {
+  const {card} = createCard();
+  card._xpengByKey['button.close_charge_port']='button.close_flap';
+  card._hass.states['button.close_flap']={state:'unknown',attributes:{}};
+  assert.match(card.xpPortPanel(), /data-xp-port="open"/);
+  assert.match(card.xpPortPanel(), /data-xp-port="close"/);
+  assert.match(card.xpPortPanel(), /לא לשחרור נעילת הכבל/);
+  card._xpPanel='port';card.render();
+  assert.match(card.shadowRoot.innerHTML, /data-xp-port="close"/);
+  assert.doesNotMatch(card.shadowRoot.innerHTML, /data-xp-page="seats"/);
+});
+test('G6 photo mapping keeps other XPENG model artwork unchanged', () => {
+  const {card}=createCard({model:'G9',year:'2026'});
+  assert.doesNotMatch(card.xpCabinView(), /interiors\/g6\/2026\/.+_photo/);
+});
+test('photo files must be committed before releasing this draft', () => {
+  const root=path.join(__dirname,'..','assets','interiors','g6','2026');
+  const required=['light_gray_photo.webp','dark_gray_photo.webp'];
+  for(const name of required){
+    assert.ok(fs.existsSync(path.join(root,name)),name+' is not yet in GitHub');
+  }
 });
