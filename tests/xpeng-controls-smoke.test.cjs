@@ -648,6 +648,79 @@ test('identical one-dock actions on both automatic Home/Charging; subpages are o
  card._xpPanel=null;card.render();
  assert.equal((h.innerHTML.match(/class="xp-ux-dock-action"/g)||[]).length,7);
 });
+test('subpages hide duplicate model name, preserving model identification on Home',()=>{
+ const {card}=createCard();
+ card._hass.states['binary_sensor.is_charging'].state='off';
+ card.render();
+ assert.match(card.shadowRoot.innerHTML, /<h1>XPENG <em>G6<\/em><\/h1>/);
+ for(const page of ['climate','maintenance','map','charge_controls','charge_schedule','extras']){
+   card._xpPanel=page;card.render();
+   const modal=card.xpModal();
+   const header=modal.match(/<header class="xp-ux-modal-head">[\s\S]*?<\/header>/)?.[0];
+   assert.ok(header,'Missing page header '+page);
+   assert.doesNotMatch(header, /G6|<span>/, 'No redundant G6 label within '+page+' title');
+   assert.match(header, /<h2>/);
+ }
+});
+test('nested Climate -> HVAC schedule returns to the same Climate window',()=>{
+ const {card}=createCard();
+ card._hass.states['binary_sensor.is_charging'].state='off';
+ card.render();
+ card.xpNavigatePanel('climate');
+ assert.match(card.xpModal(),/xp-ux-modal-climate/);
+ card.xpNavigatePanel('extras','schedule');
+ assert.equal(card._xpNavStack.length,1);
+ assert.match(card.xpModal(),/xp-ux-modal-extras/);
+ assert.match(card.xpModal(),/חזרה לחלון הקודם/);
+ card.xpBackPanel();
+ assert.equal(card._xpPanel,'climate');
+ assert.equal(card._xpNavStack.length,0);
+ assert.match(card.xpModal(),/xp-ux-modal-climate/);
+ card.xpBackPanel();
+ assert.equal(card._xpPanel,null);
+ assert.equal(card._xpExtraSection,null);
+ assert.equal(card._xpNavStack.length,0);
+});
+test('Extras -> Diagnostics returns first to Extras, then to Home',()=>{
+ const {card}=createCard();
+ card.xpNavigatePanel('extras');
+ card.xpNavigatePanel('extras','diagnostics');
+ assert.equal(card._xpNavStack.length,1);
+ assert.match(card.xpExtrasPanel(),/xp-entity-diagnostics|לא זוהו ישויות/);
+ card.xpBackPanel();
+ assert.equal(card._xpPanel,'extras');
+ assert.equal(card._xpExtraSection,null);
+ assert.match(card.xpExtrasPanel(),/data-xp-extra-page="diagnostics"/);
+ card.xpBackPanel();
+ assert.equal(card._xpPanel,null);
+ assert.equal(card._xpNavStack.length,0);
+});
+test('multi-hop modal Back stack clears on charge transition, vehicle switch, or config reset',()=>{
+ const {card}=createCard();
+ card.xpNavigatePanel('climate');
+ card.xpNavigatePanel('extras','schedule');
+ card.xpNavigatePanel('maintenance');
+ assert.equal(card._xpNavStack.length,2);
+ card.xpBackPanel();
+ assert.equal(card._xpPanel,'extras');
+ assert.equal(card._xpExtraSection,'schedule');
+ card.xpBackPanel();
+ assert.equal(card._xpPanel,'climate');
+ card.xpNavigatePanel('extras','schedule');
+ card._xpengRegistryLoaded=true;
+ card._xpLastActualCharging=false;
+ card.hass={...card._hass,states:{...card._hass.states,'binary_sensor.is_charging':{state:'off',attributes:{}},'binary_sensor.cable_present':{state:'off',attributes:{}}}};
+ card.xpNavigatePanel('extras','diagnostics');
+ card.setConfig({type:'custom:xpeng-vehicle-card',model:'G6',year:'2026',prefix:'xpeng_g6'});
+ assert.equal(card._xpPanel,null);
+ assert.equal(card._xpNavStack.length,0);
+ card.xpNavigatePanel('climate');
+ card.xpNavigatePanel('extras','schedule');
+ card._xpLastActualCharging=false;
+ card.hass={...card._hass,states:{...card._hass.states,'binary_sensor.is_charging':{state:'on',attributes:{}},'binary_sensor.cable_present':{state:'on',attributes:{}}}};
+ assert.equal(card._xpPanel,null,'New active charging scene invalidates the old subpage stack');
+ assert.equal(card._xpNavStack.length,0);
+});
 test('unavailable stop-charge command stays visible but disabled; no invented API call',()=>{
  const {card}=createCard();
  delete card._hass.states['button.stop_vehicle_charging'];
