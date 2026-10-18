@@ -1561,6 +1561,15 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 }
 
 
+/* Scale the complete owner cabin photo to fit the desktop climate viewport:
+ * preserve aspect ratio and four rear/front zones, without cutting rear seats.
+ */
+@container xpeng-layout (min-width:851px){
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{
+  width:min(338px,100%);max-width:338px;height:auto;max-height:none;
+  margin:0 auto;
+ }
+}
 /* Physical seat/steering location is the ONLY controls surface for heating and
  * ventilation: no duplicate buttons outside the photo.
  */
