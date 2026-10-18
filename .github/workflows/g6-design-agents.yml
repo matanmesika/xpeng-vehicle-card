@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - design/g6-premium-visual-pass-20261018
+      - refactor/g6-isolated-design-and-help-20261018
   pull_request:
     branches:
       - release/v1.0.4-beta.10
@@ -28,6 +29,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Verify generated JS matches isolated runtime + CSS
+        run: node tools/build_vehicle_card.mjs --check
       - name: Verify deliberate visual system improvements
         run: node --test --test-name-pattern="Design Agent" tests/g6-design-agents.test.cjs
 
