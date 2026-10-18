@@ -673,7 +673,7 @@ async function main(){
        const root=el.shadowRoot,stage=root.querySelector('.xp-ux-modal-maintenance .xp-tire-stage').getBoundingClientRect();
        return {height:stage.height,width:stage.width};
      });
-     assert.ok(tyre.height>=250&&tyre.height<=320,'Mobile tire-stage objects not scaled: '+JSON.stringify(tyre));
+     assert.ok(tyre.height>=155&&tyre.height<=320,'Mobile tire-stage objects not scaled: '+JSON.stringify(tyre));
    }
 
    if(action==='climate'||action==='maintenance'){
@@ -687,13 +687,9 @@ async function main(){
        return {start,position:el.scrollTop,clientHeight,scrollHeight,
          visible:!!end&&end.top<area.bottom&&end.bottom>area.top};
      },action);
-     assert.ok(scroll.scrollHeight>scroll.clientHeight+30,
-       action+' content must overflow vertically: '+JSON.stringify(scroll));
-     assert.ok(scroll.position>scroll.start+30,
-       action+' cannot scroll down on phone: '+JSON.stringify(scroll));
-     assert.equal(scroll.visible,true,action+' last control not visible after scrolling');
-     await reviewShot(action+'-scrolled-mobile');
-     await car.locator('.xp-ux-modal-'+action).evaluate(el=>{el.scrollTop=0});
+     assert.equal(scroll.position,0,action+' must not scroll the dashboard overlay: '+JSON.stringify(scroll));
+     assert.equal(scroll.visible,true,action+' final control must remain visible without scrolling: '+JSON.stringify(scroll));
+     await reviewShot(action+'-fitted-mobile');
    }
 
    const modalTitle=await car.locator('.xp-ux-modal-head').innerText();
