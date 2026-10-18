@@ -2072,6 +2072,30 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  }
 }
 
+/* Beta 9: make maintenance compact before applying measured content-only fit. */
+.xp-ux-modal>.xp-ux-modal-content>.xp-ux-modal-content-inner{
+ width:100%;min-width:0;transform-origin:top center;flex:0 0 auto
+}
+.xp-ux-modal-map .xp-ux-modal-content-inner,
+.xp-ux-modal-extras:has(.xp-extra-diagnostics-layout) .xp-ux-modal-content-inner{
+ display:flex;flex:1 1 auto;flex-direction:column;min-height:0;height:100%
+}
+.xp-ux-modal-maintenance .xp-maint-info{
+ grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(4px,.7cqw,8px)
+}
+.xp-ux-modal-maintenance .xp-maint-info .xp-extra-line{
+ min-width:0;min-height:0;padding:clamp(5px,.55cqw,8px)!important;
+ font-size:clamp(10px,1.1cqw,13px)
+}
+.xp-ux-modal-maintenance .xp-tire-screen{
+ height:clamp(180px,28dvh,245px)!important;min-height:0!important;margin:0 auto 8px!important
+}
+@container xpeng-layout (max-width:600px){
+ .xp-ux-modal-maintenance .xp-maint-info{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .xp-ux-modal-maintenance .xp-maint-info .xp-extra-line{padding:5px!important}
+ .xp-ux-modal-maintenance .xp-maintenance-page h3{font-size:14px;margin:3px 0}
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -2771,6 +2795,24 @@ class XpengVehicleCard extends HTMLElement{
     +'<button class="xp-map-native-details" type="button" data-xp-map-details '+(location?'':'disabled')+'>'
     +xpIcon('pin',18)+' פרטי מיקום ב־Home Assistant</button></div></div>';
  }
+
+ xpFitModalContent(){
+   const modal=this.shadowRoot?.querySelector?.('.xp-ux-modal');
+   const area=modal?.querySelector?.('.xp-ux-modal-content');
+   const inner=area?.querySelector?.('.xp-ux-modal-content-inner');
+   if(!inner||!area)return;
+   // Map and diagnostic list already fill via flex. Never resize their internals.
+   if(this._xpPanel==='map'||(this._xpPanel==='extras'&&this._xpExtraSection==='diagnostics')){
+     inner.style.zoom='';inner.style.width='';return;
+   }
+   inner.style.zoom='1';inner.style.width='100%';
+   const available=area.clientHeight,needed=inner.scrollHeight;
+   if(!available||!needed||needed<=available+1){inner.dataset.xpFitScale='1';return;}
+   const ratio=Math.max(.62,Math.min(1,(available-3)/needed));
+   inner.style.zoom=String(ratio);
+   inner.style.width=(100/ratio)+'%';
+   inner.dataset.xpFitScale=String(ratio);
+ }
  xpWarmMapHelpers(){
    // Warm the native Home Assistant map helper code once, before first Location tap.
    // Do not attach a map or retrieve any new location coordinates in the background.
@@ -2832,7 +2874,7 @@ class XpengVehicleCard extends HTMLElement{
    return '<section class="xp-ux-modal xp-ux-modal-'+page+(page==='charge_controls'||page==='charge_schedule'?' xp-charge-compact-modal':'')+'" role="dialog" aria-modal="true" aria-label="'+labels[page]+'" dir="rtl">'
     +'<header class="xp-ux-modal-head"><button type="button" data-xp-close aria-label="'+(this._xpNavStack?.length?'חזרה לחלון הקודם':'חזרה למסך הבית')+'">'+xpIcon('back',24)+'</button>'
     +'<h2>'+labels[page]+'</h2></header>'
-    +'<div class="xp-ux-modal-content">'+body+'</div>'+(this._xpNotice?'<p class="xp-ux-notice" role="status">'+xpEsc(this._xpNotice)+'</p>':'')
+    +'<div class="xp-ux-modal-content"><div class="xp-ux-modal-content-inner">'+body+'</div></div>'+(this._xpNotice?'<p class="xp-ux-notice" role="status">'+xpEsc(this._xpNotice)+'</p>':'')
     +'</section>';
  }
 
@@ -3176,8 +3218,11 @@ class XpengVehicleCard extends HTMLElement{
    this._xpManualCharging=false;this._xpChargingDismissed=this.xpChargingActive();
    this._xpNotice='';this.render();
  }
- connectedCallback(){if(this._hass)this.xpWarmMapHelpers();if(!this._fullscreenHandler){this._fullscreenHandler=()=>{if(!document.fullscreenElement&&this._expanded){this._expanded=false;this.render();}};}document.addEventListener('fullscreenchange',this._fullscreenHandler);}
- disconnectedCallback(){if(this._fullscreenHandler)document.removeEventListener('fullscreenchange',this._fullscreenHandler);}
+ connectedCallback(){if(this._hass)this.xpWarmMapHelpers();
+  if(typeof ResizeObserver!=='undefined'&&!this._xpFitResizeObserver){
+   this._xpFitResizeObserver=new ResizeObserver(()=>this.xpFitModalContent());
+  }if(!this._fullscreenHandler){this._fullscreenHandler=()=>{if(!document.fullscreenElement&&this._expanded){this._expanded=false;this.render();}};}document.addEventListener('fullscreenchange',this._fullscreenHandler);}
+ disconnectedCallback(){this._xpFitResizeObserver?.disconnect();this._xpFitResizeObserver=null;this._xpObservedCard=null;if(this._fullscreenHandler)document.removeEventListener('fullscreenchange',this._fullscreenHandler);}
  toggleFullScreen(){this._expanded=!this._expanded;if(this._expanded&&this.requestFullscreen){this.requestFullscreen().catch(()=>{});}else if(!this._expanded&&document.fullscreenElement===this){document.exitFullscreen().catch(()=>{});}this.render();}
  setConfig(config){
   if(!config||typeof config!=='object')throw Error('XPENG card configuration required');
@@ -3569,6 +3614,13 @@ class XpengVehicleCard extends HTMLElement{
     const diagnostics=newModal.querySelector('.xp-diagnostics-scroll');
     if(diagnostics)diagnostics.scrollTop=oldDiagnostics;
   }
+  if(this._xpFitResizeObserver){
+   const haCard=this.shadowRoot?.querySelector?.('ha-card');
+   if(haCard&&haCard!==this._xpObservedCard){
+    this._xpFitResizeObserver.disconnect();this._xpFitResizeObserver.observe(haCard);this._xpObservedCard=haCard;
+   }
+  }
+  this.xpFitModalContent();
   if(this._xpPanel==='map')this.xpMountMap();
  }
 }
