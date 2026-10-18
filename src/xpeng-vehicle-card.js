@@ -2260,8 +2260,8 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  }
  .xp-ux-modal-climate .xp-climate-temp-panel,.xp-ux-modal-climate .xp-climate-fan-panel{padding:7px 9px}
  .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-cycle{
-  width:clamp(31px,9cqw,37px);min-width:31px;
-  height:40px;min-height:40px;padding:1px;gap:0
+  width:42px;min-width:42px;
+  height:44px;min-height:44px;padding:1px;gap:0
  }
 }
 
