@@ -176,7 +176,8 @@ async function main(){
  });
  const desktopContent=await contentSignature();
  assert.deepEqual(desktopContent.actions,['climate','doors','windows','port','trunk','maintenance','map']);
- assert.deepEqual(desktopContent.infoRows,['Location']);
+ assert.deepEqual(desktopContent.infoRows,[]);
+ assert.equal(await car.locator('.xp-status-panel').count(),0,'Home must have no right-hand Location panel');
  assert.equal(await car.locator('.xp-ux-dock-action[data-xp-open="maintenance"]').count(),1,'Only Home maintenance shortcut should remain');
  assert.equal(await car.locator('.xp-status-panel [data-xp-open="maintenance"]').count(),0,'Home maintenance card must be absent');
  console.log('Canonical desktop/phone content signature:',JSON.stringify(desktopContent));
@@ -252,25 +253,24 @@ async function main(){
      assert.deepEqual(current,desktopContent,'Home contents differ on '+width+'px Sections/iPhone card');
      const geometry=await car.evaluate(el=>{
        const root=el.shadowRoot,stage=root.querySelector('.xp-scene');
-       const d=stage.getBoundingClientRect(),panel=root.querySelector('.xp-status-panel');
+       const d=stage.getBoundingClientRect();
        const dock=root.querySelector('.xp-ux-dock-seven');
-       const boxes=[panel,dock,...root.querySelectorAll('.xp-ux-dock-action')].map(x=>({
+       const boxes=[dock,...root.querySelectorAll('.xp-ux-dock-action')].map(x=>({
          className:x.className,rect:x.getBoundingClientRect().toJSON(),
          displayed:getComputedStyle(x).display!=='none'
        }));
-       const a=panel.getBoundingClientRect(),b=dock.getBoundingClientRect();
-       const overlap=Math.max(0,Math.min(a.right,b.right)-Math.max(a.left,b.left))*
-                     Math.max(0,Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top));
-       return {scene:d.toJSON(),boxes,overlap};
+       return {scene:d.toJSON(),boxes,
+         noLocationPanel:!root.querySelector('.xp-status-panel,.xp-location-row')};
      });
-     assert.equal(geometry.boxes.length,9,'seven controls plus two vehicle-status/nav containers required');
+     assert.equal(geometry.boxes.length,8,'seven direct/navigation actions plus dock container required');
+     assert.equal(geometry.noLocationPanel,true,'Unwanted Location overlay on '+width+'px');
      assert.ok(geometry.boxes.every(b=>b.displayed&&b.rect.width>0&&b.rect.height>0&&
        b.rect.left>=geometry.scene.left-2&&b.rect.right<=geometry.scene.right+2&&
        b.rect.top>=geometry.scene.top-2&&b.rect.bottom<=geometry.scene.bottom+2),
        'Controls or vehicle status clipped on '+width+'px card: '+JSON.stringify(geometry));
-     assert.ok(geometry.overlap<1,'Vehicle status and seven quick actions overlap: '+JSON.stringify(geometry));
+
    }
-   if(!charging && width<=520)assert.equal(layout.panelColumns,1,JSON.stringify(layout));
+   if(!charging)assert.equal(layout.panelColumns,0,'Home location panel must not render: '+JSON.stringify(layout));
    if(viewportWidth===width)assert.equal(layout.horizontalOverflow,false,JSON.stringify(layout));
    await car.screenshot({path:path.join(OUTPUT,'g6-2026-'+name+'.png'),animations:'disabled'});
    console.log('Responsive capture '+name,JSON.stringify(layout));
