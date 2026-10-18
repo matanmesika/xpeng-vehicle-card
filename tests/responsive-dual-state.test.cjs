@@ -59,16 +59,16 @@ test('native MDI glyphs replace ALL hand-drawn dashboard controls',()=>{
  const block=source.slice(source.indexOf('const XP_ICONS = Object.freeze('),source.indexOf('function xpEsc(v)'));
  assert.match(block,/fan:'mdi:fan'/);
  for(const icon of ['mdi:home-outline','mdi:lock-outline','mdi:lock-open-variant-outline',
-    'mdi:car-door','mdi:car-back','mdi:map-marker-outline',
+    'mdi:car-door','mdi:car-hatchback','mdi:map-marker-outline',
     'mdi:arrow-right','mdi:cog-outline','mdi:wrench-outline','mdi:battery-outline',
     'mdi:ev-station','mdi:car-seat-heater','mdi:car-seat-cooler','mdi:steering','mdi:wifi'])
    assert.ok(block.includes(icon),'Native MDI mapping missing: '+icon);
-  assert.doesNotMatch(block,/mdi:window-open|mdi:window-open-variant|mdi:car-hatchback/,'Old household-window and generic hatchback icons must not return');
+  assert.doesNotMatch(block,/mdi:window-open|mdi:window-open-variant/,'House-window symbols must not return');
  assert.doesNotMatch(block,/<(?:svg|ellipse|circle|path|rect)\b/,'No hand-drawn SVG for buttons');
  assert.match(block,/<ha-icon class="xp-mdi-icon" icon="\$\{mdi\}"/);
  assert.match(source,/\$\{xpIcon\('wifi',24\)\}/,'Connection indicator must also be native');
  assert.doesNotMatch(source,/\.xp-ux-(?:dock-action|cycle|climate-feature) svg/);
- assert.match(source,/\${xpIcon\('battery',48\)\}/,'Battery badge must use native MDI rather than hand-drawn CSS glyph');
+  assert.match(source,/xpBatteryGauge\\(\\)/,'Battery badge derives from live SOC and official MDI levels');
  assert.match(source,/\${xpIcon\('station',24\)\}/,'Charging-station pictogram must use native MDI');
  assert.doesNotMatch(source,/<span class="xp-x-mark">✕<\/span>/,'Do not pretend a typographic X is the XPENG logo');
  assert.match(css,/\.xp-mdi-icon\{display:inline-flex/);
