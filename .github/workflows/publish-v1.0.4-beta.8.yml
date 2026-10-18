@@ -57,7 +57,7 @@ jobs:
           test -s docs/releases/v1.0.4-beta.8.md
 
           grep -Fq 'PASS desktop cog/Wi-Fi spacing and uniform action icon palette' scripts/capture-dashboard.cjs
-          grep -Fq 'beta.8: desktop cog/communication separation' tests/responsive-dual-state.test.cjs
+          grep -Fq 'beta.7: desktop cog/communication separation' tests/responsive-dual-state.test.cjs
           grep -Fq 'Beta 7: consistent icon color' src/xpeng-vehicle-card.js
           grep -Fq '.xp-header .xp-meta-tools{gap:14px}' src/xpeng-vehicle-card.js
           test -s docs/releases/v1.0.4-beta.8.md
