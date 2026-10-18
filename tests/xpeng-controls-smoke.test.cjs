@@ -1054,7 +1054,11 @@ test('HVAC reference panel draws only real fan levels and working seat controls'
  assert.match(panel,/xp-climate-primary-controls/);
  assert.match(panel,/xp-climate-thermometers/);
  assert.match(panel,/xp-fan-bars/);
- assert.match(panel,/xp-climate-seat-overview/);
+ assert.doesNotMatch(panel,/xp-climate-seat-overview|xp-seat-summary-action/);
+ assert.equal((panel.match(/data-xp-cycle="driver_seat_heat_select"/g)||[]).length,1);
+ assert.match(panel,/xp-ux-hotspot-zone xp-ux-driver/);
+ assert.match(panel,/mdi:car-seat-heater/);
+ assert.match(panel,/mdi:steering/);
  assert.match(panel,/data-xp-cycle="driver_seat_heat_select"/);
  assert.match(panel,/data-xp-cycle="left_rear_seat_heat_select"/);
  assert.doesNotMatch(panel,/data-xp-cycle="left_rear_seat_ventilation_select"/);
@@ -1064,3 +1068,27 @@ test('HVAC reference panel draws only real fan levels and working seat controls'
  assert.match(panel,/role="status" aria-label="מצב AUTO: פעיל"/);
 });
 
+
+test('only actual photo hotspots control every seat function and steering heat',async()=>{
+ const {card,commands}=createCard();
+ card._xpengByKey['select.driver_seat_ventilation_select']='select.driver_vent';
+ card._hass.states['select.driver_vent']={state:'Off',attributes:{options:['Off','Ventilation 1','Ventilation 2','Ventilation 3']}};
+ card._xpengByKey['select.passenger_seat_heat_select']='select.passenger_heat';
+ card._hass.states['select.passenger_heat']={state:'Heat 1',attributes:{options:['Off','Heat 1','Heat 2','Heat 3']}};
+ card._xpPanel='climate';
+ let modal=card.xpModal();
+ assert.doesNotMatch(modal,/xpSeatOverview|xp-climate-seat-overview|xp-seat-summary/);
+ for(const zone of ['driver','passenger','wheel'])
+   assert.match(modal,new RegExp('class="xp-ux-hotspot-zone xp-ux-'+zone+'"'));
+ for(const key of ['driver_seat_heat_select','driver_seat_ventilation_select','passenger_seat_heat_select','steering_wheel_heat_select'])
+   assert.equal((modal.match(new RegExp('data-xp-cycle="'+key+'"','g'))||[]).length,1,'Control only once on corresponding photo');
+ assert.match(modal,/mdi:car-seat-heater/);
+ assert.match(modal,/mdi:car-seat-cooler/);
+ assert.match(modal,/mdi:steering/);
+ await card.xpCycleSeat('driver_seat_ventilation_select');
+ assert.ok(commands.some(x=>x.domain==='select'&&x.service==='select_option'&&x.data.entity_id==='select.driver_vent'));
+ delete card._xpengByKey['select.driver_seat_ventilation_select'];
+ delete card._hass.states['select.driver_vent'];
+ modal=card.xpModal();
+ assert.doesNotMatch(modal,/data-xp-cycle="driver_seat_ventilation_select"/);
+});
