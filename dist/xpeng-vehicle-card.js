@@ -3002,12 +3002,13 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  --mdc-icon-size:var(--xp-trunk-size)
 }
 .xp-trunk-symbol>.xp-trunk-arrow{
- position:absolute;right:-.25em;top:-.35em;
- display:grid;place-items:center;width:14px;height:14px;
- --mdc-icon-size:14px;
- border:1px solid rgba(95,205,230,.54);
- border-radius:50%;background:#082d43;color:#5decc3;
- box-shadow:0 2px 7px #0009
+ /* The SUV silhouette must remain fully visible; place the action cue
+    BESIDE the rear end, rather than covering the trunk with a big bubble. */
+ position:absolute;right:-7px;top:11px;z-index:2;
+ display:grid;place-items:center;width:11px;height:11px;
+ --mdc-icon-size:10px;
+ border:0;background:#082d43;color:#5decc3;
+ border-radius:4px;box-shadow:0 1px 4px #0008
 }
 .xp-trunk-symbol-lower>.xp-trunk-arrow{
  color:#ffc17b;border-color:rgba(252,181,103,.68)
@@ -3017,7 +3018,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 }
 @container xpeng-layout (max-width:520px){
  .xp-trunk-symbol>.xp-trunk-arrow{
-  right:-.29em;top:-.41em;width:12px;height:12px;--mdc-icon-size:12px
+  right:-4px;top:11px;width:10px;height:10px;--mdc-icon-size:9px
  }
 }
 
