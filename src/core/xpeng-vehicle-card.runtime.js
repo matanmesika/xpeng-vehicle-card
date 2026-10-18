@@ -1026,7 +1026,8 @@ class XpengVehicleCard extends HTMLElement{
    }
    // An in-page explanation must never force the physical cabin photo or
    // control buttons to shrink. These panels scroll at their own modal surface.
-   if(this._xpPanel&&!(this._xpPanel==='extras'&&this._xpExtraSection==='diagnostics')){
+   const isNarrow=modal.getBoundingClientRect().width<850;
+   if(isNarrow&&this._xpPanel&&!(this._xpPanel==='extras'&&this._xpExtraSection==='diagnostics')){
      inner.style.zoom='';inner.style.width='100%';inner.dataset.xpFitScale='1';
      return;
    }
