@@ -851,6 +851,12 @@ test('one-tap controls alter visible action labels, icons, and avoid duplicate c
  st['lock.real'].state='unlocked';
  st['binary_sensor.real_windows'].state='on';
  st['sensor.real_port'].state='Open';
+ // Action state should not bounce immediately on stale sensor updates.
+ for(const action of ['doors','windows','port']){
+   assert.match(card.xpDock(),new RegExp('data-xp-toggle="'+action+'"[^>]*aria-busy="true"'));
+   card._xpTogglePending[action].at-=2000;
+   assert.equal(card.xpPendingToggle(action),null,'A confirmed action clears its pending state');
+ }
  nav=card.xpDock();
  assert.match(nav,/נעל/);
  assert.match(nav,/סגור חלונות/);
@@ -908,6 +914,8 @@ test('tailgate cycles open and close in one verified tap; Access and unknown sta
  assert.equal(confirms,0);
  st['binary_sensor.real_trunk'].state='on';
  assert.equal(card.xpToggleTarget('trunk').suffix,'close_trunk');
+ assert.match(card.xpDock(),/aria-busy="true"/);
+ card._xpTogglePending.trunk.at-=2000;card.xpPendingToggle('trunk');
  assert.match(card.xpDock(),/סגור תא מטען/);
  card.xpToggle('trunk');await new Promise(resolve=>setImmediate(resolve));
  assert.equal(commands.at(-1).data.entity_id,'button.real_close_trunk');
