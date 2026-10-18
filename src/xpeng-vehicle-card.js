@@ -2523,6 +2523,18 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  }
 }
 
+/* Charging limit/schedule dialogs are deliberately compact. With a function
+   guide in their header, allow the actual controls to scroll at any card width. */
+.xp-scene .xp-ux-modal.xp-charge-compact-modal:has(.xp-help-intro){
+ overflow-y:auto!important;overflow-x:hidden!important;touch-action:pan-y
+}
+.xp-ux-modal.xp-charge-compact-modal:has(.xp-help-intro)>.xp-ux-modal-content{
+ flex:0 0 auto!important;overflow:visible!important;min-height:auto!important
+}
+.xp-ux-modal.xp-charge-compact-modal:has(.xp-help-intro) .xp-ux-modal-content-inner{
+ height:auto!important;min-height:0!important
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
