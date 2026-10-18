@@ -863,6 +863,38 @@ async function main(){
  console.log('PASS iPhone telemetry stress / scroll / lock / map: ',
     JSON.stringify({tickResult,lockStress,mobileMapStable}));
 
+
+ // Beta 8: real Chromium verifies English text, LTR actions and Hebrew fallback.
+ // No screenshots are replaced; owner reference imagery remains unchanged.
+ const localeBrowserQA=await car.evaluate(el=>{
+   const h=el.hass;
+   el.hass={...h,locale:{...(h.locale||{}),language:'en'}};
+   const pages=[null,'climate','maintenance','windows','doors','trunk','map','port','extras','charge_controls','charge_schedule'];
+   const untranslated=[];
+   for(const page of pages){
+     el._xpPanel=page;el.render();
+     const html=el.shadowRoot.innerHTML;
+     const matches=[...new Set((html.match(/[\u0590-\u05ff][\u0590-\u05ff\s.,•·־״׳()]+/g)||[]).map(x=>x.trim()))];
+     if(matches.length)untranslated.push({page:page||'Home',matches:matches.slice(0,12)});
+   }
+   el._xpPanel='maintenance';el.render();
+   const englishBack=el.shadowRoot.querySelector('[data-xp-close] ha-icon')?.getAttribute('icon');
+   el._xpPanel=null;el.render();
+   const englishDock=el.shadowRoot.querySelector('.xp-ux-dock-seven')?.getAttribute('dir');
+   const helpers=el.xpWarmMapHelpers();
+   const reused=helpers===el.xpWarmMapHelpers();
+   el.hass={...h,locale:{...(h.locale||{}),language:'he'}};
+   el._xpPanel='maintenance';el.render();
+   const hebrewBack=el.shadowRoot.querySelector('[data-xp-close] ha-icon')?.getAttribute('icon');
+   el._xpPanel=null;el.render();
+   return {untranslated,englishBack,englishDock,hebrewBack,reused};
+ });
+ assert.deepEqual(localeBrowserQA.untranslated,[],'English panels leave Hebrew text in browser: '+JSON.stringify(localeBrowserQA));
+ assert.equal(localeBrowserQA.englishBack,'mdi:arrow-left','English mode needs standard LTR Back arrow');
+ assert.equal(localeBrowserQA.englishDock,'ltr','English shortcut labels should be LTR');
+ assert.equal(localeBrowserQA.hebrewBack,'mdi:arrow-right','Hebrew RTL arrow must be preserved');
+ assert.equal(localeBrowserQA.reused,true,'Native map helper preload must use same shared promise');
+ console.log('PASS bilingual Home Assistant locale and native map warm-up:',JSON.stringify(localeBrowserQA));
  assert.equal(errors.length,0,errors.join('\n'));
  assert.ok(imagesServed>=4,'Expected bundled vehicle and background assets to be loaded');
  const expected=Object.values(GALLERY).sort();
