@@ -1358,3 +1358,41 @@ test('mobile renders preserve DOM nodes when template DOM APIs exist, and map of
  assert.match(src,/touch-action:pan-y/);
  assert.match(card.xpMapPanel(),/data-xp-map-details/);
 });
+
+test('beta.6 automotive window and trunk icons are official MDI, never house-window or hatchback silhouettes',()=>{
+  const {card}=createCard({enable_access_controls:true});
+  const iconSection=src.match(/const XP_ICONS = Object\.freeze\(\{([\s\S]*?)\}\);/)?.[1];
+  assert.ok(iconSection,'The central XP_ICONS dictionary is required');
+  assert.match(iconSection,/windows:'mdi:car-door'/);
+  assert.match(iconSection,/windows_open:'mdi:car-door'/);
+  assert.match(iconSection,/trunk:'mdi:car-back'/);
+  assert.match(iconSection,/trunk_open:'mdi:car-back'/);
+  assert.doesNotMatch(iconSection,/mdi:window-open|mdi:window-open-variant|mdi:car-hatchback/);
+  card._xpengByKey['binary_sensor.windows']='binary_sensor.windows_car';
+  card._xpengByKey['binary_sensor.trunk']='binary_sensor.trunk_car';
+  card._xpengByKey['button.open_windows']='button.car_windows_open';
+  card._xpengByKey['button.close_windows']='button.car_windows_close';
+  card._xpengByKey['button.open_trunk']='button.car_trunk_open';
+  card._xpengByKey['button.close_trunk']='button.car_trunk_close';
+  for(const id of ['button.car_windows_open','button.car_windows_close','button.car_trunk_open','button.car_trunk_close'])
+    card._hass.states[id]={state:'unknown',attributes:{}};
+  for(const state of ['off','on']){
+    card._hass.states['binary_sensor.windows_car']={state,attributes:{}};
+    card._hass.states['binary_sensor.trunk_car']={state,attributes:{}};
+    const dock=card.xpDock();
+    const windows=dock.match(/<button[^>]*data-xp-toggle="windows"[\s\S]*?<\/button>/)?.[0];
+    const trunk=dock.match(/<button[^>]*data-xp-toggle="trunk"[\s\S]*?<\/button>/)?.[0];
+    assert.ok(windows&&trunk,'Both dock shortcuts must remain');
+    assert.match(windows,/icon="mdi:car-door"/);
+    assert.match(trunk,/icon="mdi:car-back"/);
+    assert.match(card.xpToggleButton('windows'),/icon="mdi:car-door"/);
+    assert.match(card.xpToggleButton('trunk'),/icon="mdi:car-back"/);
+    assert.match(card.xpWindowsPanel(),/icon="mdi:car-door"/);
+    assert.match(card.xpTrunkPanel(),/icon="mdi:car-back"/);
+    const expected=state==='off'?'פתיחת':'סגירת';
+    assert.match(windows,new RegExp(expected+' חלונות'));
+    assert.match(trunk,new RegExp(expected+' תא מטען'));
+  }
+  assert.match(src,/xpIcon\(ico,27\)/,'Dock must render through ha-icon/Mdi helper');
+  assert.equal(src,dist,'Source and HACS bundle must remain byte-identical');
+});
