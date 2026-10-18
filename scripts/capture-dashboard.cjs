@@ -927,9 +927,13 @@ async function main(){
        const m=el.shadowRoot.querySelector('.xp-ux-modal');
        const b=m.getBoundingClientRect(),h=m.querySelector('.xp-ux-modal-head');
        const content=m.querySelector('.xp-ux-modal-content'),area=content?.getBoundingClientRect();
+       const inner=content?.querySelector('.xp-ux-modal-content-inner'),
+         bodyRect=inner?.getBoundingClientRect();
        widths.push({panel,visible:b.height>0&&b.bottom<=sceneBox.bottom+1&&b.top>=sceneBox.top-1,
          overflows:getComputedStyle(m).overflowY,contentHeight:content?.scrollHeight,
          availableHeight:content?.clientHeight,top:area?.top,bottom:area?.bottom,
+         bodyTop:bodyRect?.top,bodyBottom:bodyRect?.bottom,fit:inner?.dataset.xpFitScale,
+         bodyFits:!!bodyRect&&bodyRect.bottom<=area.bottom+3,
          modalTop:b.top,modalBottom:b.bottom,sceneBottom:sceneBox.bottom});
      }
      // More options -> Diagnostics must contain many real entities in a small, scrollable list.
@@ -956,8 +960,8 @@ async function main(){
      'Card scene should fit its host viewport: '+JSON.stringify(responsiveModalQA.at(-1)));
    assert.ok(Math.abs(byPage.wifiOffset.x)<=.75&&Math.abs(byPage.wifiOffset.y)<=.75,
      'Wi-Fi visual must be centered in the actual button: '+JSON.stringify(responsiveModalQA.at(-1)));
-   assert.ok(byPage.pages.every(x=>x.visible&&x.overflows==='hidden'),
-     'Card subpage must not scroll or leak beyond its scene: '+JSON.stringify(responsiveModalQA.at(-1)));
+   assert.ok(byPage.pages.every(x=>x.visible&&x.overflows==='hidden'&&x.bodyFits),
+     'Every panel must expose ALL of its content inside the scene without scrolling or clipping: '+JSON.stringify(responsiveModalQA.at(-1)));
    const map=byPage.pages.find(x=>x.panel==='map');
    assert.ok(map.availableHeight>180,'Map should reserve real visible height: '+JSON.stringify(map));
    assert.ok(byPage.diag.noteVisible&&byPage.diag.visible&&byPage.diag.summaryVisible
