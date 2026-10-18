@@ -5,6 +5,7 @@ on:
     branches:
       - fix/g6-mobile-sensors-charging-20261017
       - chore/g6-readme-gallery-cleanup-20261018
+      - fix/g6-visual-live-feedback-20261018
     paths:
       - scripts/capture-dashboard.cjs
       - src/xpeng-vehicle-card.js
