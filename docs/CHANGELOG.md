@@ -1,5 +1,15 @@
 # XPENG Dashboard changelog
 
+## Unreleased — G6 release-readiness, documentation and gallery (2026-10-18)
+
+- Removed the caption over the G6 interior photo in Climate, preserving accessible image alt text and the actual seat/wheel control hotspot labels.
+- Refreshed the English/Hebrew README, visual gallery and G6 installation/release-readiness docs to accurately describe Beta 9's no-dashboard-scroll sizing, Wi-Fi centering, location map, diagnostics and supported English UI.
+- Re-captured the existing 12 curated desktop and mobile screenshots from the running card in Chromium with synthetic Xpengtk data; standalone native map tiles remain a marked stub.
+- Removed discontinued pre-v1 regression tests and obsolete alpha/prerelease publishing workflows. Preserved current frontend tests, HACS build/QA, historical release tags, all vehicle image assets, generation mapping data and artwork/provenance queues.
+- Completed **G6 functional UI/entity mapping** (pending real-vehicle acceptance), with a separate outstanding **G6 artwork gap of 3 out of 33 camera views**. Next art characterization priority: remaining XPENG model families, generations, colors and views. No fabricated completeness claims for other vehicles.
+- This is **unreleased branch work**. Stable HACS remains `v1.0.3`; the latest published beta is `v1.0.4-beta.9`. No main merge.
+
+
 ## Unreleased — full model/year-group catalog
 
 - Added `data/vehicle-catalog.json` as the canonical model, year-group, trim-title and exterior-colour catalog.
