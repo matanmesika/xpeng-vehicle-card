@@ -1501,6 +1501,112 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_rr"]{top:69%}
 }
 
+
+/* Reference HVAC: full control console on the left, owner-provided G6 cabin
+ * photograph on the right. Every button uses existing verified HA services.
+ */
+.xp-ux-modal-climate .xp-climate-layout{
+ grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);gap:clamp(12px,1.6cqw,27px);
+ max-width:1280px;align-items:start;direction:ltr;
+}
+.xp-ux-modal-climate .xp-climate-layout>.xp-ux-climate-bottom{
+ width:100%;max-width:none;direction:rtl;gap:11px;
+}
+.xp-climate-primary-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.xp-climate-primary{
+ display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+ min-width:0;min-height:100px;padding:12px;
+ border:1px solid #669fd7a9;border-radius:18px;
+ background:linear-gradient(145deg,#102d4be5,#071a31ed);color:#f1f9ff;
+ box-shadow:0 7px 19px #0013228c,inset 0 1px 0 #c7ecff28;
+}
+.xp-climate-primary ha-icon{--mdc-icon-size:31px;color:#82ceff}
+.xp-climate-primary.xp-ux-selected ha-icon{color:#57d6ff;filter:drop-shadow(0 0 8px #1c9efe9c)}
+.xp-climate-primary b{font-size:15px}
+.xp-climate-primary small{font-size:11px;color:#acc8df;text-align:center}
+.xp-climate-primary.xp-ux-climate-readonly{cursor:default}
+.xp-climate-temp-panel{margin:0!important;padding:13px 18px}
+.xp-climate-thermometers{
+ display:grid;grid-template-columns:1fr 1.4fr;gap:12px;
+ align-items:center;text-align:center;
+}
+.xp-climate-thermometers>div+div{border-right:1px solid #648bad69}
+.xp-climate-thermometers small{display:block;color:#b4cbe2;font-size:12px;margin-top:8px}
+.xp-climate-inside b{display:block;font-size:clamp(26px,3cqw,42px);margin-top:10px}
+.xp-climate-target .xp-ux-temp-line{margin:7px auto 0;gap:7px;justify-content:space-between}
+.xp-climate-target .xp-ux-temp-line b{min-width:0;white-space:nowrap;font-size:clamp(25px,2.7cqw,36px)}
+.xp-climate-target .xp-ux-temp-line button{
+ width:40px;height:40px;flex:0 0 40px;border-radius:13px;
+}
+.xp-climate-fan-panel{margin:0!important;padding:13px 17px}
+.xp-climate-fan-panel>span{font-size:15px}
+.xp-climate-fan-panel>span ha-icon{color:#b5e5ff;--mdc-icon-size:23px}
+.xp-fan-bars{display:flex;gap:6px;align-items:end;height:32px;direction:ltr}
+.xp-fan-bars i{
+ display:block;height:28px;flex:1;border-radius:5px;
+ background:#1c3553;border:1px solid #51799b45;
+}
+.xp-fan-bars i.xp-fan-bar-on{background:linear-gradient(180deg,#54b5ff,#197de9);box-shadow:0 0 7px #248ffc55}
+.xp-climate-fan-panel input{margin-top:3px}
+.xp-climate-seat-overview{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:8px;padding:4px 0;
+}
+.xp-seat-summary-tile{
+ border:1px solid #6b9acc95;border-radius:15px;padding:9px;
+ background:linear-gradient(155deg,#0c2846e8,#08172cee);
+ min-width:0;
+}
+.xp-seat-summary-tile>strong{display:block;font-size:12px;line-height:1.2;margin-bottom:6px;text-align:center}
+.xp-seat-summary-actions{display:flex;gap:5px;justify-content:center}
+.xp-seat-summary-action{
+ display:flex;flex-direction:column;align-items:center;gap:4px;
+ min-width:0;flex:1;min-height:48px;border:1px solid #6189a7a8;
+ border-radius:10px;padding:5px 2px;color:#e6f5ff;
+ background:#112c49d9;cursor:pointer;
+}
+.xp-seat-summary-action ha-icon{--mdc-icon-size:19px}
+.xp-seat-summary-action small{font-size:10px;white-space:nowrap}
+.xp-seat-summary-bars{display:flex;gap:3px;height:16px;align-items:end}
+.xp-seat-summary-bars i{width:5px;height:14px;border-radius:3px;background:#384966}
+.xp-seat-summary-active.xp-seat-heat .xp-seat-summary-bars .xp-seat-level-on{background:#ff637b;box-shadow:0 0 5px #ff556a8c}
+.xp-seat-summary-active.xp-seat-vent .xp-seat-summary-bars .xp-seat-level-on{background:#56bfff;box-shadow:0 0 5px #22aaff85}
+.xp-seat-summary-active.xp-seat-heat ha-icon{color:#ff7d89}
+.xp-seat-summary-active.xp-seat-vent ha-icon{color:#6ed5ff}
+.xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{
+ width:min(510px,100%);max-height:none;align-self:center;
+}
+.xp-ux-modal-climate .xp-climate-layout .xp-ux-climate-features{grid-template-columns:repeat(2,minmax(0,1fr))}
+@container xpeng-layout (max-width:850px){
+ .xp-ux-modal-climate .xp-climate-layout{
+   display:flex;flex-direction:column;align-items:stretch;gap:10px;
+ }
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-climate-bottom{
+   order:2;width:100%;max-width:none;
+ }
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{
+   order:1;width:min(310px,100%);margin:0 auto;
+ }
+ .xp-climate-primary{min-height:77px;padding:9px}
+ .xp-climate-primary ha-icon{--mdc-icon-size:27px}
+ .xp-climate-thermometers{gap:5px}
+ .xp-climate-inside b{font-size:29px}
+ .xp-climate-target .xp-ux-temp-line b{font-size:29px}
+ .xp-climate-target .xp-ux-temp-line button{width:37px;height:37px;flex-basis:37px}
+ .xp-climate-seat-overview{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@container xpeng-layout (max-width:390px){
+ .xp-climate-primary-controls{gap:6px}
+ .xp-climate-primary b{font-size:12px}
+ .xp-climate-temp-panel{padding:10px}
+ .xp-climate-thermometers small{font-size:10px}
+ .xp-climate-target .xp-ux-temp-line button{width:30px;height:33px;flex-basis:30px}
+ .xp-climate-target .xp-ux-temp-line b,.xp-climate-inside b{font-size:24px}
+ .xp-climate-seat-overview{gap:5px}
+ .xp-seat-summary-tile{padding:6px}
+ .xp-seat-summary-action small{font-size:9px}
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -1987,70 +2093,104 @@ class XpengVehicleCard extends HTMLElement{
   const target=attrs.temperature===null||attrs.temperature===undefined||attrs.temperature===''?null:Number(attrs.temperature);
   const inside=attrs.current_temperature===null||attrs.current_temperature===undefined||attrs.current_temperature===''?null:Number(attrs.current_temperature);
   const insideText=inside!==null&&Number.isFinite(inside)?xpNum(inside,1)+'°C':this.num('cabin','°C',1);
-  const running=c.state.state!=='off';
   const known=target!==null&&Number.isFinite(target)&&target>=Number(attrs.min_temp??16)&&target<=Number(attrs.max_temp??32);
   const value=known?xpNum(target,1)+'°C':'—';
-  return '<div class="xp-ux-climate-card">'
-   +'<div class="xp-ux-climate-caption"><strong>מיזוג אוויר</strong><span>בתא הנוסעים: '+xpEsc(insideText)+'</span></div>'
+  return '<section class="xp-ux-climate-card xp-climate-temp-panel" aria-label="טמפרטורת תא הנוסעים">'
+   +'<div class="xp-ux-climate-caption"><strong>טמפרטורה</strong></div>'
+   +'<div class="xp-climate-thermometers"><div class="xp-climate-inside"><small>טמפרטורה נוכחית</small><b>'+xpEsc(insideText)+'</b></div>'
+   +'<div class="xp-climate-target"><small>טמפרטורת יעד</small>'
    +'<div class="xp-ux-temp-line"><button type="button" data-xp-temp="-1" aria-label="הורד חצי מעלה" '+(known?'':'disabled')+'>−</button>'
-   +'<b>'+value+'</b><button type="button" data-xp-temp="1" aria-label="העלה חצי מעלה" '+(known?'':'disabled')+'>+</button></div>'
-   +'</div>';
+   +'<b>'+value+'</b><button type="button" data-xp-temp="1" aria-label="העלה חצי מעלה" '+(known?'':'disabled')+'>+</button></div></div></div>'
+   +'</section>';
  }
  xpFanControl(){
   const c=this.xpLive('number','fan_speed_control');
   if(!c)return '';
-  const a=c.state.attributes||{}, min=Number(a.min??1), max=Number(a.max??8), step=Number(a.step??1);
+  const a=c.state.attributes||{},min=Number(a.min??1),max=Number(a.max??8),step=Number(a.step??1);
   const v=Number(c.state.state);
-  if(!Number.isFinite(v))return '';
-  return '<label class="xp-ux-range-row"><span>'+xpIcon('fan',18)+' עוצמת מאוורר <b>'+xpEsc(v)+'</b></span>'
-   +'<input type="range" min="'+min+'" max="'+max+'" step="'+step+'" value="'+v+'" data-xp-range="fan_speed_control" aria-label="מהירות מאוורר"></label>';
+  if(!Number.isFinite(v)||!Number.isFinite(min)||!Number.isFinite(max)||step<=0)return '';
+  // One segment per REAL HA fan step; never present a fictional 10-level
+  // control when Xpengtk actually advertises 8.
+  const count=Math.min(12,Math.max(1,Math.round((max-min)/step)+1));
+  const bars=Array.from({length:count},(_,i)=>{
+    const threshold=min+i*step;
+    return '<i class="'+(v+0.001>=threshold?'xp-fan-bar-on':'')+'" aria-hidden="true"></i>';
+  }).join('');
+  return '<label class="xp-ux-range-row xp-climate-fan-panel">'
+    +'<span>'+xpIcon('fan',24)+' <span>רמת מאוורר</span> <b>'+xpEsc(xpNum(v))+' / '+xpEsc(xpNum(max))+'</b></span>'
+    +'<div class="xp-fan-bars" aria-hidden="true">'+bars+'</div>'
+    +'<input type="range" min="'+min+'" max="'+max+'" step="'+step+'" value="'+v+'" data-xp-range="fan_speed_control" aria-label="מהירות מאוורר"></label>';
  }
-
+ xpClimatePrimaryControls(){
+  const climate=this.xpLive('climate','cabin_climate');
+  if(!climate)return '';
+  const running=climate.state.state!=='off';
+  const a=climate.state.attributes||{}, modes=Array.isArray(a.hvac_modes)?a.hvac_modes:[];
+  let auto='';
+  if(modes.includes('auto')){
+    const active=climate.state.state==='auto';
+    auto='<button type="button" class="xp-climate-primary'+(active?' xp-ux-selected':'')
+      +'" data-xp-hvac-mode="auto" aria-pressed="'+String(active)+'">'+xpIcon('auto',27)
+      +'<b>AUTO</b><small>'+(active?'פעיל':'מצב אוטומטי')+'</small></button>';
+  }else{
+    const status=this.xpLive('binary_sensor','climate_auto');
+    if(status&&['on','off'].includes(status.state.state)){
+      const active=status.state.state==='on';
+      auto='<span class="xp-climate-primary xp-ux-climate-readonly'+(active?' xp-ux-selected':'')
+        +'" role="status" aria-label="מצב AUTO: '+(active?'פעיל':'כבוי')+'">'+xpIcon('auto',27)
+        +'<b>AUTO</b><small>'+(active?'פעיל • חיווי בלבד':'כבוי • חיווי בלבד')+'</small></span>';
+    }
+  }
+  return '<div class="xp-climate-primary-controls" role="group" aria-label="הפעלת מיזוג ומצב אוטומטי">'
+   +'<button type="button" class="xp-climate-primary xp-climate-power'+(running?' xp-ux-selected':'')
+   +'" data-xp-climate="'+(running?'off':'on')+'" aria-pressed="'+String(running)+'">'
+   +xpIcon('power',32)+'<b>הפעלת מיזוג</b><small>'+(running?'פעיל':'כבוי')+'</small></button>'
+   +auto+'</div>';
+ }
+ xpSeatOverview(){
+  const zones=[
+   ['driver','מושב נהג',['driver_seat_heat_select','driver_seat_ventilation_select']],
+   ['passenger','מושב נוסע',['passenger_seat_heat_select','passenger_seat_ventilation_select']],
+   ['rear_left','אחורי שמאל',['left_rear_seat_heat_select']],
+   ['rear_right','אחורי ימין',['right_rear_seat_heat_select']],
+   ['wheel','הגה',['steering_wheel_heat_select']]
+  ];
+  const tiles=zones.map(([zone,label,keys])=>{
+   const actions=keys.map(key=>{
+    const e=this.xpLive('select',key);
+    if(!e)return '';
+    const status=this.xpSeatShownState(key),n=Number(xpSeatLevel(status));
+    const vent=key.includes('ventilation'),level=Number.isFinite(n)?n:0;
+    const bars=Array.from({length:3},(_,i)=>'<i class="'+(level>i?'xp-seat-level-on':'')+'"></i>').join('');
+    return '<button type="button" class="xp-seat-summary-action'+(level?' xp-seat-summary-active':'')
+      +(vent?' xp-seat-vent':' xp-seat-heat')+'" data-xp-cycle="'+xpEsc(key)
+      +'" aria-label="'+xpEsc((vent?'אוורור ':'חימום ')+label+', דרגה '+xpSeatLevel(status))+'">'
+      +xpIcon(vent?'fan':'thermometer',19)+'<span class="xp-seat-summary-bars" aria-hidden="true">'+bars+'</span>'
+      +'<small>'+xpEsc(vent?'אוורור':'חימום')+' '+xpEsc(xpSeatLevel(status))+'</small></button>';
+   }).filter(Boolean).join('');
+   return actions?'<div class="xp-seat-summary-tile" data-xp-seat="'+zone+'"><strong>'+xpEsc(label)
+     +'</strong><div class="xp-seat-summary-actions">'+actions+'</div></div>':'';
+  }).filter(Boolean);
+  return tiles.length?'<div class="xp-climate-seat-overview" role="group" aria-label="בקרות מושבים והגה">'
+    +tiles.join('')+'</div>':'';
+ }
  xpClimateFeatures(){
-   // All actionable tiles below correspond to native HA services supported
-   // by Xpengtk. Do not treat quick-heat/cool status telemetry as a command.
-   const climate=this.xpLive('climate','cabin_climate');
-   const defrost=this.xpLive('switch','defrost_switch');
-   const schedule=this.xpLive('calendar','hvac_schedule_calendar')||
-     this.xpLive('sensor','hvac_schedules');
-   const tiles=[];
-   if(climate){
-     const running=climate.state.state!=='off';
-     tiles.push('<button type="button" class="xp-ux-climate-feature'
-       +(running?' xp-ux-selected':'')+'" data-xp-climate="'+(running?'off':'on')
-       +'" aria-pressed="'+String(running)+'">'
-       +xpIcon('power',25)+'<span>מיזוג A/C</span><small>'
-       +(running?'פעיל — לחץ לכיבוי':'כבוי — לחץ להפעלה')+'</small></button>');
-   }
-   if(climate){
-     const a=climate.state.attributes||{};
-     const hvacModes=Array.isArray(a.hvac_modes)?a.hvac_modes:[];
-     if(hvacModes.includes('auto')){
-       const active=climate.state.state==='auto';
-       tiles.push('<button type="button" class="xp-ux-climate-feature'+(active?' xp-ux-selected':'')
-         +'" data-xp-hvac-mode="auto" aria-pressed="'+String(active)+'">'+xpIcon('auto',25)
-         +'<span>AUTO</span><small>'+(active?'פעיל':'מצב אוטומטי')+'</small></button>');
-     }
-     if(Array.isArray(a.swing_modes)&&a.swing_modes.length>1){
-       const current=String(a.swing_mode||a.swing_modes[0]),n=a.swing_modes.indexOf(current);
-       const next=a.swing_modes[(n+1)%a.swing_modes.length];
-       tiles.push('<button type="button" class="xp-ux-climate-feature" data-xp-swing-mode="'+xpEsc(next)
-         +'" title="'+xpEsc('החלף כיוון זרימת אוויר אל '+next)+'">'+xpIcon('refresh',25)
-         +'<span>כיוון אוויר</span><small>'+xpEsc(current)+'</small></button>');
-     }
-   }
-   // Xpengtk reports AUTO telemetry but normally only off/heat_cool remote modes.
-   // A live indicator is not a fake control.
-   if(climate&&!climate.state.attributes?.hvac_modes?.includes('auto')){
-     const auto=this.xpLive('binary_sensor','climate_auto');
-     if(auto&&['on','off'].includes(auto.state.state)){
-       const on=auto.state.state==='on';
-       tiles.push('<span class="xp-ux-climate-feature xp-ux-climate-readonly'+
-         (on?' xp-ux-selected':'')+'" role="status" aria-label="מצב AUTO: '+(on?'פעיל':'כבוי')+'">'+
-         xpIcon('auto',25)+'<span>AUTO</span><small>'+
-         (on?'פעיל • חיווי בלבד':'כבוי • חיווי בלבד')+'</small></span>');
-     }
-   }
+  // Secondary climate functions only. Main ON/OFF and AUTO are above temperature.
+  const climate=this.xpLive('climate','cabin_climate');
+  const defrost=this.xpLive('switch','defrost_switch');
+  const schedule=this.xpLive('calendar','hvac_schedule_calendar')||
+    this.xpLive('sensor','hvac_schedules');
+  const tiles=[];
+  if(climate){
+    const a=climate.state.attributes||{};
+    if(Array.isArray(a.swing_modes)&&a.swing_modes.length>1){
+      const current=String(a.swing_mode||a.swing_modes[0]),n=a.swing_modes.indexOf(current);
+      const next=a.swing_modes[(n+1)%a.swing_modes.length];
+      tiles.push('<button type="button" class="xp-ux-climate-feature" data-xp-swing-mode="'+xpEsc(next)
+        +'" title="'+xpEsc('החלף כיוון זרימת אוויר אל '+next)+'">'+xpIcon('refresh',25)
+        +'<span>כיוון אוויר</span><small>'+xpEsc(current)+'</small></button>');
+    }
+  }
    const mirror=this.xpLive('binary_sensor','mirror_heating');
    if(mirror&&['on','off'].includes(mirror.state.state)){
      tiles.push('<span class="xp-ux-climate-feature xp-ux-climate-readonly" role="status">'+
@@ -2182,9 +2322,11 @@ class XpengVehicleCard extends HTMLElement{
    const labels={climate:'מיזוג אוויר',port:'שקע טעינה',doors:'דלתות',windows:'חלונות',charge_controls:'פעולות טעינה',charge_schedule:'תזמוני טעינה',maintenance:'תחזוקת הרכב',trunk:'תא מטען',map:'מיקום הרכב',extras:'אפשרויות נוספות'};
    let body='';
    if(page==='climate'){
-     body='<div class="xp-climate-layout">'+this.xpCabinView()+
+     body='<div class="xp-climate-layout">'+
        '<section class="xp-ux-climate-bottom" aria-label="בקרת אקלים">'+
-       this.xpTempControl()+this.xpFanControl()+this.xpClimateFeatures()+'</section></div>';
+       this.xpClimatePrimaryControls()+this.xpTempControl()+this.xpFanControl()+
+       this.xpSeatOverview()+this.xpClimateFeatures()+'</section>'+
+       this.xpCabinView()+'</div>';
    }else if(page==='charge_controls')body='<div class="xp-ux-charging-panel">'+(this.xpChargeControls()||'<p>אין פקודות טעינה זמינות לרכב כרגע.</p>')+this.xpPortPanel()+'</div>';
    else if(page==='charge_schedule')body=this.xpChargeSchedulesPanel();
    else if(page==='maintenance')body=this.xpMaintenancePanel();
