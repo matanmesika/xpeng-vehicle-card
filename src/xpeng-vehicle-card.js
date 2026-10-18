@@ -2989,36 +2989,47 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  }
 }
 
-/* Official MDI SUV rear-hatch action: side silhouette + lift/lower indicator.
-   Both icons come from Home Assistant's MDI collection, never custom SVG. */
+/* Official MDI SUV rear hatch: actual car silhouette + separate small
+   up/down pictogram. Never obscure the vehicle's body or draw custom SVG. */
 .xp-trunk-symbol{
  --xp-trunk-size:27px;
- display:inline-grid;place-items:center;position:relative;vertical-align:middle;
- flex:0 0 auto;width:var(--xp-trunk-size);height:var(--xp-trunk-size);color:inherit
+ display:inline-flex!important;
+ align-items:center!important;justify-content:center!important;
+ gap:0;flex:0 0 auto;
+ width:calc(var(--xp-trunk-size) + 11px)!important;
+ height:var(--xp-trunk-size)!important;
+ position:relative;vertical-align:middle;
+ color:inherit
 }
 .xp-trunk-symbol>.xp-mdi-icon{
- display:grid;place-items:center;
- width:var(--xp-trunk-size);height:var(--xp-trunk-size);
- --mdc-icon-size:var(--xp-trunk-size)
+ display:inline-flex!important;place-items:center;
+ flex:0 0 var(--xp-trunk-size)!important;
+ width:var(--xp-trunk-size)!important;
+ height:var(--xp-trunk-size)!important;
+ --mdc-icon-size:var(--xp-trunk-size)!important
 }
 .xp-trunk-symbol>.xp-trunk-arrow{
- /* The SUV silhouette must remain fully visible; place the action cue
-    BESIDE the rear end, rather than covering the trunk with a big bubble. */
- position:absolute;right:-7px;top:11px;z-index:2;
- display:grid;place-items:center;width:11px;height:11px;
- --mdc-icon-size:10px;
- border:0;background:#082d43;color:#5decc3;
- border-radius:4px;box-shadow:0 1px 4px #0008
+ position:static!important;inset:auto!important;
+ display:inline-flex!important;place-items:center;
+ flex:0 0 10px!important;
+ width:10px!important;height:10px!important;
+ min-width:0!important;min-height:0!important;
+ margin-left:0!important;
+ --mdc-icon-size:10px!important;
+ --xp-icon-size:10px!important;
+ border:0!important;border-radius:0!important;
+ background:transparent!important;box-shadow:none!important;
+ color:#5decc3!important;transform:none!important
 }
-.xp-trunk-symbol-lower>.xp-trunk-arrow{
- color:#ffc17b;border-color:rgba(252,181,103,.68)
-}
+.xp-trunk-symbol-lower>.xp-trunk-arrow{color:#ffc17b!important}
 .xp-scene .xp-ux-dock-seven .xp-ux-dock-action .xp-trunk-symbol{
  align-self:center;margin:3px 0 0
 }
 @container xpeng-layout (max-width:520px){
  .xp-trunk-symbol>.xp-trunk-arrow{
-  right:-4px;top:11px;width:10px;height:10px;--mdc-icon-size:9px
+  flex-basis:9px!important;
+  width:9px!important;height:9px!important;
+  --mdc-icon-size:9px!important;--xp-icon-size:9px!important
  }
 }
 
