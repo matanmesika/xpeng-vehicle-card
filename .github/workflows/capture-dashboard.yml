@@ -8,6 +8,7 @@ on:
       - fix/g6-visual-live-feedback-20261018
       - design/g6-premium-visual-pass-20261018
       - refactor/g6-isolated-design-and-help-20261018
+      - design/g6-v2-surface-redesign-20261018
     paths:
       - scripts/capture-dashboard.cjs
       - src/xpeng-vehicle-card.js
