@@ -1804,7 +1804,7 @@ function xpSensorMappingMode(cfg,profile){
 }
 class XpengVehicleCard extends HTMLElement{
  constructor(){
-  super();this.attachShadow({mode:'open'});this._config={};this._hass=null;this._view='overview';this._expanded=false;this._vehicleIndex=0;this._infoOpen=false;this._tireOpen=false;this._failedArtwork=new Set();
+  super();this.attachShadow({mode:'open'});this._config={};this._hass=null;this._view='overview';this._expanded=false;this._vehicleIndex=0;this._infoOpen=false;this._tireOpen=false;this._failedArtwork=new Set();this._xpNavStack=[];
   this.shadowRoot.addEventListener('error',ev=>{
       const img=ev.target;
       if(!img?.matches?.('img[data-car-art],img[data-top-art],img[data-cabin-art]'))return;
@@ -1816,16 +1816,15 @@ class XpengVehicleCard extends HTMLElement{
    this.shadowRoot.addEventListener('click',ev=>{
     const b=ev.target.closest('button');if(!b)return;
      
-     if(b.hasAttribute('data-xp-close')){this._xpPanel=null;this._xpSeatFocus=null;this._xpNotice='';this.render();return;}
-     if(b.hasAttribute('data-xp-home')){this._xpPanel=null;this._xpSeatFocus=null;this._xpManualCharging=false;this._xpChargingDismissed=this.xpChargingActive();this._xpNotice='';this.render();return;}
-     if(b.hasAttribute('data-xp-page')){this._xpPanel=b.dataset.xpPage;this._xpSeatFocus=null;this._xpNotice='';this.render();return;}
+     if(b.hasAttribute('data-xp-close')){this.xpBackPanel();return;}
+     if(b.hasAttribute('data-xp-home')){this.xpBackToHome();return;}
+     if(b.hasAttribute('data-xp-page')){this.xpNavigatePanel(b.dataset.xpPage);return;}
      if(b.hasAttribute('data-xp-cycle')){this.xpCycleSeat(b.dataset.xpCycle);return;}
       
      if(b.hasAttribute('data-xp-open')){
        const action=b.dataset.xpOpen;
        if(['climate','port','doors','windows','trunk','map','maintenance','charge_controls','charge_schedule'].includes(action)){
-         this._xpPanel=action;this._xpSeatFocus=null;
-         this._xpNotice='';this.render();
+         this.xpNavigatePanel(action);
        }
        return;
       }
@@ -1907,17 +1906,17 @@ class XpengVehicleCard extends HTMLElement{
      }
 
      if(b.hasAttribute('data-xp-more')){
-       this._xpPanel='extras';this._xpExtraSection=null;this._xpNotice='';this.render();return;
+       this.xpNavigatePanel('extras');return;
      }
      if(b.hasAttribute('data-xp-extra-page')){
        const page=b.dataset.xpExtraPage;
        if(['security','energy','schedule','power','maintenance','updates','diagnostics'].includes(page)){
-         this._xpPanel='extras';this._xpExtraSection=page;this._xpNotice='';this.render();
+         this.xpNavigatePanel('extras',page);
        }
        return;
      }
      if(b.hasAttribute('data-xp-extra-back')){
-       this._xpExtraSection=null;this._xpNotice='';this.render();return;
+       this.xpBackPanel();return;
      }
      if(b.hasAttribute('data-xp-hvac-schedule')){
        const id=b.dataset.xpHvacSchedule;
@@ -1956,7 +1955,7 @@ class XpengVehicleCard extends HTMLElement{
      }
      if(b.hasAttribute('data-meta-toggle')){this._infoOpen=!this._infoOpen;this.render();return;}
      if(b.hasAttribute('data-tire-toggle')){this._tireOpen=!this._tireOpen;this._infoOpen=false;this.render();return;}
-    if(b.hasAttribute('data-cycle')){this._vehicleIndex=(this._vehicleIndex+1)%this.vehicles().length;this._tireOpen=false;this._xpPanel=null;this._xpengRegistryLoaded=false;this._xpengByKey=null;this.ensureXpengRegistry();this.render();}
+    if(b.hasAttribute('data-cycle')){this._vehicleIndex=(this._vehicleIndex+1)%this.vehicles().length;this._tireOpen=false;this._xpPanel=null;this._xpExtraSection=null;this._xpNavStack=[];this._xpengRegistryLoaded=false;this._xpengByKey=null;this.ensureXpengRegistry();this.render();}
   });
    this.shadowRoot.addEventListener('input',ev=>{
      const slider=ev.target.closest('input[data-xp-range]');
@@ -2502,8 +2501,8 @@ class XpengVehicleCard extends HTMLElement{
    else if(page==='map')body=this.xpMapPanel();
    else if(page==='extras')body=this.xpExtrasPanel();
    return '<section class="xp-ux-modal xp-ux-modal-'+page+(page==='charge_controls'||page==='charge_schedule'?' xp-charge-compact-modal':'')+'" role="dialog" aria-modal="true" aria-label="'+labels[page]+'" dir="rtl">'
-    +'<header class="xp-ux-modal-head"><button type="button" data-xp-close aria-label="חזרה לבית">'+xpIcon('back',24)+'</button>'
-    +'<h2>'+labels[page]+'</h2><span>'+xpEsc(this.appearance().model)+'</span></header>'
+    +'<header class="xp-ux-modal-head"><button type="button" data-xp-close aria-label="'+(this._xpNavStack?.length?'חזרה לחלון הקודם':'חזרה למסך הבית')+'">'+xpIcon('back',24)+'</button>'
+    +'<h2>'+labels[page]+'</h2></header>'
     +body+(this._xpNotice?'<p class="xp-ux-notice" role="status">'+xpEsc(this._xpNotice)+'</p>':'')
     +'</section>';
  }
@@ -2808,6 +2807,43 @@ class XpengVehicleCard extends HTMLElement{
   if(target!==now)this.xpSend('climate','set_temperature','cabin_climate',target);
  }
 
+ // Explicit navigation stack: a modal opened from Climate, Extras or another
+ // subpage returns to that exact source view, never directly to Home.
+ xpNavigatePanel(panel,extraSection=null){
+   const available=['climate','port','doors','windows','trunk','map','maintenance','charge_controls','charge_schedule','extras'];
+   if(!available.includes(panel))return;
+   const currentPanel=this._xpPanel||null,currentSection=this._xpExtraSection||null;
+   if(panel===currentPanel&&(panel!=='extras'||extraSection===currentSection))return;
+   if(currentPanel){
+     const scrollTop=this.shadowRoot?.querySelector?.('.xp-ux-modal')?.scrollTop||0;
+     this._xpNavStack.push({panel:currentPanel,extraSection:currentSection,seatFocus:this._xpSeatFocus||null,scrollTop});
+   }else this._xpNavStack=[];
+   this._xpPanel=panel;this._xpExtraSection=panel==='extras'?extraSection:null;
+   this._xpSeatFocus=null;this._xpNotice='';
+   this.render();
+ }
+ xpBackPanel(){
+   const previous=this._xpNavStack?.pop();
+   if(previous){
+     this._xpPanel=previous.panel;
+     this._xpExtraSection=previous.extraSection;
+     this._xpSeatFocus=previous.seatFocus;
+   }else{
+     this._xpPanel=null;this._xpExtraSection=null;this._xpSeatFocus=null;
+     this._xpNavStack=[];
+   }
+   this._xpNotice='';
+   this.render();
+   if(previous){
+     const modal=this.shadowRoot?.querySelector?.('.xp-ux-modal');
+     if(modal)modal.scrollTop=previous.scrollTop||0;
+   }
+ }
+ xpBackToHome(){
+   this._xpPanel=null;this._xpExtraSection=null;this._xpSeatFocus=null;this._xpNavStack=[];
+   this._xpManualCharging=false;this._xpChargingDismissed=this.xpChargingActive();
+   this._xpNotice='';this.render();
+ }
  connectedCallback(){if(!this._fullscreenHandler){this._fullscreenHandler=()=>{if(!document.fullscreenElement&&this._expanded){this._expanded=false;this.render();}};}document.addEventListener('fullscreenchange',this._fullscreenHandler);}
  disconnectedCallback(){if(this._fullscreenHandler)document.removeEventListener('fullscreenchange',this._fullscreenHandler);}
  toggleFullScreen(){this._expanded=!this._expanded;if(this._expanded&&this.requestFullscreen){this.requestFullscreen().catch(()=>{});}else if(!this._expanded&&document.fullscreenElement===this){document.exitFullscreen().catch(()=>{});}this.render();}
@@ -2817,7 +2853,7 @@ class XpengVehicleCard extends HTMLElement{
   if(config.image_path&&!/^\/(?:local|hacsfiles)\/[a-zA-Z0-9/_-]+\/?$/.test(config.image_path))throw Error('Invalid local image_path');
   if(config.background_image&&!xpLocalArtworkPath(config.background_image))throw Error('Invalid local background_image');
   const v={prefix:'my_xpeng',year:'2026',model:'G6',trim:'core_plus_rwd',color:'graphite_gray',interior:'dark_gray',theme:'dark',...config};
-  this._config=xpNormalizeAppearance(v);this._infoOpen=false;this._tireOpen=false;this._xpManualCharging=false;this._xpChargingDismissed=false;this._xpLastActualCharging=false;this.render();
+  this._config=xpNormalizeAppearance(v);this._infoOpen=false;this._tireOpen=false;this._xpManualCharging=false;this._xpChargingDismissed=false;this._xpLastActualCharging=false;this._xpPanel=null;this._xpExtraSection=null;this._xpNavStack=[];this.render();
  }
  set hass(hass){
   this._hass=hass;
@@ -2825,14 +2861,14 @@ class XpengVehicleCard extends HTMLElement{
   const actualCharging=this.xpChargingActive();
   if(actualCharging&&!this._xpLastActualCharging){
     this._xpChargingDismissed=false;this._xpManualCharging=false;
-    this._xpPanel=null;this._xpSeatFocus=null;
+    this._xpPanel=null;this._xpSeatFocus=null;this._xpExtraSection=null;this._xpNavStack=[];
   }
   if(!actualCharging){
     this._xpChargingDismissed=false;
     // A completed/disconnected charge returns to the regular dashboard,
     // even if the user was viewing a small charging-only control overlay.
     if(['charge_controls','charge_schedule'].includes(this._xpPanel)){
-      this._xpPanel=null;this._xpNotice='';
+      this._xpPanel=null;this._xpExtraSection=null;this._xpNavStack=[];this._xpNotice='';
     }
   }
   this._xpLastActualCharging=actualCharging;
