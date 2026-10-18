@@ -1365,8 +1365,13 @@ test('beta.6 automotive window and trunk icons are official MDI, never a house-w
   assert.ok(iconSection,'The central XP_ICONS dictionary is required');
   assert.match(iconSection,/windows:'mdi:car-door'/);
   assert.match(iconSection,/windows_open:'mdi:car-door'/);
-  assert.match(iconSection,/trunk:'mdi:car-back'/);
-  assert.match(iconSection,/trunk_open:'mdi:car-back'/);
+  assert.match(iconSection,/trunk:'mdi:car-estate'/);
+  assert.match(iconSection,/trunk_open:'mdi:car-estate'/);
+  assert.match(iconSection,/trunk_close:'mdi:car-estate'/);
+  assert.match(iconSection,/trunk_lift:'mdi:arrow-up-bold'/);
+  assert.match(iconSection,/trunk_lower:'mdi:arrow-down-bold'/);
+  assert.match(iconSection,/lock:'mdi:car-door-lock'/);
+  assert.match(iconSection,/unlock:'mdi:car-door-lock-open'/);
   assert.doesNotMatch(iconSection,/mdi:window-open|mdi:window-open-variant/);
   card._xpengByKey['binary_sensor.windows']='binary_sensor.windows_car';
   card._xpengByKey['binary_sensor.trunk']='binary_sensor.trunk_car';
@@ -1384,11 +1389,15 @@ test('beta.6 automotive window and trunk icons are official MDI, never a house-w
     const trunk=dock.match(/<button[^>]*data-xp-toggle="trunk"[\s\S]*?<\/button>/)?.[0];
     assert.ok(windows&&trunk,'Both dock shortcuts must remain');
     assert.match(windows,/icon="mdi:car-door"/);
-    assert.match(trunk,/icon="mdi:car-back"/);
+    assert.match(trunk,/icon="mdi:car-estate"/);
+    // The real reported state changes the NEXT action and official lift/lower arrow.
+    const arrow=state==='off'?'mdi:arrow-up-bold':'mdi:arrow-down-bold';
+    assert.match(trunk,new RegExp('icon="'+arrow+'"'));
+    assert.match(card.xpToggleButton('trunk'),new RegExp('icon="'+arrow+'"'));
     assert.match(card.xpToggleButton('windows'),/icon="mdi:car-door"/);
-    assert.match(card.xpToggleButton('trunk'),/icon="mdi:car-back"/);
+    assert.match(card.xpToggleButton('trunk'),/icon="mdi:car-estate"/);
     assert.match(card.xpWindowsPanel(),/icon="mdi:car-door"/);
-    assert.match(card.xpTrunkPanel(),/icon="mdi:car-back"/);
+    assert.match(card.xpTrunkPanel(),/icon="mdi:car-estate"/);
     const expected=state==='off'?'פתיחת':'סגירת';
     assert.match(windows,new RegExp(expected+' חלונות'));
     assert.match(trunk,new RegExp(expected+' תא מטען'));
@@ -1426,7 +1435,7 @@ test('beta.8 Home Assistant locale switches every vehicle modal and accessibilit
  assert.match(home,/Open windows/);
  assert.match(home,/Open charging port/);
  assert.match(home,/icon="mdi:car-door"/);
- assert.match(home,/icon="mdi:car-back"/);
+ assert.match(home,/icon="mdi:car-estate"/);
  card._xpPanel='maintenance';card.render();
  assert.match(card.shadowRoot.innerHTML,/icon="mdi:arrow-left"/,'English Back arrow must point left');
  card._hass.locale.language='he';card.render();
@@ -1497,7 +1506,7 @@ test('owner fixes: exact Open Trunk, real SOC icon levels, silent successful cal
  card._hass.states['button.car_open_trunk']={state:'unknown',attributes:{}};
  card.render();
  assert.match(card.shadowRoot.innerHTML,/Open Trunk/);
- assert.match(card.shadowRoot.innerHTML,/mdi:car-back/);
+ assert.match(card.shadowRoot.innerHTML,/mdi:car-estate/);
  assert.equal(card.xpToggleTarget('trunk').suffix,'open_trunk');
  const originalNumber=card.number.bind(card);
  let fakeSoc=14;
