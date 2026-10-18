@@ -1,5 +1,16 @@
 # XPENG Dashboard changelog
 
+## Unreleased — October 18 owner screenshot fixes
+
+- Replaced ambiguous trunk glyph with official `mdi:car-hatchback`; English action reads **Open Trunk** exactly.
+- Responsive maintenance data remains below car/TPMS diagram; iPhone climate panels fit available width without horizontal clipping.
+- Seat/wheel heat/vent buttons use transparent backgrounds at real photo positions; touch targets remain functional.
+- Dynamic official MDI battery fill/charging icon and red/amber/mint colors reflect live SOC instead of a fixed small icon.
+- Diagnostics entity rows fit on single centered pills in scroll area; important explanation stays visible.
+- Added missing English Update details translation, removed generic successful-command notice, and reserved room for Home Assistant's host chrome.
+- Black Edition selects dark cabin treatment but lacks approved dedicated black exterior/cabin photography; still an **open release blocker** for full authenticity.
+- Not yet tagged/released/merged: automated Chromium simulation must be reviewed in real iPhone and Home Assistant first.
+
 ## Unreleased — G6 release-readiness, documentation and gallery (2026-10-18)
 
 - Removed the caption over the G6 interior photo in Climate, preserving accessible image alt text and the actual seat/wheel control hotspot labels.
