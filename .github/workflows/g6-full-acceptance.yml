@@ -8,6 +8,7 @@ on:
       - chore/g6-readme-gallery-cleanup-20261018
       - fix/g6-visual-live-feedback-20261018
       - design/g6-premium-visual-pass-20261018
+      - refactor/g6-isolated-design-and-help-20261018
       - fix/g6-owner-photo-round-20261018
   workflow_dispatch:
 
@@ -41,6 +42,7 @@ jobs:
           node --check dist/xpeng-vehicle-card.js
           node --check scripts/capture-dashboard.cjs
           cmp src/xpeng-vehicle-card.js dist/xpeng-vehicle-card.js
+          node tools/build_vehicle_card.mjs --check
           python -m json.tool hacs.json >/dev/null
           python -m json.tool data/model-artwork.json >/dev/null
           python -m json.tool data/vehicle-art-inventory.json >/dev/null
@@ -64,7 +66,8 @@ jobs:
             tests/charging-cable-static.test.cjs \
             tests/xpeng-controls-smoke.test.cjs \
             tests/responsive-dual-state.test.cjs \
-            tests/release-documentation.test.cjs
+            tests/release-documentation.test.cjs \
+            tests/g6-isolated-design-help.test.cjs
 
       - name: Verify owner interior photos and scene assets
         run: |
