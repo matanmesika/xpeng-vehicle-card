@@ -935,7 +935,12 @@ async function main(){
        const content=m.querySelector('.xp-ux-modal-content'),area=content?.getBoundingClientRect();
        const inner=content?.querySelector('.xp-ux-modal-content-inner'),
          bodyRect=inner?.getBoundingClientRect();
+       const tire=panel==='maintenance'?m.querySelector('.xp-tire-stage')?.getBoundingClientRect():null;
+       const metrics=panel==='maintenance'?m.querySelector('.xp-maint-info')?.getBoundingClientRect():null;
+       const climateControls=panel==='climate'?m.querySelector('.xp-climate-layout>.xp-ux-climate-bottom')?.getBoundingClientRect():null;
        widths.push({panel,visible:b.height>0&&b.bottom<=sceneBox.bottom+1&&b.top>=sceneBox.top-1,
+         tireAboveDetails:panel!=='maintenance'||(!!tire&&!!metrics&&tire.bottom<=metrics.top-2),
+         controlsInside:panel!=='climate'||(!!climateControls&&climateControls.left>=area.left-3&&climateControls.right<=area.right+3),
          overflows:getComputedStyle(m).overflowY,contentHeight:content?.scrollHeight,
          availableHeight:content?.clientHeight,top:area?.top,bottom:area?.bottom,
          bodyTop:bodyRect?.top,bodyBottom:bodyRect?.bottom,fit:inner?.dataset.xpFitScale,
@@ -946,7 +951,7 @@ async function main(){
      el._xpPanel='extras';el._xpExtraSection='diagnostics';el.render();
      const modal=el.shadowRoot.querySelector('.xp-ux-modal'),
        scroll=modal.querySelector('.xp-diagnostics-scroll'),
-       note=modal.querySelector('.xp-extra-diagnostics-layout>.xp-ux-note'),
+       note=modal.querySelector('.xp-entity-diagnostics>.xp-ux-note'),
        summary=modal.querySelector('.xp-entity-diagnostics>p[role="status"]');
      const sr=scroll.getBoundingClientRect(),nr=note.getBoundingClientRect(),
        mr=modal.getBoundingClientRect();
@@ -966,7 +971,7 @@ async function main(){
      'Card scene should fit its host viewport: '+JSON.stringify(responsiveModalQA.at(-1)));
    assert.ok(Math.abs(byPage.wifiOffset.x)<=.75&&Math.abs(byPage.wifiOffset.y)<=.75,
      'Wi-Fi visual must be centered in the actual button: '+JSON.stringify(responsiveModalQA.at(-1)));
-   assert.ok(byPage.pages.every(x=>x.visible&&x.overflows==='hidden'&&x.bodyFits),
+   assert.ok(byPage.pages.every(x=>x.visible&&x.overflows==='hidden'&&x.bodyFits&&x.tireAboveDetails&&x.controlsInside),
      'Every panel must expose ALL of its content inside the scene without scrolling or clipping: '+JSON.stringify(responsiveModalQA.at(-1)));
    const map=byPage.pages.find(x=>x.panel==='map');
    assert.ok(map.availableHeight>180,'Map should reserve real visible height: '+JSON.stringify(map));
