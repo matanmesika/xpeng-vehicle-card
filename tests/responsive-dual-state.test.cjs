@@ -140,3 +140,21 @@ test('there is only one control location for heated and ventilated seats in cabi
  assert.match(source,/wheel_heat:'mdi:steering'/);
  assert.match(css,/Physical seat\/steering location is the ONLY controls surface/);
 });
+
+test('beta.7: desktop cog/communication separation, Wi-Fi alignment and uniform vehicle action colors',()=>{
+  const beta7=css.slice(css.indexOf('/* Beta 7: consistent icon color'));
+  assert.ok(beta7.startsWith('/* Beta 7: consistent icon color'),'Final CSS overrides must load last');
+  assert.match(beta7,/\.xp-header \.xp-meta-tools\{gap:14px\}/,
+    'Desktop header buttons must have a distinct 14px gap');
+  assert.match(beta7,/@container xpeng-layout \(max-width:850px\)\{[\s\S]*?\.xp-header \.xp-meta-tools\{gap:8px\}/,
+    'Narrow HA Sections/phone retains comfortable 8px header spacing');
+  assert.match(beta7,/@container xpeng-layout \(min-width:851px\)\{[\s\S]*?\.xp-header \.xp-wifi \.xp-mdi-icon\{transform:translateY\(-4px\)\}/,
+    'Move only the desktop Wi-Fi glyph upward, keeping full button tap target');
+  assert.match(beta7,/\.xp-home-navigation \.xp-ux-dock-seven \.xp-ux-dock-action ha-icon,[\s\S]*?\.xp-charge-navigation \.xp-ux-dock-seven \.xp-ux-dock-action ha-icon\{\s*color:#e9f4ff;/,
+    'Home and Charging must have the identical neutral action icon palette');
+  assert.doesNotMatch(css,/\.xp-(?:home|charge)-navigation \.xp-ux-dock-action\[data-xp-(?:open|toggle)="(?:map|climate|port|doors)"\] ha-icon\{color:/,
+    'No category-by-category permanent random colors on shortcuts');
+  assert.match(css,/\.xp-ux-dock-action:disabled\{opacity:/,'Unavailable buttons remain visibly disabled');
+  assert.match(css,/\.xp-wifi\.xp-error\{color:#ffb16a/,'Real connection error keeps semantic warning color');
+  assert.match(css,/\.xp-batt-glyph>\.xp-mdi-icon\{[\s\S]*?color:#6dfdc1/,'Battery indication remains green');
+});
