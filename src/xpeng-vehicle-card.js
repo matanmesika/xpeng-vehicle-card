@@ -2853,7 +2853,17 @@ class XpengVehicleCard extends HTMLElement{
   if(config.image_path&&!/^\/(?:local|hacsfiles)\/[a-zA-Z0-9/_-]+\/?$/.test(config.image_path))throw Error('Invalid local image_path');
   if(config.background_image&&!xpLocalArtworkPath(config.background_image))throw Error('Invalid local background_image');
   const v={prefix:'my_xpeng',year:'2026',model:'G6',trim:'core_plus_rwd',color:'graphite_gray',interior:'dark_gray',theme:'dark',...config};
-  this._config=xpNormalizeAppearance(v);this._infoOpen=false;this._tireOpen=false;this._xpManualCharging=false;this._xpChargingDismissed=false;this._xpLastActualCharging=false;this._xpPanel=null;this._xpExtraSection=null;this._xpNavStack=[];this.render();
+  const next=xpNormalizeAppearance(v);
+  const oldVehicle=JSON.stringify([this._config.prefix,this._config.model,this._config.year,
+    (this._config.vehicles||[]).map(x=>[x.prefix,x.model,x.year])]);
+  const nextVehicle=JSON.stringify([next.prefix,next.model,next.year,
+    (next.vehicles||[]).map(x=>[x.prefix,x.model,x.year])]);
+  // Editor-only changes (interior colour, image, appearance) must not collapse a
+  // nested HVAC page. Switching to a different vehicle resets the navigation.
+  if(oldVehicle!==nextVehicle){
+    this._xpPanel=null;this._xpExtraSection=null;this._xpNavStack=[];this._xpSeatFocus=null;
+  }
+  this._config=next;this._infoOpen=false;this._tireOpen=false;this._xpManualCharging=false;this._xpChargingDismissed=false;this._xpLastActualCharging=false;this.render();
  }
  set hass(hass){
   this._hass=hass;
