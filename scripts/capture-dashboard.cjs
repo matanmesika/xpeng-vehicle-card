@@ -464,7 +464,7 @@ async function main(){
  assert.ok(desktopMap.stageWidth>900&&desktopMap.stageHeight>=350,JSON.stringify(desktopMap));
  assert.deepEqual(desktopMap.config,{
    type:'map',entities:[{entity:'device_tracker.my_xpeng_location'}],
-   default_zoom:11,hours_to_show:0,dark_mode:true
+   default_zoom:11,hours_to_show:0,theme_mode:'dark',aspect_ratio:'4:3'
  },'Native dark map must use the real vehicle tracker entity');
  await reviewShot('location-desktop');
  const mapStable=await car.evaluate(el=>{
@@ -754,6 +754,87 @@ async function main(){
  assert.equal(liveCable.filter(x=>x.visible).length,1,'Only the correct desktop/phone cable may be visible');
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
  assert.equal(await car.locator('.xp-charge-cable-live').count(),0,'Idle state removes green cable');
+
+ // Stress test a real-sized mobile container with repeated Xpengtk state ticks.
+ // Verify DOM identity and scroll position, not just a static screenshot.
+ await page.setViewportSize({width:390,height:844});
+ await page.evaluate(()=>{
+   const wrap=document.querySelector('.card-wrap');
+   wrap.style.width='390px';wrap.style.margin='0 auto';
+   const card=document.querySelector('xpeng-vehicle-card');
+   card.setConfig({type:'custom:xpeng-vehicle-card',prefix:'my_xpeng',model:'G6',year:'2026',
+      interior:'dark_gray',color:'graphite_gray',enable_access_controls:true});
+ });
+ await page.evaluate(data=>{
+   const card=document.querySelector('xpeng-vehicle-card');
+   card.hass={...data,callService:async(...args)=>{
+     window.__xpCallLog??=[];
+     window.__xpCallLog.push(args);
+   }};
+ },demo(false));
+ await car.locator('button[data-xp-open="climate"]').click();
+ const tickResult=await car.evaluate(el=>{
+   const modal=el.shadowRoot.querySelector('.xp-ux-modal-climate');
+   modal.scrollTop=Math.min(290,modal.scrollHeight-modal.clientHeight);
+   const initial=modal.scrollTop;
+   const initialParent=document.scrollingElement.scrollTop;
+   window.__xpModalRef=modal;
+   for(let i=0;i<100;i++){
+     const h=el.hass,states={...h.states};
+     states['sensor.my_xpeng_soc']={...states['sensor.my_xpeng_soc'],state:String(71+(i%8))};
+     states['sensor.my_xpeng_range_km']={...states['sensor.my_xpeng_range_km'],state:String(393+i)};
+     el.hass={...h,states};
+   }
+   const after=el.shadowRoot.querySelector('.xp-ux-modal-climate');
+   return {sameNode:modal===after,initial,after:after.scrollTop,
+      parentDelta:document.scrollingElement.scrollTop-initialParent,
+      overflow:getComputedStyle(after).overflowY,touchAction:getComputedStyle(after).touchAction};
+ });
+ assert.equal(tickResult.sameNode,true,'Live telemetry must not replace scrolling DOM on iPhone: '+JSON.stringify(tickResult));
+ assert.ok(tickResult.initial>20&&Math.abs(tickResult.after-tickResult.initial)<=2,
+    '100 real state transitions should preserve scroll: '+JSON.stringify(tickResult));
+ assert.equal(tickResult.overflow,'auto','Nested modal must retain its native scroll owner');
+ assert.match(tickResult.touchAction,/pan-y/,'Mobile modal must support vertical touch gestures');
+ assert.ok(Math.abs(tickResult.parentDelta)<=2,'Outer HA page jumps while scrolling modal');
+ await car.locator('button[data-xp-close]').click();
+ const lockStress=await car.evaluate(el=>{
+   const button=el.shadowRoot.querySelector('button[data-xp-toggle="doors"]');
+   const first=el.hass;
+   el.xpToggle('doors');
+   const pending=el._xpTogglePending.doors;
+   for(let i=0;i<60;i++){
+     const states={...el.hass.states};
+     states['lock.my_xpeng_door_lock']={...states['lock.my_xpeng_door_lock'],state:i%2?'locked':'unlocked'};
+     el.hass={...el.hass,states};
+     el.xpToggle('doors'); // simulates rapid repeated taps before command acknowledgement
+   }
+   const updated=el.shadowRoot.querySelector('button[data-xp-toggle="doors"]');
+   return {sameButton:updated===button,clickCount:window.__xpCallLog?.length||0,
+     busy:updated.getAttribute('aria-busy'),disabled:updated.disabled,
+     originalTarget:pending?.target?.service,lastTarget:el._xpTogglePending.doors?.target?.service};
+ });
+ assert.equal(lockStress.sameButton,true,'The pressed lock control cannot be rebuilt mid-tap: '+JSON.stringify(lockStress));
+ assert.equal(lockStress.clickCount,1,'Repeated lock commands under jitter: '+JSON.stringify(lockStress));
+ assert.equal(lockStress.busy,'true','In-flight command needs stable feedback');
+ assert.equal(lockStress.disabled,true,'Disable duplicate tap while command waits for state confirmation');
+ assert.equal(lockStress.originalTarget,lockStress.lastTarget,'Lock label/action changed before acknowledgement');
+ await car.locator('button[data-xp-open="map"]').click();
+ await car.locator('[data-xp-map-host] hui-map-card').waitFor({state:'visible'});
+ const mobileMapStable=await car.evaluate(el=>{
+   const before=el.shadowRoot.querySelector('[data-xp-map-host] hui-map-card');
+   const h=el.hass;
+   for(let i=0;i<50;i++)el.hass={...h,states:{...h.states,
+     'device_tracker.my_xpeng_location':{state:'not_home',attributes:{latitude:31.95+i/10000,longitude:34.80}}}};
+   const after=el.shadowRoot.querySelector('[data-xp-map-host] hui-map-card');
+   return {same:before===after,connected:after?.isConnected,
+     details:!!el.shadowRoot.querySelector('button[data-xp-map-details]')};
+ });
+ assert.ok(mobileMapStable.same&&mobileMapStable.connected&&mobileMapStable.details,
+    'Mobile map must survive tracker updates and expose native HA details: '+JSON.stringify(mobileMapStable));
+ await car.locator('button[data-xp-close]').click();
+ console.log('PASS iPhone telemetry stress / scroll / lock / map: ',
+    JSON.stringify({tickResult,lockStress,mobileMapStable}));
+
  assert.equal(errors.length,0,errors.join('\n'));
  assert.ok(imagesServed>=4,'Expected bundled vehicle and background assets to be loaded');
  const expected=Object.values(GALLERY).sort();
