@@ -298,6 +298,27 @@ async function main(){
        b.rect.left>=geometry.scene.left-2&&b.rect.right<=geometry.scene.right+2&&
        b.rect.top>=geometry.scene.top-2&&b.rect.bottom<=geometry.scene.bottom+2),
        'Controls or vehicle status clipped on '+width+'px card: '+JSON.stringify(geometry));
+     // The narrow card must shrink actual objects, not just set overflow/viewport rules.
+     const sized=await car.evaluate(el=>{
+       const root=el.shadowRoot,rect=selector=>root.querySelector(selector)?.getBoundingClientRect();
+       return {car:rect('.xp-overview .xp-car')?.toJSON(),
+         battery:rect('.xp-overview-stat')?.toJSON(),
+         icon:rect('.xp-ux-dock-seven .xp-ux-dock-action ha-icon')?.toJSON(),
+         actions:[...root.querySelectorAll('.xp-ux-dock-seven .xp-ux-dock-action')]
+           .map(e=>e.getBoundingClientRect().toJSON())};
+     });
+     assert.ok(sized.car?.width<=width*.9&&sized.car.width>width*.6,
+       'Mobile vehicle object was not proportionally sized: '+JSON.stringify(sized));
+     assert.ok(sized.battery?.height<=171&&sized.battery.height>=80,
+       'Mobile battery card was not compacted: '+JSON.stringify(sized));
+     assert.ok(sized.icon?.width<=25&&sized.icon.width>=19,
+       'Mobile dock icons did not scale with card: '+JSON.stringify(sized));
+     assert.ok(sized.actions.length===7&&sized.actions.every(r=>r.height>=48),
+       'Mobile dock has clipped/untappable actions: '+JSON.stringify(sized));
+     assert.ok(sized.battery.bottom<=sized.car.top+3,
+       'Scaled battery card and scaled vehicle overlap: '+JSON.stringify(sized));
+     console.log('Verified independent mobile object sizing:',width,JSON.stringify({
+       carWidth:sized.car.width,batteryHeight:sized.battery.height,iconWidth:sized.icon.width}));
 
    }
    if(!charging)assert.equal(layout.panelColumns,0,'Home location panel must not render: '+JSON.stringify(layout));
@@ -496,6 +517,25 @@ async function main(){
      assert.equal(await car.locator('button[data-xp-map-action="flash_lights"]').count(),1);
    }
    if(action==='climate')await page.waitForFunction(()=>{const img=document.querySelector('xpeng-vehicle-card').shadowRoot.querySelector('img[data-cabin-art]');return img&&img.complete&&img.naturalWidth===752;});
+   if(action==='climate'){
+     const c=await car.evaluate(el=>{
+       const root=el.shadowRoot,photo=root.querySelector('.xp-ux-modal-climate .xp-ux-cabin-art').getBoundingClientRect();
+       const controls=[...root.querySelectorAll('.xp-ux-modal-climate .xp-ux-hotspot-zone button')]
+         .map(node=>node.getBoundingClientRect().toJSON());
+       return {photo:photo.toJSON(),controls};
+     });
+     assert.ok(c.photo.width>=235&&c.photo.width<=280,'Mobile cabin photo not appropriately shrunk: '+JSON.stringify(c));
+     assert.ok(c.controls.length>=5&&c.controls.every(x=>x.width>=35&&x.width<=42),
+       'Heating/ventilation controls must scale along with seat photo: '+JSON.stringify(c));
+     console.log('Verified scaled cabin photo with seat/steering hotspots:',JSON.stringify({photoWidth:c.photo.width,buttons:c.controls.length}));
+   }
+   if(action==='maintenance'){
+     const tyre=await car.evaluate(el=>{
+       const root=el.shadowRoot,stage=root.querySelector('.xp-ux-modal-maintenance .xp-tire-stage').getBoundingClientRect();
+       return {height:stage.height,width:stage.width};
+     });
+     assert.ok(tyre.height>=250&&tyre.height<=320,'Mobile tire-stage objects not scaled: '+JSON.stringify(tyre));
+   }
 
    if(action==='climate'||action==='maintenance'){
      const scroll=await car.locator('.xp-ux-modal-'+action).evaluate((el,action)=>{
