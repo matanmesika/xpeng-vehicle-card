@@ -1013,11 +1013,51 @@ test('G6 multilingual text and icon contract covers all new user-facing actions'
  assert.match(card.charging(),/data-xp-open="charge_controls"/);
  assert.match(card.charging(),/data-xp-open="charge_schedule"/);
  assert.match(src,/auto:'mdi:autorenew'/);
- assert.match(src,/horn:'mdi:bullhorn'/);
+ assert.match(src,/horn:'mdi:bullhorn-outline'/);
  assert.match(src,/flash:'mdi:car-light-high'/);
  assert.match(src,/windscreen:'mdi:car-defrost-front'/);
 });
 
+test('every action is a native modern MDI glyph, including battery and charge station',()=>{
+ const {card}=createCard();
+ card._hass.states['binary_sensor.is_charging'].state='off';
+ card.render();
+ const home=card.overview();
+ const charging=card.charging();
+ const dock=card.xpDock();
+ const icons=[...dock.matchAll(/<ha-icon class="xp-mdi-icon" icon="([^"]+)"/g)].map(m=>m[1]);
+ assert.equal(icons.length,7,'All seven Home/Charging controls have true native HA icons');
+ assert.ok(icons.every(icon=>icon.startsWith('mdi:')));
+ assert.match(home,/class="xp-batt-glyph"[^>]*><ha-icon[^>]*icon="mdi:battery-outline"/,
+   'Battery pictogram must be official MDI, not a custom drawn icon');
+ assert.doesNotMatch(home,/class="xp-batt-fill"/);
+ assert.match(charging,/class="xp-station"[^>]*><ha-icon[^>]*icon="mdi:ev-station"/,
+   'Charging station badge must be official MDI');
+ assert.doesNotMatch(card.header(),/✕/,'No improvised decorative X brand icon');
+});
+test('every modal Back is a single accessible RTL MDI arrow with no visible Back text',()=>{
+ const {card}=createCard();
+ for(const page of ['climate','maintenance','map','charge_controls','charge_schedule','extras','doors','windows','trunk','port']){
+   card._xpPanel=page;
+   const modal=card.xpModal();
+   const button=modal.match(/<button type="button" data-xp-close[^>]*>[\s\S]*?<\/button>/)?.[0];
+   assert.ok(button,'Missing Back button: '+page);
+   assert.match(button,/aria-label="חזרה למסך הבית"/);
+   assert.match(button,/icon="mdi:arrow-right"/);
+   assert.doesNotMatch(button,/חזור אחורה|<span>|Back to vehicle|חזרה לבית<\/span>/,
+     'No redundant Back words in visual button: '+page);
+ }
+ const tire=card.tireScreen(true);
+ const back=tire.match(/<button type="button" data-tire-toggle[^>]*>[\s\S]*?<\/button>/)?.[0];
+ assert.ok(back);
+ assert.match(back,/aria-label="חזרה לתצוגת הרכב"/);
+ assert.match(back,/icon="mdi:arrow-right"/);
+ assert.doesNotMatch(back,/>\s*Back to vehicle/);
+ card._xpPanel='climate';
+ card.xpNavigatePanel('extras','schedule');
+ assert.match(card.xpModal(),/aria-label="חזרה לחלון הקודם"/,
+   'Nested navigation remains correctly announced for screen-readers');
+});
 test('upstream Xpengtk unique IDs resolve without guessed windows/port names',()=>{
  const {card}=createCard({enable_access_controls:true}),st=card._hass.states;
  Object.assign(card._xpengByKey,{
