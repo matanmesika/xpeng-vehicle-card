@@ -1024,6 +1024,12 @@ class XpengVehicleCard extends HTMLElement{
    if(this._xpPanel==='map'||(this._xpPanel==='extras'&&this._xpExtraSection==='diagnostics')){
      inner.style.zoom='';inner.style.width='';return;
    }
+   // An in-page explanation must never force the physical cabin photo or
+   // control buttons to shrink. These panels scroll at their own modal surface.
+   if(this._xpPanel&&!(this._xpPanel==='extras'&&this._xpExtraSection==='diagnostics')){
+     inner.style.zoom='';inner.style.width='100%';inner.dataset.xpFitScale='1';
+     return;
+   }
    inner.style.zoom='1';inner.style.width='100%';
    const available=area.clientHeight,needed=inner.scrollHeight;
    if(!available||!needed||needed<=available+1){inner.dataset.xpFitScale='1';return;}
