@@ -218,6 +218,23 @@ async function main(){
  // Compact owner-review JPEG: GitHub's binary API cannot preview large PNGs.
  // Keep the existing full-resolution PNG too.
  // Curated gallery uses a single full-resolution PNG per view.
+ const chargingDesktop=await car.evaluate(el=>{
+   const root=el.shadowRoot,find=q=>root.querySelector(q)?.getBoundingClientRect().toJSON();
+   return {actions:[...root.querySelectorAll('.xp-ux-dock-seven .xp-ux-dock-action')].map(n=>n.dataset.xpToggle||n.dataset.xpOpen),
+     buttons:[...root.querySelectorAll('.xp-charge-panel-actions button')].map(n=>({action:n.dataset.xpOpen||n.dataset.xpCommand,disabled:n.disabled})),
+     image:find('.xp-charge .xp-car'),station:find('.xp-station'),dock:find('.xp-ux-dock-seven')};
+ });
+ assert.deepEqual(chargingDesktop.actions,desktopContent.actions,
+   'Desktop charging scene must show all seven exact Home actions');
+ assert.deepEqual(chargingDesktop.buttons.map(x=>x.action),['charge_controls','charge_schedule','stop_charge'],
+   'Charging must retain the three scoped charge buttons');
+ assert.ok(chargingDesktop.image.width<.45*1400,
+   'Desktop vehicle image must be smaller than original charging layout');
+ assert.ok(chargingDesktop.image.right<=chargingDesktop.station.left+5,
+   'Desktop charging station must be exposed beside smaller car');
+ assert.ok(chargingDesktop.image.bottom<chargingDesktop.dock.top+2,
+   'Desktop car must not cover Home dock');
+ console.log('Desktop charging: smaller car, station, 3 controls and identical Home dock',JSON.stringify(chargingDesktop));
  const rearArt=await car.locator('[data-car-art]').getAttribute('src');
  assert.match(rearArt,/\/g6\/2026\/graphite_gray\/charging\.webp/,'Charge view must use owner-supplied grey rear-three-quarter artwork');
  const overlays=await car.evaluate(el=>[...el.shadowRoot.querySelectorAll('svg[data-xp-cable]')].map(svg=>({
@@ -277,6 +294,24 @@ async function main(){
      assert.equal(details.cables.filter(c=>c.visible).length,1,'Exactly one charging cable should show');
      assert.ok(details.cables.every(c=>c.stroke<=3),'Green cable must be thin at all breakpoints');
      console.log('Verified breakpoint charging imagery and cable:',JSON.stringify(details));
+     const geo=await car.evaluate(el=>{
+       const root=el.shadowRoot,rect=q=>root.querySelector(q)?.getBoundingClientRect().toJSON();
+       return {actions:[...root.querySelectorAll('.xp-ux-dock-action')].map(n=>n.dataset.xpToggle||n.dataset.xpOpen),
+        controls:[...root.querySelectorAll('.xp-charge-panel-actions button')].map(n=>n.dataset.xpOpen||n.dataset.xpCommand),
+        car:rect('.xp-charge .xp-car'),station:rect('.xp-station'),dock:rect('.xp-ux-dock-seven'),panel:rect('.xp-charge-card')};
+     });
+     assert.deepEqual(geo.actions,desktopContent.actions,'Charging loses Home actions on '+width+'px');
+     assert.deepEqual(geo.controls,['charge_controls','charge_schedule','stop_charge'],'Charging loses a charge control on '+width+'px');
+     assert.ok(geo.car.width<=width*.81&&geo.car.width>=width*.72,
+       'Scaled charging car is too large/small: '+JSON.stringify(geo));
+     assert.ok(geo.car.right<=geo.station.left+5,
+       'Charging station hidden behind vehicle on '+width+'px: '+JSON.stringify(geo));
+     assert.ok(geo.car.bottom<geo.dock.top+4&&geo.station.bottom<geo.dock.top+4,
+       'Charging scene objects overlap navigation dock: '+JSON.stringify(geo));
+     assert.ok(geo.panel.bottom<geo.car.bottom,
+       'Charging telemetry must stay above the car and navigation: '+JSON.stringify(geo));
+     console.log('Mobile charging geometry verified '+width+'px',JSON.stringify(geo));
+
    }
    if(!charging){
      const current=await contentSignature();
@@ -579,31 +614,34 @@ async function main(){
  await reviewShot('climate-dark-mobile');
  await car.locator('button[data-xp-close]').click();
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(true));
- assert.equal(await car.locator('.xp-ux-dock').count(),0,'Charging should have no visible quick action dock');
- assert.equal(await car.locator('.xp-ux-charge-actions').count(),0,'Charging controls must not overlay hero');
+ assert.deepEqual(await car.locator('.xp-ux-dock-action').evaluateAll(all=>all.map(n=>n.dataset.xpToggle||n.dataset.xpOpen)),
+   desktopContent.actions,'Charging must display all seven live Home shortcuts');
+ assert.equal(await car.locator('button[data-xp-home]').count(),0,'Automatic charging must not have a redundant Back-to-Home button');
  assert.equal(await car.locator('button[data-xp-open="charge_controls"]').count(),1,'Charge limit control missing');
  assert.equal(await car.locator('button[data-xp-open="charge_schedule"]').count(),1,'Charge schedules shortcut missing');
- assert.equal(await car.locator('button[data-xp-home]').count(),1,'Charging needs one Back to home');
- assert.equal(await car.locator('.xp-ux-dock').count(),0,'Charging must not have home dock');
-
+ assert.equal(await car.locator('button[data-xp-command="stop_charge"]').count(),1,'Stop Charge must remain visible');
  await reviewShot('charging-reference-mobile');
  await car.locator('button[data-xp-open="charge_controls"]').click();
- assert.ok(await car.locator('.xp-ux-modal-charge_controls').count(),'Charging modal missing');
+ assert.ok(await car.locator('.xp-charge-compact-modal.xp-ux-modal-charge_controls').count(),'Compact charge limit overlay missing');
+ assert.equal(await car.locator('.xp-ux-modal-charge_controls input[data-xp-range="charge_limit_control"]').count(),1,
+   'Charge limit should operate the real HA number entity');
+ assert.equal(await car.locator('.xp-ux-modal-charge_controls button[data-xp-command="stop_charge"]').count(),0,
+   'Charge limit popup must not duplicate stop command');
  await reviewShot('charging-actions-mobile');
  await car.locator('button[data-xp-close]').click();
+ assert.equal(await car.locator('.xp-ux-dock-action').count(),7,'Closing charge limit must restore vehicle shortcuts');
  await car.locator('button[data-xp-open="charge_schedule"]').click();
- assert.ok(await car.locator('.xp-ux-modal-charge_schedule').count(),'Charging schedules modal missing');
+ assert.ok(await car.locator('.xp-charge-compact-modal.xp-ux-modal-charge_schedule').count(),'Compact schedule overlay missing');
+ assert.match(await car.locator('.xp-ux-modal-charge_schedule').innerText(),/קריאה בלבד/,'Never fake executable charge schedule');
  await reviewShot('charge-schedule-mobile');
- // Automatic charging remains live, but Back returns Home until charging resets.
  await car.locator('button[data-xp-close]').click();
- await car.locator('button[data-xp-home]').click();
- assert.equal(await car.locator('.xp-ux-dock-action').count(),7,'Back from live Charging should display Home menu');
- assert.equal(await car.locator('button[data-xp-home]').count(),0,'Home should not have Back');
- await reviewShot('back-home-mobile');
- // An explicit Back suppresses the current charge; a NEW charge session reopens it.
- assert.equal(await car.locator('button[data-xp-open="charging"]').count(),0);
+ assert.equal(await car.locator('.xp-charge').count(),1,'Closing charge overlay must stay in automatic Charging');
+ assert.equal(await car.locator('.xp-ux-dock-action').count(),7,'Dock must return with all seven actions');
+ assert.equal(await car.locator('button[data-xp-open="charging"]').count(),0,'Never add manual Charging shortcut');
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
+ assert.equal(await car.locator('.xp-charge').count(),0,'Stopped charge must return to regular Home automatically');
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(true));
+ assert.equal(await car.locator('.xp-charge').count(),1,'New charge session must enter Charging automatically');
  const greenDebug=await car.evaluate(e=>({active:e.xpChargingActive(),view:e._view,dismissed:e._xpChargingDismissed,last:e._xpLastActualCharging,charging:e.val('charging'),plugged:e.val('plugged'),svg:!!e.shadowRoot.querySelector('svg.xp-charge-cable-live')}));
  console.log('Live cable after charge transition:',JSON.stringify(greenDebug));
  assert.equal(await car.locator('.xp-charge-cable-live').count(),2,'Both breakpoint-specific charging overlays are present: '+JSON.stringify(greenDebug));
