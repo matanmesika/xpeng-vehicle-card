@@ -4,7 +4,7 @@
 
 The XPENG Vehicle Card is a custom Lovelace frontend for vehicles exposed through the separate **Xpengtk Home Assistant integration**. It displays real vehicle states and provides supported controls without creating a second phone dashboard or replacing the owner's original night-lakeside visual design.
 
-[Install using HACS](https://my.home-assistant.io/redirect/hacs_repository/?owner=matanmesika&repository=xpeng-vehicle-card&category=plugin) · [Latest stable: v1.0.3](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.3) · [Test beta: v1.0.4-beta.10](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.4-beta.10) · [English screenshot gallery](docs/gallery-en/README.md) · [Installation guide](docs/G6_DASHBOARD_GUIDE_HE.md)
+[Install using HACS](https://my.home-assistant.io/redirect/hacs_repository/?owner=matanmesika&repository=xpeng-vehicle-card&category=plugin) · [Latest stable: v1.0.3](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.3) · [Test beta: v1.0.4-beta.10](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.4-beta.10) · [English screenshot gallery](docs/gallery-en/README.md) · [English installation guide](docs/G6_DASHBOARD_GUIDE_EN.md)
 
 > **Release status:** v1.0.3 remains the stable release. Beta.10 is an opt-in test release containing updated G6 layouts, icon labels, diagnostics, charging and HVAC presentation. Beta testing does not establish that a physical car executed a service command. Black Edition-specific photo artwork remains incomplete.
 
