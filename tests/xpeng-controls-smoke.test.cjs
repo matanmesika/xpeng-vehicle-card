@@ -78,6 +78,7 @@ test('native map reuses one unchanged Map card on repeated Xpengtk hass updates'
  card._xpengByKey['device_tracker.location']='device_tracker.user_gps';
  card._hass.states['device_tracker.user_gps']={state:'not_home',attributes:{latitude:32,longitude:34}};
  card._xpPanel='map';
+ card._xpLastActualCharging=true;
  let count=0,child=null;
  const host={replaceChildren(x){child=x},contains(x){return child===x}};
  card.shadowRoot.querySelector=key=>key==='[data-xp-map-host]'?host:null;
