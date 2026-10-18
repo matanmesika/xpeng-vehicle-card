@@ -2265,6 +2265,27 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  }
 }
 
+/* True official MDI decile gauge: no improvised nested CSS-drawn battery. */
+.xp-batt-glyph,.xp-home-navigation .xp-batt-glyph{
+ display:grid!important;place-items:center!important;
+ border:0!important;background:transparent!important;
+ padding:0!important;width:72px!important;min-width:72px!important;height:92px!important;
+ color:var(--xp-battery-color,#24f2bd)
+}
+.xp-batt-glyph:before{display:none!important}
+.xp-batt-glyph .xp-battery-level-icon{
+ display:block;width:76px!important;height:90px!important;
+ --xp-icon-size:76px!important;--mdc-icon-size:76px!important;
+ color:inherit;filter:drop-shadow(0 0 7px currentColor)
+}
+.xp-home-navigation .xp-batt-glyph{
+ width:53px!important;min-width:53px!important;height:64px!important
+}
+.xp-home-navigation .xp-batt-glyph .xp-battery-level-icon{
+ width:51px!important;height:62px!important;
+ --xp-icon-size:51px!important;--mdc-icon-size:51px!important
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -3624,10 +3645,20 @@ class XpengVehicleCard extends HTMLElement{
    const raw=this.number('soc'),valid=raw!==null&&Number.isFinite(raw)&&raw>=0&&raw<=100;
    const percent=valid?Math.round(raw):null;
    const level=percent===null?'unknown':percent<=20?'low':percent<=50?'medium':'good';
+   const charging=this.xpChargingActive();
+   const decile=percent===null?null:Math.min(100,Math.max(10,Math.round(percent/10)*10));
+   const glyph=percent===null?'mdi:battery-unknown':percent===0?'mdi:battery-outline':
+     percent<=10?'mdi:battery-10':decile===100?'mdi:battery':
+     'mdi:battery-'+decile;
+   const chargingGlyph=charging&&percent!==null&&percent>0
+     ?(decile===100?'mdi:battery-charging-100':'mdi:battery-charging-'+Math.max(10,Math.ceil(percent/10)*10)):glyph;
    return '<div class="xp-batt-glyph" role="img" data-xp-battery-icon data-level="'+level+
+     '" data-xp-battery-percent="'+(percent??'unknown')+
      '" aria-label="'+(percent===null?'Battery level unavailable':'Battery '+percent+'%')+
-     '" style="--xp-battery-level:'+(percent??0)+'%"><div class="xp-batt-fill"></div></div>';
+     '"><ha-icon class="xp-mdi-icon xp-battery-level-icon" icon="'+chargingGlyph+
+     '" style="--xp-icon-size:64px" aria-hidden="true"></ha-icon></div>';
  }
+
  interiorPreview(){
     const a=this.appearance(),finish=XP_INTERIORS.find(x=>x.id===a.interior)||XP_INTERIORS[0];
     const override=Array.isArray(this._config.vehicles)&&this._config.vehicles.length
