@@ -14,9 +14,11 @@ test('HA card width drives responsive changes, not just viewport width',()=>{
    assert.ok(css.includes('@container xpeng-layout (max-width:'+width+'px)'),width+'px rule missing');
  assert.match(css,/@media\(max-width:850px\)/,'keep viewport fallback');
 });
-test('on phone status information becomes two columns with final location spanning both',()=>{
- assert.match(css,/\.xp-status-panel\{[^}]*grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
- assert.match(css,/\.xp-info-row:last-child\{grid-column:1\/-1/);
+test('Home keeps its battery/range content and no location overlay at every breakpoint',()=>{
+ const body=source.slice(source.indexOf(' overview(){'),source.indexOf('\n charging(){'));
+ assert.doesNotMatch(body,/xp-status-panel|xp-location-row|Location|this\.locationText\(\)/);
+ assert.match(body,/xp-overview-stat/);
+ assert.match(body,/xp-maintenance-home-button/);
  assert.match(css,/\.xp-charge-card\{left:4%;width:92%;top:206px/);
 });
 test('original desktop composition, vehicle artwork and automatic charge logic stay intact',()=>{
@@ -74,10 +76,10 @@ test('tyre pressure units exist only in card editor and never in vehicle screens
 });
 
 test('the Home screen hides maintenance summaries but preserves a single dedicated shortcut',()=>{
- assert.match(source,/const rows=\[\['pin','Location',this\.locationText\(\)\]\]/);
+ assert.doesNotMatch(source.slice(source.indexOf(' overview(){'),source.indexOf('\n charging(){')),/xp-status-panel|Location/);
  assert.doesNotMatch(source,/const rows=\[\['settings','תחזוקת הרכב'/);
  assert.match(source,/xp-maintenance-home-button/);
  assert.match(source,/\['maintenance','settings','תחזוקה'\]/);
  assert.match(source,/page==='maintenance'\)body=this\.xpMaintenancePanel\(\)/);
- assert.match(css,/\.xp-home-navigation \.xp-status-panel\{display:block;left:4%/);
+ assert.match(source,/xp-maintenance-home-button/);
 });
