@@ -2995,7 +2995,8 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  --xp-trunk-size:27px;
  display:inline-flex!important;
  align-items:center!important;justify-content:center!important;
- direction:ltr!important; /* icon is a vehicle diagram; parent dock may be RTL */
+ direction:ltr!important; /* car faces right: the rear hatch is on the LEFT */
+ flex-direction:row-reverse!important; /* arrow sits by the actual rear */
  gap:0;flex:0 0 auto;
  width:calc(var(--xp-trunk-size) + 11px)!important;
  height:var(--xp-trunk-size)!important;
