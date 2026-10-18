@@ -1040,9 +1040,15 @@ test('TPMS labels stay directly beside the matching wheel at desktop and phone w
  assert.match(html,/xp-tire-reading-body/);
  assert.doesNotMatch(html,/<select|data-xp-tire-unit/);
 });
-test('HVAC reference panel draws only reported fan levels and exposes direct seat selections',()=>{
+test('HVAC reference panel draws only real fan levels and working seat controls',()=>{
  const {card}=createCard({show_controls:true});
- const html=card.xpModal();
+ // This test intentionally injects ONLY the supported entities for this car.
+ card._xpengByKey['number.fan_speed_control']='number.real_fan';
+ card._hass.states['number.real_fan']={state:'3',attributes:{min:1,max:8,step:1}};
+ card._xpengByKey['select.left_rear_seat_heat_select']='select.left_rear_heat';
+ card._hass.states['select.left_rear_heat']={state:'Heat 1',attributes:{options:['Off','Heat 1','Heat 2','Heat 3']}};
+ card._xpengByKey['binary_sensor.climate_auto']='binary_sensor.real_auto';
+ card._hass.states['binary_sensor.real_auto']={state:'on',attributes:{}};
  card._xpPanel='climate';
  const panel=card.xpModal();
  assert.match(panel,/xp-climate-primary-controls/);
@@ -1052,8 +1058,9 @@ test('HVAC reference panel draws only reported fan levels and exposes direct sea
  assert.match(panel,/data-xp-cycle="driver_seat_heat_select"/);
  assert.match(panel,/data-xp-cycle="left_rear_seat_heat_select"/);
  assert.doesNotMatch(panel,/data-xp-cycle="left_rear_seat_ventilation_select"/);
- assert.match(card.xpFanControl(),/8 <\/b>|8<\/b>/);
- assert.equal((card.xpFanControl().match(/<i class=/g)||[]).length,8,'fan segments must match HA max of 8, not an invented ten');
- assert.doesNotMatch(panel,/data-xp-hvac-mode="auto"/,'AUTO state is feedback only for this Xpengtk demo');
+ assert.match(card.xpFanControl(),/3 \/ 8/);
+ assert.equal((card.xpFanControl().match(/<i class=/g)||[]).length,8,'show HA 8 levels, not an invented 10');
+ assert.doesNotMatch(panel,/data-xp-hvac-mode="auto"/,'AUTO is feedback only when HA lacks AUTO command');
  assert.match(panel,/role="status" aria-label="מצב AUTO: פעיל"/);
 });
+
