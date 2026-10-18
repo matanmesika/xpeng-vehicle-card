@@ -2685,9 +2685,6 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-scene .xp-ux-dock-seven .xp-ux-dock-action .xp-trunk-symbol{
  align-self:center;margin:3px 0 0
 }
-.xp-scene .xp-ux-dock-seven .xp-ux-dock-action .xp-trunk-symbol>.xp-mdi-icon{
- color:#a7e5fb
-}
 @container xpeng-layout (max-width:520px){
  .xp-trunk-symbol>.xp-trunk-arrow{
   right:-.29em;top:-.41em;width:12px;height:12px;--mdc-icon-size:12px
