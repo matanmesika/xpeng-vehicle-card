@@ -159,8 +159,23 @@ async function main(){
    if(!filename)return; // all existing behaviour assertions still run
    assert.ok(!created.has(filename),'Duplicate current gallery screenshot: '+filename);
    created.add(filename);
-   await car.screenshot({path:path.join(OUTPUT,filename),animations:'disabled'});
-   console.log('Actual card screenshot:',filename);
+   // Documentation and design-review captures use English UI copy even when
+   // the behavior test below separately verifies the original Hebrew RTL mode.
+   await car.evaluate(el=>{
+     el._xpReviewLocaleBefore=el.hass;
+     const h=el.hass;
+     el.hass={...h,locale:{...(h?.locale||{}),language:'en'}};
+   });
+   try{
+     await car.screenshot({path:path.join(OUTPUT,filename),animations:'disabled'});
+   }finally{
+     await car.evaluate(el=>{
+       const previous=el._xpReviewLocaleBefore;
+       delete el._xpReviewLocaleBefore;
+       if(previous)el.hass=previous;
+     });
+   }
+   console.log('Actual card screenshot (English design review):',filename);
  }
  await page.evaluate(()=>{
    const card=document.querySelector('xpeng-vehicle-card');
