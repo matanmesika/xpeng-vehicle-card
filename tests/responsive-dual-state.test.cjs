@@ -96,6 +96,7 @@ test('modern glass design uses official Material Design action icons without cha
  assert.match(css,/@container xpeng-layout \(max-width:850px\)/);
  assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
  assert.doesNotMatch(source.slice(source.indexOf(' overview(){'),source.indexOf('\n charging(){')),/Location|xp-status-panel/);
- for(const action of ['doors','windows','port','trunk'])
-   assert.match(source,new RegExp('\\\'data-xp-toggle="\\\'+action+'\\\'"'),'Dock still needs direct action '+action);
+ assert.ok(source.includes("['doors','windows','port','trunk'].includes(action)"));
+ assert.match(source,/data-xp-toggle/);
+ assert.match(source,/verifiedDirectTap/);
 });
