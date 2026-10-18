@@ -16,7 +16,7 @@ assert.ok(begin>=0&&finish>begin,'Unable to safely isolate the card CSS template
 const css=source.slice(begin+start.length,finish);
 const withoutCss=s=>s.slice(0,s.indexOf(start)+start.length)+'[CSS_STYLES_ONLY]'+s.slice(s.indexOf(end,s.indexOf(start)));
 const base=process.env.G6_REVIEW_BASE||'origin/release/v1.0.4-beta.10';
-function git(...args){return cp.execFileSync('git',args,{cwd:root,encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();}
+function git(...args){return cp.execFileSync('git',args,{cwd:root,encoding:'utf8',stdio:['ignore','pipe','pipe']});}
 test('Design Agent: proportional desktop SOC icon and premium components',()=>{
  assert.match(css,/@container xpeng-layout \(min-width:851px\)/);
  assert.match(css,/\.xp-home-navigation \.xp-batt-glyph \.xp-battery-level-icon\{[\s\S]*?--xp-icon-size:88px!important/);
