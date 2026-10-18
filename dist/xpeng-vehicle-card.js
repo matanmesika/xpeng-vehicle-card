@@ -2651,6 +2651,17 @@ class XpengVehicleCard extends HTMLElement{
     +'<button class="xp-map-native-details" type="button" data-xp-map-details '+(location?'':'disabled')+'>'
     +xpIcon('pin',18)+' פרטי מיקום ב־Home Assistant</button></div></div>';
  }
+ xpWarmMapHelpers(){
+   // Warm the native Home Assistant map helper code once, before first Location tap.
+   // Do not attach a map or retrieve any new location coordinates in the background.
+   if(typeof window==='undefined'||typeof window.loadCardHelpers!=='function')return Promise.resolve(null);
+   if(!XP_MAP_HELPERS_PROMISE){
+     XP_MAP_HELPERS_PROMISE=Promise.resolve().then(()=>window.loadCardHelpers()).catch(()=>{
+       XP_MAP_HELPERS_PROMISE=null;return null;
+     });
+   }
+   return XP_MAP_HELPERS_PROMISE;
+ }
  async xpMountMap(){
    if(this._xpPanel!=='map')return;
    const host=this.shadowRoot?.querySelector?.('[data-xp-map-host]');
@@ -2664,16 +2675,17 @@ class XpengVehicleCard extends HTMLElement{
        if(!host.contains?.(this._xpMapElement))host.replaceChildren(this._xpMapElement);
        return;
      }
-     const helper=typeof window.loadCardHelpers==='function'?await window.loadCardHelpers():null;
-     if(!helper){host.textContent='המפה המובנית אינה זמינה בכרטיס זה כרגע.';return;}
-     if(this._xpPanel!=='map'||!this.shadowRoot?.contains?.(host))return;
+     const helper=await this.xpWarmMapHelpers();
+     if(!helper){host.textContent=xpLocalizeMarkup('המפה המובנית אינה זמינה בכרטיס זה כרגע.',this._hass);return;}
+     if(this._xpPanel!=='map'||!this.shadowRoot?.contains?.(host)||
+        this.xpLive('device_tracker','location')?.id!==gps.id)return;
      const map=helper.createCardElement({type:'map',entities:[{entity:gps.id}],
        default_zoom:11,hours_to_show:0,theme_mode:'dark',aspect_ratio:'4:3'});
      map.hass=this._hass;
      this._xpMapElement=map;this._xpMapEntityId=gps.id;
      host.replaceChildren(map);
    }catch(err){
-     host.textContent='המפה אינה זמינה בתוך הכרטיס כרגע. אפשר לפתוח את פרטי המיקום דרך הכפתור למטה.';
+     host.textContent=xpLocalizeMarkup('המפה אינה זמינה בתוך הכרטיס כרגע. אפשר לפתוח את פרטי המיקום דרך הכפתור למטה.',this._hass);
    }
  }
  xpModal(){
@@ -2984,7 +2996,7 @@ class XpengVehicleCard extends HTMLElement{
   );
   if((sensitive||['trunk_power_switch','auto_upgrade_switch','sentinel_sensitivity_control','trunk_power_timer_control'].includes(suffix))
      &&!directAllowed&&typeof window.confirm==='function'
-     &&!window.confirm('לשלוח את הפקודה לרכב?'))return false;
+     &&!window.confirm(xpLocalizeMarkup('לשלוח את הפקודה לרכב?',this._hass)))return false;
   let succeeded=false;
   try{
     await this._hass.callService(domain,service,data);
@@ -3044,7 +3056,7 @@ class XpengVehicleCard extends HTMLElement{
    this._xpManualCharging=false;this._xpChargingDismissed=this.xpChargingActive();
    this._xpNotice='';this.render();
  }
- connectedCallback(){if(!this._fullscreenHandler){this._fullscreenHandler=()=>{if(!document.fullscreenElement&&this._expanded){this._expanded=false;this.render();}};}document.addEventListener('fullscreenchange',this._fullscreenHandler);}
+ connectedCallback(){if(this._hass)this.xpWarmMapHelpers();if(!this._fullscreenHandler){this._fullscreenHandler=()=>{if(!document.fullscreenElement&&this._expanded){this._expanded=false;this.render();}};}document.addEventListener('fullscreenchange',this._fullscreenHandler);}
  disconnectedCallback(){if(this._fullscreenHandler)document.removeEventListener('fullscreenchange',this._fullscreenHandler);}
  toggleFullScreen(){this._expanded=!this._expanded;if(this._expanded&&this.requestFullscreen){this.requestFullscreen().catch(()=>{});}else if(!this._expanded&&document.fullscreenElement===this){document.exitFullscreen().catch(()=>{});}this.render();}
  setConfig(config){
@@ -3070,6 +3082,7 @@ class XpengVehicleCard extends HTMLElement{
   const oldCharging=this.xpChargingActive();
   const oldMapGps=this._xpPanel==='map'?this.xpLive('device_tracker','location')?.id:null;
   this._hass=hass;
+  this.xpWarmMapHelpers();
   if(!this._xpengRegistryLoaded)this.ensureXpengRegistry();
   const actualCharging=this.xpChargingActive();
   if(actualCharging&&!this._xpLastActualCharging){
@@ -3419,10 +3432,10 @@ class XpengVehicleCard extends HTMLElement{
   const oldPanel=oldModal?.className||'';
   const oldScroll=oldModal?.scrollTop||0;
   const oldDiagnostics=oldModal?.querySelector?.('.xp-diagnostics-scroll')?.scrollTop||0;
-  const html=`<style>${XP_CSS}</style><ha-card><div class="xp-scene ${isCharging?'xp-charge':this._tireOpen?'xp-overview xp-tire-mode':'xp-overview'} ${this.xpUiEnabled()?'xp-has-controls':''} ${onHome&&this.xpUiEnabled()?'xp-home-navigation':''} ${chargeLayout?'xp-charge-navigation':''}">
+  const html=xpLocalizeMarkup(`<style>${XP_CSS}</style><ha-card><div class="xp-scene ${isCharging?'xp-charge':this._tireOpen?'xp-overview xp-tire-mode':'xp-overview'} ${this.xpUiEnabled()?'xp-has-controls':''} ${onHome&&this.xpUiEnabled()?'xp-home-navigation':''} ${chargeLayout?'xp-charge-navigation':''} ${xpIsEnglish(this._hass)?'xp-locale-en':''}">
    ${this.sceneBackdrop()}${this.header()}${isCharging?this.charging():this._tireOpen?this.title()+this.tireScreen():this.overview()}${showDock?this.xpDock():""}${this.xpModal()}
    
-   </div></ha-card>`;
+   </div></ha-card>`,this._hass);
   if(typeof document!=='undefined'&&typeof document.createElement==='function'&&
      this.shadowRoot.childNodes?.length){
     const template=document.createElement('template');
@@ -3483,7 +3496,7 @@ class XpengVehicleCardEditor extends HTMLElement{
  setConfig(cfg){this._cfg=xpNormalizeAppearance({...cfg});this.render();}
  set hass(value){
    this._hass=value;
-   const signature=Object.keys(value?.states||{}).sort().join('|');
+   const signature=String(value?.locale?.language||value?.language||'he')+'|'+Object.keys(value?.states||{}).sort().join('|');
    if(signature!==this._entitySignature){this._entitySignature=signature;this.render();}
  }
  get hass(){return this._hass;}
@@ -3499,7 +3512,7 @@ class XpengVehicleCardEditor extends HTMLElement{
    const auto=spec[0]+'.'+prefix+'_'+spec[1];
    return '<label class="xp-map-row"><span>'+xpEsc(field.label)+'</span><input data-entity="'+xpEsc(field.key)+'" list="xp-entity-choices" autocomplete="off" value="'+xpEsc(v.entities?.[field.key]||'')+'" placeholder="Auto: '+xpEsc(auto)+'" title="Leave blank for automatic mapping. Supports entity_id or entity_id|attribute_name"></label>';
   }).join('');
-  this.shadowRoot.innerHTML=`<style>section{display:grid;gap:13px;padding:14px;font:inherit}label{display:grid;gap:5px;font-size:13px}input,select{border:1px solid #8b959e;border-radius:7px;padding:10px;background:var(--card-background-color,#fff);color:var(--primary-text-color,#111)}p{font-size:12px;opacity:.8;line-height:1.5}
+  this.shadowRoot.innerHTML=xpLocalizeMarkup(`<style>section{display:grid;gap:13px;padding:14px;font:inherit}label{display:grid;gap:5px;font-size:13px}input,select{border:1px solid #8b959e;border-radius:7px;padding:10px;background:var(--card-background-color,#fff);color:var(--primary-text-color,#111)}p{font-size:12px;opacity:.8;line-height:1.5}
    h3{margin:8px 0 0;font-size:15px}
    details{border:1px solid var(--divider-color,#7d879a77);border-radius:9px;padding:11px}
    summary{cursor:pointer;font-weight:600}
@@ -3530,7 +3543,7 @@ class XpengVehicleCardEditor extends HTMLElement{
        <datalist id="xp-entity-choices">${dataList}</datalist>
      </div>`:`<p data-auto-mapping>Vehicle sensors are matched automatically using the XPENG integration. Choose Manual to show and assign individual sensor entities.</p>`}
      <p>Vehicle status and automatic Charging remain the two principal scenes. Optional in-card overlays show climate and seat controls and use native Home Assistant services. The cabin illustration reflects the selected interior colour.</p>
-  </section>`;
+  </section>`,this._hass);
  }
 }
 if(!customElements.get('xpeng-vehicle-card'))customElements.define('xpeng-vehicle-card',XpengVehicleCard);
