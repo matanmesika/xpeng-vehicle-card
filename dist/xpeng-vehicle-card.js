@@ -2096,7 +2096,7 @@ class XpengVehicleCard extends HTMLElement{
     return '<i class="'+(v+0.001>=threshold?'xp-fan-bar-on':'')+'" aria-hidden="true"></i>';
   }).join('');
   return '<label class="xp-ux-range-row xp-climate-fan-panel">'
-    +'<span>'+xpIcon('fan',24)+' <span>רמת מאוורר</span> <b>'+xpEsc(xpNum(v))+' / '+xpEsc(xpNum(max))+'</b></span>'
+    +'<span>'+xpIcon('fan',24)+' <span>רמת מאוורר</span> <b dir="ltr">'+xpEsc(xpNum(v))+' / '+xpEsc(xpNum(max))+'</b></span>'
     +'<div class="xp-fan-bars" aria-hidden="true">'+bars+'</div>'
     +'<input type="range" min="'+min+'" max="'+max+'" step="'+step+'" value="'+v+'" data-xp-range="fan_speed_control" aria-label="מהירות מאוורר"></label>';
  }
@@ -2852,7 +2852,7 @@ class XpengVehicleCard extends HTMLElement{
     const wheel=(key,label)=>{const reading=this.tirePressureDisplay(key);
       return `<div class="xp-tire-reading" data-wheel="${key}" role="group" aria-label="${xpEsc(label)}">
         ${xpIcon('tire',20)}<div class="xp-tire-reading-body"><small>${xpEsc(label)}</small>
-        <strong>${xpEsc(reading.value)} <span>${reading.value==='—'?'לא זמין':unit==='kpa'?'kPa':unit==='psi'?'PSI':'bar'}</span></strong></div>
+        <strong dir="ltr">${xpEsc(reading.value)} <span>${reading.value==='—'?'לא זמין':unit==='kpa'?'kPa':unit==='psi'?'PSI':'bar'}</span></strong></div>
       </div>`;};
     return `<section class="xp-tire-screen" role="region" aria-label="Tire pressure from above">
        ${showBack?`<div class="xp-tire-actions"><button type="button" data-tire-toggle aria-label="Back to vehicle status">${xpIcon('back',20)} Back to vehicle</button></div>`:''}
