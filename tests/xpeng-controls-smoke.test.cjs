@@ -695,7 +695,7 @@ test('Extras -> Diagnostics returns first to Extras, then to Home',()=>{
  assert.equal(card._xpPanel,null);
  assert.equal(card._xpNavStack.length,0);
 });
-test('multi-hop modal Back stack clears on charge transition, vehicle switch, or config reset',()=>{
+test('multi-hop modal Back stack clears on charge transition or vehicle switch',()=>{
  const {card}=createCard();
  card.xpNavigatePanel('climate');
  card.xpNavigatePanel('extras','schedule');
@@ -711,7 +711,7 @@ test('multi-hop modal Back stack clears on charge transition, vehicle switch, or
  card._xpLastActualCharging=false;
  card.hass={...card._hass,states:{...card._hass.states,'binary_sensor.is_charging':{state:'off',attributes:{}},'binary_sensor.cable_present':{state:'off',attributes:{}}}};
  card.xpNavigatePanel('extras','diagnostics');
- card.setConfig({type:'custom:xpeng-vehicle-card',model:'G6',year:'2026',prefix:'xpeng_g6'});
+ card.setConfig({type:'custom:xpeng-vehicle-card',model:'G9',year:'2026',prefix:'xpeng_g9'});
  assert.equal(card._xpPanel,null);
  assert.equal(card._xpNavStack.length,0);
  card.xpNavigatePanel('climate');
@@ -720,6 +720,19 @@ test('multi-hop modal Back stack clears on charge transition, vehicle switch, or
  card.hass={...card._hass,states:{...card._hass.states,'binary_sensor.is_charging':{state:'on',attributes:{}},'binary_sensor.cable_present':{state:'on',attributes:{}}}};
  assert.equal(card._xpPanel,null,'New active charging scene invalidates the old subpage stack');
  assert.equal(card._xpNavStack.length,0);
+});
+test('changing interior colour in editor does not collapse nested Climate navigation',()=>{
+ const {card}=createCard({interior:'light_gray'});
+ card._hass.states['binary_sensor.is_charging'].state='off';
+ card.xpNavigatePanel('climate');
+ card.xpNavigatePanel('extras','schedule');
+ assert.equal(card._xpNavStack.length,1);
+ card.setConfig({type:'custom:xpeng-vehicle-card',model:'G6',year:'2026',prefix:'xpeng_g6',interior:'dark_gray',show_controls:true});
+ assert.equal(card._xpPanel,'extras');
+ assert.equal(card._xpNavStack.length,1);
+ card.xpBackPanel();
+ assert.equal(card._xpPanel,'climate');
+ assert.match(card.xpModal(),/interior_dark_gray/);
 });
 test('unavailable stop-charge command stays visible but disabled; no invented API call',()=>{
  const {card}=createCard();
