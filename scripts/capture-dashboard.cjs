@@ -137,16 +137,27 @@ async function main(){
  await page.evaluate(paths=>{
    if(window.customElements.get('ha-icon'))return;
    class PreviewHomeAssistantIcon extends HTMLElement{
-     connectedCallback(){
+     // Home Assistant updates ha-icon when icon changes with live SOC/state.
+     // The test preview must do the same or the battery can falsely display
+     // the initial battery-unknown (?) icon after a valid SOC update.
+     static get observedAttributes(){return ['icon'];}
+     connectedCallback(){this.renderGlyph();}
+     attributeChangedCallback(name,oldValue,newValue){
+       if(name==='icon'&&oldValue!==newValue&&this.isConnected)this.renderGlyph();
+     }
+     renderGlyph(){
        const glyph=paths[this.getAttribute('icon')];
        if(!glyph){this.setAttribute('data-mdi-missing','true');return;}
+       this.removeAttribute('data-mdi-missing');
+       const root=this.shadowRoot||this.attachShadow({mode:'open'});
+       root.textContent='';
        const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
        svg.setAttribute('viewBox','0 0 24 24');
        svg.setAttribute('width','100%');svg.setAttribute('height','100%');
        svg.setAttribute('fill','currentColor');
        const p=document.createElementNS('http://www.w3.org/2000/svg','path');
        p.setAttribute('d',glyph);svg.append(p);
-       this.attachShadow({mode:'open'}).append(svg);
+       root.append(svg);
      }
    }
    window.customElements.define('ha-icon',PreviewHomeAssistantIcon);
