@@ -420,6 +420,23 @@ async function main(){
  assert.deepEqual(fan,{min:'1',max:'8',value:'3',step:'1'},'Use actual integration fan-range, not an invented 10-speed slider');
  console.log('HVAC validation: rear-left and rear-right heat visible; HA-provided fan-speed range',JSON.stringify(fan));
  await page.waitForFunction(()=>{const img=document.querySelector('xpeng-vehicle-card').shadowRoot.querySelector('img[data-cabin-art]');return img&&img.complete&&img.naturalWidth===752;});
+ // Every seat and steering hotspot must fit inside the desktop modal.
+ const climateGeometry=await car.evaluate(el=>{
+   const root=el.shadowRoot;
+   const modal=root.querySelector('.xp-ux-modal-climate').getBoundingClientRect();
+   const photo=root.querySelector('.xp-ux-modal-climate .xp-ux-cabin-art').getBoundingClientRect();
+   const zones=[...root.querySelectorAll('.xp-ux-modal-climate .xp-ux-hotspot-zone')].map(node=>({
+     zone:node.dataset.xpZone,rect:node.getBoundingClientRect().toJSON()
+   }));
+   return {modal:modal.toJSON(),photo:photo.toJSON(),zones};
+ });
+ assert.ok(climateGeometry.photo.bottom<=climateGeometry.modal.bottom+3,
+   'Cabin photo is clipped on desktop: '+JSON.stringify(climateGeometry));
+ assert.ok(climateGeometry.zones.every(z=>z.rect.top>=climateGeometry.modal.top-3&&
+   z.rect.bottom<=climateGeometry.modal.bottom+3&&z.rect.left>=climateGeometry.modal.left-3&&
+   z.rect.right<=climateGeometry.modal.right+3),
+   'At least one heating/ventilation button is clipped: '+JSON.stringify(climateGeometry));
+ console.log('All physical seat and wheel buttons fit:',JSON.stringify(climateGeometry.zones.map(z=>z.zone)));
  await reviewShot('climate-desktop');
  // Same user's actual cabin photo, dark finish configured in card editor.
  await page.evaluate(()=>{
