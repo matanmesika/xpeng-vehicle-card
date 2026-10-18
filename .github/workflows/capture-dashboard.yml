@@ -1,4 +1,4 @@
-name: Capture actual XPENG dashboard views
+name: Capture curated XPENG dashboard gallery
 
 on:
   push:
@@ -42,36 +42,33 @@ jobs:
           PLAYWRIGHT_MODULE: /tmp/xpeng-capture/node_modules/playwright
         run: timeout 150s node scripts/capture-dashboard.cjs
 
-      - name: Verify three independent screenshots
+      - name: Verify the curated screenshot gallery
         run: |
           python - <<'PY'
           from pathlib import Path
           import struct
-          names = ['vehicle-status','charging','maintenance-desktop',
-                   'mobile-vehicle-status','mobile-charging',
-                   'small-mobile-vehicle-status','small-mobile-charging',
-                   'sections-vehicle-status','location-desktop','controls-desktop','home-close-actions-desktop','climate-desktop','climate-dark-desktop',
-                   'controls-mobile','home-close-actions-mobile','maintenance-mobile','climate-scrolled-mobile','maintenance-scrolled-mobile','trunk-mobile','location-mobile',
-                   'climate-mobile','climate-dark-mobile','charging-reference-mobile','charging-actions-mobile','charge-schedule-mobile']
+          root=Path('docs/screenshots')
+          names=[
+            'home-desktop','home-mobile',
+            'charging-desktop','charging-mobile',
+            'climate-desktop','climate-mobile',
+            'maintenance-desktop','maintenance-mobile',
+            'map-desktop','map-mobile',
+            'charge-controls-mobile','diagnostics-mobile'
+          ]
+          actual={p.name for p in root.iterdir() if p.suffix.lower() in ('.png','.jpg','.jpeg','.webp')}
+          required={name+'.png' for name in names}
+          assert actual == required, f'Expected only the 12 curated captures; missing={required-actual}, extra={actual-required}'
           for name in names:
-              p = Path('docs/screenshots/g6-2026-' + name + '.png')
-              b = p.read_bytes()
-              assert b[:8] == b'\x89PNG\r\n\x1a\n', p
-              w,h = struct.unpack('>II',b[16:24])
-              if name in ['vehicle-status','charging','maintenance-desktop','location-desktop','controls-desktop','home-close-actions-desktop','climate-desktop','climate-dark-desktop']:
-                  assert w >= 1100 and h >= 620 and len(b) > 80_000, (p,w,h,len(b))
-              else:
-                  assert 300 <= w <= 500 and h >= 700 and len(b) > 10_000, (p,w,h,len(b))
-              print('verified',p,w,h,len(b))
-          PY
-          # The smaller JPEG is used for direct visual inspection on mobile.
-          python - <<'PY'
-          from pathlib import Path
-          for name in ['charging-review-desktop','home-review-desktop','home-review-mobile']:
-              p=Path('docs/screenshots/g6-2026-'+name+'.jpg')
+              p=root/(name+'.png')
               b=p.read_bytes()
-              assert b.startswith(bytes([0xff,0xd8,0xff])) and len(b)>18_000,(p,len(b))
-              print('verified owner review JPEG',p,len(b))
+              assert b[:8] == b'\\x89PNG\\r\\n\\x1a\\n',(p,len(b))
+              w,h=struct.unpack('>II',b[16:24])
+              if name.endswith('-desktop'):
+                  assert w>=1100 and h>=620 and len(b)>80_000,(p,w,h,len(b))
+              else:
+                  assert 300<=w<=500 and h>=700 and len(b)>10_000,(p,w,h,len(b))
+              print('verified',p,w,h,len(b))
           PY
 
       - name: Commit browser captures to the screenshot gallery
@@ -79,9 +76,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/screenshots/*.png docs/screenshots/g6-2026-*-review-*.jpg
+          git add -A docs/screenshots
           if ! git diff --staged --quiet; then
-            git commit -m "docs: add actual rendered XPENG card screenshots"
+            git commit -m "docs(g6): replace old captures with 12 current dashboard screenshots"
             # Work safely with concurrent changes to this PR branch.
             # Never force-push or discard updates made after checkout.
             for attempt in 1 2 3; do
