@@ -59,7 +59,7 @@ test('native MDI glyphs replace ALL hand-drawn dashboard controls',()=>{
  const block=source.slice(source.indexOf('const XP_ICONS = Object.freeze('),source.indexOf('function xpEsc(v)'));
  assert.match(block,/fan:'mdi:fan'/);
  for(const icon of ['mdi:home-outline','mdi:lock-outline','mdi:lock-open-variant-outline',
-    'mdi:car-door','mdi:car-hatchback','mdi:map-marker-outline',
+    'mdi:car-door','mdi:car-back','mdi:map-marker-outline',
     'mdi:arrow-right','mdi:cog-outline','mdi:wrench-outline','mdi:battery-outline',
     'mdi:ev-station','mdi:car-seat-heater','mdi:car-seat-cooler','mdi:steering','mdi:wifi'])
    assert.ok(block.includes(icon),'Native MDI mapping missing: '+icon);
@@ -167,4 +167,11 @@ test('beta.9: HA Sections grid auto-height, map bounds, nested diagnostics scrol
  assert.match(source,/xp-extra-diagnostics-layout/);
  assert.match(css,/\.xp-header \.xp-wifi \.xp-mdi-icon\{[\s\S]*?transform:none!important/);
  assert.match(css,/@container xpeng-layout \(max-width:600px\)\{[\s\S]*?\.xp-scene\{height:clamp\(630px,calc\(100dvh - 84px\),780px\)/);
+});
+
+test('owner photo breakpoints retain safe topbar spacing and real MDI trunk glyph',()=>{
+ assert.match(source,/trunk:'mdi:car-back'/);
+ assert.match(css,/\.xp-scene\{height:clamp\(600px,calc\(100dvh - 140px\),740px\)/);
+ assert.match(css,/\.xp-scene\{height:clamp\(570px,calc\(100dvh - 144px\),710px\)/);
+ assert.match(css,/\.xp-ux-modal-climate \.xp-climate-thermometers\{[\s\S]*?grid-template-columns:minmax\(0,1fr\) minmax\(0,1.4fr\)/);
 });
