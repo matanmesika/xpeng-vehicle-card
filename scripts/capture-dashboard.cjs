@@ -537,7 +537,8 @@ async function main(){
      source:root.querySelector('.xp-ux-modal-maintenance .xp-maint-info')?.innerText||''};
  });
  assert.equal(maintenanceFromGear.tires,4);
- assert.match(maintenanceFromGear.source,/שנת דגם \(מהגדרות הכרטיס\)/);
+ assert.match(maintenanceFromGear.source,/שנת דגם \(מהאינטגרציה\)/,
+   'Verified Xpengtk identity year must be explicitly distinguished from editor default');
  await car.locator('button[data-xp-close]').click();
  assert.equal(await car.locator('.xp-ux-modal-extras').count(),1,'Maintenance Back must return to Gear options');
  await car.locator('button[data-xp-extra-page="diagnostics"]').click();
