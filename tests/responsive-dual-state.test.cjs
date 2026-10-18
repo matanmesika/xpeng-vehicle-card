@@ -100,3 +100,23 @@ test('modern glass design uses official Material Design action icons without cha
  assert.match(source,/data-xp-toggle/);
  assert.match(source,/verifiedDirectTap/);
 });
+
+test('shared premium styling spans actual pages without introducing vehicle-action pages',()=>{
+ assert.match(css,/Shared XPENG glass design language for real pages and action buttons/);
+ for(const cls of ['xp-ux-modal-climate','xp-ux-modal-maintenance','xp-ux-modal-map','xp-charge-card','xp-tire-reading','xp-ux-climate-feature','xp-ux-port-action']){
+   assert.ok(css.includes('.'+cls),'Unstyled interface category '+cls);
+ }
+ assert.match(css,/\.xp-ux-climate-feature ha-icon\{/);
+ assert.match(css,/\.xp-charge-heading ha-icon\{/);
+ assert.match(css,/\.xp-ux-modal-map \.xp-ux-map-panel/);
+ assert.match(css,/\.xp-ux-cycle-heat\.xp-ux-cycle-on/);
+ assert.match(css,/\.xp-ux-cycle-vent\.xp-ux-cycle-on/);
+ assert.match(css,/@container xpeng-layout \(max-width:520px\)/);
+ const dock=source.slice(source.indexOf(' xpDock(){'),source.indexOf('\n xpCabinView(){'));
+ assert.match(dock,/data-xp-toggle/);
+ assert.match(dock,/data-xp-open/);
+ assert.match(dock,/\['doors','windows','port','trunk'\]\.includes\(action\)/);
+ for(const key of ['doors','windows','port','trunk']){
+   assert.match(source,new RegExp('xpToggleButton'),'Vehicle toggle buttons must stay directly addressable: '+key);
+ }
+});
