@@ -103,7 +103,7 @@ test('modern glass design uses official Material Design action icons without cha
  assert.match(css,/\.xp-home-navigation \.xp-overview-stat\{[^}]*backdrop-filter:blur\(20px\)/);
  assert.match(css,/\.xp-home-navigation \.xp-ux-dock-seven \.xp-ux-dock-action ha-icon\{/);
  assert.match(css,/\.xp-scene\.xp-overview\.xp-home-navigation \.xp-car\{/);
- assert.match(css,/\.xp-home-navigation \.xp-ux-dock-action\[data-xp-open="climate"\] ha-icon\{/);
+ assert.match(css,/\.xp-home-navigation \.xp-ux-dock-seven \.xp-ux-dock-action ha-icon,/,'Unified official MDI action styling must cover Climate too');
  assert.match(css,/@container xpeng-layout \(max-width:850px\)/);
  assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
  assert.doesNotMatch(source.slice(source.indexOf(' overview(){'),source.indexOf('\n charging(){')),/Location|xp-status-panel/);
