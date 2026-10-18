@@ -150,8 +150,8 @@ const XP_ICONS = Object.freeze({
  // Hebrew action labels still distinguish opening from closing.
  windows:'mdi:car-door',
  windows_open:'mdi:car-door',
- trunk:'mdi:car-hatchback',
- trunk_open:'mdi:car-hatchback',
+ trunk:'mdi:car-back',
+ trunk_open:'mdi:car-back',
  horn:'mdi:bullhorn-outline',
  flash:'mdi:car-light-high',
  auto:'mdi:autorenew',
@@ -2286,6 +2286,51 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  --xp-icon-size:51px!important;--mdc-icon-size:51px!important
 }
 
+/* Owner screenshot acceptance: preserve one sensor per centered row while
+   allowing long actual entity IDs to be inspected (touch/keyboard), not clipped
+   into permanent ellipses. The status column remains in view. */
+.xp-ux-modal-extras .xp-diagnostics-scroll .xp-entity-diagnostic>span{
+ overflow-x:auto;overflow-y:hidden;text-overflow:clip;
+ scrollbar-width:none;white-space:nowrap;overscroll-behavior-x:contain;
+ font-size:clamp(9px,1.05cqw,12px)
+}
+.xp-ux-modal-extras .xp-diagnostics-scroll .xp-entity-diagnostic>span::-webkit-scrollbar{display:none}
+.xp-ux-modal-extras .xp-diagnostics-scroll .xp-entity-diagnostic>span:focus-visible{
+ outline:2px solid #72c9ff;outline-offset:-2px;border-radius:3px
+}
+/* Stop the illustrated roof/wheels from stacking over maintenance data.
+   Keep tyre labels within their own isolated graphic layer. */
+.xp-ux-modal-maintenance .xp-tire-screen,
+.xp-ux-modal-maintenance .xp-tire-stage{
+ isolation:isolate;overflow:clip!important
+}
+.xp-ux-modal-maintenance .xp-maint-info{
+ position:relative;z-index:2;margin-top:8px;align-self:stretch
+}
+/* Narrow Climate: reserve enough room for BOTH +/- buttons and setpoint,
+   instead of hiding the increase button outside a clipped card. */
+@container xpeng-layout (max-width:440px){
+ .xp-ux-modal-climate .xp-climate-thermometers{
+  grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:4px
+ }
+ .xp-ux-modal-climate .xp-climate-target .xp-ux-temp-line{
+  display:flex;min-width:0;max-width:100%;justify-content:space-between;gap:2px
+ }
+ .xp-ux-modal-climate .xp-climate-target .xp-ux-temp-line button{
+  box-sizing:border-box;flex:0 0 26px;min-width:26px;width:26px;height:32px
+ }
+ .xp-ux-modal-climate .xp-climate-target .xp-ux-temp-line b{
+  font-size:clamp(17px,5cqw,23px);white-space:nowrap
+ }
+}
+/* Leave breathing room beneath Home Assistant's own top navigation. */
+@container xpeng-layout (max-width:850px){
+ .xp-scene{height:clamp(600px,calc(100dvh - 140px),740px)}
+}
+@container xpeng-layout (max-width:520px){
+ .xp-scene{height:clamp(570px,calc(100dvh - 144px),710px)}
+}
+
 /* Black Edition G6 uses black/dark cabin finish as well as its black
    exterior paint. This is a visual tone fallback until approved Black Edition
    cabin artwork exists; it does not create or substitute manufacturer photos. */
@@ -3250,7 +3295,7 @@ class XpengVehicleCard extends HTMLElement{
    const entity=states[id],state=entity?.state;
    const status=!entity?'חסרה':id.startsWith('button.')&&state==='unknown'?'כפתור פעולה'
      :state==='unavailable'||state==='unknown'||state==='none'?'לא זמין':String(state??'חסרה');
-   return '<div class="xp-extra-line xp-entity-diagnostic"><span dir="ltr">'+xpEsc(id)+'</span><b>'+
+   return '<div class="xp-extra-line xp-entity-diagnostic"><span dir="ltr" tabindex="0" title="'+xpEsc(id)+'" aria-label="'+xpEsc(id)+'">'+xpEsc(id)+'</span><b>'+
      xpEsc(status)+'</b></div>';
   };
   return '<div class="xp-entity-diagnostics"><p role="status">נמצאו '+entries.length+
