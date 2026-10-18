@@ -1,4 +1,4 @@
-name: G6 beta.5 full QA and prerelease
+name: G6 beta.6 full QA and prerelease
 on:
   push:
     branches:
