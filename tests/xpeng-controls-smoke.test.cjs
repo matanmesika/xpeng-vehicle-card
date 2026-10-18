@@ -874,7 +874,7 @@ test('finder uses real horn and light commands, correct Hebrew, map and Back',()
  assert.doesNotMatch(html,/data-xp-map-action="honk_horn" disabled/);
  assert.doesNotMatch(html,/data-xp-map-action="flash_lights" disabled/);
  card._xpPanel='map';card.render();
- assert.match(card.shadowRoot.innerHTML,/data-xp-close aria-label="חזרה לבית"/);
+ assert.match(card.shadowRoot.innerHTML,/data-xp-close aria-label="חזרה למסך הבית"/);
  assert.doesNotMatch(card.shadowRoot.innerHTML,/class="xp-ux-dock-action"/);
 });
 test('real Xpengtk AUTO status is read only; executable AUTO needs advertised climate mode',()=>{
