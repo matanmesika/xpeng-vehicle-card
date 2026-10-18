@@ -392,6 +392,34 @@ async function main(){
  assert.ok(homeIconQuality.length===7&&homeIconQuality.every(i=>i.mdi?.startsWith('mdi:')&&i.within),
    'All seven actions must have genuine, centered native MDI icons: '+JSON.stringify(homeIconQuality));
  console.log('Desktop official MDI icons and bounding-box alignment verified:',JSON.stringify(homeIconQuality));
+
+ // Beta 7: rendered Home Assistant header geometry and actual dock icon colors.
+ const desktopHeaderPolish=await car.evaluate(el=>{
+   const root=el.shadowRoot,gear=root.querySelector('.xp-header .xp-more-trigger'),
+     wifi=root.querySelector('.xp-header .xp-wifi'),glyph=wifi?.querySelector('ha-icon'),
+     gr=gear?.getBoundingClientRect(),wr=wifi?.getBoundingClientRect(),
+     ir=glyph?.getBoundingClientRect();
+   const icons=[...root.querySelectorAll('.xp-ux-dock-seven .xp-ux-dock-action ha-icon')]
+     .map(icon=>getComputedStyle(icon).color);
+   return {hasGear:!!gear,hasWifi:!!wifi,
+     cssGap:parseFloat(getComputedStyle(root.querySelector('.xp-meta-tools')).gap),
+     actualGap:gr&&wr?Math.abs(wr.left-gr.right):null,
+     glyphOffset:ir&&wr?(ir.top+ir.height/2)-(wr.top+wr.height/2):null,
+     colors:[...new Set(icons)],iconCount:icons.length,
+     disabled:root.querySelectorAll('.xp-ux-dock-action[disabled]').length};
+ });
+ assert.equal(desktopHeaderPolish.hasGear,true,'Desktop gear must remain available');
+ assert.equal(desktopHeaderPolish.hasWifi,true,'Desktop communication indicator must remain available');
+ assert.equal(desktopHeaderPolish.cssGap,14,'Gear and Wi-Fi should have 14px desktop spacing');
+ assert.ok(desktopHeaderPolish.actualGap>=13,'Rendered desktop header controls overlap: '+JSON.stringify(desktopHeaderPolish));
+ assert.ok(desktopHeaderPolish.glyphOffset<=-3&&desktopHeaderPolish.glyphOffset>=-6,
+   'Desktop Wi-Fi glyph is not raised inside its original hit target: '+JSON.stringify(desktopHeaderPolish));
+ assert.deepEqual(desktopHeaderPolish.colors,['rgb(233, 244, 255)'],
+   'Seven shortcut pictograms must share one neutral color');
+ assert.equal(desktopHeaderPolish.iconCount,7);
+ assert.equal(desktopHeaderPolish.disabled,0,'All mock actions remain enabled');
+ console.log('PASS desktop cog/Wi-Fi spacing and uniform action icon palette:',JSON.stringify(desktopHeaderPolish));
+
  for(const action of ['maintenance','map'])assert.equal(await car.locator('.xp-ux-dock-action[data-xp-open="'+action+'"]').count(),1,action+' home dock action missing');
  assert.equal(await car.locator('.xp-ux-dock-action:not([disabled])').count(),7,'Mock owner has approved Access, so all seven actions must work');
  await reviewShot('controls-desktop');
