@@ -79,7 +79,23 @@ test('the Home screen hides maintenance summaries but preserves a single dedicat
  assert.doesNotMatch(source.slice(source.indexOf(' overview(){'),source.indexOf('\n charging(){')),/xp-status-panel|Location/);
  assert.doesNotMatch(source,/const rows=\[\['settings','תחזוקת הרכב'/);
  assert.match(source,/xp-maintenance-home-button/);
- assert.match(source,/\['maintenance','settings','תחזוקה'\]/);
+ assert.match(source,/\['maintenance','maintenance','תחזוקה'\]/);
  assert.match(source,/page==='maintenance'\)body=this\.xpMaintenancePanel\(\)/);
  assert.match(source,/xp-maintenance-home-button/);
+});
+
+test('modern glass design uses official Material Design action icons without changing vehicle actions',()=>{
+ assert.match(source,/maintenance:'mdi:tools'/);
+ assert.match(source,/settings:'mdi:cog'/);
+ assert.match(source,/xpIcon\(ico,27\)/);
+ assert.match(css,/Modern Glass UI v2/);
+ assert.match(css,/\.xp-home-navigation \.xp-overview-stat\{[^}]*backdrop-filter:blur\(20px\)/);
+ assert.match(css,/\.xp-home-navigation \.xp-ux-dock-seven \.xp-ux-dock-action ha-icon\{/);
+ assert.match(css,/\.xp-scene\.xp-overview\.xp-home-navigation \.xp-car\{/);
+ assert.match(css,/\.xp-home-navigation \.xp-ux-dock-action\[data-xp-open="climate"\] ha-icon\{/);
+ assert.match(css,/@container xpeng-layout \(max-width:850px\)/);
+ assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
+ assert.doesNotMatch(source.slice(source.indexOf(' overview(){'),source.indexOf('\n charging(){')),/Location|xp-status-panel/);
+ for(const action of ['doors','windows','port','trunk'])
+   assert.match(source,new RegExp('\\\'data-xp-toggle="\\\'+action+'\\\'"'),'Dock still needs direct action '+action);
 });
