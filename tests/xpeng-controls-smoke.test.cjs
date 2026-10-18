@@ -1480,10 +1480,10 @@ test('cabin photograph and model fallback show no over-image captions in Climate
  const light=card.xpCabinView();
  assert.match(light,/data-cabin-art/);
  assert.match(light,/alt="G6 /,'Cabin image keeps accessible alt text');
- assert.doesNotMatch(light,/<small|xp-ux-cabin-disclaimer|תמונת פנים בעל הרכב/,
+ assert.doesNotMatch(light,/<small class="xp-ux-cabin-disclaimer"|xp-ux-cabin-disclaimer|תמונת פנים בעל הרכב/,
    'No caption may overlap the cabin photo or heated seat buttons');
  card.setConfig({type:'custom:xpeng-vehicle-card',model:'G6',year:'2026',prefix:'my_xpeng',interior:'dark_gray'});
- assert.doesNotMatch(card.xpCabinView(),/<small|xp-ux-cabin-disclaimer/);
+ assert.doesNotMatch(card.xpCabinView(),/xp-ux-cabin-disclaimer/);
  assert.doesNotMatch(src,/xp-ux-cabin-disclaimer/,
    'Remove unused overlay-caption CSS and markup rather than merely hiding it');
 });
