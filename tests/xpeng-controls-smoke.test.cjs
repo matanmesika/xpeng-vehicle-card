@@ -1036,7 +1036,7 @@ test('every action is a native modern MDI glyph, including battery and charge st
  const icons=[...dock.matchAll(/<ha-icon class="xp-mdi-icon" icon="([^"]+)"/g)].map(m=>m[1]);
  assert.equal(icons.length,7,'All seven Home/Charging controls have true native HA icons');
  assert.ok(icons.every(icon=>icon.startsWith('mdi:')));
- assert.match(home,/class="xp-batt-glyph"[^>]*><ha-icon[^>]*icon="mdi:battery-outline"/,
+ assert.match(home,/data-xp-battery-icon[^>]*><ha-icon[^>]*icon="mdi:battery-(?:[0-9]+|unknown|outline)"/,
    'Battery pictogram must be official MDI, not a custom drawn icon');
  assert.doesNotMatch(home,/class="xp-batt-fill"/);
  assert.match(charging,/class="xp-station"[^>]*><ha-icon[^>]*icon="mdi:ev-station"/,
@@ -1359,15 +1359,15 @@ test('mobile renders preserve DOM nodes when template DOM APIs exist, and map of
  assert.match(card.xpMapPanel(),/data-xp-map-details/);
 });
 
-test('beta.6 automotive window and trunk icons are official MDI, never house-window or hatchback silhouettes',()=>{
+test('beta.6 automotive window and trunk icons are official MDI, never a house-window icon or a drawn trunk',()=>{
   const {card}=createCard({enable_access_controls:true});
   const iconSection=src.match(/const XP_ICONS = Object\.freeze\(\{([\s\S]*?)\}\);/)?.[1];
   assert.ok(iconSection,'The central XP_ICONS dictionary is required');
   assert.match(iconSection,/windows:'mdi:car-door'/);
   assert.match(iconSection,/windows_open:'mdi:car-door'/);
-  assert.match(iconSection,/trunk:'mdi:car-back'/);
-  assert.match(iconSection,/trunk_open:'mdi:car-back'/);
-  assert.doesNotMatch(iconSection,/mdi:window-open|mdi:window-open-variant|mdi:car-hatchback/);
+  assert.match(iconSection,/trunk:'mdi:car-hatchback'/);
+  assert.match(iconSection,/trunk_open:'mdi:car-hatchback'/);
+  assert.doesNotMatch(iconSection,/mdi:window-open|mdi:window-open-variant/);
   card._xpengByKey['binary_sensor.windows']='binary_sensor.windows_car';
   card._xpengByKey['binary_sensor.trunk']='binary_sensor.trunk_car';
   card._xpengByKey['button.open_windows']='button.car_windows_open';
@@ -1384,9 +1384,9 @@ test('beta.6 automotive window and trunk icons are official MDI, never house-win
     const trunk=dock.match(/<button[^>]*data-xp-toggle="trunk"[\s\S]*?<\/button>/)?.[0];
     assert.ok(windows&&trunk,'Both dock shortcuts must remain');
     assert.match(windows,/icon="mdi:car-door"/);
-    assert.match(trunk,/icon="mdi:car-back"/);
+    assert.match(trunk,/icon="mdi:car-hatchback"/);
     assert.match(card.xpToggleButton('windows'),/icon="mdi:car-door"/);
-    assert.match(card.xpToggleButton('trunk'),/icon="mdi:car-back"/);
+    assert.match(card.xpToggleButton('trunk'),/icon="mdi:car-hatchback"/);
     assert.match(card.xpWindowsPanel(),/icon="mdi:car-door"/);
     assert.match(card.xpTrunkPanel(),/icon="mdi:car-back"/);
     const expected=state==='off'?'פתיחת':'סגירת';
@@ -1426,7 +1426,7 @@ test('beta.8 Home Assistant locale switches every vehicle modal and accessibilit
  assert.match(home,/Open windows/);
  assert.match(home,/Open charging port/);
  assert.match(home,/icon="mdi:car-door"/);
- assert.match(home,/icon="mdi:car-back"/);
+ assert.match(home,/icon="mdi:car-hatchback"/);
  card._xpPanel='maintenance';card.render();
  assert.match(card.shadowRoot.innerHTML,/icon="mdi:arrow-left"/,'English Back arrow must point left');
  card._hass.locale.language='he';card.render();
@@ -1486,4 +1486,31 @@ test('cabin photograph and model fallback show no over-image captions in Climate
  assert.doesNotMatch(card.xpCabinView(),/xp-ux-cabin-disclaimer/);
  assert.doesNotMatch(src,/xp-ux-cabin-disclaimer/,
    'Remove unused overlay-caption CSS and markup rather than merely hiding it');
+});
+
+test('owner fixes: exact Open Trunk, real SOC icon levels, silent successful calls and English update detail',async()=>{
+ const {card,commands}=createCard({enable_access_controls:true});
+ card._hass.locale.language='en';
+ card._xpengByKey['binary_sensor.trunk']='binary_sensor.car_trunk';
+ card._xpengByKey['button.open_trunk']='button.car_open_trunk';
+ card._hass.states['binary_sensor.car_trunk']={state:'off',attributes:{}};
+ card._hass.states['button.car_open_trunk']={state:'unknown',attributes:{}};
+ card.render();
+ assert.match(card.shadowRoot.innerHTML,/Open Trunk/);
+ assert.match(card.shadowRoot.innerHTML,/mdi:car-hatchback/);
+ assert.equal(card.xpToggleTarget('trunk').suffix,'open_trunk');
+ card._hass.states['sensor.battery']={state:'14',attributes:{}};
+ const empty=card.xpBatteryGauge();
+ assert.match(empty,/mdi:battery-(?:10|20)/);
+ assert.match(empty,/data-level="low"/);
+ card._hass.states['sensor.battery'].state='65';
+ assert.match(card.xpBatteryGauge(),/mdi:battery-(?:60|70)/);
+ assert.match(card.xpBatteryGauge(),/data-level="good"/);
+ card._hass.states['sensor.battery'].state='unavailable';
+ assert.match(card.xpBatteryGauge(),/mdi:battery-unknown/);
+ const ok=await card.xpSend('button','press','open_trunk',undefined,true);
+ assert.equal(ok,true);
+ assert.equal(card._xpNotice,'','successful command acknowledgement should not show toast');
+ card._xpExtraSection='updates';card._xpPanel='extras';card.render();
+ assert.doesNotMatch(card.shadowRoot.innerHTML,/פרטי עדכון/);
 });
