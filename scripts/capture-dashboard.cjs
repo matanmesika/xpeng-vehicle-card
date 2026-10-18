@@ -590,17 +590,18 @@ async function main(){
    const root=el.shadowRoot,modal=root.querySelector('.xp-ux-modal-extras'),
      list=root.querySelector('.xp-diagnostics-scroll'),h=el.hass;
    const innerOverflow=getComputedStyle(list).overflowY;
-   modal.scrollTop=200;
-   const start=modal.scrollTop;
+   list.scrollTop=200;
+   const start=list.scrollTop;
    el.hass={...h,states:{...h.states,'sensor.my_xpeng_soc':{state:'72',attributes:{}}}};
    const restored=root.querySelector('.xp-ux-modal-extras');
-   return {innerOverflow,start,end:restored?.scrollTop,
+   return {innerOverflow,start,end:restored?.querySelector('.xp-diagnostics-scroll')?.scrollTop,
      exists:!!restored,modalOverflow:getComputedStyle(restored).overflowY};
  });
- assert.equal(diagScroll.innerOverflow,'visible','Diagnostics must scroll with its parent, not trap swipe');
+ assert.equal(diagScroll.innerOverflow,'auto','Only the compact diagnostic list may scroll');
+ assert.equal(diagScroll.modalOverflow,'hidden','Dashboard modal must not scroll during diagnostics');
  assert.ok(diagScroll.start>=80&&Math.abs(diagScroll.end-diagScroll.start)<=2,
    'Live HA updates must preserve phone diagnostics scroll: '+JSON.stringify(diagScroll));
- await car.locator('.xp-ux-modal-extras').evaluate(e=>{e.scrollTop=0});
+ await car.locator('.xp-diagnostics-scroll').evaluate(e=>{e.scrollTop=0});
  await reviewShot('diagnostics-mobile');
  await car.locator('button[data-xp-close]').click();
  assert.equal(await car.locator('button[data-xp-extra-page="diagnostics"]').count(),1,
