@@ -1952,6 +1952,18 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
   .xp-header .xp-wifi .xp-mdi-icon{transform:translateY(-4px)}
 }
 
+/* English mode follows HA's locale, with natural LTR reading order.
+   Vehicle artwork, hotspot positions and charging cable never move. */
+.xp-scene.xp-locale-en .xp-ux-modal,
+.xp-scene.xp-locale-en .xp-charge-panel-actions,
+.xp-scene.xp-locale-en .xp-ux-charge-actions,
+.xp-scene.xp-locale-en .xp-ux-dock-seven{
+ direction:ltr;
+}
+.xp-scene.xp-locale-en .xp-ux-modal-climate .xp-climate-layout>.xp-ux-climate-bottom{
+ direction:ltr;
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
