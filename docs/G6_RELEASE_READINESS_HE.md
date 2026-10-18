@@ -53,7 +53,7 @@
 
 - PR: https://github.com/matanmesika/xpeng-vehicle-card/pull/44
 - בדיקת G6 מלאה כולל בחירת תמונת הרכב האפור, כבל דק ולחץ צמיגים בהגדרות הכרטיס: https://github.com/matanmesika/xpeng-vehicle-card/actions/runs/39056079539
-- גלריית הדמיה (אחרי פרסום מוצלח בענף): `docs/screenshots/g6-2026-*.png`
+- גלריית הדמיה (אחרי פרסום מוצלח בענף): `docs/screenshots/README.md`
 - אין נתוני רכב פרטיים בצילומי הדפדפן; נתוני החיישנים בהם להמחשה בלבד.
 
 ## תיקוני הקוד הנוספים שנבדקו
@@ -61,17 +61,21 @@
 - תוקן זיהוי ישויות לפי קידומת `xpeng_<6 VIN>` כשקיים רכב יחיד, גם כשהגדרת הכרטיס עדיין מצביעה על קידומת ישנה. כאשר קיימים מספר כלי רכב ואין שיוך חד־משמעי, **לא** נעשה ניחוש אוטומטי.
 - הוסף fallback ל־`binary_sensor.windows`/מזהה ייחודי `any_window_open`, ל־`binary_sensor.lock`/מזהה ייחודי `locked`, לחיישני הדלתות ולפורט הטעינה. בחיבור `Connected` אין סגירת דלתית אוטומטית ואין קביעה מוטעית שהכבל מחובר.
 - נוספה בחירה אמיתית בין bar / PSI / kPa **בעורך הגדרות הכרטיס בלבד**; במסך התחזוקה אין בורר. הערכים מחושבים מלחצי Home Assistant, לא מדמו.
-- נוסף מסך **אבחון ישויות** ב־„אפשרויות נוספות”: כל ישויות ה־Entity Registry המשויכות לרכב הנבחר (או קידומת יחידה כשאין גישה ל־Registry), עם מצבי ערך/זמינות. אין שליחת פקודות מתוך המסך. צילום: [אבחון בטלפון](https://github.com/matanmesika/xpeng-vehicle-card/blob/fix/g6-mobile-sensors-charging-20261017/docs/screenshots/g6-2026-diagnostics-mobile.png).
+- נוסף מסך **אבחון ישויות** ב־„אפשרויות נוספות”: כל ישויות ה־Entity Registry המשויכות לרכב הנבחר (או קידומת יחידה כשאין גישה ל־Registry), עם מצבי ערך/זמינות. אין שליחת פקודות מתוך המסך. צילום: [אבחון בטלפון](https://github.com/matanmesika/xpeng-vehicle-card/blob/fix/g6-mobile-sensors-charging-20261017/docs/screenshots/diagnostics-mobile.png).
 - למסך טעינה של **G6 2026** מוצג כברירת מחדל `vehicles/g6/2026/graphite_gray/charging.webp`, התמונה האפורה מזווית אחורית־צדית שביקש המשתמש; `charging_image` ידנית גוברת עליה. רק כאשר Xpengtk מאשר טעינה פעילה נוצר מעל התמונה מסלול ירוק **דק** היורד מהמחבר אל הקרקע, עובר בה ועולה לעמדה: `1400×788` למחשב ו־`390×780` לטלפון. הצילומים אומתו בדפדפן, אך עדיין נדרש אישור חזותי ברכב ובהתקנת Home Assistant.
 
 **חשוב:** גוון וקומפוזיציה של תמונת הטעינה המצורפת ל־HACS אינם בהכרח תואמים פיקסל־בפיקסל להמחשה שסופקה. לא בוצעה החלפה שקטה של תמונות הרכב. תמונות הבדיקות מבוססות נתוני הדגמה.
 
 ## צילומים מעודכנים לביקורת המשתמש
 
-- [מחשב — תצלום טעינה אפור בזווית אחורית וכבל ירוק דק על הקרקע](https://github.com/matanmesika/xpeng-vehicle-card/blob/fix/g6-mobile-sensors-charging-20261017/docs/screenshots/g6-2026-charging-review-desktop.jpg)
-- [טלפון — טעינה עם אותו הרכב וכבל דק](https://github.com/matanmesika/xpeng-vehicle-card/blob/fix/g6-mobile-sensors-charging-20261017/docs/screenshots/g6-2026-mobile-charging.png)
-- [לחצי צמיגים — ללא בורר יחידות בתוך מסך התחזוקה](https://github.com/matanmesika/xpeng-vehicle-card/blob/fix/g6-mobile-sensors-charging-20261017/docs/screenshots/g6-2026-maintenance-mobile.png)
-- [דשבורד ראשי בטלפון](https://github.com/matanmesika/xpeng-vehicle-card/blob/fix/g6-mobile-sensors-charging-20261017/docs/screenshots/g6-2026-controls-mobile.png)
-- [מיזוג בטלפון אחרי גלילה](https://github.com/matanmesika/xpeng-vehicle-card/blob/fix/g6-mobile-sensors-charging-20261017/docs/screenshots/g6-2026-climate-scrolled-mobile.png)
+- [מחשב — תצלום טעינה אפור בזווית אחורית וכבל ירוק דק על הקרקע](https://github.com/matanmesika/xpeng-vehicle-card/blob/fix/g6-mobile-sensors-charging-20261017/docs/screenshots/charging-desktop.png)
+- [טלפון — טעינה עם אותו הרכב וכבל דק](https://github.com/matanmesika/xpeng-vehicle-card/blob/fix/g6-mobile-sensors-charging-20261017/docs/screenshots/charging-mobile.png)
+- [לחצי צמיגים — ללא בורר יחידות בתוך מסך התחזוקה](https://github.com/matanmesika/xpeng-vehicle-card/blob/fix/g6-mobile-sensors-charging-20261017/docs/screenshots/maintenance-mobile.png)
+- [דשבורד ראשי בטלפון](https://github.com/matanmesika/xpeng-vehicle-card/blob/fix/g6-mobile-sensors-charging-20261017/docs/screenshots/home-mobile.png)
+- [מיזוג בטלפון אחרי גלילה](https://github.com/matanmesika/xpeng-vehicle-card/blob/fix/g6-mobile-sensors-charging-20261017/docs/screenshots/climate-mobile.png)
 
 **תוצאת בדיקות:** Frontend, HACS, artwork audit ו־G6 full acceptance עברו על הגרסה האחרונה של קוד הדשבורד. צילום הבדיקה הדיגיטלי נעשה עם נתוני דמו; לא בוצעה בדיקת רכב/מערכת HA חיה.
+
+## גלריית צילומי המסכים הנוכחית (אוקטובר 2026)
+
+מסודרת ב־[אינדקס אחד](https://github.com/matanmesika/xpeng-vehicle-card/tree/fix/g6-mobile-sensors-charging-20261017/docs/screenshots): 12 צילומי דפדפן אמיתיים מהענף הנוכחי. בכל הרצה נמחקים צילומי בדיקות ישנים **מתיקיית \u200e`docs/screenshots` בלבד**; אין מחיקת תמונות רכב, פנים, רקע או תמונות טעינה ב־`assets`. נתוני רכב בתמונות הם נתוני הדגמה.
