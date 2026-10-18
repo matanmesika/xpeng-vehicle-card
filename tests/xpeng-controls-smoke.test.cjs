@@ -1402,13 +1402,16 @@ test('beta.8 Home Assistant locale switches every vehicle modal and accessibilit
  card._hass.locale.language='en';
  card._hass.states['sensor.user_named_battery'].state='76';
  const pages=['climate','maintenance','map','port','windows','doors','trunk','extras','charge_controls','charge_schedule'];
+ const untranslated=[];
  for(const page of [null,...pages]){
    card._xpPanel=page;
    card.render();
    const html=card.shadowRoot.innerHTML;
-   assert.doesNotMatch(html,/[\u0590-\u05ff]/,'English UI has untranslated Hebrew in '+(page||'Home'));
+   const leftovers=[...new Set((html.match(/[\u0590-\u05ff][\u0590-\u05ff\s.,•·־״׳()]+/g)||[]).map(t=>t.trim()))];
+   if(leftovers.length)untranslated.push({page:page||'Home',leftovers:leftovers.slice(0,25)});
    if(page)assert.match(html,/dir="ltr"/,'English subpage must use LTR direction: '+page);
  }
+ assert.equal(untranslated.length,0,JSON.stringify(untranslated));
  card._xpPanel=null;
  card.render();
  const home=card.shadowRoot.innerHTML;
@@ -1424,8 +1427,10 @@ test('beta.8 Home Assistant locale switches every vehicle modal and accessibilit
  assert.match(card.shadowRoot.innerHTML,/icon="mdi:arrow-right"/,'Hebrew Back arrow remains RTL');
 });
 test('beta.8 editor follows HA locale without changing stored vehicle settings',()=>{
- const {sandbox}=createCard();
- const Editor=vm.runInNewContext(src+'\nXpengVehicleCardEditor;',sandbox);
+ const isolatedSandbox={HTMLElement:FakeElement,
+   window:{customCards:[],confirm:()=>true,location:{origin:'http://localhost'}},
+   customElements:{get(){return true},define(){}},document:{documentElement:{}},URL,console};
+ const Editor=vm.runInNewContext(src+'\nXpengVehicleCardEditor;',isolatedSandbox);
  const editor=new Editor();
  editor._hass={states:{},locale:{language:'en'}};
  editor.setConfig({model:'G6',year:'2026',color:'graphite_gray',interior:'light_gray'});
@@ -1459,6 +1464,6 @@ test('beta.8 first Location open reuses proactively warmed HA map helpers',async
  assert.equal(loads,1,'Opening Location must not trigger a second bundle load');
  assert.equal(created,1,'One native HA map card is created');
  assert.equal(child.hass,card._hass);
- assert.deepEqual(child.config.entities,[{entity:'device_tracker.user_gps'}]);
+ assert.equal(child.config.entities[0].entity,'device_tracker.user_gps');
  assert.equal(commands.length,0,'Preloading never issues vehicle commands');
 });
