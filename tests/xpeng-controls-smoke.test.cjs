@@ -381,8 +381,8 @@ test('screenshot functions wired only when upstream Xpengtk offers native entity
   card._hass.states['switch.real_defrost']={state:'off',attributes:{}};
   card._hass.states['calendar.real_schedule']={state:'off',attributes:{}};
   const html=card.xpClimateFeatures();
-  assert.equal((html.match(/class="xp-ux-climate-feature(?: |")/g)||[]).length,3);
-  assert.match(html,/data-xp-climate="off"/);
+  assert.equal((html.match(/class="xp-ux-climate-feature(?: |")/g)||[]).length,2);
+  assert.match(card.xpClimatePrimaryControls(),/data-xp-climate="off"/);
   assert.match(html,/data-xp-switch="defrost_switch"/);
   assert.match(html,/data-xp-extra-page="schedule"/);
   for(const fake of ['pet_mode','sterilisation','ac_cleaning','rear_defrost','quick_heat','quick_cool'])
@@ -691,12 +691,13 @@ test('one-tap controls alter visible action labels, icons, and avoid duplicate c
 test('native AUTO and airflow buttons only render and execute when advertised by HA',async()=>{
  const {card,commands}=createCard();
  let html=card.xpClimateFeatures();
- assert.doesNotMatch(html,/data-xp-hvac-mode|data-xp-swing-mode/);
+ assert.doesNotMatch(card.xpClimatePrimaryControls(),/data-xp-hvac-mode/);
+ assert.doesNotMatch(html,/data-xp-swing-mode/);
  card._hass.states['climate.renamed_hvac'].attributes.hvac_modes=['off','heat_cool','auto'];
  card._hass.states['climate.renamed_hvac'].attributes.swing_modes=['off','vertical'];
  card._hass.states['climate.renamed_hvac'].attributes.swing_mode='off';
  html=card.xpClimateFeatures();
- assert.match(html,/data-xp-hvac-mode="auto"/);
+ assert.match(card.xpClimatePrimaryControls(),/data-xp-hvac-mode="auto"/);
  assert.match(html,/data-xp-swing-mode="vertical"/);
  await card.xpSend('climate','set_hvac_mode','cabin_climate','auto');
  await card.xpSend('climate','set_swing_mode','cabin_climate','vertical');
@@ -769,17 +770,17 @@ test('real Xpengtk AUTO status is read only; executable AUTO needs advertised cl
  card._xpengByKey['binary_sensor.mirror_heating']='binary_sensor.real_mirror';
  card._hass.states['binary_sensor.real_auto']={state:'on',attributes:{}};
  card._hass.states['binary_sensor.real_mirror']={state:'off',attributes:{}};
- let html=card.xpClimateFeatures();
+ let html=card.xpClimatePrimaryControls();
  assert.match(html,/xp-ux-climate-readonly/);
  assert.match(html,/AUTO/);
  assert.match(html,/חיווי בלבד/);
  assert.doesNotMatch(html,/data-xp-hvac-mode/);
- assert.doesNotMatch(html,/data-xp-swing-mode/);
+ assert.doesNotMatch(card.xpClimateFeatures(),/data-xp-swing-mode/);
  const attrs=card._hass.states['climate.renamed_hvac'].attributes;
  attrs.hvac_modes=['off','heat_cool','auto'];attrs.swing_modes=['off','vertical'];attrs.swing_mode='off';
- html=card.xpClimateFeatures();
+ html=card.xpClimatePrimaryControls();
  assert.match(html,/data-xp-hvac-mode="auto"/);
- assert.match(html,/data-xp-swing-mode="vertical"/);
+ assert.match(card.xpClimateFeatures(),/data-xp-swing-mode="vertical"/);
 });
 test('charging remains original scene with exactly two visible action shortcuts',()=>{
  const {card}=createCard();
@@ -1017,4 +1018,42 @@ test('Home dock toggles doors windows trunk and port directly; only actual pages
  assert.match(card.shadowRoot.innerHTML,/data-xp-toggle="doors"/);
  assert.match(card.shadowRoot.innerHTML,/data-xp-toggle="windows"/);
  assert.match(card.shadowRoot.innerHTML,/data-xp-toggle="trunk"/);
+});
+
+test('charging information sits in one real left-side panel with native controls',()=>{
+ const {card}=createCard({show_controls:true});
+ const html=card.charging();
+ assert.equal((html.match(/data-xp-open="charge_controls"/g)||[]).length,1);
+ assert.equal((html.match(/data-xp-open="charge_schedule"/g)||[]).length,1);
+ assert.match(html,/xp-charge-panel-actions/);
+ assert.match(html,/Charging power|Time remaining|Charge limit/);
+ assert.match(html,/mdi:clock-outline/);
+ assert.doesNotMatch(html,/xp-charge-shortcuts/);
+ assert.doesNotMatch(html,/data-xp-open="charging"/);
+});
+test('TPMS labels stay directly beside the matching wheel at desktop and phone widths',()=>{
+ const {card}=createCard({tire_pressure_unit:'bar'});
+ const html=card.tireScreen(false);
+ for(const key of ['tire_fl','tire_fr','tire_rl','tire_rr'])
+   assert.match(html,new RegExp('data-wheel="'+key+'"'));
+ assert.match(html,/mdi:tire/);
+ assert.match(html,/xp-tire-reading-body/);
+ assert.doesNotMatch(html,/<select|data-xp-tire-unit/);
+});
+test('HVAC reference panel draws only reported fan levels and exposes direct seat selections',()=>{
+ const {card}=createCard({show_controls:true});
+ const html=card.xpModal();
+ card._xpPanel='climate';
+ const panel=card.xpModal();
+ assert.match(panel,/xp-climate-primary-controls/);
+ assert.match(panel,/xp-climate-thermometers/);
+ assert.match(panel,/xp-fan-bars/);
+ assert.match(panel,/xp-climate-seat-overview/);
+ assert.match(panel,/data-xp-cycle="driver_seat_heat_select"/);
+ assert.match(panel,/data-xp-cycle="left_rear_seat_heat_select"/);
+ assert.doesNotMatch(panel,/data-xp-cycle="left_rear_seat_ventilation_select"/);
+ assert.match(card.xpFanControl(),/8 <\/b>|8<\/b>/);
+ assert.equal((card.xpFanControl().match(/<i class=/g)||[]).length,8,'fan segments must match HA max of 8, not an invented ten');
+ assert.doesNotMatch(panel,/data-xp-hvac-mode="auto"/,'AUTO state is feedback only for this Xpengtk demo');
+ assert.match(panel,/role="status" aria-label="מצב AUTO: פעיל"/);
 });
