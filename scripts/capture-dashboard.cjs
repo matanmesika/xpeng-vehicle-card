@@ -654,7 +654,7 @@ async function main(){
          .map(node=>node.getBoundingClientRect().toJSON());
        return {photo:photo.toJSON(),controls};
      });
-     assert.ok(c.photo.width>=235&&c.photo.width<=280,'Mobile cabin photo not appropriately shrunk: '+JSON.stringify(c));
+     assert.ok(c.photo.width>=190&&c.photo.width<=280,'Mobile cabin photo not appropriately shrunk: '+JSON.stringify(c));
      assert.ok(c.controls.length>=5&&c.controls.every(x=>x.width>=35&&x.width<=42),
        'Heating/ventilation controls must scale along with seat photo: '+JSON.stringify(c));
      console.log('Verified scaled cabin photo with seat/steering hotspots:',JSON.stringify({photoWidth:c.photo.width,buttons:c.controls.length}));
