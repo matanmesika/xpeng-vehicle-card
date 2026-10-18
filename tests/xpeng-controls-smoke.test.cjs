@@ -1396,3 +1396,69 @@ test('beta.6 automotive window and trunk icons are official MDI, never house-win
   assert.match(src,/xpIcon\(ico,27\)/,'Dock must render through ha-icon/Mdi helper');
   assert.equal(src,dist,'Source and HACS bundle must remain byte-identical');
 });
+
+test('beta.8 Home Assistant locale switches every vehicle modal and accessibility label from Hebrew to English',()=>{
+ const {card}=createCard({enable_access_controls:true});
+ card._hass.locale.language='en';
+ card._hass.states['sensor.user_named_battery'].state='76';
+ const pages=['climate','maintenance','map','port','windows','doors','trunk','extras','charge_controls','charge_schedule'];
+ for(const page of [null,...pages]){
+   card._xpPanel=page;
+   card.render();
+   const html=card.shadowRoot.innerHTML;
+   assert.doesNotMatch(html,/[\u0590-\u05ff]/,'English UI has untranslated Hebrew in '+(page||'Home'));
+   if(page)assert.match(html,/dir="ltr"/,'English subpage must use LTR direction: '+page);
+ }
+ card._xpPanel=null;
+ card.render();
+ const home=card.shadowRoot.innerHTML;
+ assert.match(home,/Vehicle controls and shortcuts/);
+ assert.match(home,/Open windows/);
+ assert.match(home,/Open charging port/);
+ assert.match(home,/icon="mdi:car-door"/);
+ assert.match(home,/icon="mdi:car-back"/);
+ card._xpPanel='maintenance';card.render();
+ assert.match(card.shadowRoot.innerHTML,/icon="mdi:arrow-left"/,'English Back arrow must point left');
+ card._hass.locale.language='he';card.render();
+ assert.match(card.shadowRoot.innerHTML,/תחזוקת הרכב/,'Hebrew Home Assistant locale keeps the original language');
+ assert.match(card.shadowRoot.innerHTML,/icon="mdi:arrow-right"/,'Hebrew Back arrow remains RTL');
+});
+test('beta.8 editor follows HA locale without changing stored vehicle settings',()=>{
+ const {sandbox}=createCard();
+ const Editor=vm.runInNewContext(src+'\nXpengVehicleCardEditor;',sandbox);
+ const editor=new Editor();
+ editor._hass={states:{},locale:{language:'en'}};
+ editor.setConfig({model:'G6',year:'2026',color:'graphite_gray',interior:'light_gray'});
+ assert.doesNotMatch(editor.shadowRoot.innerHTML,/[\u0590-\u05ff]/,'Editor English interface has no leftover Hebrew');
+ assert.match(editor.shadowRoot.innerHTML,/Tire pressure unit/);
+ assert.match(editor.shadowRoot.innerHTML,/Vehicle interior color/);
+ editor._hass.locale.language='he';editor.render();
+ assert.match(editor.shadowRoot.innerHTML,/צבע פנים הרכב/);
+});
+test('beta.8 first Location open reuses proactively warmed HA map helpers',async()=>{
+ const {card,sandbox,commands}=createCard();
+ card._xpengRegistryLoaded=true;
+ card._xpengByKey['device_tracker.location']='device_tracker.user_gps';
+ card._hass.states['device_tracker.user_gps']={state:'not_home',attributes:{latitude:32.08,longitude:34.77}};
+ let loads=0,created=0,child=null;
+ sandbox.window.loadCardHelpers=async()=>{
+   loads++;
+   return {createCardElement(cfg){created++;return {config:cfg,hass:null}}};
+ };
+ const hass={...card._hass,locale:{language:'en'}};
+ card.hass=hass; // The native map bundle warms without Location being opened.
+ assert.equal(card._xpPanel,null);
+ await card.xpWarmMapHelpers();
+ assert.equal(loads,1,'HA helpers should be preloaded once before first tap');
+ assert.equal(created,0,'Do not instantiate a live map or fetch tiles in the background');
+ const host={replaceChildren(x){child=x},contains(x){return child===x}};
+ card.shadowRoot.querySelector=selector=>selector==='[data-xp-map-host]'?host:null;
+ card.shadowRoot.contains=x=>x===host;
+ card._xpPanel='map';
+ await card.xpMountMap();
+ assert.equal(loads,1,'Opening Location must not trigger a second bundle load');
+ assert.equal(created,1,'One native HA map card is created');
+ assert.equal(child.hass,card._hass);
+ assert.deepEqual(child.config.entities,[{entity:'device_tracker.user_gps'}]);
+ assert.equal(commands.length,0,'Preloading never issues vehicle commands');
+});
