@@ -130,7 +130,7 @@ jobs:
           for name in names:
               p = root/(name+'.png')
               data=p.read_bytes()
-              assert data[:8] == b'\\x89PNG\\r\\n\\x1a\\n' and len(data)>10_000,(name,len(data))
+              assert data[:8] == bytes([137,80,78,71,13,10,26,10]) and len(data)>10_000,(name,len(data))
               width,height=struct.unpack('>II',data[16:24])
               assert (width>=1100 and height>=620) if name.endswith('-desktop') else (300<=width<=500 and height>=700), (name,width,height)
               print('PASS screenshot:',name,width,height)
