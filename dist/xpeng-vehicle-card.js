@@ -1700,6 +1700,101 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  }
 }
 
+
+/* Charging is an automatic dashboard scene, not an alternate stripped-down page.
+ * Reuse the identical seven-button Dock/handlers on desktop, Sections and iPhone.
+ * Keep control overlays short and station unobstructed; never alter car artwork.
+ */
+.xp-charge-navigation .xp-ux-dock-seven{
+ bottom:2%;left:50%;width:max-content;max-width:94%;
+ gap:6px;padding:6px 9px;border-radius:21px;
+ border:1px solid #6db7f3a1;
+ background:linear-gradient(155deg,#0b2b4be8,#061a30f0);
+ box-shadow:0 13px 34px #000a,inset 0 1px 0 #dcf4ff31;
+}
+.xp-charge-navigation .xp-ux-dock-seven .xp-ux-dock-action{
+ min-width:61px;max-width:78px;min-height:58px;
+ flex:0 1 78px;padding:5px 4px;gap:4px;border-radius:15px;
+ background:linear-gradient(165deg,#193d60ee,#08182eea);
+ border:1px solid #77baf28c;
+}
+.xp-charge-navigation .xp-ux-dock-seven .xp-ux-dock-action ha-icon{
+ width:25px!important;height:25px!important;
+ --xp-icon-size:25px!important;--mdc-icon-size:25px!important;
+}
+.xp-charge-navigation .xp-ux-dock-seven .xp-ux-dock-action small{
+ font-size:10px;white-space:normal;line-height:1.13;text-align:center;
+}
+.xp-charge-navigation .xp-ux-dock-action[data-xp-open="climate"] ha-icon{color:#7ce6ff}
+.xp-charge-navigation .xp-ux-dock-action[data-xp-open="map"] ha-icon{color:#4eafff}
+.xp-charge-navigation .xp-ux-dock-action[data-xp-toggle="port"] ha-icon{color:#6ae4ff}
+.xp-charge-navigation .xp-charge-card{z-index:9}
+.xp-scene.xp-charge.xp-charge-navigation .xp-car{
+ width:42%;left:43%;bottom:17%;max-height:56%;
+}
+/* Lift the station above the car image; retain the original charging photograph. */
+.xp-charge-navigation .xp-station{
+ z-index:10;right:3%;bottom:28%;height:18%;width:5.4%;
+}
+.xp-charge-navigation .xp-charge-cable{z-index:11}
+.xp-charge-navigation .xp-charge-panel-actions button:disabled{
+ opacity:.42;cursor:not-allowed;box-shadow:none;
+}
+.xp-charge-compact-modal{
+ inset:auto!important;top:27%!important;left:auto!important;right:3%!important;
+ width:min(420px,40%)!important;height:auto!important;min-height:0!important;
+ max-height:48%!important;padding:15px 16px 19px!important;overflow-y:auto!important;
+ box-shadow:0 15px 55px #000d!important;
+}
+.xp-charge-compact-modal .xp-ux-modal-head{position:static;top:auto;margin:0 0 9px;padding:0 0 10px}
+.xp-charge-compact-modal .xp-ux-modal-head h2{font-size:19px}
+.xp-charge-compact-modal .xp-ux-modal-head button{min-height:40px;min-width:40px}
+.xp-charge-compact-modal .xp-ux-charging-panel{padding:4px 0}
+.xp-charge-compact-modal .xp-ux-charge-limit{display:flex;flex-direction:column;gap:14px;width:100%;max-width:none}
+.xp-charge-compact-modal input[type="range"]{width:100%;min-height:40px}
+.xp-charge-compact-modal .xp-ux-charge-schedule{margin:4px auto 0}
+@container xpeng-layout (max-width:850px){
+ .xp-charge-navigation .xp-ux-dock-seven{
+  width:min(560px,94%);max-width:94%;bottom:14px;display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding:7px;
+  border-radius:19px;
+ }
+ .xp-charge-navigation .xp-ux-dock-seven .xp-ux-dock-action{
+  width:100%;max-width:none;min-width:0;min-height:56px;padding:5px 3px;
+ }
+ .xp-charge-navigation .xp-ux-dock-seven .xp-ux-dock-action ha-icon{
+  width:23px!important;height:23px!important;
+  --xp-icon-size:23px!important;--mdc-icon-size:23px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-car{
+  width:80%;left:3%;bottom:23%;max-height:27%;object-fit:contain;
+ }
+ .xp-charge-navigation .xp-station{
+  right:3%;bottom:29%;height:15%;width:9%;min-width:35px;
+ }
+ .xp-charge-compact-modal{
+  top:36%!important;left:4%!important;right:4%!important;
+  width:92%!important;max-height:48%!important;
+  padding:12px!important;
+ }
+}
+@container xpeng-layout (max-width:520px){
+ .xp-charge-navigation .xp-ux-dock-seven{bottom:12px;gap:5px;padding:6px}
+ .xp-charge-navigation .xp-ux-dock-seven .xp-ux-dock-action{min-height:51px}
+ .xp-charge-navigation .xp-ux-dock-seven .xp-ux-dock-action small{font-size:9px}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-car{
+  width:77%;left:3%;bottom:24%;max-height:25%;
+ }
+ .xp-charge-navigation .xp-station{bottom:29%;height:15%}
+ .xp-charge-compact-modal{top:33%!important;max-height:51%!important}
+}
+@container xpeng-layout (max-width:360px){
+ .xp-charge-navigation .xp-ux-dock-seven{gap:4px;padding:5px}
+ .xp-charge-navigation .xp-ux-dock-seven .xp-ux-dock-action{min-height:48px}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-car{width:76%;left:2%;bottom:25%;max-height:24%}
+ .xp-charge-navigation .xp-station{right:2%;bottom:30%}
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -2397,7 +2492,7 @@ class XpengVehicleCard extends HTMLElement{
        this.xpClimatePrimaryControls()+this.xpTempControl()+this.xpFanControl()+
        this.xpClimateFeatures()+'</section>'+
        this.xpCabinView()+'</div>';
-   }else if(page==='charge_controls')body='<div class="xp-ux-charging-panel">'+(this.xpChargeControls()||'<p>אין פקודות טעינה זמינות לרכב כרגע.</p>')+this.xpPortPanel()+'</div>';
+   }else if(page==='charge_controls')body='<div class="xp-ux-charging-panel">'+this.xpChargeLimitPanel()+'</div>';
    else if(page==='charge_schedule')body=this.xpChargeSchedulesPanel();
    else if(page==='maintenance')body=this.xpMaintenancePanel();
    else if(page==='port')body=this.xpPortPanel();
@@ -2406,7 +2501,7 @@ class XpengVehicleCard extends HTMLElement{
    else if(page==='trunk')body=this.xpTrunkPanel();
    else if(page==='map')body=this.xpMapPanel();
    else if(page==='extras')body=this.xpExtrasPanel();
-   return '<section class="xp-ux-modal xp-ux-modal-'+page+'" role="dialog" aria-modal="true" aria-label="'+labels[page]+'" dir="rtl">'
+   return '<section class="xp-ux-modal xp-ux-modal-'+page+(page==='charge_controls'||page==='charge_schedule'?' xp-charge-compact-modal':'')+'" role="dialog" aria-modal="true" aria-label="'+labels[page]+'" dir="rtl">'
     +'<header class="xp-ux-modal-head"><button type="button" data-xp-close aria-label="חזרה לבית">'+xpIcon('back',24)+'</button>'
     +'<h2>'+labels[page]+'</h2><span>'+xpEsc(this.appearance().model)+'</span></header>'
     +body+(this._xpNotice?'<p class="xp-ux-notice" role="status">'+xpEsc(this._xpNotice)+'</p>':'')
@@ -2434,6 +2529,22 @@ class XpengVehicleCard extends HTMLElement{
    return '<div class="xp-maintenance-page"><h3>לחץ אוויר בארבעת הצמיגים</h3>'+
       this.tireScreen(false)+'<h3>תחזוקה ופרטי רכב</h3><div class="xp-maint-info">'+info+'</div>'+
       '<p class="xp-ux-note">הערכים מתעדכנים לפי Home Assistant. מספר השלדה המלא אינו חשוף באינטגרציה.</p></div>';
+ }
+ xpChargeLimitPanel(){
+   // A focused slider, not an unrelated port/stop-charging page. Write only
+   // when the real Xpengtk number entity exists with numeric current state.
+   const entity=this.xpLive('number','charge_limit_control');
+   const current=Number(entity?.state?.state);
+   if(!entity||!Number.isFinite(current))
+     return '<p class="xp-ux-note" role="status">הגבלת הטעינה אינה זמינה כעת באינטגרציה.</p>';
+   const attrs=entity.state.attributes||{};
+   const min=Number.isFinite(Number(attrs.min))?Number(attrs.min):50;
+   const max=Number.isFinite(Number(attrs.max))?Number(attrs.max):100;
+   const step=Number.isFinite(Number(attrs.step))&&Number(attrs.step)>0?Number(attrs.step):5;
+   return '<label class="xp-ux-charge-limit xp-charge-compact-limit"><span>הגבלת טעינה <b>'+
+     xpEsc(xpNum(current))+'%</b></span><input type="range" data-xp-range="charge_limit_control" min="'+
+     min+'" max="'+max+'" step="'+step+'" value="'+current+'" aria-label="הגבלת טעינה">'+
+     '</label><p class="xp-ux-note">השינוי נשלח ל־Home Assistant רק אחרי בחירת ערך בסרגל. יש לוודא שהרכב קיבל אותו.</p>';
  }
  xpChargeSchedulesPanel(){
    const start=this.xpLive('sensor','charge_schedule_start');
@@ -2987,10 +3098,9 @@ class XpengVehicleCard extends HTMLElement{
        ${this.xpUiEnabled()&&!this._xpPanel?'<nav class="xp-charge-panel-actions" aria-label="בקרות טעינה" dir="rtl">'+
         '<button type="button" data-xp-open="charge_controls">'+xpIcon('battery',22)+'<span>הגבלת טעינה</span></button>'+
         '<button type="button" data-xp-open="charge_schedule">'+xpIcon('clock',22)+'<span>תזמון</span></button>'+
-        (this.xpLive('button','stop_charge')?'<button type="button" data-xp-command="stop_charge">'+xpIcon('power',22)+'<span>עצור טעינה</span></button>':'')+
+        '<button type="button" data-xp-command="stop_charge" '+(this.xpLive('button','stop_charge')?'':'disabled title="פקודת עצירת טעינה אינה זמינה"')+'>'+xpIcon('power',22)+'<span>עצור טעינה</span></button>'+
         '</nav>':''}
-    </section>
-    ${!this._xpPanel?'<button type="button" class="xp-page-back" data-xp-home aria-label="חזרה למסך הבית">'+xpIcon('back',20)+'<span>חזרה לבית</span></button>':''}`;
+    </section>`;
  }
  render(){
   if(!this.shadowRoot)return;
@@ -3002,8 +3112,10 @@ class XpengVehicleCard extends HTMLElement{
   this._view=isCharging?'charging':'overview';
   if(isCharging)this._tireOpen=false;
   const onHome=!isCharging&&!this._tireOpen&&!this._xpPanel;
-  this.shadowRoot.innerHTML=`<style>${XP_CSS}</style><ha-card><div class="xp-scene ${isCharging?'xp-charge':this._tireOpen?'xp-overview xp-tire-mode':'xp-overview'} ${this.xpUiEnabled()&&!isCharging?'xp-has-controls':''} ${onHome&&this.xpUiEnabled()?'xp-home-navigation':''}">
-   ${this.sceneBackdrop()}${this.header()}${isCharging?this.charging():this._tireOpen?this.title()+this.tireScreen():this.overview()}${onHome?this.xpDock():""}${this.xpModal()}
+  const onChargeHome=isCharging&&!this._xpPanel;
+  const showDock=this.xpUiEnabled()&&(onHome||onChargeHome);
+  this.shadowRoot.innerHTML=`<style>${XP_CSS}</style><ha-card><div class="xp-scene ${isCharging?'xp-charge':this._tireOpen?'xp-overview xp-tire-mode':'xp-overview'} ${this.xpUiEnabled()?'xp-has-controls':''} ${onHome&&this.xpUiEnabled()?'xp-home-navigation':''} ${onChargeHome&&this.xpUiEnabled()?'xp-charge-navigation':''}">
+   ${this.sceneBackdrop()}${this.header()}${isCharging?this.charging():this._tireOpen?this.title()+this.tireScreen():this.overview()}${showDock?this.xpDock():""}${this.xpModal()}
    
    </div></ha-card>`;
   if(this._xpPanel==='map')this.xpMountMap();
