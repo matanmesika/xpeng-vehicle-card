@@ -48,7 +48,8 @@ test('Behavior Guardian: JS and vehicle assets do not change from the accepted b
   const a=v.indexOf(from),b=v.indexOf(to,a);
   if(a>=0){
     assert.ok(b>a,'Guidance helpers are not correctly isolated');
-    v=v.slice(0,a)+v.slice(b);
+    const lineStart=v.lastIndexOf('\n',a);
+    v=v.slice(0,lineStart>=0?lineStart:a)+v.slice(b);
     v=v.replace("this.xpExtraSectionGuide(section[0])+","");
     v=v.replace("this.xpModalGuide(page)+","");
   }
