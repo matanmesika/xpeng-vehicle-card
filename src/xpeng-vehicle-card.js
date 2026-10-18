@@ -2484,7 +2484,7 @@ class XpengVehicleCard extends HTMLElement{
    if(!this._xpPanel||(!this.xpUiEnabled()&&!['maintenance','map'].includes(this._xpPanel)))return '';
    const page=this._xpPanel;
    if(!['climate','port','doors','windows','trunk','map','maintenance','charge_controls','charge_schedule','extras'].includes(page))return '';
-   const labels={climate:'מיזוג אוויר',port:'שקע טעינה',doors:'דלתות',windows:'חלונות',charge_controls:'פעולות טעינה',charge_schedule:'תזמוני טעינה',maintenance:'תחזוקת הרכב',trunk:'תא מטען',map:'מיקום הרכב',extras:'אפשרויות נוספות'};
+   const labels={climate:'מיזוג אוויר',port:'שקע טעינה',doors:'דלתות',windows:'חלונות',charge_controls:'הגבלת טעינה',charge_schedule:'תזמון טעינה',maintenance:'תחזוקת הרכב',trunk:'תא מטען',map:'מיקום הרכב',extras:'אפשרויות נוספות'};
    let body='';
    if(page==='climate'){
      body='<div class="xp-climate-layout">'+
@@ -2827,7 +2827,14 @@ class XpengVehicleCard extends HTMLElement{
     this._xpChargingDismissed=false;this._xpManualCharging=false;
     this._xpPanel=null;this._xpSeatFocus=null;
   }
-  if(!actualCharging)this._xpChargingDismissed=false;
+  if(!actualCharging){
+    this._xpChargingDismissed=false;
+    // A completed/disconnected charge returns to the regular dashboard,
+    // even if the user was viewing a small charging-only control overlay.
+    if(['charge_controls','charge_schedule'].includes(this._xpPanel)){
+      this._xpPanel=null;this._xpNotice='';
+    }
+  }
   this._xpLastActualCharging=actualCharging;
   if(actualCharging&&!this._xpChargingDismissed)this._tireOpen=false;
   this.render();
