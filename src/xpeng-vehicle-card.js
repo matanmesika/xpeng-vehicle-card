@@ -156,6 +156,7 @@ const XP_ICONS = Object.freeze({
  back:'mdi:chevron-left',
  refresh:'mdi:refresh',
  settings:'mdi:cog',
+ maintenance:'mdi:tools',
  thermometer:'mdi:thermometer',
  tire:'mdi:tire',
  info:'mdi:information-outline',
@@ -1026,6 +1027,212 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-charge-cable-live .xp-charge-cable-halo{stroke:#00df90;stroke-width:5.2;
  filter:drop-shadow(0 0 5px #00ed91)}
 .xp-charge-cable-live .xp-charge-cable-core{stroke:#a5ffda;stroke-width:2.2}
+
+/* XPENG G6 | Modern Glass UI v2.
+ * Pure presentation: original night art, actual vehicle images, entity bindings,
+ * and one-tap Home Assistant actions are untouched.
+ * Everything scales to the HA Sections card container, not device user-agent.
+ */
+:host{
+ --xp-mint:#19efb3;
+ --xp-sky:#53acff;
+ --xp-glass:#06192cdd;
+ --xp-stroke:#8cb9e566;
+ --xp-glow:#31a5ff42;
+}
+.xp-scene.xp-overview.xp-home-navigation{
+ background:#031024;
+}
+.xp-home-navigation .xp-title{left:5.5%;top:16.5%;gap:8px}
+.xp-home-navigation .xp-title h1{
+ font-size:clamp(31px,3.8cqw,59px);
+ font-weight:790;
+ letter-spacing:.045em;
+ text-shadow:0 3px 20px #031121cc;
+}
+.xp-home-navigation .xp-title h1 em{color:#59b7ff;text-shadow:0 0 22px #319aff33}
+.xp-home-navigation .xp-subtitle{
+ color:#b1bdd8;font-size:clamp(15px,1.7cqw,24px);
+ letter-spacing:.01em;
+}
+.xp-home-navigation .xp-header .xp-wifi,
+.xp-home-navigation .xp-header .xp-more-trigger{
+ background:linear-gradient(145deg,#173b58cc,#07182ce8);
+ border:1px solid #84bdf57d;
+ border-radius:15px;
+ box-shadow:inset 0 1px 0 #e0f5ff22,0 6px 16px #0010225c;
+ backdrop-filter:blur(16px);
+}
+.xp-home-navigation .xp-wifi.xp-connected{color:#62baff}
+.xp-scene.xp-overview.xp-home-navigation .xp-car{
+ left:39%;width:58%;bottom:16%;
+ max-height:70%;
+ filter:drop-shadow(0 20px 22px #0009) brightness(1.14) contrast(1.03);
+}
+.xp-home-navigation .xp-overview-stat{
+ left:5.1%;top:32.5%;width:min(34%,465px);max-width:none;
+ padding:clamp(16px,1.8cqw,27px) clamp(17px,2cqw,30px);
+ gap:0;
+ border:1px solid #55aff4ac;
+ border-radius:clamp(18px,1.8cqw,26px);
+ background:linear-gradient(145deg,#071d34eb 0%,#041225dd 68%,#071f36dd 100%);
+ box-shadow:0 20px 44px #0008,inset 0 1px 0 #e1f7ff24,0 0 27px #3289d42c;
+ backdrop-filter:blur(20px) saturate(1.25);
+ -webkit-backdrop-filter:blur(20px) saturate(1.25);
+}
+.xp-home-navigation .xp-batt-line{gap:clamp(12px,1.3cqw,20px);align-items:center}
+.xp-home-navigation .xp-batt-glyph{
+ width:clamp(36px,3.6cqw,53px);
+ height:clamp(54px,5.1cqw,73px);
+ padding:5px;border:2px solid #27f3b7;
+ border-radius:9px;
+ box-shadow:0 0 18px #13e8a93b;
+}
+.xp-home-navigation .xp-batt-glyph:before{
+ width:36%;height:6px;top:-8px;left:32%;
+ border:2px solid #27f3b7;border-bottom:0;
+}
+.xp-home-navigation .xp-batt-fill{
+ background:linear-gradient(180deg,#64ffc2,#06c98d);
+ box-shadow:0 0 20px #00e6a68c;
+}
+.xp-home-navigation .xp-stat-label{font-size:clamp(12px,1.03cqw,15px);color:#aabed9}
+.xp-home-navigation .xp-soc{font-size:clamp(39px,4.9cqw,65px);font-weight:770;letter-spacing:-.03em}
+.xp-home-navigation .xp-progress{
+ height:clamp(9px,1cqw,13px);margin-top:14px;border-radius:99px;
+ background:#29496f;
+ box-shadow:inset 0 2px 5px #0007;
+}
+.xp-home-navigation .xp-progress>div{
+ background:linear-gradient(90deg,#15eb9b,#24e6cb 80%,#42c9ff);
+ box-shadow:0 0 15px #0af7b87a;
+}
+.xp-home-navigation .xp-overview-range{
+ margin-top:18px;padding-top:15px;border-top:1px solid #91c5ec4d;
+}
+.xp-home-navigation .xp-range-num{
+ font-size:clamp(26px,3cqw,43px);margin-top:5px;gap:13px;
+ letter-spacing:-.015em;
+}
+.xp-home-navigation .xp-range-num ha-icon{
+ color:#e9f6ff;opacity:.98;
+ --mdc-icon-size:clamp(23px,2.5cqw,33px);
+ width:clamp(23px,2.5cqw,33px);height:clamp(23px,2.5cqw,33px);
+}
+.xp-home-navigation .xp-ux-dock-seven{
+ width:max-content;max-width:95%;gap:clamp(6px,.8cqw,12px);
+ bottom:2.7%;padding:10px 12px;
+ border-radius:27px;
+ border:1px solid #6db7f3a1;
+ background:linear-gradient(155deg,#0b2b4be8,#061a30f0);
+ backdrop-filter:blur(24px) saturate(1.25);
+ -webkit-backdrop-filter:blur(24px) saturate(1.25);
+ box-shadow:0 13px 34px #000a,inset 0 1px 0 #dcf4ff31,0 0 20px #2797f723;
+}
+.xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{
+ position:relative;flex:0 1 110px;
+ width:clamp(76px,7.3cqw,110px);
+ max-width:110px;min-width:0;min-height:clamp(65px,6.8cqw,86px);
+ padding:9px 7px;gap:8px;border-radius:21px;
+ background:linear-gradient(165deg,#193d60ee,#08182eea);
+ border:1px solid #77baf28c;
+ box-shadow:inset 0 1px 0 #d7eeff26,0 3px 9px #0006;
+ color:#f4f9ff;transition:background .18s,border-color .18s,transform .18s,box-shadow .18s;
+}
+.xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action ha-icon{
+ color:#e9f4ff;width:clamp(23px,2.5cqw,31px)!important;
+ height:clamp(23px,2.5cqw,31px)!important;
+ --xp-icon-size:clamp(23px,2.5cqw,31px)!important;
+ --mdc-icon-size:clamp(23px,2.5cqw,31px)!important;
+ filter:drop-shadow(0 0 6px #4aa8fc42);
+}
+.xp-home-navigation .xp-ux-dock-action[data-xp-open="map"] ha-icon{color:#4eafff}
+.xp-home-navigation .xp-ux-dock-action[data-xp-open="climate"] ha-icon{color:#7ce6ff}
+.xp-home-navigation .xp-ux-dock-action[data-xp-toggle="port"] ha-icon{color:#6ae4ff}
+.xp-home-navigation .xp-ux-dock-action[data-xp-toggle="doors"] ha-icon{color:#e8f6ff}
+.xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action small{
+ font-size:clamp(10px,1.05cqw,13px);font-weight:600;
+ white-space:normal;line-height:1.13;letter-spacing:0;
+ text-align:center;
+}
+.xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action:hover,
+.xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action:focus-visible{
+ background:linear-gradient(160deg,#20537c,#0b2846);
+ border-color:#48c7ff;
+ box-shadow:0 0 20px #2496fa60,inset 0 1px 0 #e7faff33;
+ transform:translateY(-2px);
+}
+.xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action:active{transform:translateY(1px)}
+.xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action:disabled{opacity:.49;filter:saturate(.65);transform:none}
+.xp-ux-modal,.xp-charge-card{
+ border-color:#6badde85!important;
+ background:linear-gradient(150deg,#061c32f3,#061427f5)!important;
+ box-shadow:0 20px 48px #0009,inset 0 1px 0 #d1f4ff18;
+ backdrop-filter:blur(19px);
+}
+.xp-ux-modal button:not(:disabled){
+ transition:border-color .16s,background .16s,box-shadow .16s;
+}
+.xp-ux-modal button:not(:disabled):hover{border-color:#45b7e7;box-shadow:0 0 12px #238ceb29}
+.xp-ux-modal-head h2{letter-spacing:-.015em;font-weight:750}
+.xp-ux-climate-card,.xp-ux-climate-feature,.xp-extra-tile,
+.xp-extra-line,.xp-tire-reading,.xp-ux-access-panel{
+ border-radius:15px;
+}
+@container xpeng-layout (max-width:850px){
+ .xp-home-navigation .xp-title{left:5%;top:85px;gap:3px}
+ .xp-home-navigation .xp-title h1{font-size:clamp(28px,7.3cqw,39px)}
+ .xp-home-navigation .xp-subtitle{font-size:15px}
+ .xp-home-navigation .xp-overview-stat{
+   left:4.5%;top:182px;width:91%;max-width:none;
+   padding:14px 18px;border-radius:21px;
+ }
+ .xp-home-navigation .xp-batt-glyph{width:34px;height:45px;padding:4px}
+ .xp-home-navigation .xp-batt-line{gap:12px}
+ .xp-home-navigation .xp-soc{font-size:clamp(31px,8.8cqw,42px)}
+ .xp-home-navigation .xp-progress{margin-top:9px;height:9px}
+ .xp-home-navigation .xp-overview-range{margin-top:10px;padding-top:10px}
+ .xp-home-navigation .xp-range-num{font-size:clamp(22px,6.5cqw,29px);margin-top:2px}
+ .xp-home-navigation .xp-stat-label{font-size:11px}
+ .xp-scene.xp-overview.xp-home-navigation .xp-car{
+   left:0;width:100%;bottom:25%;max-height:34%;
+ }
+ .xp-home-navigation .xp-ux-dock-seven{
+   bottom:17px;width:min(560px,94%);max-width:94%;
+   display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+   gap:6px;padding:8px;border-radius:22px;
+ }
+ .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{
+   width:100%;max-width:none;min-width:0;min-height:57px;
+   padding:6px 4px;gap:4px;border-radius:15px;
+ }
+ .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action ha-icon{
+   width:25px!important;height:25px!important;
+   --xp-icon-size:25px!important;--mdc-icon-size:25px!important;
+ }
+ .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action small{font-size:10px}
+}
+@container xpeng-layout (max-width:520px){
+ .xp-home-navigation .xp-title{top:80px}
+ .xp-home-navigation .xp-overview-stat{top:179px;padding:12px 15px}
+ .xp-scene.xp-overview.xp-home-navigation .xp-car{
+   left:0;width:100%;bottom:25%;max-height:31%;
+ }
+ .xp-home-navigation .xp-ux-dock-seven{bottom:15px;gap:5px}
+ .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{min-height:55px}
+}
+@container xpeng-layout (max-width:360px){
+ .xp-home-navigation .xp-overview-stat{top:178px;padding:11px 13px}
+ .xp-home-navigation .xp-batt-glyph{height:42px;width:32px}
+ .xp-home-navigation .xp-ux-dock-seven{bottom:13px;gap:4px;padding:6px}
+ .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{min-height:51px;padding:5px 3px}
+ .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action small{font-size:9px}
+ .xp-scene.xp-overview.xp-home-navigation .xp-car{bottom:25%;max-height:29%}
+}
+@media(prefers-reduced-motion:reduce){
+ .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{transition:none}
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -1336,7 +1543,7 @@ class XpengVehicleCard extends HTMLElement{
      ['climate','fan','מיזוג'],
      ['doors','lock','נעילה'],['windows','windows','חלונות'],
      ['port','plug','שקע טעינה'],['trunk','trunk','תא מטען'],
-     ['maintenance','settings','תחזוקה'],['map','pin','מיקום']
+     ['maintenance','maintenance','תחזוקה'],['map','pin','מיקום']
    ];
    return '<nav class="xp-ux-dock xp-ux-dock-seven" aria-label="פעולות הרכב וקיצורי מסכים" dir="rtl">'+
      items.map(([action,icon,title])=>{
@@ -1358,7 +1565,7 @@ class XpengVehicleCard extends HTMLElement{
        return '<button class="xp-ux-dock-action" type="button" '+
          (toggle?'data-xp-toggle="'+action+'"':'data-xp-open="'+action+'"')+
          ' aria-label="'+xpEsc(label)+'" title="'+xpEsc(label)+'" '+(available?'':'disabled')+'>'+
-         xpIcon(ico,21)+'<small>'+xpEsc(compact)+'</small></button>';
+         xpIcon(ico,27)+'<small>'+xpEsc(compact)+'</small></button>';
      }).join('')+'</nav>';
  }
  xpSeatShownState(suffix){
@@ -2273,7 +2480,7 @@ class XpengVehicleCard extends HTMLElement{
        <div><div class="xp-stat-label">Battery</div><div class="xp-soc">${this.socHtml()}</div></div></div>
      ${this.progress()}<div class="xp-overview-range"><div class="xp-stat-label">Estimated range</div><div class="xp-range-num">${xpIcon('gauge',36)}<span>${xpEsc(this.num('range','km'))}</span></div></div>
     </section>
-    ${!this.xpUiEnabled()?'<button type="button" class="xp-maintenance-home-button" data-xp-open="maintenance" aria-label="פתיחת תחזוקת הרכב">'+xpIcon('settings',21)+'<span>תחזוקה</span></button>':''}`;
+    ${!this.xpUiEnabled()?'<button type="button" class="xp-maintenance-home-button" data-xp-open="maintenance" aria-label="פתיחת תחזוקת הרכב">'+xpIcon('maintenance',21)+'<span>תחזוקה</span></button>':''}`;
  }
  charging(){
   return `${this.title()}
