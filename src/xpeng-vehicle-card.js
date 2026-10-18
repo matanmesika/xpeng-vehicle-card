@@ -1964,6 +1964,114 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  direction:ltr;
 }
 
+/* Home Assistant Sections: size within the CARD container, not the host window. */
+.xp-header .xp-wifi{display:grid!important;place-items:center!important;padding:0!important}
+.xp-header .xp-wifi .xp-mdi-icon{
+ display:grid;place-items:center;margin:0!important;position:static;inset:auto;
+ transform:none!important;
+}
+@container xpeng-layout (max-width:850px){
+ .xp-scene{min-height:0;height:clamp(660px,calc(100dvh - 90px),800px);aspect-ratio:auto}
+}
+@container xpeng-layout (max-width:600px){
+ .xp-scene{height:clamp(630px,calc(100dvh - 84px),780px)}
+}
+/* Overlay content stays inside the card; diagnostics rows own their one scroll area. */
+.xp-scene .xp-ux-modal{
+ display:flex;flex-direction:column;min-height:0;height:auto;max-height:none;
+ inset:1.2% 1.8%;overflow:hidden!important;touch-action:manipulation;
+ padding:clamp(8px,1.2cqw,16px)!important;gap:0
+}
+.xp-scene .xp-ux-modal-head{
+ position:relative;top:auto;flex:0 0 auto;
+ margin-bottom:clamp(4px,.8cqw,10px);padding:2px 1px 7px
+}
+.xp-ux-modal>.xp-ux-modal-content{
+ flex:1 1 auto;min-width:0;min-height:0;
+ display:flex;flex-direction:column;position:relative;overflow:hidden
+}
+.xp-ux-modal>.xp-ux-notice{flex:0 0 auto}
+.xp-ux-modal-map .xp-ux-map-panel{
+ display:grid;grid-template-rows:minmax(0,1fr) auto;
+ flex:1 1 auto;min-height:0;min-width:0;height:100%;width:100%;
+ margin:0 auto!important;gap:clamp(5px,.9cqw,11px)
+}
+.xp-ux-modal-map .xp-ux-map-stage{
+ min-height:0!important;min-width:0;height:100%;align-self:stretch;
+ display:block;overflow:hidden
+}
+.xp-ux-modal-map .xp-ux-map-stage hui-map-card{
+ display:block!important;width:100%!important;height:100%!important;
+ min-height:0!important;max-height:100%!important;overflow:hidden!important
+}
+.xp-ux-modal-map .xp-ux-map-actions{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ margin:0!important;gap:7px;align-self:stretch;min-width:0
+}
+.xp-ux-modal-map .xp-ux-map-actions button{
+ min-width:0;min-height:42px;padding:7px 8px;font-size:clamp(10px,1.15cqw,14px)
+}
+.xp-ux-modal-map .xp-ux-map-actions .xp-map-native-details{
+ grid-column:1/-1;min-height:39px;padding:6px 8px
+}
+/* The entity list, not the dashboard/modal, scrolls. Explanation stays visible. */
+.xp-ux-modal-extras .xp-extra-diagnostics-layout{
+ display:flex;flex:1 1 auto;flex-direction:column;
+ width:min(740px,100%);height:100%;min-height:0;
+ margin:0 auto!important;gap:7px;overflow:hidden
+}
+.xp-ux-modal-extras .xp-extra-diagnostics-layout .xp-extra-heading{flex:0 0 auto;margin:0}
+.xp-ux-modal-extras .xp-extra-diagnostics-layout .xp-extra-details{
+ flex:1 1 auto;display:flex;flex-direction:column;
+ min-height:0;max-height:100%;overflow:hidden!important
+}
+.xp-ux-modal-extras .xp-extra-diagnostics-layout .xp-entity-diagnostics{
+ flex:1 1 auto;display:flex;flex-direction:column;
+ min-height:0;max-height:100%;overflow:hidden!important;gap:7px
+}
+.xp-ux-modal-extras .xp-extra-diagnostics-layout .xp-entity-diagnostics>p[role="status"]{
+ flex:0 0 auto;margin:2px 0 0
+}
+.xp-ux-modal-extras .xp-extra-diagnostics-layout .xp-diagnostics-scroll{
+ flex:1 1 auto;display:grid!important;align-content:start;
+ min-height:0!important;height:auto!important;
+ max-height:min(292px,37dvh)!important;
+ overflow-y:auto!important;overflow-x:hidden!important;
+ overscroll-behavior:contain;touch-action:pan-y!important;
+ border:1px solid #618eb078;border-radius:12px;
+ background:#071f35b3;padding:7px;gap:5px;scrollbar-gutter:stable
+}
+.xp-ux-modal-extras .xp-extra-diagnostics-layout .xp-entity-diagnostics>.xp-ux-note,
+.xp-ux-modal-extras .xp-extra-diagnostics-layout>.xp-ux-note{
+ flex:0 0 auto;margin:4px 0 0;font-size:clamp(10px,1cqw,12px)
+}
+@container xpeng-layout (max-width:600px){
+ .xp-scene .xp-ux-modal{inset:1% 1.5%;padding:9px!important}
+ .xp-ux-modal-map .xp-ux-map-actions{gap:5px}
+ .xp-ux-modal-map .xp-ux-map-actions button{min-height:40px;gap:4px;padding:5px;font-size:11px}
+ .xp-ux-modal-extras .xp-extra-diagnostics-layout .xp-diagnostics-scroll{
+   max-height:min(230px,31dvh)!important;padding:5px
+ }
+ .xp-ux-modal-maintenance .xp-tire-screen{
+   height:clamp(160px,26dvh,212px)!important;min-height:0!important;
+   margin:0 auto 7px!important
+ }
+ .xp-ux-modal-maintenance .xp-tire-center{height:clamp(110px,20dvh,150px)!important}
+ .xp-ux-modal-maintenance .xp-tire-stage{gap:5px!important}
+ .xp-ux-modal-maintenance .xp-tire-reading{padding:5px 4px!important}
+ .xp-ux-modal-climate .xp-climate-layout{
+   padding-bottom:0!important;gap:6px!important;margin:0 auto!important
+ }
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{
+   width:min(204px,53cqw)!important;margin:0 auto!important
+ }
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-climate-bottom{gap:5px!important}
+ .xp-ux-modal-climate .xp-climate-layout .xp-ux-climate-features{gap:4px!important}
+ .xp-ux-modal-climate .xp-climate-layout .xp-ux-climate-feature{
+   padding:5px 3px!important;min-height:62px!important;gap:3px!important
+ }
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -2724,7 +2832,7 @@ class XpengVehicleCard extends HTMLElement{
    return '<section class="xp-ux-modal xp-ux-modal-'+page+(page==='charge_controls'||page==='charge_schedule'?' xp-charge-compact-modal':'')+'" role="dialog" aria-modal="true" aria-label="'+labels[page]+'" dir="rtl">'
     +'<header class="xp-ux-modal-head"><button type="button" data-xp-close aria-label="'+(this._xpNavStack?.length?'חזרה לחלון הקודם':'חזרה למסך הבית')+'">'+xpIcon('back',24)+'</button>'
     +'<h2>'+labels[page]+'</h2></header>'
-    +body+(this._xpNotice?'<p class="xp-ux-notice" role="status">'+xpEsc(this._xpNotice)+'</p>':'')
+    +'<div class="xp-ux-modal-content">'+body+'</div>'+(this._xpNotice?'<p class="xp-ux-notice" role="status">'+xpEsc(this._xpNotice)+'</p>':'')
     +'</section>';
  }
 
@@ -2923,7 +3031,7 @@ class XpengVehicleCard extends HTMLElement{
    ];
    const section=sections.find(x=>x[0]===this._xpExtraSection);
    if(section){
-     return '<div class="xp-extra-body"><div class="xp-extra-heading"><strong>'+xpEsc(section[2])+'</strong></div>'
+     return '<div class="xp-extra-body'+(section[0]==='diagnostics'?' xp-extra-diagnostics-layout':'')+'"><div class="xp-extra-heading"><strong>'+xpEsc(section[2])+'</strong></div>'
        +'<div class="xp-extra-details">'+this.xpExtraSectionContent(section[0])+'</div>'
        +'<p class="xp-ux-note">המידע מגיע מ־Xpengtk. הפקודות פועלות לפי הרשאות Home Assistant והרכב בלבד.</p></div>';
    }
@@ -3126,6 +3234,7 @@ class XpengVehicleCard extends HTMLElement{
  }
  get hass(){return this._hass;}
  getCardSize(){return 8;}
+ getGridOptions(){return {columns:12,min_columns:12,rows:'auto'};}
  static getConfigElement(){return document.createElement('xpeng-vehicle-card-editor');}
  static getStubConfig(){return {type:'custom:xpeng-vehicle-card',prefix:'my_xpeng',model:'G6',year:'2026',trim:'core_plus_rwd',color:'graphite_gray',interior:'dark_gray'};}
  vehicles(){return Array.isArray(this._config.vehicles)&&this._config.vehicles.length?this._config.vehicles:[this._config];}
