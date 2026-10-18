@@ -981,7 +981,7 @@ test('Location requests HA native GPS map with dark mode and zoom 11, not a fabr
  await card.xpMountMap();
  assert.deepEqual(JSON.parse(JSON.stringify(captured)),{
    type:'map',entities:[{entity:'device_tracker.real_vehicle'}],
-   default_zoom:11,hours_to_show:0,dark_mode:true
+   default_zoom:11,hours_to_show:0,theme_mode:'dark',aspect_ratio:'4:3'
  });
  assert.equal(attached.hass,card._hass);
  card._xpPanel=null;captured=null;
@@ -1306,4 +1306,47 @@ test('only actual photo hotspots control every seat function and steering heat',
  delete card._hass.states['select.driver_vent'];
  modal=card.xpModal();
  assert.doesNotMatch(modal,/data-xp-cycle="driver_seat_ventilation_select"/);
+});
+
+
+test('mobile lock feedback is stable under jitter, and a rapid second tap never repeats the command',async()=>{
+ const {card,commands}=createCard({enable_access_controls:true});
+ card._xpengByKey['lock.door_lock']='lock.real_door_lock';
+ card._hass.states['lock.real_door_lock']={state:'locked',attributes:{}};
+ card.xpToggle('doors');
+ assert.equal(commands.length,1,'Exactly one real lock/unlock service call');
+ const marker=card._xpTogglePending.doors;
+ assert.ok(marker,'Button must have an in-flight state');
+ const pending=card.xpDock();
+ assert.match(pending,/data-xp-toggle="doors"[^>]*aria-busy="true"[^>]*disabled/);
+ // Race between the optimistic UI and successive Xpengtk state reports.
+ for(const state of ['unlocked','locked','unlocked','locked','unlocked']){
+   card._hass.states['lock.real_door_lock'].state=state;
+   card.render();
+   assert.equal(card._xpTogglePending.doors,marker,'Do not oscillate the button on a stale sensor update');
+   card.xpToggle('doors');
+ }
+ assert.equal(commands.length,1,'No second click while pending, including after sensor jitter');
+ card._hass.states['lock.real_door_lock'].state='unlocked';
+ marker.at-=1900;
+ assert.equal(card.xpPendingToggle('doors'),null,'Confirmed update releases the busy state');
+ assert.doesNotMatch(card.xpDock(),/data-xp-toggle="doors"[^>]*aria-busy="true"/);
+});
+test('failed direct car command clears busy state without inventing a successful sensor state',async()=>{
+ const {card}=createCard({enable_access_controls:true});
+ card._xpengByKey['lock.door_lock']='lock.failed_vehicle';
+ card._hass.states['lock.failed_vehicle']={state:'locked',attributes:{}};
+ card._hass.callService=async()=>{throw Error('connection unavailable')};
+ card.xpToggle('doors');
+ await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(card._xpTogglePending.doors,undefined);
+ assert.equal(card.xpActionState('doors'),'closed');
+ assert.match(card._xpNotice,/connection unavailable/);
+});
+test('mobile renders preserve DOM nodes when template DOM APIs exist, and map offers HA native detail fallback',()=>{
+ const {card}=createCard();
+ assert.match(src,/xpReconcileChildren\(this\.shadowRoot,template\.content\)/);
+ assert.match(src,/existing\.contains\(this\._xpMapElement\)/);
+ assert.match(src,/touch-action:pan-y/);
+ assert.match(card.xpMapPanel(),/data-xp-map-details/);
 });
