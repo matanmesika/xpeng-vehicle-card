@@ -159,6 +159,9 @@ const XP_ICONS = Object.freeze({
  maintenance:'mdi:tools',
  thermometer:'mdi:thermometer',
  tire:'mdi:tire',
+ seat_heat:'mdi:car-seat-heater',
+ seat_vent:'mdi:car-seat-cooler',
+ wheel_heat:'mdi:steering',
  info:'mdi:information-outline',
  clock:'mdi:clock-outline',
  battery:'mdi:battery',
@@ -1527,31 +1530,6 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 }
 .xp-fan-bars i.xp-fan-bar-on{background:linear-gradient(180deg,#54b5ff,#197de9);box-shadow:0 0 7px #248ffc55}
 .xp-climate-fan-panel input{margin-top:3px}
-.xp-climate-seat-overview{
- display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
- gap:8px;padding:4px 0;
-}
-.xp-seat-summary-tile{
- border:1px solid #6b9acc95;border-radius:15px;padding:9px;
- background:linear-gradient(155deg,#0c2846e8,#08172cee);
- min-width:0;
-}
-.xp-seat-summary-tile>strong{display:block;font-size:12px;line-height:1.2;margin-bottom:6px;text-align:center}
-.xp-seat-summary-actions{display:flex;gap:5px;justify-content:center}
-.xp-seat-summary-action{
- display:flex;flex-direction:column;align-items:center;gap:4px;
- min-width:0;flex:1;min-height:48px;border:1px solid #6189a7a8;
- border-radius:10px;padding:5px 2px;color:#e6f5ff;
- background:#112c49d9;cursor:pointer;
-}
-.xp-seat-summary-action ha-icon{--mdc-icon-size:19px}
-.xp-seat-summary-action small{font-size:10px;white-space:nowrap}
-.xp-seat-summary-bars{display:flex;gap:3px;height:16px;align-items:end}
-.xp-seat-summary-bars i{width:5px;height:14px;border-radius:3px;background:#384966}
-.xp-seat-summary-active.xp-seat-heat .xp-seat-summary-bars .xp-seat-level-on{background:#ff637b;box-shadow:0 0 5px #ff556a8c}
-.xp-seat-summary-active.xp-seat-vent .xp-seat-summary-bars .xp-seat-level-on{background:#56bfff;box-shadow:0 0 5px #22aaff85}
-.xp-seat-summary-active.xp-seat-heat ha-icon{color:#ff7d89}
-.xp-seat-summary-active.xp-seat-vent ha-icon{color:#6ed5ff}
 .xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{
  width:min(510px,100%);max-height:none;align-self:center;
 }
@@ -1572,7 +1550,6 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-climate-inside b{font-size:29px}
  .xp-climate-target .xp-ux-temp-line b{font-size:29px}
  .xp-climate-target .xp-ux-temp-line button{width:37px;height:37px;flex-basis:37px}
- .xp-climate-seat-overview{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @container xpeng-layout (max-width:390px){
  .xp-climate-primary-controls{gap:6px}
@@ -1581,9 +1558,37 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-climate-thermometers small{font-size:10px}
  .xp-climate-target .xp-ux-temp-line button{width:30px;height:33px;flex-basis:30px}
  .xp-climate-target .xp-ux-temp-line b,.xp-climate-inside b{font-size:24px}
- .xp-climate-seat-overview{gap:5px}
- .xp-seat-summary-tile{padding:6px}
- .xp-seat-summary-action small{font-size:9px}
+}
+
+
+/* Physical seat/steering location is the ONLY controls surface for heating and
+ * ventilation: no duplicate buttons outside the photo.
+ */
+.xp-ux-modal-climate .xp-ux-cabin-art{overflow:visible}
+.xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-hotspot-zone{z-index:8;gap:5px;white-space:nowrap}
+.xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-cycle{
+ width:clamp(40px,4cqw,57px);min-width:40px;
+ height:clamp(56px,5.1cqw,69px);min-height:56px;
+ flex-direction:column;gap:3px;padding:5px 3px;border-radius:13px;
+ box-shadow:0 3px 12px #0009,inset 0 1px 0 #d5f4ff23;
+}
+.xp-ux-modal-climate .xp-ux-cycle ha-icon{
+ color:#e5f8ff;width:23px;height:23px;--xp-icon-size:23px;--mdc-icon-size:23px;
+}
+.xp-ux-modal-climate .xp-ux-cycle-heat.xp-ux-cycle-on ha-icon{color:#ffb2aa}
+.xp-ux-modal-climate .xp-ux-cycle-vent.xp-ux-cycle-on ha-icon{color:#8aeaff}
+.xp-ux-modal-climate .xp-cabin-action-label{font-size:9px;line-height:1;white-space:nowrap;font-weight:650}
+.xp-ux-modal-climate .xp-ux-cycle .xp-ux-level{font-size:12px;line-height:1}
+.xp-ux-modal-climate .xp-ux-cycle-busy{opacity:.65}
+@container xpeng-layout (max-width:520px){
+ .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-hotspot-zone{gap:2px}
+ .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-cycle{
+  width:40px;min-width:40px;height:54px;min-height:54px;padding:4px 2px;gap:2px;
+ }
+ .xp-ux-modal-climate .xp-ux-cycle ha-icon{
+  width:20px;height:20px;--xp-icon-size:20px;--mdc-icon-size:20px;
+ }
+ .xp-ux-modal-climate .xp-cabin-action-label{font-size:8px}
 }
 
 `;
@@ -1948,11 +1953,14 @@ class XpengVehicleCard extends HTMLElement{
        const type=vent?'xp-ux-cycle-vent':'xp-ux-cycle-heat';
        const title=(vent?'אוורור ':'חימום ')+label;
        const busy=this._xpSeatBusy?.[key];
+       const icon=zone==='wheel'?'wheel_heat':vent?'seat_vent':'seat_heat';
        return '<button type="button" class="xp-ux-cycle '+type
          +(active?' xp-ux-cycle-on':'')+(busy?' xp-ux-cycle-busy':'')
          +'" data-xp-cycle="'+xpEsc(key)+'" aria-label="'+xpEsc(title+', דרגה '+xpSeatLevel(state))
-         +'" title="'+xpEsc(title)+'">'+xpIcon(vent?'fan':'thermometer',17)
-         +'<span class="xp-ux-level">'+xpSeatLevel(state)+'</span></button>';
+         +'" title="'+xpEsc(title)+'" aria-pressed="'+String(!!active)+'">'
+         +xpIcon(icon,20)+'<span class="xp-ux-level">'+xpSeatLevel(state)+'</span>'
+         +'<small class="xp-cabin-action-label">'+(zone==='wheel'?'הגה':vent?'אוורור':'חימום')+'</small>'
+         +'</button>';
      }).filter(Boolean).join('');
      return buttons?'<div class="xp-ux-hotspot-zone xp-ux-'+zone+'" data-xp-zone="'+zone
        +'" role="group" aria-label="'+label+'">'+buttons+'</div>':'';
@@ -2126,33 +2134,7 @@ class XpengVehicleCard extends HTMLElement{
    +xpIcon('power',32)+'<b>הפעלת מיזוג</b><small>'+(running?'פעיל':'כבוי')+'</small></button>'
    +auto+'</div>';
  }
- xpSeatOverview(){
-  const zones=[
-   ['driver','מושב נהג',['driver_seat_heat_select','driver_seat_ventilation_select']],
-   ['passenger','מושב נוסע',['passenger_seat_heat_select','passenger_seat_ventilation_select']],
-   ['rear_left','אחורי שמאל',['left_rear_seat_heat_select']],
-   ['rear_right','אחורי ימין',['right_rear_seat_heat_select']],
-   ['wheel','הגה',['steering_wheel_heat_select']]
-  ];
-  const tiles=zones.map(([zone,label,keys])=>{
-   const actions=keys.map(key=>{
-    const e=this.xpLive('select',key);
-    if(!e)return '';
-    const status=this.xpSeatShownState(key),n=Number(xpSeatLevel(status));
-    const vent=key.includes('ventilation'),level=Number.isFinite(n)?n:0;
-    const bars=Array.from({length:3},(_,i)=>'<i class="'+(level>i?'xp-seat-level-on':'')+'"></i>').join('');
-    return '<button type="button" class="xp-seat-summary-action'+(level?' xp-seat-summary-active':'')
-      +(vent?' xp-seat-vent':' xp-seat-heat')+'" data-xp-cycle="'+xpEsc(key)
-      +'" aria-label="'+xpEsc((vent?'אוורור ':'חימום ')+label+', דרגה '+xpSeatLevel(status))+'">'
-      +xpIcon(vent?'fan':'thermometer',19)+'<span class="xp-seat-summary-bars" aria-hidden="true">'+bars+'</span>'
-      +'<small>'+xpEsc(vent?'אוורור':'חימום')+' '+xpEsc(xpSeatLevel(status))+'</small></button>';
-   }).filter(Boolean).join('');
-   return actions?'<div class="xp-seat-summary-tile" data-xp-seat="'+zone+'"><strong>'+xpEsc(label)
-     +'</strong><div class="xp-seat-summary-actions">'+actions+'</div></div>':'';
-  }).filter(Boolean);
-  return tiles.length?'<div class="xp-climate-seat-overview" role="group" aria-label="בקרות מושבים והגה">'
-    +tiles.join('')+'</div>':'';
- }
+
  xpClimateFeatures(){
   // Secondary climate functions only. Main ON/OFF and AUTO are above temperature.
   const climate=this.xpLive('climate','cabin_climate');
@@ -2304,7 +2286,7 @@ class XpengVehicleCard extends HTMLElement{
      body='<div class="xp-climate-layout">'+
        '<section class="xp-ux-climate-bottom" aria-label="בקרת אקלים">'+
        this.xpClimatePrimaryControls()+this.xpTempControl()+this.xpFanControl()+
-       this.xpSeatOverview()+this.xpClimateFeatures()+'</section>'+
+       this.xpClimateFeatures()+'</section>'+
        this.xpCabinView()+'</div>';
    }else if(page==='charge_controls')body='<div class="xp-ux-charging-panel">'+(this.xpChargeControls()||'<p>אין פקודות טעינה זמינות לרכב כרגע.</p>')+this.xpPortPanel()+'</div>';
    else if(page==='charge_schedule')body=this.xpChargeSchedulesPanel();
