@@ -1365,8 +1365,8 @@ test('beta.6 automotive window and trunk icons are official MDI, never a house-w
   assert.ok(iconSection,'The central XP_ICONS dictionary is required');
   assert.match(iconSection,/windows:'mdi:car-door'/);
   assert.match(iconSection,/windows_open:'mdi:car-door'/);
-  assert.match(iconSection,/trunk:'mdi:car-hatchback'/);
-  assert.match(iconSection,/trunk_open:'mdi:car-hatchback'/);
+  assert.match(iconSection,/trunk:'mdi:car-back'/);
+  assert.match(iconSection,/trunk_open:'mdi:car-back'/);
   assert.doesNotMatch(iconSection,/mdi:window-open|mdi:window-open-variant/);
   card._xpengByKey['binary_sensor.windows']='binary_sensor.windows_car';
   card._xpengByKey['binary_sensor.trunk']='binary_sensor.trunk_car';
@@ -1384,11 +1384,11 @@ test('beta.6 automotive window and trunk icons are official MDI, never a house-w
     const trunk=dock.match(/<button[^>]*data-xp-toggle="trunk"[\s\S]*?<\/button>/)?.[0];
     assert.ok(windows&&trunk,'Both dock shortcuts must remain');
     assert.match(windows,/icon="mdi:car-door"/);
-    assert.match(trunk,/icon="mdi:car-hatchback"/);
+    assert.match(trunk,/icon="mdi:car-back"/);
     assert.match(card.xpToggleButton('windows'),/icon="mdi:car-door"/);
-    assert.match(card.xpToggleButton('trunk'),/icon="mdi:car-hatchback"/);
+    assert.match(card.xpToggleButton('trunk'),/icon="mdi:car-back"/);
     assert.match(card.xpWindowsPanel(),/icon="mdi:car-door"/);
-    assert.match(card.xpTrunkPanel(),/icon="mdi:car-hatchback"/);
+    assert.match(card.xpTrunkPanel(),/icon="mdi:car-back"/);
     const expected=state==='off'?'פתיחת':'סגירת';
     assert.match(windows,new RegExp(expected+' חלונות'));
     assert.match(trunk,new RegExp(expected+' תא מטען'));
@@ -1426,7 +1426,7 @@ test('beta.8 Home Assistant locale switches every vehicle modal and accessibilit
  assert.match(home,/Open windows/);
  assert.match(home,/Open charging port/);
  assert.match(home,/icon="mdi:car-door"/);
- assert.match(home,/icon="mdi:car-hatchback"/);
+ assert.match(home,/icon="mdi:car-back"/);
  card._xpPanel='maintenance';card.render();
  assert.match(card.shadowRoot.innerHTML,/icon="mdi:arrow-left"/,'English Back arrow must point left');
  card._hass.locale.language='he';card.render();
@@ -1497,7 +1497,7 @@ test('owner fixes: exact Open Trunk, real SOC icon levels, silent successful cal
  card._hass.states['button.car_open_trunk']={state:'unknown',attributes:{}};
  card.render();
  assert.match(card.shadowRoot.innerHTML,/Open Trunk/);
- assert.match(card.shadowRoot.innerHTML,/mdi:car-hatchback/);
+ assert.match(card.shadowRoot.innerHTML,/mdi:car-back/);
  assert.equal(card.xpToggleTarget('trunk').suffix,'open_trunk');
  const originalNumber=card.number.bind(card);
  let fakeSoc=14;
@@ -1532,4 +1532,16 @@ test('Black Edition G6 uses a dark cabin and never borrows another exterior pain
  assert.equal(charging.view_status,'image_pending','Black Edition charging photo must remain visibly pending');
  assert.doesNotMatch(charging.src,/\/graphite_gray\//,'Black Edition charging must not borrow the gray charging photo');
  assert.match(src,/\.xp-scene\.xp-black-edition \.xp-ux-cabin-picture/);
+});
+
+test('owner screenshot regression: diagnostic names remain inspectable without wrapping',()=>{
+ const {card}=createCard();
+ card._hass.states['sensor.xpeng_g6_very_long_vehicle_diagnostics_entity']={state:'on',attributes:{}};
+ const html=card.xpSensorDiagnosticsPanel();
+ assert.match(html,/title="sensor\.xpeng_g6_very_long_vehicle_diagnostics_entity"/);
+ assert.match(html,/aria-label="sensor\.xpeng_g6_very_long_vehicle_diagnostics_entity"/);
+ assert.match(html,/tabindex="0"/);
+ assert.match(src,/\.xp-entity-diagnostic>span\{[\s\S]*?overflow-x:auto;overflow-y:hidden;text-overflow:clip/);
+ assert.match(src,/\.xp-ux-modal-maintenance \.xp-tire-stage\{[\s\S]*?isolation:isolate;overflow:clip!important/);
+ assert.match(src,/\.xp-ux-modal-climate \.xp-climate-target \.xp-ux-temp-line button\{[\s\S]*?min-width:26px/);
 });
