@@ -3535,7 +3535,7 @@ class XpengVehicleCard extends HTMLElement{
     // rear-three-quarter charging.webp with its real cable already pictured.
     // A user-configured charging_image (above) may still override this choice.
     // The overview continues to respect the editor's selected exterior paint.
-    const ownerCharging=a.model==='G6'&&String(a.year)==='2026'&&view==='rear';
+    const ownerCharging=a.model==='G6'&&String(a.year)==='2026'&&view==='rear'&&a.color!=='black_edition';
     const chargingAppearance=ownerCharging?{...a,color:'graphite_gray'}:a;
     const candidate=xpVehicleAssetPath(chargingAppearance,view==='rear'?'charging':'front');
     if(candidate&&XP_ARTWORK_INDEX.has(candidate)&&!this._failedArtwork.has(bundled(candidate))){
