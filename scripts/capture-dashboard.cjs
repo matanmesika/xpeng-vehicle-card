@@ -159,8 +159,26 @@ async function main(){
    if(!filename)return; // all existing behaviour assertions still run
    assert.ok(!created.has(filename),'Duplicate current gallery screenshot: '+filename);
    created.add(filename);
-   await car.screenshot({path:path.join(OUTPUT,filename),animations:'disabled'});
-   console.log('Actual card screenshot:',filename);
+   // Public-facing GitHub and HACS documentation screenshots must be in English,
+   // regardless of the Hebrew locale used for regression test assertions.
+   // This changes only the simulated card's screenshot locale, never the car
+   // assets, sensor values, genuine actions or the user's HA language settings.
+   await car.evaluate(el=>{
+     el._xpScreenshotPreviousHass=el.hass;
+     el.hass={...el.hass,locale:{...(el.hass.locale||{}),language:'en'}};
+   });
+   try {
+     await car.screenshot({path:path.join(OUTPUT,filename),animations:'disabled'});
+   } finally {
+     await car.evaluate(el=>{
+       if(el._xpScreenshotPreviousHass){
+         const previous=el._xpScreenshotPreviousHass;
+         delete el._xpScreenshotPreviousHass;
+         el.hass=previous;
+       }
+     });
+   }
+   console.log('Actual card screenshot in English:',filename);
  }
  await page.evaluate(()=>{
    const card=document.querySelector('xpeng-vehicle-card');
