@@ -447,7 +447,7 @@ async function main(){
      arrow:trunkArrow?.getAttribute('icon'),
      action:trunkButton?.getAttribute('aria-label'),
      arrowColor:trunkArrow?getComputedStyle(trunkArrow).color:null,
-     carRight:carRect?.right,arrowLeft:arrowRect?.left,
+     carLeft:carRect?.left,arrowRight:arrowRect?.right,
      carWidth:carRect?.width,arrowWidth:arrowRect?.width};
    return {hasGear:!!gear,hasWifi:!!wifi,
      cssGap:parseFloat(getComputedStyle(root.querySelector('.xp-meta-tools')).gap),
@@ -469,8 +469,8 @@ async function main(){
    'Trunk shortcut must show a real rear-tailgate capable SUV side profile');
  assert.ok(['mdi:arrow-up-bold','mdi:arrow-down-bold'].includes(desktopHeaderPolish.tailgate.arrow),
    'Rear hatch must have a genuine MDI lift or lower action icon');
- assert.ok(desktopHeaderPolish.tailgate.arrowLeft>=desktopHeaderPolish.tailgate.carRight-2,
-   'Rear-hatch arrow must not cover the SUV icon: '+JSON.stringify(desktopHeaderPolish.tailgate));
+ assert.ok(desktopHeaderPolish.tailgate.arrowRight<=desktopHeaderPolish.tailgate.carLeft+2,
+   'Rear hatch is the LEFT end of the right-facing SUV: arrow must stay beside its rear: '+JSON.stringify(desktopHeaderPolish.tailgate));
  assert.ok(desktopHeaderPolish.tailgate.arrowWidth<desktopHeaderPolish.tailgate.carWidth*.7,
    'Rear-hatch action indicator must be smaller than its main vehicle icon');
  assert.equal(desktopHeaderPolish.disabled,0,'All mock actions remain enabled');
