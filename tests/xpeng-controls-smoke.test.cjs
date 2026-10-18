@@ -472,20 +472,31 @@ test('G6 home controls default visible but still allow explicit hiding',()=>{
  card.setConfig({type:'custom:xpeng-vehicle-card',model:'G6',year:'2026',prefix:'xpeng_g6',show_controls:false});
  assert.equal(card.xpUiEnabled(),false);
 });
-test('G6 charging preserves metrics layout and uses rear-looking graphite-gray artwork',()=>{
+test('G6 charging keeps original photo, all seven Home controls and three scoped charging actions',()=>{
  const {card}=createCard({show_controls:undefined});
  card._view='charging';
  assert.match(card.assetSpec().src,/\/g6\/2026\/graphite_gray\/charging\.webp$/);
  card.render();
  const h=card.shadowRoot.innerHTML;
+ const dock=(h.match(/class="xp-ux-dock-action"/g)||[]).length;
+ assert.equal(dock,7,'Charging must have the full Home dock');
+ assert.match(h,/xp-charge-navigation/);
  assert.match(h,/data-xp-open="charge_controls"/);
  assert.match(h,/data-xp-open="charge_schedule"/);
+ assert.match(h,/data-xp-command="stop_charge"/);
  assert.doesNotMatch(h,/class="xp-ux-charge-actions"/);
- assert.doesNotMatch(h,/class="xp-ux-dock /);
- assert.doesNotMatch(h,/class="xp-more-trigger"/);
+ assert.doesNotMatch(h,/data-xp-home/,'Charging scene is always sensor-driven, not a manual page');
+ assert.doesNotMatch(h,/data-xp-open="charging"/);
  card._xpPanel='charge_controls';
- assert.match(card.xpModal(),/data-xp-command="stop_charge"/);
- assert.match(card.xpModal(),/data-xp-toggle="port"/);
+ const modal=card.xpModal();
+ assert.match(modal,/xp-charge-compact-modal/);
+ assert.match(modal,/data-xp-range="charge_limit_control"/);
+ assert.doesNotMatch(modal,/data-xp-command="stop_charge"|data-xp-toggle="port"/,
+   'Charge Limit overlay must contain only the supported HA number setting');
+ card._xpPanel='charge_schedule';
+ const schedule=card.xpModal();
+ assert.match(schedule,/xp-charge-compact-modal/);
+ assert.match(schedule,/קריאה בלבד/,'Schedule is Xpengtk read-only');
 });
 
 test('all G6 generations use the same owner-photo slots',()=>{
@@ -608,7 +619,7 @@ test('rear heating controls render on the cabin only when matching G6 integratio
  assert.doesNotMatch(both,/data-xp-cycle="left_rear_seat_ventilation_select"/);
 });
 
-test('one navigation bar on Home, single Back and no dock on all subpages',()=>{
+test('identical one-dock actions on both automatic Home/Charging; subpages are overlays',()=>{
  const {card}=createCard({enable_access_controls:true});
  card._hass.states['binary_sensor.is_charging'].state='off';
  const h=card.shadowRoot;
@@ -623,12 +634,28 @@ test('one navigation bar on Home, single Back and no dock on all subpages',()=>{
    assert.doesNotMatch(h.innerHTML,/data-xp-home/);
  }
  card._xpPanel=null;card._hass.states['binary_sensor.is_charging'].state='on';card.render();
- assert.match(h.innerHTML,/data-xp-home/);
- assert.doesNotMatch(h.innerHTML,/class="xp-ux-dock-action"/);
- card._xpPanel='charge_schedule';card.render();
- assert.match(h.innerHTML,/data-xp-close/);
+ assert.equal((h.innerHTML.match(/class="xp-ux-dock-action"/g)||[]).length,7,
+   'Charging includes identical 7 actions');
+ assert.match(h.innerHTML,/xp-charge-navigation/);
  assert.doesNotMatch(h.innerHTML,/data-xp-home/);
- assert.doesNotMatch(h.innerHTML,/class="xp-ux-dock-action"/);
+ for(const page of ['charge_controls','charge_schedule','climate','maintenance','map']){
+   card._xpPanel=page;card.render();
+   assert.match(h.innerHTML,new RegExp('xp-ux-modal-'+page));
+   assert.match(h.innerHTML,/data-xp-close/);
+   assert.doesNotMatch(h.innerHTML,/class="xp-ux-dock-action"/);
+   assert.doesNotMatch(h.innerHTML,/data-xp-home/);
+ }
+ card._xpPanel=null;card.render();
+ assert.equal((h.innerHTML.match(/class="xp-ux-dock-action"/g)||[]).length,7);
+});
+test('unavailable stop-charge command stays visible but disabled; no invented API call',()=>{
+ const {card}=createCard();
+ delete card._hass.states['button.stop_vehicle_charging'];
+ card.render();
+ const h=card.shadowRoot.innerHTML;
+ assert.match(h,/data-xp-command="stop_charge" disabled/);
+ assert.match(h,/data-xp-open="charge_controls"/);
+ assert.match(h,/data-xp-open="charge_schedule"/);
 });
 test('only sensor state triggers charging; confirmed charge renders green cable',()=>{
  const {card}=createCard();
