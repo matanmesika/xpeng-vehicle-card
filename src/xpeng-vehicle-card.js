@@ -140,10 +140,10 @@ const XP_ICONS = Object.freeze({
  lock:'mdi:lock',
  unlock:'mdi:lock-open-variant',
  car:'mdi:car',
- windows:'mdi:window-closed',
- windows_open:'mdi:window-open',
- trunk:'mdi:car-back',
- trunk_open:'mdi:car-back',
+ windows:'mdi:window-open',
+ windows_open:'mdi:window-open-variant',
+ trunk:'mdi:car-hatchback',
+ trunk_open:'mdi:car-hatchback',
  horn:'mdi:bullhorn',
  flash:'mdi:car-light-high',
  auto:'mdi:autorenew',
@@ -1795,6 +1795,39 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-charge-navigation .xp-station{right:2%;bottom:30%}
 }
 
+
+/* Live HA interaction fixes: one scroll owner per modal, no touch-scroll chains
+ * or nested diagnostics scrollers that trap iPhone swipes. */
+.xp-ux-modal.xp-ux-modal-extras .xp-diagnostics-scroll{
+ max-height:none!important;height:auto!important;overflow:visible!important;
+ overscroll-behavior:auto;display:grid;gap:5px;touch-action:auto;
+}
+.xp-ux-modal .xp-extra-body,.xp-ux-modal .xp-extra-details,.xp-ux-modal .xp-entity-diagnostics{
+ min-height:0;overflow:visible;
+}
+.xp-ux-modal{
+ overflow-y:auto;-webkit-overflow-scrolling:touch;
+ touch-action:pan-y;overscroll-behavior-y:contain;
+}
+.xp-ux-modal-extras .xp-extra-body{width:min(900px,100%);}
+.xp-ux-modal-map .xp-ux-map-stage{
+ position:relative;isolation:isolate;overflow:hidden;
+}
+.xp-header .xp-wifi{
+ display:flex;align-items:center;justify-content:center;
+ padding:0;line-height:1;vertical-align:middle;
+}
+.xp-header .xp-wifi .xp-mdi-icon{
+ display:flex;align-items:center;justify-content:center;
+ width:24px;height:24px;--xp-icon-size:24px;--mdc-icon-size:24px;
+ margin:0;transform:translateY(-2px);
+}
+@container xpeng-layout (max-width:850px){
+ .xp-header .xp-wifi .xp-mdi-icon{
+  width:22px;height:22px;--xp-icon-size:22px;--mdc-icon-size:22px;transform:none;
+ }
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -1804,7 +1837,7 @@ function xpSensorMappingMode(cfg,profile){
 }
 class XpengVehicleCard extends HTMLElement{
  constructor(){
-  super();this.attachShadow({mode:'open'});this._config={};this._hass=null;this._view='overview';this._expanded=false;this._vehicleIndex=0;this._infoOpen=false;this._tireOpen=false;this._failedArtwork=new Set();this._xpNavStack=[];
+  super();this.attachShadow({mode:'open'});this._config={};this._hass=null;this._view='overview';this._expanded=false;this._vehicleIndex=0;this._infoOpen=false;this._tireOpen=false;this._failedArtwork=new Set();this._xpNavStack=[];this._xpMapElement=null;this._xpMapEntityId=null;
   this.shadowRoot.addEventListener('error',ev=>{
       const img=ev.target;
       if(!img?.matches?.('img[data-car-art],img[data-top-art],img[data-cabin-art]'))return;
@@ -1910,7 +1943,8 @@ class XpengVehicleCard extends HTMLElement{
      }
      if(b.hasAttribute('data-xp-extra-page')){
        const page=b.dataset.xpExtraPage;
-       if(['security','energy','schedule','power','maintenance','updates','diagnostics'].includes(page)){
+       if(page==='maintenance'){this.xpNavigatePanel('maintenance');return;}
+       if(['security','energy','schedule','power','updates','diagnostics'].includes(page)){
          this.xpNavigatePanel('extras',page);
        }
        return;
@@ -1955,7 +1989,7 @@ class XpengVehicleCard extends HTMLElement{
      }
      if(b.hasAttribute('data-meta-toggle')){this._infoOpen=!this._infoOpen;this.render();return;}
      if(b.hasAttribute('data-tire-toggle')){this._tireOpen=!this._tireOpen;this._infoOpen=false;this.render();return;}
-    if(b.hasAttribute('data-cycle')){this._vehicleIndex=(this._vehicleIndex+1)%this.vehicles().length;this._tireOpen=false;this._xpPanel=null;this._xpExtraSection=null;this._xpNavStack=[];this._xpengRegistryLoaded=false;this._xpengByKey=null;this.ensureXpengRegistry();this.render();}
+    if(b.hasAttribute('data-cycle')){this._vehicleIndex=(this._vehicleIndex+1)%this.vehicles().length;this._tireOpen=false;this._xpPanel=null;this._xpExtraSection=null;this._xpNavStack=[];this._xpengRegistryLoaded=false;this._xpengByKey=null;this._xpMapElement=null;this._xpMapEntityId=null;this.ensureXpengRegistry();this.render();}
   });
    this.shadowRoot.addEventListener('input',ev=>{
      const slider=ev.target.closest('input[data-xp-range]');
@@ -2467,13 +2501,20 @@ class XpengVehicleCard extends HTMLElement{
    const gps=this.xpLive('device_tracker','location');
    if(!host||!gps)return;
    try{
-     // Use the Home Assistant native map card, not a hardcoded coordinate or third-party tile URL.
+     // Retain the actual HA map card instance and tiles across sensor updates.
+     // Recreating Leaflet with innerHTML on each HA hass tick causes flashing.
+     if(this._xpMapElement&&this._xpMapEntityId===gps.id){
+       this._xpMapElement.hass=this._hass;
+       if(!host.contains?.(this._xpMapElement))host.replaceChildren(this._xpMapElement);
+       return;
+     }
      const helper=typeof window.loadCardHelpers==='function'?await window.loadCardHelpers():null;
      if(!helper){host.textContent='המפה המובנית אינה זמינה בכרטיס זה כרגע.';return;}
      if(this._xpPanel!=='map'||!this.shadowRoot?.contains?.(host))return;
      const map=helper.createCardElement({type:'map',entities:[{entity:gps.id}],
        default_zoom:11,hours_to_show:0,dark_mode:true});
      map.hass=this._hass;
+     this._xpMapElement=map;this._xpMapEntityId=gps.id;
      host.replaceChildren(map);
    }catch(err){
      host.textContent='המפה אינה זמינה בתוך הכרטיס כרגע.';
@@ -2521,7 +2562,7 @@ class XpengVehicleCard extends HTMLElement{
      line('ק״מ שנותרו לטיפול',maint?.state?.attributes?.km_remaining??'—'),
      line('מספר שלדה (מוסתר)',masked),
      line('דגם',attrs.vehicle_type_name||attrs.model_family||this.model()),
-     line('שנת דגם',attrs.model_year||this.year()),
+     line(attrs.model_year?'שנת דגם (מהאינטגרציה)':'שנת דגם (מהגדרות הכרטיס)',attrs.model_year||this.year()),
      line('יצרן',attrs.manufacturer||'XPENG'),
      line('גרסת XOS',this.xpLive('sensor','xos_version')?.state?.state||'—')
    ].join('');
@@ -2866,6 +2907,8 @@ class XpengVehicleCard extends HTMLElement{
   this._config=next;this._infoOpen=false;this._tireOpen=false;this._xpManualCharging=false;this._xpChargingDismissed=false;this._xpLastActualCharging=false;this.render();
  }
  set hass(hass){
+  const oldCharging=this.xpChargingActive();
+  const oldMapGps=this._xpPanel==='map'?this.xpLive('device_tracker','location')?.id:null;
   this._hass=hass;
   if(!this._xpengRegistryLoaded)this.ensureXpengRegistry();
   const actualCharging=this.xpChargingActive();
@@ -2883,6 +2926,17 @@ class XpengVehicleCard extends HTMLElement{
   }
   this._xpLastActualCharging=actualCharging;
   if(actualCharging&&!this._xpChargingDismissed)this._tireOpen=false;
+  if(this._xpPanel==='map'&&actualCharging===oldCharging&&
+     oldMapGps===this.xpLive('device_tracker','location')?.id&&
+     this.shadowRoot?.querySelector?.('[data-xp-map-host]')){
+    // The map's viewport must not be destroyed by frequent HA sensor ticks.
+    if(this._xpMapElement)this._xpMapElement.hass=hass;
+    for(const [suffix,action] of [['honk_horn','honk_horn'],['flash_lights','flash_lights']]){
+      const button=this.shadowRoot.querySelector('[data-xp-map-action="'+action+'"]');
+      if(button)button.disabled=!this.xpLive('button',suffix);
+    }
+    return;
+  }
   this.render();
  }
  get hass(){return this._hass;}
@@ -3168,10 +3222,20 @@ class XpengVehicleCard extends HTMLElement{
   const onChargeHome=isCharging&&!this._xpPanel;
   const chargeLayout=isCharging&&this.xpUiEnabled();
   const showDock=this.xpUiEnabled()&&(onHome||onChargeHome);
+  const oldModal=this.shadowRoot.querySelector?.('.xp-ux-modal');
+  const oldPanel=oldModal?.className||'';
+  const oldScroll=oldModal?.scrollTop||0;
+  const oldDiagnostics=oldModal?.querySelector?.('.xp-diagnostics-scroll')?.scrollTop||0;
   this.shadowRoot.innerHTML=`<style>${XP_CSS}</style><ha-card><div class="xp-scene ${isCharging?'xp-charge':this._tireOpen?'xp-overview xp-tire-mode':'xp-overview'} ${this.xpUiEnabled()?'xp-has-controls':''} ${onHome&&this.xpUiEnabled()?'xp-home-navigation':''} ${chargeLayout?'xp-charge-navigation':''}">
    ${this.sceneBackdrop()}${this.header()}${isCharging?this.charging():this._tireOpen?this.title()+this.tireScreen():this.overview()}${showDock?this.xpDock():""}${this.xpModal()}
    
    </div></ha-card>`;
+  const newModal=this.shadowRoot.querySelector?.('.xp-ux-modal');
+  if(newModal&&oldPanel===newModal.className){
+    newModal.scrollTop=oldScroll;
+    const diagnostics=newModal.querySelector('.xp-diagnostics-scroll');
+    if(diagnostics)diagnostics.scrollTop=oldDiagnostics;
+  }
   if(this._xpPanel==='map')this.xpMountMap();
  }
 }
