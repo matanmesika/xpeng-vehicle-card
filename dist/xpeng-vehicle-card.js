@@ -2503,6 +2503,24 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-help-spec{font-size:11px}
 }
 
+/* New readable in-page guides require scrolling, not shrinking original car
+   photos or button hit targets. Map/diagnostics keep their own scroll model. */
+.xp-scene .xp-ux-modal:has(.xp-help-intro):not(.xp-ux-modal-map):not(:has(.xp-extra-diagnostics-layout)){
+ overflow-y:auto!important;overflow-x:hidden!important;
+ overscroll-behavior:contain;touch-action:pan-y
+}
+.xp-ux-modal:has(.xp-help-intro):not(.xp-ux-modal-map):not(:has(.xp-extra-diagnostics-layout))>.xp-ux-modal-content{
+ flex:0 0 auto!important;min-height:auto!important;overflow:visible!important
+}
+.xp-ux-modal:has(.xp-help-intro):not(.xp-ux-modal-map):not(:has(.xp-extra-diagnostics-layout)) .xp-ux-modal-content-inner{
+ flex:0 0 auto!important;height:auto!important;min-height:0!important
+}
+@container xpeng-layout (max-width:600px){
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{
+  width:clamp(178px,53cqw,204px)!important;flex-shrink:0!important
+ }
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -3212,6 +3230,12 @@ class XpengVehicleCard extends HTMLElement{
    // Map and diagnostic list already fill via flex. Never resize their internals.
    if(this._xpPanel==='map'||(this._xpPanel==='extras'&&this._xpExtraSection==='diagnostics')){
      inner.style.zoom='';inner.style.width='';return;
+   }
+   // An in-page explanation must never force the physical cabin photo or
+   // control buttons to shrink. These panels scroll at their own modal surface.
+   if(this._xpPanel&&!(this._xpPanel==='extras'&&this._xpExtraSection==='diagnostics')){
+     inner.style.zoom='';inner.style.width='100%';inner.dataset.xpFitScale='1';
+     return;
    }
    inner.style.zoom='1';inner.style.width='100%';
    const available=area.clientHeight,needed=inner.scrollHeight;
