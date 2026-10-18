@@ -708,8 +708,14 @@ async function main(){
        return {start,position:el.scrollTop,clientHeight,scrollHeight,
          visible:!!end&&end.top<area.bottom&&end.bottom>area.top};
      },action);
-     assert.equal(scroll.position,0,action+' must not scroll the dashboard overlay: '+JSON.stringify(scroll));
-     assert.equal(scroll.visible,true,action+' final control must remain visible without scrolling: '+JSON.stringify(scroll));
+     // Contextual in-page explanations intentionally add vertical content.
+     // The modal must be scrollable, instead of shrinking the cabin and touch
+     // hotspots to unreadable sizes. Confirm the final control is reachable.
+     assert.ok(scroll.scrollHeight<=scroll.clientHeight+2||scroll.position>0,
+       action+' page must scroll when content exceeds the card: '+JSON.stringify(scroll));
+     assert.equal(scroll.visible,true,
+       action+' final control must be reachable after scrolling: '+JSON.stringify(scroll));
+     await car.locator('.xp-ux-modal-'+action).evaluate(el=>{el.scrollTop=0;});
      await reviewShot(action+'-fitted-mobile');
    }
 
