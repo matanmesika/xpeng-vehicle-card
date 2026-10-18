@@ -1527,5 +1527,9 @@ test('Black Edition G6 uses a dark cabin and never borrows another exterior pain
  const asset=card.assetSpec();
  assert.equal(asset.view_status,'image_pending','Unapproved Black Edition artwork must be reported missing');
  assert.doesNotMatch(asset.src,/\/graphite_gray\//,'Black Edition must never borrow Graphite Gray artwork');
+ card._view='charging';
+ const charging=card.assetSpec();
+ assert.equal(charging.view_status,'image_pending','Black Edition charging photo must remain visibly pending');
+ assert.doesNotMatch(charging.src,/\/graphite_gray\//,'Black Edition charging must not borrow the gray charging photo');
  assert.match(src,/\.xp-scene\.xp-black-edition \.xp-ux-cabin-picture/);
 });
