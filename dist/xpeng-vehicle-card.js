@@ -1233,6 +1233,150 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{transition:none}
 }
 
+
+/* Shared XPENG glass design language for real pages and action buttons.
+ * Doors/windows/trunk/port remain one-tap Home dock actions, not navigation.
+ * All of these rules are presentation-only: no backend command changes.
+ */
+.xp-ux-modal{
+ border:1px solid var(--xp-stroke)!important;
+ border-radius:clamp(18px,2.2cqw,28px);
+ background:linear-gradient(155deg,#081e35f5,#041326f7 65%,#0b2640f4)!important;
+ box-shadow:0 30px 55px #000b,inset 0 1px 0 #dff7ff24,0 0 21px #268ae72a;
+ backdrop-filter:blur(20px) saturate(1.17);
+ -webkit-backdrop-filter:blur(20px) saturate(1.17);
+}
+.xp-ux-modal-head{
+ border-bottom:1px solid #79b9ee46;
+ margin-bottom:14px;
+}
+.xp-ux-modal-head h2{
+ color:#f3faff;letter-spacing:.01em;
+ font-size:clamp(20px,2.25cqw,31px);
+ font-weight:770;text-shadow:0 2px 14px #001020a9;
+}
+.xp-ux-modal-head button,.xp-page-back,
+.xp-ux-map-actions button,.xp-charge-shortcuts button{
+ border:1px solid #69b8ef9b;
+ border-radius:15px;
+ background:linear-gradient(150deg,#163d5dcc,#091b31ed);
+ box-shadow:inset 0 1px 0 #dbf4ff31,0 5px 13px #00102266;
+ color:#eaf8ff;
+}
+.xp-ux-modal-head button ha-icon,.xp-page-back ha-icon,
+.xp-ux-map-actions button ha-icon{color:#88d6ff}
+.xp-ux-modal-climate .xp-climate-layout,
+.xp-ux-modal-maintenance .xp-maintenance-page,
+.xp-ux-modal-map .xp-ux-map-panel,
+.xp-ux-modal-charge_controls .xp-ux-charging-panel,
+.xp-ux-modal-extras .xp-extra-body{color:#f4f9ff}
+.xp-ux-climate-card,.xp-ux-range-row,.xp-ux-seat,
+.xp-ux-climate-feature,.xp-extra-tile,.xp-extra-line,
+.xp-maint-info .xp-extra-line,.xp-ux-vehicle-state,.xp-ux-access-state,
+.xp-ux-port-state,.xp-ux-charge-limit{
+ border:1px solid #699bc48a;
+ background:linear-gradient(150deg,#193b5cbb,#081c33e8);
+ box-shadow:inset 0 1px 0 #d6efff20,0 8px 18px #0011256a;
+ border-radius:17px;
+}
+.xp-ux-temp-line b{font-weight:780;color:#f5fbff;text-shadow:0 0 16px #82c7ff26}
+.xp-ux-temp-line button,.xp-ux-seat-options button,
+.xp-ux-cycle,.xp-ux-port-action,.xp-ux-access-buttons button,
+.xp-ux-vehicle-buttons button{
+ border:1px solid #72addb9f;
+ background:linear-gradient(160deg,#1b4568,#0b253e);
+ box-shadow:inset 0 1px 0 #e6f7ff26,0 4px 11px #00122564;
+ color:#f0f9ff;border-radius:14px;
+}
+.xp-ux-temp-line button{border-radius:50%;width:46px;height:46px}
+.xp-ux-climate-feature{
+ border:1px solid #6bafd695;
+ background:linear-gradient(155deg,#173752ee,#0d2441e5);
+ min-height:88px;
+}
+.xp-ux-climate-feature ha-icon{
+ color:#79d8ff;
+ width:29px;height:29px;--mdc-icon-size:29px;--xp-icon-size:29px;
+ filter:drop-shadow(0 0 7px #27adff57);
+}
+.xp-ux-climate-feature.xp-ux-selected,
+.xp-ux-cycle-on,
+.xp-ux-seat-options button[aria-pressed="true"]{
+ border-color:#49ead2;
+ box-shadow:0 0 16px #1ec4ba50,inset 0 1px 0 #d1f9ff29;
+}
+.xp-ux-cycle-heat.xp-ux-cycle-on{
+ background:linear-gradient(145deg,#813044,#401c37);
+ border-color:#ff8888;
+ box-shadow:0 0 12px #ff5b5780;
+}
+.xp-ux-cycle-vent.xp-ux-cycle-on{
+ background:linear-gradient(145deg,#1f6da2,#0b355c);
+ border-color:#64d5ff;
+ box-shadow:0 0 12px #47aeff80;
+}
+.xp-ux-cycle ha-icon{
+ color:#e4f8ff;
+ width:19px;height:19px;--mdc-icon-size:19px;
+}
+.xp-ux-range-row input[type="range"],.xp-ux-modal input[type="range"]{
+ accent-color:#20e9c7;
+}
+.xp-charge-card{
+ border:1px solid #53a7e9a4!important;
+ border-radius:25px;
+ background:linear-gradient(145deg,#071d33ed,#061529e8)!important;
+ box-shadow:0 20px 48px #0009,inset 0 1px 0 #dcf8ff1d,0 0 18px #2a9ce52c;
+}
+.xp-charge-heading{color:#36f0c3}
+.xp-charge-heading ha-icon{
+ color:#24f5c7;filter:drop-shadow(0 0 7px #14e6a37c);
+}
+.xp-charge-card .xp-progress{border-radius:99px;box-shadow:inset 0 2px 6px #0008}
+.xp-charge-card .xp-progress>div{
+ background:linear-gradient(90deg,#11d78a,#35f5cf);
+ box-shadow:0 0 17px #08ffb06b;
+}
+.xp-charge-shortcuts button,.xp-charge-stop{
+ min-height:47px;
+ border:1px solid #3dc8d0b6;
+ background:linear-gradient(150deg,#10475cde,#092239ed);
+ border-radius:14px;color:#ddfcf5;
+}
+.xp-tire-reading{
+ border:1px solid #77acd399;
+ border-radius:16px;
+ background:linear-gradient(150deg,#173755e9,#081a2eea);
+ box-shadow:inset 0 1px 0 #c4eaff22,0 5px 17px #0013227a;
+}
+.xp-tire-reading strong{font-weight:770;color:#f4fbff;letter-spacing:-.02em}
+.xp-tire-reading span{color:#47ecc4;font-weight:620}
+.xp-ux-modal-maintenance .xp-tire-reading[data-wheel]{
+ outline:1px solid #23efb923;outline-offset:-5px;
+}
+.xp-ux-modal-maintenance .xp-tire-center{
+ filter:drop-shadow(0 12px 15px #0009);
+}
+.xp-ux-map-stage{
+ border-radius:20px;border:1px solid #6ba4d284;
+ box-shadow:0 12px 25px #0007;overflow:hidden;
+}
+.xp-ux-map-actions button ha-icon{color:#81d9ff}
+.xp-ux-modal button:disabled,.xp-ux-modal .xp-ux-climate-readonly{
+ opacity:.5;cursor:not-allowed;
+}
+@container xpeng-layout (max-width:520px){
+ .xp-ux-modal{padding:12px 12px 40px}
+ .xp-ux-modal-head{gap:10px;margin-bottom:10px}
+ .xp-ux-modal-head h2{font-size:21px}
+ .xp-ux-climate-feature ha-icon{width:23px;height:23px;--mdc-icon-size:23px;--xp-icon-size:23px}
+ .xp-ux-cycle ha-icon{width:17px;height:17px;--mdc-icon-size:17px}
+ .xp-tire-reading{border-radius:12px}
+}
+@media(prefers-reduced-motion:reduce){
+ .xp-ux-modal button{transition:none}
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
