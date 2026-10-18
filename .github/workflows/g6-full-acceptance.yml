@@ -6,6 +6,7 @@ on:
       - feat/g6-cabin-owner-photos-20261017
       - fix/g6-mobile-sensors-charging-20261017
       - chore/g6-readme-gallery-cleanup-20261018
+      - fix/g6-visual-live-feedback-20261018
   workflow_dispatch:
 
 permissions:
