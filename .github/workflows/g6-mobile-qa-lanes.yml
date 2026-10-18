@@ -1,0 +1,38 @@
+name: G6 independent mobile QA lanes
+on:
+  push:
+    branches:
+      - fix/g6-mobile-sensors-charging-20261017
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: g6-mobile-qa-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  qa-agent:
+    name: QA / ${{ matrix.lane }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [sensor-simulator, mobile-scroll-and-controls, mobile-location-map]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Assert shipped code and HACS distribution match
+        run: |
+          node --check src/xpeng-vehicle-card.js
+          cmp src/xpeng-vehicle-card.js dist/xpeng-vehicle-card.js
+      - name: Xpengtk live-like sensor simulator (no real car connection)
+        if: matrix.lane == 'sensor-simulator'
+        run: node --test tests/xpeng-simulation.test.cjs
+      - name: Mobile scroll, duplicate taps and lock jitter
+        if: matrix.lane == 'mobile-scroll-and-controls'
+        run: node --test --test-name-pattern="mobile|one-tap|tailgate|scroll|lock feedback|failed direct" tests/xpeng-controls-smoke.test.cjs
+      - name: Native location map, fallback and state reconciliation
+        if: matrix.lane == 'mobile-location-map'
+        run: node --test --test-name-pattern="map|Location|GPS|native map|finder" tests/xpeng-controls-smoke.test.cjs tests/xpeng-simulation.test.cjs
