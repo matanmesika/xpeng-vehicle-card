@@ -1600,6 +1600,104 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-ux-modal-climate .xp-cabin-action-label{font-size:8px}
 }
 
+
+/* Mobile object-level composition v3 (not merely a reduced viewport).
+ * Keep source art and vehicle actions unchanged; use card container units so
+ * narrow Home Assistant Sections get exactly the same scaling as an iPhone.
+ * Never scale the whole scene: photo hotspots and the charging cable need
+ * stable coordinate systems and physical buttons need usable touch targets.
+ */
+@container xpeng-layout (max-width:600px){
+ .xp-home-navigation .xp-title{top:clamp(76px,19cqw,89px)}
+ .xp-home-navigation .xp-title h1{font-size:clamp(26px,6.8cqw,33px)}
+ .xp-home-navigation .xp-subtitle{font-size:clamp(12px,3.2cqw,14px)}
+ .xp-home-navigation .xp-overview-stat{
+  left:5%;width:90%;top:clamp(154px,42cqw,180px);
+  padding:clamp(9px,2.6cqw,13px) clamp(12px,3.5cqw,16px);
+  border-radius:clamp(14px,4cqw,19px);
+ }
+ .xp-home-navigation .xp-batt-line{gap:9px}
+ .xp-home-navigation .xp-batt-glyph{height:clamp(35px,10cqw,42px);width:clamp(26px,7.7cqw,32px);padding:3px}
+ .xp-home-navigation .xp-soc{font-size:clamp(26px,7.3cqw,35px)}
+ .xp-home-navigation .xp-progress{height:7px;margin-top:7px}
+ .xp-home-navigation .xp-overview-range{margin-top:8px;padding-top:8px}
+ .xp-home-navigation .xp-range-num{font-size:clamp(18px,5.7cqw,24px)}
+ .xp-scene.xp-overview.xp-home-navigation .xp-car{
+  left:7%;width:86%;bottom:25%;max-height:28%;object-fit:contain;
+ }
+ .xp-home-navigation .xp-ux-dock-seven{
+  bottom:12px;width:94%;padding:6px;gap:5px;border-radius:17px;
+ }
+ .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{
+  min-height:52px;padding:5px 3px;gap:3px;border-radius:12px;
+ }
+ .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action ha-icon{
+  width:clamp(20px,5.7cqw,24px)!important;
+  height:clamp(20px,5.7cqw,24px)!important;
+  --xp-icon-size:clamp(20px,5.7cqw,24px)!important;
+  --mdc-icon-size:clamp(20px,5.7cqw,24px)!important;
+ }
+ .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action small{
+  font-size:clamp(9px,2.6cqw,10px);line-height:1.15;
+ }
+ /* Keep the original rear charging photo and its precisely drawn green cable:
+    compact the panel, rather than separately transforming the car/cable. */
+ .xp-charge-card{
+  top:clamp(176px,48cqw,196px);
+  padding:clamp(10px,2.8cqw,14px);border-radius:17px;
+ }
+ .xp-charge-heading{font-size:clamp(17px,4.9cqw,21px);margin-bottom:8px;gap:7px}
+ .xp-charge-heading ha-icon{--mdc-icon-size:22px}
+ .xp-charge-main{margin-top:9px;gap:8px}
+ .xp-charge-main .xp-soc{font-size:clamp(29px,8.4cqw,39px)}
+ .xp-charge-meta{margin-top:9px;padding-top:9px}
+ .xp-charge-meta>div>ha-icon{--mdc-icon-size:16px}
+ .xp-charge-panel-actions{margin-top:8px;gap:5px}
+ .xp-charge-panel-actions button{min-height:49px;font-size:10px;padding:5px 3px;gap:3px}
+ .xp-charge-panel-actions button ha-icon{--mdc-icon-size:18px}
+ /* Subpages remain scrollable, but the content itself is now proportioned. */
+ .xp-ux-modal{padding:clamp(8px,2.4cqw,12px) clamp(8px,2.5cqw,12px) 32px}
+ .xp-ux-modal-head{padding-bottom:6px;margin-bottom:8px}
+ .xp-ux-modal-head h2{font-size:clamp(18px,5cqw,21px)}
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{
+  width:clamp(240px,70cqw,278px);max-width:100%;margin:0 auto;
+ }
+ .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-hotspot-zone{gap:2px}
+ .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-cycle{
+  width:clamp(36px,10cqw,40px);min-width:0;
+  height:clamp(46px,12.3cqw,52px);min-height:0;
+  padding:3px 2px;gap:2px;border-radius:11px;
+ }
+ .xp-ux-modal-climate .xp-ux-cycle ha-icon{
+  width:18px;height:18px;--xp-icon-size:18px;--mdc-icon-size:18px;
+ }
+ .xp-ux-modal-climate .xp-cabin-action-label{font-size:8px}
+ .xp-climate-primary{min-height:65px;padding:8px 5px;gap:4px}
+ .xp-climate-primary ha-icon{--mdc-icon-size:23px}
+ .xp-climate-primary small{font-size:10px}
+ .xp-climate-temp-panel,.xp-climate-fan-panel{padding:9px 11px}
+ .xp-fan-bars{height:23px}
+ .xp-ux-modal-maintenance .xp-tire-stage{height:clamp(260px,73cqw,315px)}
+ .xp-ux-modal-maintenance .xp-tire-reading{
+  width:28%;min-height:46px;padding:4px;gap:3px;
+ }
+ .xp-ux-modal-maintenance .xp-tire-reading strong{font-size:clamp(13px,3.7cqw,17px)}
+ .xp-ux-modal-maintenance .xp-tire-reading small{font-size:clamp(8px,2.2cqw,10px)}
+ .xp-ux-modal-maintenance .xp-tire-reading ha-icon{
+  width:14px;height:14px;--mdc-icon-size:14px;
+ }
+ .xp-ux-modal-map .xp-ux-map-stage{min-height:230px}
+}
+@container xpeng-layout (max-width:360px){
+ .xp-scene.xp-overview.xp-home-navigation .xp-car{left:8%;width:84%;max-height:26%}
+ .xp-home-navigation .xp-ux-dock-seven{gap:4px;padding:5px}
+ .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{min-height:49px}
+ .xp-charge-card{top:174px}
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{
+  width:min(240px,76cqw);
+ }
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
