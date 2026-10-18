@@ -10,14 +10,15 @@ All images below were captured by Chromium while running the actual card JavaScr
 
 | Page | Desktop | Phone |
 | --- | --- | --- |
-| **Home: seven shortcuts (charging is automatic)** | ![G6 desktop dashboard](docs/screenshots/g6-2026-controls-desktop.png) | ![G6 mobile dashboard](docs/screenshots/g6-2026-controls-mobile.png) |
-| **Charging** | ![G6 charging desktop](docs/screenshots/g6-2026-charging.png) | ![G6 charging phone](docs/screenshots/g6-2026-mobile-charging.png) |
-| **Climate, light cabin** | ![Light cabin desktop](docs/screenshots/g6-2026-climate-desktop.png) | ![Light cabin phone](docs/screenshots/g6-2026-climate-mobile.png) |
-| **Climate, dark cabin** | ![Dark cabin desktop](docs/screenshots/g6-2026-climate-dark-desktop.png) | ![Dark cabin phone](docs/screenshots/g6-2026-climate-dark-mobile.png) |
-| **Location, horn and flash** | ![Location desktop (test map placeholder)](docs/screenshots/g6-2026-location-desktop.png) | ![Location phone (test map placeholder)](docs/screenshots/g6-2026-location-mobile.png) |
-| **Maintenance and tires** | ![Maintenance desktop](docs/screenshots/g6-2026-maintenance-desktop.png) | ![Maintenance phone](docs/screenshots/g6-2026-maintenance-mobile.png) |
+| **Home (four direct vehicle actions + three page shortcuts)** | ![G6 dashboard desktop](docs/screenshots/home-desktop.png) | ![G6 dashboard mobile](docs/screenshots/home-mobile.png) |
+| **Charging (automatic)** | ![G6 charging desktop](docs/screenshots/charging-desktop.png) | ![G6 charging mobile](docs/screenshots/charging-mobile.png) |
+| **Climate & seat controls** | ![Climate desktop](docs/screenshots/climate-desktop.png) | ![Climate mobile](docs/screenshots/climate-mobile.png) |
+| **Maintenance & wheel-adjacent TPMS** | ![Maintenance desktop](docs/screenshots/maintenance-desktop.png) | ![Maintenance mobile](docs/screenshots/maintenance-mobile.png) |
+| **Location, horn & flash** | ![Map desktop (test placeholder)](docs/screenshots/map-desktop.png) | ![Map mobile (test placeholder)](docs/screenshots/map-mobile.png) |
 
-Additional screenshots: [action labels when open](docs/screenshots/g6-2026-home-close-actions-desktop.png), [tailgate on phone](docs/screenshots/g6-2026-trunk-mobile.png), [charge limit](docs/screenshots/g6-2026-charging-actions-mobile.png), and [schedule](docs/screenshots/g6-2026-charge-schedule-mobile.png).
+Additional real browser captures: [charging controls](docs/screenshots/charge-controls-mobile.png) · [Xpengtk sensor diagnostics](docs/screenshots/diagnostics-mobile.png).
+
+**[Open the single curated screenshot gallery](docs/screenshots/README.md).** It contains only 12 current captures; direct buttons (locks, windows, trunk, charge port) do not have fictitious page screenshots.
 
 ## Install and update
 
@@ -74,13 +75,7 @@ The real installation must still confirm the native HA map loads tiles and GPS, 
 The same card retains the complete model-year/paint catalogue. Original non-G6 artwork policy and source tracking:
 [Artwork status](docs/ARTWORK_STATUS.md) · [G6 generations](docs/G6_GENERATIONS.md) · [Artwork map](docs/ARTWORK_MAPPING.md) · [Release history](docs/CHANGELOG.md).
 
-## Legacy captures and Sensor mapping
-
-The v1.0.2 gallery remains available for comparison; these files are intentionally preserved alongside the newer G6 screenshots:
-
-| Vehicle status v1.0.2 | Charging v1.0.2 | Maintenance v1.0.2 |
-| --- | --- | --- |
-| ![Original vehicle status](docs/screenshots/g6-2026-vehicle-status.png) | ![Original charge](docs/screenshots/g6-2026-charging.png) | ![Original maintenance](docs/screenshots/g6-2026-maintenance-desktop.png) |
+## Sensor mapping
 
 **Sensor mapping:** the card automatically resolves available Xpengtk entities by the configured prefix. For legacy setups you can keep manual entity mapping in existing YAML; never invent live readings when a sensor is missing. Update the prefix to match your G6 entities. Opening/unlocking operations require explicit Access opt-in.
 
