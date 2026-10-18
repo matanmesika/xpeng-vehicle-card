@@ -316,19 +316,27 @@ test('P7i keeps exact-year colour selection for the 2024-only paints',()=>{
  assert.equal(editor._cfg.color,'arctic_white');
 });
 
-test('the README dashboard gallery ships overview, original charging and maintenance captures',()=>{
- const gallery=fs.readFileSync(path.join(ROOT,'README.md'),'utf8');
- const files=['vehicle-status','charging','maintenance-desktop'].map(view=>'g6-2026-'+view+'.png');
- const sizes=[];
- for(const f of files){
-  const relative='docs/screenshots/'+f;
-  assert.ok(gallery.includes(']('+relative+')'),'gallery link missing: '+relative);
+test('root README links to the same curated twelve screenshot gallery as actual Playwright',()=>{
+ const readme=fs.readFileSync(path.join(ROOT,'README.md'),'utf8');
+ const gallery=fs.readFileSync(path.join(ROOT,'docs/screenshots/README.md'),'utf8');
+ const names=[
+  'home-desktop','home-mobile','charging-desktop','charging-mobile',
+  'climate-desktop','climate-mobile','maintenance-desktop','maintenance-mobile',
+  'map-desktop','map-mobile','charge-controls-mobile','diagnostics-mobile'
+ ];
+ const imgs=fs.readdirSync(path.join(ROOT,'docs/screenshots')).filter(x=>/\.(png|jpe?g|webp)$/i.test(x));
+ assert.deepEqual(imgs.sort(),names.map(x=>x+'.png').sort(),'Only the twelve current screenshots should exist');
+ for(const name of names){
+  const relative='docs/screenshots/'+name+'.png';
+  assert.ok(readme.includes(']('+relative+')'),'root README link missing: '+relative);
+  assert.ok(gallery.includes(']('+name+'.png)'),'gallery index link missing: '+name);
   const raw=fs.readFileSync(path.join(ROOT,relative));
-  assert.equal(raw.subarray(0,8).toString('hex'),'89504e470d0a1a0a',f);
-  assert.ok(raw.readUInt32BE(16)>=1100&&raw.readUInt32BE(20)>=620,f);
-  assert.ok(raw.length>80000,f);
-  sizes.push(raw.length);
+  assert.equal(raw.subarray(0,8).toString('hex'),'89504e470d0a1a0a',name);
+  const w=raw.readUInt32BE(16),h=raw.readUInt32BE(20);
+  if(name.endsWith('-desktop'))assert.ok(w>=1100&&h>=620,name);
+  else assert.ok(w>=300&&w<=500&&h>=700,name);
+  assert.ok(raw.length>10000,name);
  }
- assert.equal(new Set(sizes).size,3,'views must be independent captures');
  assert.ok(fs.existsSync(path.join(ROOT,'scripts/capture-dashboard.cjs')),'capture script missing');
+ assert.doesNotMatch(readme,/docs\/screenshots\/g6-2026-/,'README contains deleted screenshot links');
 });
