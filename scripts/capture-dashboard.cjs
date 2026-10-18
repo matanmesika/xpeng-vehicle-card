@@ -528,6 +528,15 @@ async function main(){
      assert.ok(c.controls.length>=5&&c.controls.every(x=>x.width>=35&&x.width<=42),
        'Heating/ventilation controls must scale along with seat photo: '+JSON.stringify(c));
      console.log('Verified scaled cabin photo with seat/steering hotspots:',JSON.stringify({photoWidth:c.photo.width,buttons:c.controls.length}));
+     const passenger=await car.evaluate(el=>{
+       const root=el.shadowRoot,group=root.querySelector('.xp-ux-modal-climate .xp-ux-passenger');
+       const heat=group?.querySelector('button[data-xp-cycle="passenger_seat_heat_select"]')?.getBoundingClientRect();
+       const vent=group?.querySelector('button[data-xp-cycle="passenger_seat_ventilation_select"]')?.getBoundingClientRect();
+       return {heat:heat?.toJSON(),vent:vent?.toJSON()};
+     });
+     assert.ok(passenger.heat&&passenger.vent&&
+       (passenger.heat.right<=passenger.vent.left+1||passenger.vent.right<=passenger.heat.left+1),
+       'Passenger heat/vent controls must NOT overlap on the resized cabin photo: '+JSON.stringify(passenger));
    }
    if(action==='maintenance'){
      const tyre=await car.evaluate(el=>{
