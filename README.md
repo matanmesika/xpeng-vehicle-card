@@ -2,7 +2,7 @@
 
 A responsive, bilingual Lovelace card for XPENG vehicles, built for the native **Home Assistant Sections dashboard**, desktop browsers and iPhone. One card adapts automatically to the available width, with the original night-lakeside dashboard, original vehicle artwork and live Home Assistant/Xpengtk sensors.
 
-**Project status (18 October 2026):** the **G6 dashboard and Xpengtk entity/control mapping is implemented and tested with simulated telemetry**. The current prerelease is **[v1.0.4-beta.9](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.4-beta.9)**; the stable HACS release is still **[v1.0.3](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.3)**. This branch contains additional release-readiness documentation and a climate-photo-caption cleanup not yet part of a tagged release. A full stable release is **not yet approved or merged**.
+**Project status (18 October 2026):** the **G6 dashboard and Xpengtk entity/control mapping is implemented and tested with simulated telemetry**. The current prerelease is **[v1.0.4-beta.9](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.4-beta.9)**; the stable HACS release is still **[v1.0.3](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.3)**. The current development branch also includes owner-reviewed fixes for the climate layout, maintenance, dynamic battery status, diagnostic rows, exact English **Open Trunk** label, and Black Edition cabin styling; they are not yet part of a tagged release. A full stable release is **not yet approved or merged**.
 
 [Install in HACS](https://my.home-assistant.io/redirect/hacs_repository/?owner=matanmesika&repository=xpeng-vehicle-card&category=plugin) · [מדריך בעברית](docs/G6_DASHBOARD_GUIDE_HE.md) · [Release readiness / מוכנות לשחרור](docs/G6_RELEASE_READINESS_HE.md) · [Screenshot gallery](docs/screenshots/README.md)
 
@@ -48,7 +48,7 @@ The card is **a frontend**, not the Xpengtk backend integration. It does not ins
 | Lock / נעילה | State-dependent lock/unlock with duplicate-command suppression |
 | Windows / חלונות | State-dependent open/close, official `mdi:car-door` icon |
 | Charge flap / שקע טעינה | State-dependent flap, refusing unsafe close with connected cable |
-| Tailgate / תא מטען | State-dependent open/close, official `mdi:car-back` icon |
+| Tailgate / תא מטען | State-dependent open/close, official `mdi:car-hatchback` icon; English **Open Trunk** label |
 | Maintenance / תחזוקה | Four wheel-positioned TPMS readings, odometer, identity/maintenance data |
 | Location / מיקום | Native Home Assistant GPS map, preloaded map helpers, horn and flash when available |
 
@@ -57,6 +57,12 @@ The same seven actions appear on the Home and charging scenes. The charging scen
 All modal screens fit **within the available card scene** in tested desktop and 320–420px-wide responsive layouts. **Only the compact sensor list within Entity diagnostics scrolls**, keeping the note and status summary visible. The Wi-Fi symbol is centered in its square, and the cog has deliberate spacing. `getGridOptions()` follows the HA Sections card sizing API; there is no second mobile dashboard.
 
 The UI supports **Hebrew RTL** and **English LTR**, automatically following the Home Assistant user's language; controls and artwork are shared. Cabin color is an **editor setting only**, not a Climate-screen selector. In G6 Climate, the owner-provided light/dark interior photos have **no captions over the photo**; images retain screen-reader alt descriptions.
+
+## Owner screenshot fixes — in testing only
+
+The current development branch `fix/g6-visual-live-feedback-20261018` is under visual acceptance: a larger status-dependent official MDI battery icon, properly aligned maintenance tire geometry and details, narrow-screen climate controls without horizontal spill, transparent seat/wheel hotspots, centered one-row-per-entity diagnostics, English OTA “Update details,” and silence after routine successful commands. These fixes are backed by simulated browser QA and still require real Home Assistant/iPhone confirmation.
+
+**Black Edition:** the UI now selects the dark G6 cabin and an all-black appearance treatment. Approved dedicated Black Edition front/charging/overhead imagery has **not** been uploaded; the card must show an honest missing-image fallback rather than borrowing Graphite Gray charging artwork.
 
 ## G6 mapping finished; model artwork remains to be specified
 
