@@ -160,7 +160,7 @@ test('beta.7: desktop cog/communication separation, Wi-Fi alignment and uniform 
 });
 
 test('beta.9: HA Sections grid auto-height, map bounds, nested diagnostics scrolling and centered Wi-Fi',()=>{
- assert.match(source,/getGridOptions\(\)\{return \{columns:12,min_columns:12,rows:'auto'\}\}/);
+ assert.match(source,/getGridOptions\(\)\{return \{columns:12,min_columns:12,rows:'auto'\};\}/);
  assert.match(css,/\.xp-ux-modal-map \.xp-ux-map-panel\{[\s\S]*?grid-template-rows:minmax\(0,1fr\) auto/);
  assert.match(css,/\.xp-scene \.xp-ux-modal\{[\s\S]*?overflow:hidden!important/);
  assert.match(css,/\.xp-ux-modal-extras \.xp-extra-diagnostics-layout \.xp-diagnostics-scroll\{[\s\S]*?overflow-y:auto!important/);
