@@ -96,10 +96,13 @@ function demo(charging){
 }
 async function main(){
  fs.mkdirSync(OUTPUT,{recursive:true});
- // Only purge old QA images inside docs/screenshots, never the car art assets.
- for(const file of fs.readdirSync(OUTPUT)){
-   if(/\.(png|jpe?g|webp)$/i.test(file))fs.rmSync(path.join(OUTPUT,file));
- }
+ // Always purge stale QA captures before a new screenshot session.
+ // This directory contains test output ONLY; never touch assets/vehicles or owner artwork.
+ const oldCaptures=fs.readdirSync(OUTPUT).filter(file=>/\.(png|jpe?g|webp)$/i.test(file));
+ for(const file of oldCaptures)fs.rmSync(path.join(OUTPUT,file));
+ const leftovers=fs.readdirSync(OUTPUT).filter(file=>/\.(png|jpe?g|webp)$/i.test(file));
+ assert.deepEqual(leftovers,[],'Stale screenshots must be removed before Chromium capture');
+ console.log('Fresh XPENG visual QA: purged',oldCaptures.length,'old gallery image(s); preserving vehicle artwork.');
  const browser=await chromium.launch({headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
  const page=await browser.newPage({viewport:{width:1440,height:860},deviceScaleFactor:1});
  const errors=[];
