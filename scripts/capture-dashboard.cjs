@@ -412,8 +412,8 @@ async function main(){
  assert.equal(desktopHeaderPolish.hasWifi,true,'Desktop communication indicator must remain available');
  assert.equal(desktopHeaderPolish.cssGap,14,'Gear and Wi-Fi should have 14px desktop spacing');
  assert.ok(desktopHeaderPolish.actualGap>=13,'Rendered desktop header controls overlap: '+JSON.stringify(desktopHeaderPolish));
- assert.ok(desktopHeaderPolish.glyphOffset<=-3&&desktopHeaderPolish.glyphOffset>=-6,
-   'Desktop Wi-Fi glyph is not raised inside its original hit target: '+JSON.stringify(desktopHeaderPolish));
+ assert.ok(Math.abs(desktopHeaderPolish.glyphOffset)<=.75,
+   'Desktop Wi-Fi glyph must be geometrically centered in the button: '+JSON.stringify(desktopHeaderPolish));
  assert.deepEqual(desktopHeaderPolish.colors,['rgb(233, 244, 255)'],
    'Seven shortcut pictograms must share one neutral color');
  assert.equal(desktopHeaderPolish.iconCount,7);
@@ -803,7 +803,7 @@ async function main(){
  await car.locator('button[data-xp-open="climate"]').click();
  const tickResult=await car.evaluate(el=>{
    const modal=el.shadowRoot.querySelector('.xp-ux-modal-climate');
-   modal.scrollTop=Math.min(290,modal.scrollHeight-modal.clientHeight);
+   modal.scrollTop=0;
    const initial=modal.scrollTop;
    const initialParent=document.scrollingElement.scrollTop;
    window.__xpModalRef=modal;
@@ -819,10 +819,10 @@ async function main(){
       overflow:getComputedStyle(after).overflowY,touchAction:getComputedStyle(after).touchAction};
  });
  assert.equal(tickResult.sameNode,true,'Live telemetry must not replace scrolling DOM on iPhone: '+JSON.stringify(tickResult));
- assert.ok(tickResult.initial>20&&Math.abs(tickResult.after-tickResult.initial)<=2,
-    '100 real state transitions should preserve scroll: '+JSON.stringify(tickResult));
- assert.equal(tickResult.overflow,'auto','Nested modal must retain its native scroll owner');
- assert.match(tickResult.touchAction,/pan-y/,'Mobile modal must support vertical touch gestures');
+ assert.equal(tickResult.initial,0,'The revised fixed-height modal should start at its top');
+ assert.equal(tickResult.after,0,'Sensor changes may not scroll the dashboard overlay');
+ assert.equal(tickResult.overflow,'hidden','Dashboard modal must never become a second scroll container');
+ assert.equal(tickResult.touchAction,'manipulation','Only diagnostics list should own vertical touch scrolling');
  assert.ok(Math.abs(tickResult.parentDelta)<=2,'Outer HA page jumps while scrolling modal');
  await car.locator('button[data-xp-close]').click();
  const lockStress=await car.evaluate(el=>{
@@ -898,6 +898,76 @@ async function main(){
  assert.equal(localeBrowserQA.hebrewBack,'mdi:arrow-right','Hebrew RTL arrow must be preserved');
  assert.equal(localeBrowserQA.reused,true,'Native map helper preload must use same shared promise');
  console.log('PASS bilingual Home Assistant locale and native map warm-up:',JSON.stringify(localeBrowserQA));
+
+ // Audit every functional overlay at desktop, phone and HA Sections widths.
+ // The only scrolling region permitted is the dedicated diagnostic entity box.
+ const responsiveModalQA=[];
+ for(const [width,viewportHeight] of [[1440,900],[420,900],[390,844],[320,740]]){
+   await page.setViewportSize({width,height:viewportHeight});
+   await page.evaluate(w=>{
+      const wrap=document.querySelector('.card-wrap');
+      wrap.style.width=(w>900?1400:w)+'px';
+      wrap.style.margin='0 auto';wrap.style.maxWidth='100%';
+   },width);
+   await page.evaluate(data=>{const c=document.querySelector('xpeng-vehicle-card');
+      c.setConfig({type:'custom:xpeng-vehicle-card',prefix:'my_xpeng',model:'G6',year:'2026',
+       interior:'dark_gray',color:'graphite_gray',enable_access_controls:true});
+      c.hass=data;
+   },demo(false));
+   const byPage=await car.evaluate(el=>{
+     const widths=[];
+     const scene=el.shadowRoot.querySelector('.xp-scene');
+     const sceneBox=scene.getBoundingClientRect();
+     const wifi=el.shadowRoot.querySelector('.xp-header .xp-wifi'),
+       glyph=wifi?.querySelector('ha-icon');
+     const wr=wifi.getBoundingClientRect(),gr=glyph.getBoundingClientRect();
+     const wifiOffset={x:(gr.left+gr.width/2)-(wr.left+wr.width/2),
+       y:(gr.top+gr.height/2)-(wr.top+wr.height/2)};
+     const pages=['map','climate','maintenance','port','doors','windows','trunk',
+       'charge_controls','charge_schedule','extras'];
+     for(const panel of pages){
+       el._xpPanel=panel;el._xpExtraSection=null;el.render();
+       const m=el.shadowRoot.querySelector('.xp-ux-modal');
+       const b=m.getBoundingClientRect(),h=m.querySelector('.xp-ux-modal-head');
+       const content=m.querySelector('.xp-ux-modal-content'),area=content?.getBoundingClientRect();
+       widths.push({panel,visible:b.height>0&&b.bottom<=sceneBox.bottom+1&&b.top>=sceneBox.top-1,
+         overflows:getComputedStyle(m).overflowY,contentHeight:content?.scrollHeight,
+         availableHeight:content?.clientHeight,top:area?.top,bottom:area?.bottom,
+         modalTop:b.top,modalBottom:b.bottom,sceneBottom:sceneBox.bottom});
+     }
+     // More options -> Diagnostics must contain many real entities in a small, scrollable list.
+     el._xpPanel='extras';el._xpExtraSection='diagnostics';el.render();
+     const modal=el.shadowRoot.querySelector('.xp-ux-modal'),
+       scroll=modal.querySelector('.xp-diagnostics-scroll'),
+       note=modal.querySelector('.xp-extra-diagnostics-layout>.xp-ux-note'),
+       summary=modal.querySelector('.xp-entity-diagnostics>p[role="status"]');
+     const sr=scroll.getBoundingClientRect(),nr=note.getBoundingClientRect(),
+       mr=modal.getBoundingClientRect();
+     const diag={scrollHeight:scroll.scrollHeight,clientHeight:scroll.clientHeight,
+       overflow:getComputedStyle(scroll).overflowY,
+       visible:sr.height>=45&&sr.bottom<=nr.top+1&&nr.bottom<=mr.bottom+1,
+       noteVisible:nr.height>0&&nr.bottom<=mr.bottom+1,
+       summaryVisible:!!summary&&summary.getBoundingClientRect().height>0,
+       outerScroll:getComputedStyle(modal).overflowY,scrollTop:0};
+     scroll.scrollTop=180;
+     diag.scrollTop=scroll.scrollTop;
+     el._xpPanel=null;el._xpExtraSection=null;el.render();
+     return {sceneHeight:sceneBox.height,wifiOffset,pages:widths,diag};
+   });
+   responsiveModalQA.push({width,viewportHeight,...byPage});
+   assert.ok(byPage.sceneHeight<=viewportHeight,
+     'Card scene should fit its host viewport: '+JSON.stringify(responsiveModalQA.at(-1)));
+   assert.ok(Math.abs(byPage.wifiOffset.x)<=.75&&Math.abs(byPage.wifiOffset.y)<=.75,
+     'Wi-Fi visual must be centered in the actual button: '+JSON.stringify(responsiveModalQA.at(-1)));
+   assert.ok(byPage.pages.every(x=>x.visible&&x.overflows==='hidden'),
+     'Card subpage must not scroll or leak beyond its scene: '+JSON.stringify(responsiveModalQA.at(-1)));
+   const map=byPage.pages.find(x=>x.panel==='map');
+   assert.ok(map.availableHeight>180,'Map should reserve real visible height: '+JSON.stringify(map));
+   assert.ok(byPage.diag.noteVisible&&byPage.diag.visible&&byPage.diag.summaryVisible
+       &&byPage.diag.outerScroll==='hidden'&&byPage.diag.overflow==='auto',
+     'Diagnostics should scroll only in sensor box and keep explanatory note visible: '+JSON.stringify(responsiveModalQA.at(-1)));
+ }
+ console.log('PASS Sections/mobile/desktop modal containment, centered Wi-Fi and sticky diagnostics note:',JSON.stringify(responsiveModalQA));
  assert.equal(errors.length,0,errors.join('\n'));
  assert.ok(imagesServed>=4,'Expected bundled vehicle and background assets to be loaded');
  const expected=Object.values(GALLERY).sort();
