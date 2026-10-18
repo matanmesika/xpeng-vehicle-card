@@ -873,7 +873,10 @@ async function main(){
    const untranslated=[];
    for(const page of pages){
      el._xpPanel=page;el.render();
-     const html=el.shadowRoot.innerHTML;
+     // The standalone test's fake hui-map-card contains its own Hebrew stub text;
+     // only translate/assert the XPENG card's own UI, never Home Assistant-owned map content.
+     const nativeStub=el.shadowRoot.querySelector('[data-xp-map-host] hui-map-card[data-qa-native-map]');
+     const html=nativeStub?el.shadowRoot.innerHTML.replace(nativeStub.outerHTML,''):el.shadowRoot.innerHTML;
      const matches=[...new Set((html.match(/[\u0590-\u05ff][\u0590-\u05ff\s.,•·־״׳()]+/g)||[]).map(x=>x.trim()))];
      if(matches.length)untranslated.push({page:page||'Home',matches:matches.slice(0,12)});
    }
