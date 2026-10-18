@@ -2880,6 +2880,101 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  }
 }
 
+/* =======================================================================
+   G6 V2.1 — actual information-layout refresh, not just surface recoloring.
+   Desktop HVAC now gives the original cabin photograph its own left stage
+   and groups the existing live controls in the right-side instrument stack.
+   Other pages keep all their current entities and buttons.
+   ======================================================================= */
+@container xpeng-layout (min-width:851px){
+ .xp-ux-modal-climate .xp-climate-layout{
+  display:grid!important;
+  grid-template-columns:minmax(295px,.82fr) minmax(0,1.18fr)!important;
+  align-items:center!important;
+  column-gap:clamp(20px,3cqw,44px)!important;
+  max-width:1220px!important;
+ }
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{
+  grid-column:1!important;grid-row:1!important;order:0!important;
+  justify-self:center;align-self:center!important;
+  width:min(326px,100%)!important;max-width:100%!important;
+  margin:0 auto!important;
+ }
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-climate-bottom{
+  grid-column:2!important;grid-row:1!important;order:1!important;
+  width:100%!important;max-width:650px!important;
+  align-self:center;justify-self:stretch;min-width:0;
+ }
+ .xp-ux-modal-climate .xp-help-intro{
+  display:grid!important;
+  grid-template-columns:minmax(200px,.34fr) minmax(0,1fr);
+  grid-template-rows:auto auto;
+  column-gap:clamp(14px,2.4cqw,32px);row-gap:5px;
+  align-items:start;
+ }
+ .xp-ux-modal-climate .xp-help-intro>strong{
+  grid-column:1;grid-row:1;
+ }
+ .xp-ux-modal-climate .xp-help-intro>p{
+  grid-column:2;grid-row:1;
+ }
+ .xp-ux-modal-climate .xp-help-intro>.xp-help-spec{
+  grid-column:1;grid-row:2;
+  border:0!important;padding-top:0!important;
+  font-size:12px
+ }
+ .xp-ux-modal-climate .xp-help-intro>small{
+  grid-column:2;grid-row:2;
+ }
+ .xp-ux-modal-extras .xp-extra-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  max-width:1080px;margin:0 auto;
+ }
+ .xp-ux-modal-extras .xp-extra-tile{
+  display:grid!important;
+  grid-template-columns:42px minmax(0,1fr)!important;
+  grid-template-rows:auto auto;
+  justify-items:start;text-align:left!important;
+  align-content:center;column-gap:14px;row-gap:3px;
+  min-height:120px;padding:15px 18px!important
+ }
+ .xp-ux-modal-extras .xp-extra-tile ha-icon{
+  grid-column:1;grid-row:1/3;
+  width:34px;height:34px;--mdc-icon-size:34px
+ }
+ .xp-ux-modal-extras .xp-extra-tile b{
+  grid-column:2;grid-row:1;font-size:17px!important
+ }
+ .xp-ux-modal-extras .xp-extra-tile small{
+  grid-column:2;grid-row:2;font-size:12px!important
+ }
+ .xp-ux-modal-maintenance .xp-tire-stage{
+  border:1px solid rgba(133,204,228,.3);
+  border-radius:20px;
+  background:linear-gradient(130deg,rgba(19,55,69,.25),rgba(10,29,46,.16));
+  box-shadow:inset 0 1px rgba(225,246,253,.06)
+ }
+ .xp-ux-modal-maintenance .xp-maint-info{
+  border-top:1px solid rgba(129,201,220,.18);
+  padding-top:8px
+ }
+}
+/* Small phones keep the owner-provided cabin stage above climate controls.
+   Extras become compact, centered 2-column tiles with all actions retained. */
+@container xpeng-layout (max-width:850px){
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{
+  grid-column:auto!important;grid-row:auto!important;order:0!important
+ }
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-climate-bottom{
+  grid-column:auto!important;grid-row:auto!important;order:1!important
+ }
+ .xp-ux-modal-extras .xp-extra-tile{
+  display:flex!important;flex-direction:column!important;
+  justify-content:center!important;align-items:center!important;
+  text-align:center!important
+ }
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
