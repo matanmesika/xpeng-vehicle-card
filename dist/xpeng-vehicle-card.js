@@ -1377,6 +1377,130 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-ux-modal button{transition:none}
 }
 
+
+/* Owner reference: charging information/actions live together at left.
+ * The original G6 charging photo, charging cable and live Xpengtk data remain.
+ */
+.xp-charge-card{
+ left:4.3%;top:27.3%;width:39.3%;
+ padding:clamp(15px,1.8cqw,26px);
+ border-radius:23px;
+ background:linear-gradient(145deg,#06182bec,#04172dec)!important;
+ border:1px solid #479cde96!important;
+ box-shadow:0 18px 40px #0008,inset 0 1px 0 #d9f6ff23;
+}
+.xp-charge-heading{margin-bottom:14px;font-size:clamp(22px,2.5cqw,35px);gap:12px}
+.xp-charge-card .xp-progress{height:clamp(10px,1.15cqw,16px)}
+.xp-charge-main{margin-top:16px;gap:16px}
+.xp-charge-main .xp-soc{font-size:clamp(39px,5cqw,76px)}
+.xp-charge-range b{display:flex;align-items:center;gap:10px;font-size:clamp(22px,2.2cqw,35px)}
+.xp-charge-range b ha-icon{color:#f8fbff;--mdc-icon-size:25px}
+.xp-charge-meta{margin-top:17px;padding-top:14px}
+.xp-charge-meta>div{align-items:flex-start;padding:0 9px;gap:6px}
+.xp-charge-meta>div>ha-icon{color:#f0fbff;--mdc-icon-size:23px}
+.xp-charge-meta b{font-size:clamp(16px,1.5cqw,24px)}
+.xp-charge-meta small{font-size:clamp(11px,.95cqw,14px)}
+.xp-charge-panel-actions{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:9px;margin-top:17px;direction:rtl;
+}
+.xp-charge-panel-actions button{
+ display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;
+ border:1px solid #569bcc9c;border-radius:15px;
+ min-width:0;min-height:68px;padding:9px 5px;
+ color:#f0faff;background:linear-gradient(150deg,#173957d9,#08182bf0);
+ font-size:clamp(11px,.9cqw,14px);font-weight:600;
+ cursor:pointer;box-shadow:inset 0 1px 0 #e4f8ff19;
+}
+.xp-charge-panel-actions button ha-icon{color:#d9f4ff;--mdc-icon-size:23px}
+.xp-charge-panel-actions button:hover,.xp-charge-panel-actions button:focus-visible{
+ border-color:#36dfbd;background:#174c66;box-shadow:0 0 13px #00eeab42;
+}
+@container xpeng-layout (max-width:850px){
+ .xp-charge-card{left:4%;top:196px;width:92%;padding:14px 15px;border-radius:19px}
+ .xp-charge-heading{font-size:21px;margin-bottom:10px}
+ .xp-charge-main{gap:12px;margin-top:12px}
+ .xp-charge-main .xp-soc{font-size:clamp(33px,9cqw,46px)}
+ .xp-charge-range b{font-size:clamp(18px,5cqw,25px);gap:5px}
+ .xp-charge-range b ha-icon{--mdc-icon-size:21px}
+ .xp-charge-meta{margin-top:12px;padding-top:11px}
+ .xp-charge-meta>div{padding:0 5px;gap:3px}
+ .xp-charge-meta>div>ha-icon{--mdc-icon-size:17px}
+ .xp-charge-meta small{font-size:10px}
+ .xp-charge-meta b{font-size:clamp(12px,3.7cqw,16px)}
+ .xp-charge-panel-actions{margin-top:12px;gap:6px}
+ .xp-charge-panel-actions button{min-height:58px;padding:6px 3px;gap:3px;font-size:10px;border-radius:12px}
+ .xp-charge-panel-actions button ha-icon{--mdc-icon-size:19px}
+}
+@container xpeng-layout (max-width:360px){
+ .xp-charge-card{top:186px;padding:12px}
+ .xp-charge-heading{margin-bottom:8px}
+ .xp-charge-meta{margin-top:8px;padding-top:8px}
+ .xp-charge-panel-actions button{min-height:52px}
+}
+/* Owner reference: four live pressure badges immediately beside all four
+ * wheels, not detached in outer side columns or stacked below the car.
+ */
+.xp-ux-modal-maintenance .xp-tire-screen{
+ position:relative;inset:auto;width:100%;height:auto;
+ margin:0 auto;padding:0;
+}
+.xp-ux-modal-maintenance .xp-tire-stage{
+ display:block!important;position:relative;
+ width:min(720px,100%);height:clamp(300px,41cqw,470px);
+ margin:0 auto;min-height:0;overflow:visible;
+}
+.xp-ux-modal-maintenance .xp-tire-center{
+ position:absolute;left:33%;top:1%;width:34%;height:98%;
+ display:flex;align-items:center;justify-content:center;
+}
+.xp-ux-modal-maintenance .xp-tire-center img,
+.xp-ux-modal-maintenance .xp-tire-center svg{
+ width:100%;height:100%;max-height:100%;object-fit:contain;
+}
+.xp-ux-modal-maintenance .xp-tire-reading{
+ position:absolute!important;z-index:2;
+ width:26%;min-width:0;min-height:61px;
+ padding:7px 9px;display:flex;flex-direction:row;
+ align-items:center;justify-content:center;gap:8px;
+ background:#071e36dd;box-shadow:0 7px 20px #0008,0 0 12px #168eff2c;
+}
+.xp-ux-modal-maintenance .xp-tire-reading ha-icon{
+ flex:0 0 24px;color:#21edb2;--mdc-icon-size:24px;
+}
+.xp-ux-modal-maintenance .xp-tire-reading-body{min-width:0;text-align:start}
+.xp-ux-modal-maintenance .xp-tire-reading small{display:block;font-size:11px}
+.xp-ux-modal-maintenance .xp-tire-reading strong{
+ display:block;font-size:clamp(19px,2.3cqw,31px);
+ white-space:nowrap;font-variant-numeric:tabular-nums;
+}
+.xp-ux-modal-maintenance .xp-tire-reading strong span{
+ font-size:.55em;color:#b7cce1;font-weight:500;
+}
+.xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_fl"]{left:5%;top:19%}
+.xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_fr"]{right:5%;top:19%}
+.xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_rl"]{left:5%;top:67%}
+.xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_rr"]{right:5%;top:67%}
+.xp-ux-modal-maintenance .xp-tire-reading:after{
+ content:"";position:absolute;top:50%;width:13%;height:1px;background:#5bc8ffcc;
+}
+.xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_fl"]:after,
+.xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_rl"]:after{right:-13%}
+.xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_fr"]:after,
+.xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_rr"]:after{left:-13%}
+@container xpeng-layout (max-width:520px){
+ .xp-ux-modal-maintenance .xp-tire-stage{height:clamp(290px,95cqw,390px)}
+ .xp-ux-modal-maintenance .xp-tire-center{left:29%;width:42%}
+ .xp-ux-modal-maintenance .xp-tire-reading{width:29%;min-height:48px;padding:5px 3px;gap:3px;border-radius:10px}
+ .xp-ux-modal-maintenance .xp-tire-reading ha-icon{flex:0 0 15px;--mdc-icon-size:15px}
+ .xp-ux-modal-maintenance .xp-tire-reading small{font-size:9px}
+ .xp-ux-modal-maintenance .xp-tire-reading strong{font-size:clamp(14px,4cqw,19px)}
+ .xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_fl"],
+ .xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_fr"]{top:19%}
+ .xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_rl"],
+ .xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_rr"]{top:69%}
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -2605,8 +2729,10 @@ class XpengVehicleCard extends HTMLElement{
       ?this.vehicle()?.top_image:this.vehicle()?.top_image||this._config.top_image;
     const unit=this.tirePressureUnit();
     const wheel=(key,label)=>{const reading=this.tirePressureDisplay(key);
-      return `<div class="xp-tire-reading" data-wheel="${key}"><small>${label}</small>
-        <strong>${xpEsc(reading.value)}</strong><span>${reading.value==='—'?'לא זמין':unit==='kpa'?'kPa':unit==='psi'?'PSI':'bar'}</span></div>`;};
+      return `<div class="xp-tire-reading" data-wheel="${key}" role="group" aria-label="${xpEsc(label)}">
+        ${xpIcon('tire',20)}<div class="xp-tire-reading-body"><small>${xpEsc(label)}</small>
+        <strong>${xpEsc(reading.value)} <span>${reading.value==='—'?'לא זמין':unit==='kpa'?'kPa':unit==='psi'?'PSI':'bar'}</span></strong></div>
+      </div>`;};
     return `<section class="xp-tire-screen" role="region" aria-label="Tire pressure from above">
        ${showBack?`<div class="xp-tire-actions"><button type="button" data-tire-toggle aria-label="Back to vehicle status">${xpIcon('back',20)} Back to vehicle</button></div>`:''}
        <div class="xp-tire-stage"><div class="xp-tire-center">${this.topCarArt()}</div>
@@ -2635,12 +2761,23 @@ class XpengVehicleCard extends HTMLElement{
     <section class="xp-charge-card" aria-label="Charging information">
        <div class="xp-charge-heading">${xpIcon('bolt',42)}<span>${xpEsc(this.chargeStatus())}</span></div>
        ${this.progress()}
-       <div class="xp-charge-main"><div class="xp-soc">${this.socHtml()}</div><div class="xp-charge-divider"></div>
-          <div class="xp-charge-range"><div class="xp-stat-label">Estimated range</div><b>${xpEsc(this.num('range','km'))}</b></div></div>
-       <div class="xp-charge-meta"><div><small>Charging power</small><b>${xpEsc(this.num('power','kW',1))}</b></div>
-       <div><small>Time remaining</small><b>${xpEsc(this.remainingText())}</b></div>
-       <div><small>Charge limit</small><b>${xpEsc(this.num('target','%'))}</b></div></div>
-    </section>${this.xpUiEnabled()&&!this._xpPanel?'<nav class="xp-charge-shortcuts" aria-label="בקרות טעינה" dir="rtl"><button type="button" data-xp-open="charge_controls">הגבלת טעינה</button><button type="button" data-xp-open="charge_schedule">תזמונים</button></nav>':''}
+       <div class="xp-charge-main">
+         <div class="xp-soc" aria-label="Battery percentage">${this.socHtml()}</div>
+         <div class="xp-charge-divider"></div>
+         <div class="xp-charge-range"><div class="xp-stat-label">Estimated range</div>
+           <b>${xpIcon('gauge',25)}${xpEsc(this.num('range','km'))}</b></div>
+       </div>
+       <div class="xp-charge-meta">
+         <div>${xpIcon('bolt',23)}<small>Charging power</small><b>${xpEsc(this.num('power','kW',1))}</b></div>
+         <div>${xpIcon('clock',23)}<small>Time remaining</small><b>${xpEsc(this.remainingText())}</b></div>
+         <div>${xpIcon('battery',23)}<small>Charge limit</small><b>${xpEsc(this.num('target','%'))}</b></div>
+       </div>
+       ${this.xpUiEnabled()&&!this._xpPanel?'<nav class="xp-charge-panel-actions" aria-label="בקרות טעינה" dir="rtl">'+
+        '<button type="button" data-xp-open="charge_controls">'+xpIcon('battery',22)+'<span>הגבלת טעינה</span></button>'+
+        '<button type="button" data-xp-open="charge_schedule">'+xpIcon('clock',22)+'<span>תזמון</span></button>'+
+        (this.xpLive('button','stop_charge')?'<button type="button" data-xp-command="stop_charge">'+xpIcon('power',22)+'<span>עצור טעינה</span></button>':'')+
+        '</nav>':''}
+    </section>
     ${!this._xpPanel?'<button type="button" class="xp-page-back" data-xp-home aria-label="חזרה למסך הבית">'+xpIcon('back',20)+'<span>חזרה לבית</span></button>':''}`;
  }
  render(){
