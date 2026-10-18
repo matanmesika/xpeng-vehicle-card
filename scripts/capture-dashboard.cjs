@@ -33,7 +33,13 @@ const MDI_MODULE=process.env.MDI_JS_MODULE||
 const officialMdi=require(MDI_MODULE);
 const cardSource=fs.readFileSync(path.join(ROOT,'src','xpeng-vehicle-card.js'),'utf8');
 const iconPaths={};
-for(const icon of new Set([...cardSource.matchAll(/mdi:[a-z0-9-]+/g)].map(match=>match[0]))){
+const dynamicBatteryIcons=['mdi:battery','mdi:battery-outline','mdi:battery-unknown',
+ ...Array.from({length:9},(_,i)=>'mdi:battery-'+(i+1)*10),
+ ...Array.from({length:10},(_,i)=>'mdi:battery-charging-'+(i+1)*10)];
+for(const icon of new Set([
+ ...[...cardSource.matchAll(/mdi:[a-z0-9-]+/g)].map(match=>match[0]).filter(x=>!x.endsWith('-')),
+ ...dynamicBatteryIcons
+])){
  const exportName='mdi'+icon.slice(4).split('-').map(part=>part[0].toUpperCase()+part.slice(1)).join('');
  assert.equal(typeof officialMdi[exportName],'string','Missing official Material Design icon: '+icon+' ('+exportName+')');
  iconPaths[icon]=officialMdi[exportName];
