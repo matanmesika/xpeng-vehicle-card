@@ -68,7 +68,7 @@ test('native MDI glyphs replace ALL hand-drawn dashboard controls',()=>{
  assert.match(block,/<ha-icon class="xp-mdi-icon" icon="\$\{mdi\}"/);
  assert.match(source,/\$\{xpIcon\('wifi',24\)\}/,'Connection indicator must also be native');
  assert.doesNotMatch(source,/\.xp-ux-(?:dock-action|cycle|climate-feature) svg/);
-  assert.match(source,/xpBatteryGauge\\(\\)/,'Battery badge derives from live SOC and official MDI levels');
+  assert.match(source,/xpBatteryGauge\(\)/,'Battery badge derives from live SOC and official MDI levels');
  assert.match(source,/\${xpIcon\('station',24\)\}/,'Charging-station pictogram must use native MDI');
  assert.doesNotMatch(source,/<span class="xp-x-mark">✕<\/span>/,'Do not pretend a typographic X is the XPENG logo');
  assert.match(css,/\.xp-mdi-icon\{display:inline-flex/);
