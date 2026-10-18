@@ -1338,7 +1338,7 @@ class XpengVehicleCard extends HTMLElement{
      ['port','plug','שקע טעינה'],['trunk','trunk','תא מטען'],
      ['maintenance','settings','תחזוקה'],['map','pin','מיקום']
    ];
-   return '<nav class="xp-ux-dock xp-ux-dock-seven" aria-label="מעבר בין מסכים" dir="rtl">'+
+   return '<nav class="xp-ux-dock xp-ux-dock-seven" aria-label="פעולות הרכב וקיצורי מסכים" dir="rtl">'+
      items.map(([action,icon,title])=>{
        const toggle=['doors','windows','port','trunk'].includes(action);
        const target=toggle?this.xpToggleTarget(action):null;
@@ -2265,22 +2265,14 @@ class XpengVehicleCard extends HTMLElement{
      </section>`;
   }
  overview(){
-  // The Home screen shows only live vehicle summary and location.
-  // Maintenance data live exclusively inside the Maintenance page.
-  const rows=[['pin','Location',this.locationText()]];
+  // Home contains no location information overlay. The Map is accessible
+  // through its dedicated dock button only, on both desktop and phone.
   return `${this.title()}${this.carArt()}
     <section class="xp-overview-stat" aria-label="Battery and estimated range">
      <div class="xp-batt-line"><div class="xp-batt-glyph"><div class="xp-batt-fill" style="height:${xpPercent(this.val('soc'))??0}%"></div></div>
        <div><div class="xp-stat-label">Battery</div><div class="xp-soc">${this.socHtml()}</div></div></div>
      ${this.progress()}<div class="xp-overview-range"><div class="xp-stat-label">Estimated range</div><div class="xp-range-num">${xpIcon('gauge',36)}<span>${xpEsc(this.num('range','km'))}</span></div></div>
     </section>
-    <aside class="xp-status-panel" aria-label="Vehicle information">
-      ${rows.map(([icon,label,val])=>icon==='pin'&&this.xpLive('device_tracker','location')
-       ?`<button type="button" class="xp-info-row xp-location-row" data-xp-open="map" aria-label="מפת מיקום הרכב"><div class="xp-info-icon">${xpIcon(icon,31)}</div>
-       <div class="xp-info-copy"><small>${xpEsc(label)}</small><b>${xpEsc(val)}</b></div><span class="xp-chevron">${xpIcon('arrow',19)}</span></button>`
-       :`<div class="xp-info-row"><div class="xp-info-icon">${xpIcon(icon,31)}</div>
-       <div class="xp-info-copy"><small>${xpEsc(label)}</small><b>${xpEsc(val)}</b></div></div>`).join('')}
-    </aside>
     ${!this.xpUiEnabled()?'<button type="button" class="xp-maintenance-home-button" data-xp-open="maintenance" aria-label="פתיחת תחזוקת הרכב">'+xpIcon('settings',21)+'<span>תחזוקה</span></button>':''}`;
  }
  charging(){
