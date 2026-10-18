@@ -1137,10 +1137,6 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  --mdc-icon-size:clamp(23px,2.5cqw,31px)!important;
  filter:drop-shadow(0 0 6px #4aa8fc42);
 }
-.xp-home-navigation .xp-ux-dock-action[data-xp-open="map"] ha-icon{color:#4eafff}
-.xp-home-navigation .xp-ux-dock-action[data-xp-open="climate"] ha-icon{color:#7ce6ff}
-.xp-home-navigation .xp-ux-dock-action[data-xp-toggle="port"] ha-icon{color:#6ae4ff}
-.xp-home-navigation .xp-ux-dock-action[data-xp-toggle="doors"] ha-icon{color:#e8f6ff}
 .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action small{
  font-size:clamp(10px,1.05cqw,13px);font-weight:600;
  white-space:normal;line-height:1.13;letter-spacing:0;
@@ -1736,9 +1732,6 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-charge-navigation .xp-ux-dock-seven .xp-ux-dock-action small{
  font-size:10px;white-space:normal;line-height:1.13;text-align:center;
 }
-.xp-charge-navigation .xp-ux-dock-action[data-xp-open="climate"] ha-icon{color:#7ce6ff}
-.xp-charge-navigation .xp-ux-dock-action[data-xp-open="map"] ha-icon{color:#4eafff}
-.xp-charge-navigation .xp-ux-dock-action[data-xp-toggle="port"] ha-icon{color:#6ae4ff}
 .xp-charge-navigation .xp-charge-card{z-index:9}
 .xp-scene.xp-charge.xp-charge-navigation .xp-car{
  width:42%;left:43%;bottom:17%;max-height:56%;
@@ -1916,6 +1909,33 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-extra-tile .xp-mdi-icon,
  .xp-ux-map-actions button .xp-mdi-icon,
  .xp-charge-panel-actions button .xp-mdi-icon{transition:none}
+}
+
+/* Beta 7: consistent icon color across all seven vehicle actions.
+ * The only deliberate semantic accents are status indicators such as
+ * battery charge, vehicle connectivity and confirmed charging.
+ * Disabled buttons keep their reduced opacity: unavailable is NOT enabled. */
+.xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action ha-icon,
+.xp-charge-navigation .xp-ux-dock-seven .xp-ux-dock-action ha-icon{
+  color:#e9f4ff;
+}
+/* Use the same soft mint highlight for hover/focus, never a random
+ * category-dependent permanent color on one shortcut. */
+.xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action:hover ha-icon,
+.xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action:focus-visible ha-icon,
+.xp-charge-navigation .xp-ux-dock-seven .xp-ux-dock-action:hover ha-icon,
+.xp-charge-navigation .xp-ux-dock-seven .xp-ux-dock-action:focus-visible ha-icon{
+  color:#84f3e3;
+}
+/* Header tools are siblings inside xp-meta-tools: .xp-header-right gap
+ * does not separate Wi-Fi from the cog. Distinguish desktop and sections. */
+.xp-header .xp-meta-tools{gap:14px}
+@container xpeng-layout (max-width:850px){
+  .xp-header .xp-meta-tools{gap:8px}
+}
+@container xpeng-layout (min-width:851px){
+  /* Shift the Wi-Fi glyph, not its hit target, 2px farther up on desktop. */
+  .xp-header .xp-wifi .xp-mdi-icon{transform:translateY(-4px)}
 }
 
 `;
