@@ -2866,6 +2866,19 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-scene .xp-ux-modal-extras .xp-extra-tile{transition:none!important;transform:none!important}
 }
 
+/* On Sections/iPhone widths reserve the original car-photo clearance. Larger
+   premium battery card proportions are desktop-only; no hero overlap. */
+@container xpeng-layout (max-width:850px){
+ .xp-home-navigation .xp-overview-stat,
+ .xp-charge-navigation .xp-overview-stat{
+  padding:5px 9px!important;border-radius:16px!important
+ }
+ .xp-home-navigation .xp-overview-range,
+ .xp-charge-navigation .xp-overview-range{
+  margin-top:6px!important;padding-top:6px!important
+ }
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
