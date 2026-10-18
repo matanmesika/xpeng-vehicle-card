@@ -58,7 +58,7 @@ test('original charging art is restored and green cable only exists during charg
 test('native MDI glyphs replace ALL hand-drawn dashboard controls',()=>{
  const block=source.slice(source.indexOf('const XP_ICONS = Object.freeze('),source.indexOf('function xpEsc(v)'));
  assert.match(block,/fan:'mdi:fan'/);
- for(const icon of ['mdi:lock','mdi:window-closed','mdi:window-open','mdi:car-back','mdi:map-marker','mdi:wifi'])
+ for(const icon of ['mdi:lock','mdi:window-open','mdi:window-open-variant','mdi:car-hatchback','mdi:map-marker','mdi:wifi'])
    assert.ok(block.includes(icon),'Native MDI mapping missing: '+icon);
  assert.doesNotMatch(block,/<(?:svg|ellipse|circle|path|rect)\b/,'No hand-drawn SVG for buttons');
  assert.match(block,/<ha-icon class="xp-mdi-icon" icon="\$\{mdi\}"/);
