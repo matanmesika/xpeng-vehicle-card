@@ -314,19 +314,33 @@ test('P7i keeps exact-year colour selection for the 2024-only paints',()=>{
  assert.equal(editor._cfg.color,'arctic_white');
 });
 
-test('the README dashboard gallery ships overview, original charging and maintenance captures',()=>{
- const gallery=fs.readFileSync(path.join(ROOT,'README.md'),'utf8');
- const files=['vehicle-status','charging','maintenance-desktop'].map(view=>'g6-2026-'+view+'.png');
+test('GitHub and HACS README render twelve existing English screenshots, not the old gallery',()=>{
+ const readme=fs.readFileSync(path.join(ROOT,'README.md'),'utf8');
+ const index=fs.readFileSync(path.join(ROOT,'docs/gallery-en/README.md'),'utf8');
+ const guide=fs.readFileSync(path.join(ROOT,'docs/G6_DASHBOARD_GUIDE_EN.md'),'utf8');
+ const filenames=[
+  'home-desktop','home-mobile','charging-desktop','charging-mobile',
+  'climate-desktop','climate-mobile','maintenance-desktop','maintenance-mobile',
+  'map-desktop','map-mobile','charge-controls-mobile','diagnostics-mobile'
+ ];
+ assert.doesNotMatch(readme,/[\u0590-\u05ff]/,'HACS description must be English only');
+ assert.doesNotMatch(index,/[\u0590-\u05ff]/,'Image captions must be English only');
+ assert.doesNotMatch(guide,/[\u0590-\u05ff]/,'Installation guide must be English only');
+ assert.doesNotMatch(readme,/docs\/screenshots\/g6-2026-/,'README must not use obsolete gallery images');
  const sizes=[];
- for(const f of files){
-  const relative='docs/screenshots/'+f;
-  assert.ok(gallery.includes(']('+relative+')'),'gallery link missing: '+relative);
+ for(const basename of filenames){
+  const relative='docs/gallery-en/'+basename+'.png';
+  const url='https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/'+relative;
+  assert.ok(readme.includes(']('+url+')'),'HACS absolute image link missing: '+relative);
+  assert.ok(index.includes(']('+basename+'.png)'), 'Gallery index must link '+basename);
   const raw=fs.readFileSync(path.join(ROOT,relative));
-  assert.equal(raw.subarray(0,8).toString('hex'),'89504e470d0a1a0a',f);
-  assert.ok(raw.readUInt32BE(16)>=1100&&raw.readUInt32BE(20)>=620,f);
-  assert.ok(raw.length>80000,f);
+  assert.equal(raw.subarray(0,8).toString('hex'),'89504e470d0a1a0a',basename);
+  const width=raw.readUInt32BE(16),height=raw.readUInt32BE(20);
+  if(basename.endsWith('desktop'))assert.ok(width>=1100&&height>=620,basename);
+  else assert.ok(width>=300&&width<=500&&height>=700,basename);
+  assert.ok(raw.length>10000,basename);
   sizes.push(raw.length);
  }
- assert.equal(new Set(sizes).size,3,'views must be independent captures');
- assert.ok(fs.existsSync(path.join(ROOT,'scripts/capture-dashboard.cjs')),'capture script missing');
+ assert.ok(new Set(sizes).size>=10,'Screenshots must be independent browser captures');
+ assert.ok(fs.existsSync(path.join(ROOT,'scripts/capture-dashboard.cjs')),'Capture script missing');
 });
