@@ -924,7 +924,7 @@ async function main(){
  console.log('PASS bilingual Home Assistant locale and native map warm-up:',JSON.stringify(localeBrowserQA));
 
  // Audit every functional overlay at desktop, phone and HA Sections widths.
- // The only scrolling region permitted is the dedicated diagnostic entity box.
+ // Diagnostics keeps its own sensor scroller; guided pages scroll the modal when needed.
  const responsiveModalQA=[];
  for(const [width,viewportHeight] of [[1440,900],[420,900],[390,844],[320,740]]){
    await page.setViewportSize({width,height:viewportHeight});
@@ -959,7 +959,16 @@ async function main(){
        const tire=panel==='maintenance'?m.querySelector('.xp-tire-stage')?.getBoundingClientRect():null;
        const metrics=panel==='maintenance'?m.querySelector('.xp-maint-info')?.getBoundingClientRect():null;
        const climateControls=panel==='climate'?m.querySelector('.xp-climate-layout>.xp-ux-climate-bottom')?.getBoundingClientRect():null;
-       widths.push({panel,visible:b.height>0&&b.bottom<=sceneBox.bottom+1&&b.top>=sceneBox.top-1,
+       const hasGuide=!!m.querySelector('.xp-help-intro');
+       const modalOverflow=getComputedStyle(m).overflowY;
+       const previousScroll=m.scrollTop;
+       let scrollReachable=false;
+       if(hasGuide&&modalOverflow==='auto'){
+         m.scrollTop=m.scrollHeight;
+         scrollReachable=!!inner&&inner.getBoundingClientRect().bottom<=m.getBoundingClientRect().bottom+4;
+         m.scrollTop=previousScroll;
+       }
+       widths.push({panel,hasGuide,scrollReachable,visible:b.height>0&&b.bottom<=sceneBox.bottom+1&&b.top>=sceneBox.top-1,
          tireAboveDetails:panel!=='maintenance'||(!!tire&&!!metrics&&tire.bottom<=metrics.top-2),
          controlsInside:panel!=='climate'||(!!climateControls&&climateControls.left>=area.left-3&&climateControls.right<=area.right+3),
          overflows:getComputedStyle(m).overflowY,contentHeight:content?.scrollHeight,
@@ -992,8 +1001,10 @@ async function main(){
      'Card scene should fit its host viewport: '+JSON.stringify(responsiveModalQA.at(-1)));
    assert.ok(Math.abs(byPage.wifiOffset.x)<=.75&&Math.abs(byPage.wifiOffset.y)<=.75,
      'Wi-Fi visual must be centered in the actual button: '+JSON.stringify(responsiveModalQA.at(-1)));
-   assert.ok(byPage.pages.every(x=>x.visible&&x.overflows==='hidden'&&x.bodyFits&&x.tireAboveDetails&&x.controlsInside),
-     'Every panel must expose ALL of its content inside the scene without scrolling or clipping: '+JSON.stringify(responsiveModalQA.at(-1)));
+   assert.ok(byPage.pages.every(x=>x.visible&&x.tireAboveDetails&&x.controlsInside&&
+       ((x.overflows==='hidden'&&x.bodyFits)||
+        (x.overflows==='auto'&&x.hasGuide&&x.scrollReachable))),
+     'Each panel must fit OR expose its complete guided content through its own scroll, without clipping: '+JSON.stringify(responsiveModalQA.at(-1)));
    const map=byPage.pages.find(x=>x.panel==='map');
    assert.ok(map.availableHeight>180,'Map should reserve real visible height: '+JSON.stringify(map));
    assert.ok(byPage.diag.noteVisible&&byPage.diag.visible&&byPage.diag.summaryVisible
