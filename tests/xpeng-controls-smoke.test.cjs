@@ -1401,6 +1401,13 @@ test('beta.8 Home Assistant locale switches every vehicle modal and accessibilit
  const {card}=createCard({enable_access_controls:true});
  card._hass.locale.language='en';
  card._hass.states['sensor.user_named_battery'].state='76';
+ // Expose actual supported action entities so labels can truthfully say Open.
+ card._xpengByKey['binary_sensor.windows']='binary_sensor.test_windows';
+ card._xpengByKey['button.open_windows']='button.test_open_windows';
+ card._hass.states['binary_sensor.test_windows']={state:'off',attributes:{}};
+ card._hass.states['button.test_open_windows']={state:'unknown',attributes:{}};
+ card._xpengByKey['sensor.slow_charge_port']='sensor.test_slow_charge_port';
+ card._hass.states['sensor.test_slow_charge_port']={state:'Closed',attributes:{}};
  const pages=['climate','maintenance','map','port','windows','doors','trunk','extras','charge_controls','charge_schedule'];
  const untranslated=[];
  for(const page of [null,...pages]){
