@@ -379,6 +379,19 @@ async function main(){
  });
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
  assert.equal(await car.locator('.xp-ux-dock-action').count(),7,'Seven home quick actions missing');
+ const homeIconQuality=await car.evaluate(el=>{
+   const root=el.shadowRoot;
+   return [...root.querySelectorAll('.xp-ux-dock-action')].map(button=>{
+     const icon=button.querySelector('ha-icon');
+     const r=icon?.getBoundingClientRect(),b=button.getBoundingClientRect();
+     return {mdi:icon?.getAttribute('icon'),width:r?.width,height:r?.height,
+       within:!!r&&r.width>0&&r.height>0&&
+         r.left>=b.left-1&&r.right<=b.right+1&&r.top>=b.top-1&&r.bottom<=b.bottom+1};
+   });
+ });
+ assert.ok(homeIconQuality.length===7&&homeIconQuality.every(i=>i.mdi?.startsWith('mdi:')&&i.within),
+   'All seven actions must have genuine, centered native MDI icons: '+JSON.stringify(homeIconQuality));
+ console.log('Desktop official MDI icons and bounding-box alignment verified:',JSON.stringify(homeIconQuality));
  for(const action of ['maintenance','map'])assert.equal(await car.locator('.xp-ux-dock-action[data-xp-open="'+action+'"]').count(),1,action+' home dock action missing');
  assert.equal(await car.locator('.xp-ux-dock-action:not([disabled])').count(),7,'Mock owner has approved Access, so all seven actions must work');
  await reviewShot('controls-desktop');
@@ -591,6 +604,15 @@ async function main(){
  for(const [action,name] of [['climate','climate-mobile'],['maintenance','maintenance-mobile'],['map','location-mobile']]){
    await car.locator('button[data-xp-open="'+action+'"]').first().click();
    assert.ok(await car.locator('.xp-ux-modal-'+action).count(),action+' modal missing');
+   const arrow=await car.locator('.xp-ux-modal-'+action+' button[data-xp-close]').evaluate(button=>{
+     const icon=button.querySelector('ha-icon');
+     return {aria:button.getAttribute('aria-label'),icon:icon?.getAttribute('icon'),
+       text:button.textContent.trim(),size:button.getBoundingClientRect().width};
+   });
+   assert.equal(arrow.icon,'mdi:arrow-right','Hebrew Back arrow must be the official RTL MDI');
+   assert.equal(arrow.text,'','Back arrow button must not show any visible text');
+   assert.ok(arrow.aria?.includes('חזרה')&&arrow.size>=43,
+     'Icon-only Back must remain accessible and touch-sized: '+JSON.stringify(arrow));
    if(action==='map'){
      assert.equal(await car.locator('button[data-xp-map-action="honk_horn"]').count(),1);
      assert.equal(await car.locator('button[data-xp-map-action="flash_lights"]').count(),1);
