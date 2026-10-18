@@ -407,11 +407,13 @@ async function main(){
  for(const z of expectedZones){
    assert.equal(await car.locator('.xp-ux-hotspot-zone[data-xp-zone="'+z+'"]').count(),1,'HVAC hotspot missing: '+z);
  }
- assert.equal(await car.locator('button[data-xp-cycle="left_rear_seat_heat_select"]').count(),1,'Missing rear left heater button');
+ assert.equal(await car.locator('.xp-ux-hotspot-zone button[data-xp-cycle="left_rear_seat_heat_select"]').count(),1,'Missing rear left heater on cabin photo');
+  assert.equal(await car.locator('.xp-seat-summary-action[data-xp-cycle="left_rear_seat_heat_select"]').count(),1,'Missing rear heater tile in climate controls');
  assert.equal(await car.locator('[role="status"][aria-label="מצב AUTO: פעיל"]').count(),1,'Real AUTO feedback missing');
  assert.equal(await car.locator('[data-xp-hvac-mode="auto"]').count(),0,'Do not invent executable AUTO');
  assert.equal(await car.locator('[data-xp-swing-mode]').count(),0,'Do not invent remote airflow');
- assert.equal(await car.locator('button[data-xp-cycle="right_rear_seat_heat_select"]').count(),1,'Missing rear right heater button');
+ assert.equal(await car.locator('.xp-ux-hotspot-zone button[data-xp-cycle="right_rear_seat_heat_select"]').count(),1,'Missing rear right heater on cabin photo');
+  assert.equal(await car.locator('.xp-seat-summary-action[data-xp-cycle="right_rear_seat_heat_select"]').count(),1,'Missing rear right heater tile');
  const fan=await car.locator('[data-xp-range="fan_speed_control"]').first().evaluate(el=>({
    min:el.min,max:el.max,value:el.value,step:el.step
  }));
