@@ -845,8 +845,8 @@ async function main(){
  assert.equal(tickResult.sameNode,true,'Live telemetry must not replace scrolling DOM on iPhone: '+JSON.stringify(tickResult));
  assert.equal(tickResult.initial,0,'The revised fixed-height modal should start at its top');
  assert.equal(tickResult.after,0,'Sensor changes may not scroll the dashboard overlay');
- assert.equal(tickResult.overflow,'hidden','Dashboard modal must never become a second scroll container');
- assert.equal(tickResult.touchAction,'manipulation','Only diagnostics list should own vertical touch scrolling');
+ assert.equal(tickResult.overflow,'auto','Guided climate modal must offer one reliable vertical scroll for all controls');
+ assert.equal(tickResult.touchAction,'pan-y','Guided climate must use touch scrolling without page jumps');
  assert.ok(Math.abs(tickResult.parentDelta)<=2,'Outer HA page jumps while scrolling modal');
  await car.locator('button[data-xp-close]').click();
  const lockStress=await car.evaluate(el=>{
