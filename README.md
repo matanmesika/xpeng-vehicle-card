@@ -40,6 +40,12 @@ grid_options:
 
 The card is **a frontend**, not the Xpengtk backend integration. It does not install or update the vehicle integration. Real commands require Xpengtk service entities; opening/unlocking actions additionally require explicit **Access** permissions in both the integration and card settings. Unknown/unavailable sensor values never trigger guessed actions.
 
+## Sensor mapping
+
+The XPENG Vehicle Card reads **existing Home Assistant/Xpengtk entities**; it does not query the vehicle or create sensors. For a one-car G6 setup it can discover the vehicle's mapped entities and honour Home Assistant Entity Registry renames. Existing YAML entity mappings remain supported. Check **Developer Tools → States** and the card's **Entity diagnostics** view to identify the actual IDs and their current states before relying on an action.
+
+Unknown or unavailable sensor data stays unknown; the card cannot repair an upstream Xpengtk or vehicle connectivity issue. Buttons may be stateless. A successful `hass.callService` invocation only confirms that Home Assistant accepted the service call, **not** that the physical vehicle executed it. Confirm the relevant state or command feedback at the parked vehicle before signing off a release.
+
 ## Seven shortcuts and responsive screens
 
 | Shortcut | What it does |
