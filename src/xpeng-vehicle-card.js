@@ -142,16 +142,21 @@ const XP_CONTROL_FALLBACKS=Object.freeze({
  */
 const XP_ICONS = Object.freeze({
  home:'mdi:home-outline',
- lock:'mdi:lock-outline',
- unlock:'mdi:lock-open-variant-outline',
+ // Genuine vehicle-door security symbols distinguish the next action.
+ lock:'mdi:car-door-lock',
+ unlock:'mdi:car-door-lock-open',
  car:'mdi:car-outline',
  // Official automotive MDI pictograms, no house-window glyphs.
  // MDI has no dedicated power-side-window-open glyph; the dynamic
  // Hebrew action labels still distinguish opening from closing.
  windows:'mdi:car-door',
  windows_open:'mdi:car-door',
- trunk:'mdi:car-back',
- trunk_open:'mdi:car-back',
+ // Side-profile SUV with official MDI lift/lower action badge: no front view.
+ trunk:'mdi:car-estate',
+ trunk_open:'mdi:car-estate',
+ trunk_close:'mdi:car-estate',
+ trunk_lift:'mdi:arrow-up-bold',
+ trunk_lower:'mdi:arrow-down-bold',
  horn:'mdi:bullhorn-outline',
  flash:'mdi:car-light-high',
  auto:'mdi:autorenew',
@@ -187,7 +192,16 @@ const XP_ICONS = Object.freeze({
 function xpIcon(name,size=22){
  const mdi=XP_ICONS[name]||XP_ICONS.info;
  const px=Math.max(12,Math.min(80,Number(size)||22));
- return `<ha-icon class="xp-mdi-icon" icon="${mdi}" style="--xp-icon-size:${px}px" aria-hidden="true"></ha-icon>`;
+ const car='<ha-icon class="xp-mdi-icon" icon="'+mdi+'" style="--xp-icon-size:'+px+'px" aria-hidden="true"></ha-icon>';
+ if(name==='trunk_open'||name==='trunk_close'){
+  const arrow=name==='trunk_open'?XP_ICONS.trunk_lift:XP_ICONS.trunk_lower;
+  const arrowSize=Math.max(12,Math.round(px*.53));
+  return '<span class="xp-trunk-symbol xp-trunk-symbol-'+(name==='trunk_open'?'lift':'lower')+
+   '" style="--xp-trunk-size:'+px+'px" aria-hidden="true">'+car+
+   '<ha-icon class="xp-trunk-arrow" icon="'+arrow+
+   '" style="--xp-icon-size:'+arrowSize+'px" aria-hidden="true"></ha-icon></span>';
+ }
+ return car;
 }
 function xpEsc(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
 
@@ -2975,6 +2989,41 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  }
 }
 
+/* Official MDI SUV rear-hatch action: side silhouette + lift/lower indicator.
+   Both icons come from Home Assistant's MDI collection, never custom SVG. */
+.xp-trunk-symbol{
+ --xp-trunk-size:27px;
+ display:inline-grid;place-items:center;position:relative;vertical-align:middle;
+ flex:0 0 auto;width:var(--xp-trunk-size);height:var(--xp-trunk-size);color:inherit
+}
+.xp-trunk-symbol>.xp-mdi-icon{
+ display:grid;place-items:center;
+ width:var(--xp-trunk-size);height:var(--xp-trunk-size);
+ --mdc-icon-size:var(--xp-trunk-size)
+}
+.xp-trunk-symbol>.xp-trunk-arrow{
+ position:absolute;right:-.25em;top:-.35em;
+ display:grid;place-items:center;width:14px;height:14px;
+ --mdc-icon-size:14px;
+ border:1px solid rgba(95,205,230,.54);
+ border-radius:50%;background:#082d43;color:#5decc3;
+ box-shadow:0 2px 7px #0009
+}
+.xp-trunk-symbol-lower>.xp-trunk-arrow{
+ color:#ffc17b;border-color:rgba(252,181,103,.68)
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action .xp-trunk-symbol{
+ align-self:center;margin:3px 0 0
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action .xp-trunk-symbol>.xp-mdi-icon{
+ color:#a7e5fb
+}
+@container xpeng-layout (max-width:520px){
+ .xp-trunk-symbol>.xp-trunk-arrow{
+  right:-.29em;top:-.41em;width:12px;height:12px;--mdc-icon-size:12px
+ }
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -3306,7 +3355,7 @@ class XpengVehicleCard extends HTMLElement{
    const title=target?.label||(this.xpActionState(action)===null?'המצב אינו ידוע':'נדרשת הרשאת Access');
    return '<button type="button" data-xp-toggle="'+action+'" '+(usable?'':'disabled')+
      ' aria-label="'+xpEsc(title)+'" title="'+xpEsc(title)+'">'+
-     xpIcon(action==='doors'?(target?.service==='unlock'?'unlock':'lock'):action==='trunk'?(target?.suffix==='open_trunk'?'trunk_open':'trunk'):action==='port'?(target?.suffix==='open_charge_port'?'port_open':'plug'):(target?.suffix==='open_windows'?'windows_open':'windows'),20)+'<span>'+xpEsc(title)+'</span></button>';
+     xpIcon(action==='doors'?(target?.service==='unlock'?'unlock':'lock'):action==='trunk'?(target?.suffix==='open_trunk'?'trunk_open':target?.suffix==='close_trunk'?'trunk_close':'trunk'):action==='port'?(target?.suffix==='open_charge_port'?'port_open':'plug'):(target?.suffix==='open_windows'?'windows_open':'windows'),20)+'<span>'+xpEsc(title)+'</span></button>';
  }
  xpDock(){
    if(!this.xpUiEnabled())return '';
@@ -3333,7 +3382,7 @@ class XpengVehicleCard extends HTMLElement{
        const ico=action==='doors'?(target?.service==='unlock'?'unlock':'lock'):
          action==='windows'?(target?.suffix==='open_windows'?'windows_open':'windows'):
          action==='port'?(target?.suffix==='open_charge_port'?'port_open':'plug'):
-         action==='trunk'?(target?.suffix==='open_trunk'?'trunk_open':'trunk'):icon;
+         action==='trunk'?(target?.suffix==='open_trunk'?'trunk_open':target?.suffix==='close_trunk'?'trunk_close':'trunk'):icon;
        return '<button class="xp-ux-dock-action" type="button" '+
          (toggle?'data-xp-toggle="'+action+'"':'data-xp-open="'+action+'"')+
          ' aria-label="'+xpEsc(label)+'" title="'+xpEsc(label)+'" '+(pending?'aria-busy="true" ':'')+(available?'':'disabled')+'>'+
@@ -3656,7 +3705,7 @@ class XpengVehicleCard extends HTMLElement{
  xpTrunkPanel(){
    const state=this.xpActionState('trunk');
    const status=state==='open'?'פתוח':state==='closed'?'סגור':'לא ידוע';
-   return '<div class="xp-ux-access-panel"><div class="xp-ux-access-head">'+xpIcon('trunk',36)+
+   return '<div class="xp-ux-access-panel"><div class="xp-ux-access-head">'+xpIcon(state==='closed'?'trunk_open':state==='open'?'trunk_close':'trunk',36)+
      '<div><h3>תא המטען</h3><p>מצב נוכחי: '+xpEsc(status)+'</p></div></div>'+
      '<div class="xp-ux-access-buttons">'+this.xpToggleButton('trunk')+'</div>'+
      '<p class="xp-ux-note">פתיחת תא המטען מחייבת הרשאת Access. אם החיישן לא מדווח מצב ברור, לא תישלח פקודה.</p></div>';
