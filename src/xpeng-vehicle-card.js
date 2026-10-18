@@ -2535,6 +2535,20 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  height:auto!important;min-height:0!important
 }
 
+/* Seven existing Custom Functions launch tiles must remain readable on 320px
+   screens; allow the options launcher to scroll instead of clipping row seven. */
+@container xpeng-layout (max-width:850px){
+ .xp-scene .xp-ux-modal-extras:not(:has(.xp-extra-diagnostics-layout)){
+  overflow-y:auto!important;overflow-x:hidden!important;touch-action:pan-y
+ }
+ .xp-ux-modal-extras:not(:has(.xp-extra-diagnostics-layout))>.xp-ux-modal-content{
+  flex:0 0 auto!important;overflow:visible!important
+ }
+ .xp-ux-modal-extras:not(:has(.xp-extra-diagnostics-layout)) .xp-ux-modal-content-inner{
+  height:auto!important
+ }
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
