@@ -51,6 +51,54 @@ function createCard(options = {}) {
 }
 
 test('source and HACS distribution remain identical', () => {assert.equal(src, dist);});
+test('maintenance from Extras routes to one correctly styled maintenance modal and Back returns to Extras',()=>{
+ const {card}=createCard();
+ card.xpNavigatePanel('extras');
+ card.xpNavigatePanel('maintenance');
+ assert.equal(card._xpPanel,'maintenance');
+ assert.match(card.xpModal(),/xp-ux-modal-maintenance/);
+ assert.match(card.xpModal(),/data-wheel="tire_fl"/);
+ card.xpBackPanel();
+ assert.equal(card._xpPanel,'extras');
+ assert.equal(card._xpExtraSection,null);
+ assert.match(card.xpExtrasPanel(),/data-xp-extra-page="maintenance"/);
+ assert.match(src,/if\(page==='maintenance'\)\{this\.xpNavigatePanel\('maintenance'\);return;\}/);
+});
+test('maintenance model year identifies explicit integration attribute vs editor-configured year',()=>{
+ const {card}=createCard({year:'2025'});
+ card._xpengByKey['sensor.vehicle_identity']='sensor.owner_vehicle_identity';
+ card._hass.states['sensor.owner_vehicle_identity']={state:'ok',attributes:{model_year:'2024'}};
+ assert.match(card.xpMaintenancePanel(),/שנת דגם \(מהאינטגרציה\)<\/span><b>2024/);
+ delete card._hass.states['sensor.owner_vehicle_identity'];
+ assert.match(card.xpMaintenancePanel(),/שנת דגם \(מהגדרות הכרטיס\)<\/span><b>2025/);
+});
+test('native map reuses one unchanged Map card on repeated Xpengtk hass updates',async()=>{
+ const {card,sandbox}=createCard();
+ card._xpengRegistryLoaded=true;
+ card._xpengByKey['device_tracker.location']='device_tracker.user_gps';
+ card._hass.states['device_tracker.user_gps']={state:'not_home',attributes:{latitude:32,longitude:34}};
+ card._xpPanel='map';
+ let count=0,child=null;
+ const host={replaceChildren(x){child=x},contains(x){return child===x}};
+ card.shadowRoot.querySelector=key=>key==='[data-xp-map-host]'?host:null;
+ card.shadowRoot.contains=x=>x===host;
+ sandbox.window.loadCardHelpers=async()=>({createCardElement(){count++;return {hass:null}}});
+ await card.xpMountMap();
+ assert.equal(count,1);
+ const before=card._xpMapElement;
+ card.hass={...card._hass,states:{...card._hass.states,'sensor.user_named_battery':{state:'71',attributes:{}}}};
+ assert.equal(card._xpMapElement,before);
+ assert.equal(card._xpMapElement.hass,card._hass);
+ assert.equal(count,1);
+ await card.xpMountMap();
+ assert.equal(count,1,'Map initialization must not repeat');
+});
+test('mobile scroll and diagnostics have one scrolling parent and original model year is explicit',()=>{
+ assert.match(src,/diagnostics\.scrollTop=oldDiagnostics/);
+ assert.match(src,/\.xp-ux-modal\.xp-ux-modal-extras \.xp-diagnostics-scroll/);
+ assert.match(src,/max-height:none!important;height:auto!important;overflow:visible!important/);
+ assert.match(src,/\.xp-header \.xp-wifi \.xp-mdi-icon/);
+});
 test('renamed entity IDs resolve from Xpengtk stable unique IDs', () => {
   const {card} = createCard();
   assert.equal(card.xpengEntity('sensor', 'battery_soc'), 'sensor.user_named_battery');
