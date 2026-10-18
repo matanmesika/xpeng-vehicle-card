@@ -3113,8 +3113,9 @@ class XpengVehicleCard extends HTMLElement{
   if(isCharging)this._tireOpen=false;
   const onHome=!isCharging&&!this._tireOpen&&!this._xpPanel;
   const onChargeHome=isCharging&&!this._xpPanel;
+  const chargeLayout=isCharging&&this.xpUiEnabled();
   const showDock=this.xpUiEnabled()&&(onHome||onChargeHome);
-  this.shadowRoot.innerHTML=`<style>${XP_CSS}</style><ha-card><div class="xp-scene ${isCharging?'xp-charge':this._tireOpen?'xp-overview xp-tire-mode':'xp-overview'} ${this.xpUiEnabled()?'xp-has-controls':''} ${onHome&&this.xpUiEnabled()?'xp-home-navigation':''} ${onChargeHome&&this.xpUiEnabled()?'xp-charge-navigation':''}">
+  this.shadowRoot.innerHTML=`<style>${XP_CSS}</style><ha-card><div class="xp-scene ${isCharging?'xp-charge':this._tireOpen?'xp-overview xp-tire-mode':'xp-overview'} ${this.xpUiEnabled()?'xp-has-controls':''} ${onHome&&this.xpUiEnabled()?'xp-home-navigation':''} ${chargeLayout?'xp-charge-navigation':''}">
    ${this.sceneBackdrop()}${this.header()}${isCharging?this.charging():this._tireOpen?this.title()+this.tireScreen():this.overview()}${showDock?this.xpDock():""}${this.xpModal()}
    
    </div></ha-card>`;
