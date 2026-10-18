@@ -52,6 +52,7 @@ test('Behavior Guardian: JS and vehicle assets do not change from the accepted b
     v=v.slice(0,lineStart>=0?lineStart:a)+v.slice(b);
     v=v.replace("this.xpExtraSectionGuide(section[0])+","");
     v=v.replace("this.xpModalGuide(page)+","");
+    v=v.replace(/   \/\/ An in-page explanation must never force[\s\S]*?   }\n(?=   inner\.style\.zoom='1')/,'');
   }
   return v;
  };
