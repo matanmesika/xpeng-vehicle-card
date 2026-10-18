@@ -1350,6 +1350,8 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  box-shadow:0 12px 25px #0007;overflow:hidden;
 }
 .xp-ux-map-actions button ha-icon{color:#81d9ff}
+.xp-ux-map-actions .xp-map-native-details{grid-column:1/-1;min-height:42px;font-size:12px;background:#0b3450b8}
+.xp-ux-dock-action[aria-busy="true"],button[data-xp-toggle][aria-busy="true"]{opacity:.78;transition:none;font-weight:inherit}
 .xp-ux-modal button:disabled,.xp-ux-modal .xp-ux-climate-readonly{
  opacity:.5;cursor:not-allowed;
 }
@@ -1922,7 +1924,7 @@ function xpSensorMappingMode(cfg,profile){
 }
 class XpengVehicleCard extends HTMLElement{
  constructor(){
-  super();this.attachShadow({mode:'open'});this._config={};this._hass=null;this._view='overview';this._expanded=false;this._vehicleIndex=0;this._infoOpen=false;this._tireOpen=false;this._failedArtwork=new Set();this._xpNavStack=[];this._xpMapElement=null;this._xpMapEntityId=null;
+  super();this.attachShadow({mode:'open'});this._config={};this._hass=null;this._view='overview';this._expanded=false;this._vehicleIndex=0;this._infoOpen=false;this._tireOpen=false;this._failedArtwork=new Set();this._xpNavStack=[];this._xpMapElement=null;this._xpMapEntityId=null;this._xpTogglePending=Object.create(null);
   this.shadowRoot.addEventListener('error',ev=>{
       const img=ev.target;
       if(!img?.matches?.('img[data-car-art],img[data-top-art],img[data-cabin-art]'))return;
@@ -1984,6 +1986,7 @@ class XpengVehicleCard extends HTMLElement{
       }
       if(b.hasAttribute('data-xp-door-lock')){this.xpSend('lock','lock','door_lock');return;}
       if(b.hasAttribute('data-xp-window-close')){this.xpSend('button','press','close_windows');return;}
+      if(b.hasAttribute('data-xp-map-details')){this.xpDetails('location','device_tracker');return;}
       if(b.hasAttribute('data-xp-map-action')){
         const action=b.dataset.xpMapAction;
         if(['honk_horn','flash_lights'].includes(action))this.xpSend('button','press',action);
@@ -2203,15 +2206,43 @@ class XpengVehicleCard extends HTMLElement{
      :{domain:'button',service:'press',suffix:'open_charge_port',label:'פתיחת שקע טעינה'};
    return null;
  }
+ xpPendingToggle(action){
+   const pending=this._xpTogglePending?.[action];
+   if(!pending)return null;
+   const elapsed=Date.now()-pending.at;
+   if(elapsed>=12000||(elapsed>=1800&&this.xpActionState(action)===pending.expected)){
+     delete this._xpTogglePending[action];
+     return null;
+   }
+   return pending;
+ }
  xpToggle(action){
+   // Lock out double taps and stale alternating entity reports while an actual
+   // vehicle command is being processed. Sensor updates never send commands.
+   if(this.xpPendingToggle(action))return;
    const target=this.xpToggleTarget(action);
    if(!target||!this.xpLive(target.domain,target.suffix))return;
-   // Only a user click reaches this function. No sensor-state listener issues car commands.
-   this.xpSend(target.domain,target.service,target.suffix,undefined,true);
+   this._xpTogglePending??=Object.create(null);
+   const marker={target,expected:this.xpActionState(action)==='open'?'closed':'open',at:Date.now()};
+   this._xpTogglePending[action]=marker;
+   this.render();
+   const sent=this.xpSend(target.domain,target.service,target.suffix,undefined,true);
+   Promise.resolve(sent).then(ok=>{
+     if(ok===false&&this._xpTogglePending[action]===marker){
+       delete this._xpTogglePending[action];
+       this.render();
+     }
+   });
+   if(typeof setTimeout==='function')setTimeout(()=>{
+     if(this._xpTogglePending?.[action]===marker){
+       delete this._xpTogglePending[action];this.render();
+     }
+   },12000);
  }
  xpToggleButton(action){
-   const target=this.xpToggleTarget(action);
-   const usable=target&&this.xpLive(target.domain,target.suffix);
+   const pending=this.xpPendingToggle(action);
+   const target=pending?.target||this.xpToggleTarget(action);
+   const usable=!pending&&target&&this.xpLive(target.domain,target.suffix);
    const title=target?.label||(this.xpActionState(action)===null?'המצב אינו ידוע':'נדרשת הרשאת Access');
    return '<button type="button" data-xp-toggle="'+action+'" '+(usable?'':'disabled')+
      ' aria-label="'+xpEsc(title)+'" title="'+xpEsc(title)+'">'+
@@ -2228,8 +2259,9 @@ class XpengVehicleCard extends HTMLElement{
    return '<nav class="xp-ux-dock xp-ux-dock-seven" aria-label="פעולות הרכב וקיצורי מסכים" dir="rtl">'+
      items.map(([action,icon,title])=>{
        const toggle=['doors','windows','port','trunk'].includes(action);
-       const target=toggle?this.xpToggleTarget(action):null;
-       const available=toggle?!!(target&&this.xpLive(target.domain,target.suffix)):
+       const pending=toggle?this.xpPendingToggle(action):null;
+       const target=toggle?(pending?.target||this.xpToggleTarget(action)):null;
+       const available=toggle?!pending&&!!(target&&this.xpLive(target.domain,target.suffix)):
          action==='climate'?!!this.xpLive('climate','cabin_climate'):true;
        const label=toggle?(target?.label||(this.xpActionState(action)===null?'מצב לא ידוע':'דרושה הרשאת גישה')):title;
        const compact=toggle?({
@@ -2244,7 +2276,7 @@ class XpengVehicleCard extends HTMLElement{
          action==='trunk'?(target?.suffix==='open_trunk'?'trunk_open':'trunk'):icon;
        return '<button class="xp-ux-dock-action" type="button" '+
          (toggle?'data-xp-toggle="'+action+'"':'data-xp-open="'+action+'"')+
-         ' aria-label="'+xpEsc(label)+'" title="'+xpEsc(label)+'" '+(available?'':'disabled')+'>'+
+         ' aria-label="'+xpEsc(label)+'" title="'+xpEsc(label)+'" '+(pending?'aria-busy="true" ':'')+(available?'':'disabled')+'>'+
          xpIcon(ico,27)+'<small>'+xpEsc(compact)+'</small></button>';
      }).join('')+'</nav>';
  }
@@ -2578,7 +2610,9 @@ class XpengVehicleCard extends HTMLElement{
     +'<button type="button" data-xp-map-action="honk_horn" '+(horn?'':'disabled')
     +'>'+xpIcon('horn',20)+' צופר</button>'
     +'<button type="button" data-xp-map-action="flash_lights" '+(lights?'':'disabled')
-    +'>'+xpIcon('flash',20)+' הבהוב</button></div></div>';
+    +'>'+xpIcon('flash',20)+' הבהוב</button>'
+    +'<button class="xp-map-native-details" type="button" data-xp-map-details '+(location?'':'disabled')+'>'
+    +xpIcon('pin',18)+' פרטי מיקום ב־Home Assistant</button></div></div>';
  }
  async xpMountMap(){
    if(this._xpPanel!=='map')return;
@@ -2597,12 +2631,12 @@ class XpengVehicleCard extends HTMLElement{
      if(!helper){host.textContent='המפה המובנית אינה זמינה בכרטיס זה כרגע.';return;}
      if(this._xpPanel!=='map'||!this.shadowRoot?.contains?.(host))return;
      const map=helper.createCardElement({type:'map',entities:[{entity:gps.id}],
-       default_zoom:11,hours_to_show:0,dark_mode:true});
+       default_zoom:11,hours_to_show:0,theme_mode:'dark',aspect_ratio:'4:3'});
      map.hass=this._hass;
      this._xpMapElement=map;this._xpMapEntityId=gps.id;
      host.replaceChildren(map);
    }catch(err){
-     host.textContent='המפה אינה זמינה בתוך הכרטיס כרגע.';
+     host.textContent='המפה אינה זמינה בתוך הכרטיס כרגע. אפשר לפתוח את פרטי המיקום דרך הכפתור למטה.';
    }
  }
  xpModal(){
@@ -2896,7 +2930,7 @@ class XpengVehicleCard extends HTMLElement{
  }
  async xpSend(domain,service,suffix,value,verifiedDirectTap=false){
   const entity=this.xpLive(domain,suffix);
-  if(!entity||typeof this._hass?.callService!=='function')return;
+  if(!entity||typeof this._hass?.callService!=='function')return false;
   const data={entity_id:entity.id};
   if(service==='set_value')data.value=value;
   else if(service==='set_temperature')data.temperature=value;
@@ -2913,14 +2947,17 @@ class XpengVehicleCard extends HTMLElement{
   );
   if((sensitive||['trunk_power_switch','auto_upgrade_switch','sentinel_sensitivity_control','trunk_power_timer_control'].includes(suffix))
      &&!directAllowed&&typeof window.confirm==='function'
-     &&!window.confirm('לשלוח את הפקודה לרכב?'))return;
+     &&!window.confirm('לשלוח את הפקודה לרכב?'))return false;
+  let succeeded=false;
   try{
     await this._hass.callService(domain,service,data);
+    succeeded=true;
     this._xpNotice='הפקודה נשלחה ל־Home Assistant. יש לוודא שהרכב אישר את הפעולה.';
   }catch(err){
     this._xpNotice='שגיאה בשליחת הפקודה: '+(err?.message||'נסה שוב');
   }
   this.render();
+  return succeeded;
  }
  xpDoTemperature(direction){
   const c=this.xpLive('climate','cabin_climate');
@@ -2989,6 +3026,7 @@ class XpengVehicleCard extends HTMLElement{
   if(oldVehicle!==nextVehicle){
     this._xpPanel=null;this._xpExtraSection=null;this._xpNavStack=[];this._xpSeatFocus=null;
   }
+  if(oldVehicle!==nextVehicle)this._xpTogglePending=Object.create(null);
   this._config=next;this._infoOpen=false;this._tireOpen=false;this._xpManualCharging=false;this._xpChargingDismissed=false;this._xpLastActualCharging=false;this.render();
  }
  set hass(hass){
@@ -3294,6 +3332,39 @@ class XpengVehicleCard extends HTMLElement{
         '</nav>':''}
     </section>`;
  }
+ // Update matching nodes in place instead of replacing the entire shadow tree
+ // on every Home Assistant state tick. This preserves active iPhone touches,
+ // native map tiles, focus, and the modal's scroll container.
+ xpReconcileChildren(current,next){
+   let existing=current.firstChild;
+   for(let fresh=next.firstChild;fresh;fresh=fresh.nextSibling){
+     if(!existing){current.appendChild(fresh.cloneNode(true));continue;}
+     if(existing.nodeType!==fresh.nodeType||existing.nodeName!==fresh.nodeName){
+       const replacement=fresh.cloneNode(true);
+       current.replaceChild(replacement,existing);
+       existing=replacement.nextSibling;
+       continue;
+     }
+     const after=existing.nextSibling;
+     if(existing.nodeType===3){
+       if(existing.nodeValue!==fresh.nodeValue)existing.nodeValue=fresh.nodeValue;
+     }else if(existing.nodeType===1){
+       const oldAttrs=[...existing.attributes];
+       for(const attr of oldAttrs)if(!fresh.hasAttribute(attr.name))existing.removeAttribute(attr.name);
+       for(const attr of fresh.attributes){
+         if(existing.getAttribute(attr.name)!==attr.value)existing.setAttribute(attr.name,attr.value);
+       }
+       // Only the real map owns this slot after the first mount. Its internals
+       // must never be reconciled against the "loading" placeholder.
+       const mountedMap=existing.hasAttribute('data-xp-map-host')&&
+         this._xpPanel==='map'&&this._xpMapElement&&
+         existing.contains(this._xpMapElement);
+       if(!mountedMap)this.xpReconcileChildren(existing,fresh);
+     }
+     existing=after;
+   }
+   while(existing){const following=existing.nextSibling;current.removeChild(existing);existing=following;}
+ }
  render(){
   if(!this.shadowRoot)return;
   this.toggleAttribute('data-expanded',this._expanded);
@@ -3311,10 +3382,16 @@ class XpengVehicleCard extends HTMLElement{
   const oldPanel=oldModal?.className||'';
   const oldScroll=oldModal?.scrollTop||0;
   const oldDiagnostics=oldModal?.querySelector?.('.xp-diagnostics-scroll')?.scrollTop||0;
-  this.shadowRoot.innerHTML=`<style>${XP_CSS}</style><ha-card><div class="xp-scene ${isCharging?'xp-charge':this._tireOpen?'xp-overview xp-tire-mode':'xp-overview'} ${this.xpUiEnabled()?'xp-has-controls':''} ${onHome&&this.xpUiEnabled()?'xp-home-navigation':''} ${chargeLayout?'xp-charge-navigation':''}">
+  const html=`<style>${XP_CSS}</style><ha-card><div class="xp-scene ${isCharging?'xp-charge':this._tireOpen?'xp-overview xp-tire-mode':'xp-overview'} ${this.xpUiEnabled()?'xp-has-controls':''} ${onHome&&this.xpUiEnabled()?'xp-home-navigation':''} ${chargeLayout?'xp-charge-navigation':''}">
    ${this.sceneBackdrop()}${this.header()}${isCharging?this.charging():this._tireOpen?this.title()+this.tireScreen():this.overview()}${showDock?this.xpDock():""}${this.xpModal()}
    
    </div></ha-card>`;
+  if(typeof document!=='undefined'&&typeof document.createElement==='function'&&
+     this.shadowRoot.childNodes?.length){
+    const template=document.createElement('template');
+    template.innerHTML=html;
+    this.xpReconcileChildren(this.shadowRoot,template.content);
+  }else this.shadowRoot.innerHTML=html;
   const newModal=this.shadowRoot.querySelector?.('.xp-ux-modal');
   if(newModal&&oldPanel===newModal.className){
     newModal.scrollTop=oldScroll;
