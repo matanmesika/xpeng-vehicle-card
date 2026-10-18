@@ -2478,6 +2478,31 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  filter:grayscale(1) brightness(.52) contrast(1.18)
 }
 
+/* Screen guides are present only inside existing destinations, never launcher
+   tiles. They explain real integration controls without inventing limits. */
+.xp-help-intro{
+ display:flex;flex-direction:column;gap:7px;
+ margin:4px 0 clamp(12px,1.5cqw,18px);
+ border:1px solid #64b7df80;border-radius:16px;
+ padding:clamp(12px,1.25cqw,19px);
+ background:linear-gradient(135deg,#153f59d9,#092038e8);
+ box-shadow:inset 0 1px #ffffff16
+}
+.xp-help-intro strong{font-size:clamp(15px,1.45cqw,19px);font-weight:750;color:#eafbff}
+.xp-help-intro p{margin:0;line-height:1.48;font-size:clamp(12px,1.08cqw,14px);color:#d8e8f5}
+.xp-help-intro small{font-size:clamp(11px,.95cqw,13px);line-height:1.42;color:#a6c7db}
+.xp-help-spec{
+ border-top:1px solid #78bee344;padding-top:8px;
+ color:#9deeff;font-size:clamp(11px,1.03cqw,14px);
+ line-height:1.55;font-variant-numeric:tabular-nums;overflow-wrap:anywhere
+}
+.xp-ux-modal-extras .xp-extra-details>.xp-help-intro{margin-top:0}
+@container xpeng-layout (max-width:600px){
+ .xp-help-intro{padding:11px 12px;border-radius:13px;gap:5px;margin-bottom:10px}
+ .xp-help-intro p{font-size:12px}
+ .xp-help-spec{font-size:11px}
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -3257,7 +3282,7 @@ class XpengVehicleCard extends HTMLElement{
    return '<section class="xp-ux-modal xp-ux-modal-'+page+(page==='charge_controls'||page==='charge_schedule'?' xp-charge-compact-modal':'')+'" role="dialog" aria-modal="true" aria-label="'+labels[page]+'" dir="rtl">'
     +'<header class="xp-ux-modal-head"><button type="button" data-xp-close aria-label="'+(this._xpNavStack?.length?'חזרה לחלון הקודם':'חזרה למסך הבית')+'">'+xpIcon('back',24)+'</button>'
     +'<h2>'+labels[page]+'</h2></header>'
-    +'<div class="xp-ux-modal-content"><div class="xp-ux-modal-content-inner">'+body+'</div></div>'+(this._xpNotice?'<p class="xp-ux-notice" role="status">'+xpEsc(this._xpNotice)+'</p>':'')
+    +'<div class="xp-ux-modal-content"><div class="xp-ux-modal-content-inner">'+this.xpModalGuide(page)+body+'</div></div>'+(this._xpNotice?'<p class="xp-ux-notice" role="status">'+xpEsc(this._xpNotice)+'</p>':'')
     +'</section>';
  }
 
@@ -3444,6 +3469,72 @@ class XpengVehicleCard extends HTMLElement{
     entries.map(line).join('')+'</div>'+
     '<p class="xp-ux-note">חיישן unavailable אינו ניתן לתיקון באמצעות ציור הכרטיס. בדוק את מקור הנתון באינטגרציה. כפתורי פעולה מסוג button אינם מדווחים מצב רגיל.</p></div>';
  }
+
+ // Guide copy is intentionally separate from sensor mappings and service
+ // actions. Values are read from real HA entities, never invented.
+ xpGuideNumber(suffix,unit=''){
+   const entity=this.xpExtraLive('number',suffix);
+   const raw=entity?.state?.state;
+   if(!entity||!Number.isFinite(Number(raw)))return 'Current value: Unavailable. Range: Not provided by the integration.';
+   const attributes=entity.state.attributes||{};
+   const min=attributes.min===null||attributes.min===undefined?null:Number(attributes.min);
+   const max=attributes.max===null||attributes.max===undefined?null:Number(attributes.max);
+   const format=value=>xpEsc(xpNum(value))+(unit?' '+xpEsc(unit):'');
+   return 'Current: '+format(Number(raw))+
+     ' · Minimum: '+(Number.isFinite(min)?format(min):'Not provided')+
+     ' · Maximum: '+(Number.isFinite(max)?format(max):'Not provided');
+ }
+ xpGuidePanel(title,description,specification='',note=''){
+   const copy='<strong>'+xpEsc(title)+'</strong><p>'+xpEsc(description)+'</p>';
+   const spec=specification?'<div class="xp-help-spec">'+specification+'</div>':'';
+   const detail=note?'<small>'+xpEsc(note)+'</small>':'';
+   return '<aside class="xp-help-intro" aria-label="Function explanation">'+copy+spec+detail+'</aside>';
+ }
+ xpExtraSectionGuide(section){
+   const s={
+     security:['What is X-Guard?','X-Guard is the vehicle security monitoring mode. The switch enables or disables this function. Sensitivity is a separate setting: the minimum is the lowest supported setting and the maximum is the highest.','The exact events detected at each level are determined by XPENG firmware.'],
+     schedule:['Climate schedules','Shows the climate schedules reported by the integration. You can enable or disable an individual schedule only if its corresponding Xpengtk switch is available.','Schedule count and time limits are not supplied as a numeric control range.'],
+     energy:['Energy data','Shows reported energy consumption, parked consumption and the latest charging session. These values are read-only measurements, not selectable settings.','Measurements and their units depend on the available Xpengtk sensors.'],
+     power:['Vehicle-to-load (V2L)','Controls the existing tailgate power outlet if Xpengtk exposes a switch. The timer sets when that outlet turns off automatically; it does not change the outlet power rating.','Use the car manufacturer’s safety instructions for connected appliances.'],
+     maintenance:['Maintenance information','Shows service data reported by the vehicle. Odometer and dates are informational values; there is no editable minimum or maximum.','Service intervals come from the integration and vehicle, not from this card.'],
+     updates:['Software updates','Shows the installed XOS version and update status. Automatic updating can be toggled only when the Xpengtk switch exists.','Software version numbers and update status are not numeric ranges.'],
+     diagnostics:['Entity diagnostics','Lists the entities mapped to this car and their current Home Assistant states, including unknown and unavailable sensors.','Read-only diagnostic information; no minimum or maximum applies.']
+   }[section];
+   if(!s)return '';
+   let spec='Read-only / State: See live entities';
+   if(section==='security')spec=this.xpGuideNumber('sentinel_sensitivity_control');
+   if(section==='power')spec='Auto-off timer: '+this.xpGuideNumber('trunk_power_timer_control','min');
+   if(section==='schedule')spec='Individual schedules: Off / On when an entity is available';
+   if(section==='updates')spec='Automatic updates: Off / On when an entity is available';
+   if(section==='maintenance')spec='Service distance and time: values from the vehicle, not user-selectable limits';
+   return this.xpGuidePanel(s[0],s[1],xpEsc(spec),s[2]);
+ }
+ xpModalGuide(page){
+   const guide={
+     climate:['Climate controls','Climate power, AUTO, target temperature and fan settings operate only with mapped Home Assistant entities. Seat and steering-wheel controls cycle the supported levels directly on the cabin image.','Fan and temperature limits depend on the available entities.'],
+     charge_controls:['Charge limit','Sets the target maximum battery percentage for charging. A lower limit stops at a lower target SOC; a higher limit allows a higher target SOC.','Changes are sent to Home Assistant and should be confirmed in the vehicle.'],
+     charge_schedule:['Charging schedule','Displays the charging start and end times published by Xpengtk. This page does not invent an unsupported schedule editing action.','Read-only start and end times; no editable numeric limits.'],
+     maintenance:['Maintenance and tire pressure','Four tire readings are paired with their physical wheel positions. Other values show odometer, next service and vehicle identity.','Recommended tire pressure must come from the actual vehicle placard; no universal minimum or maximum is assumed.'],
+     port:['Charge port','Opens or closes the charge port when the vehicle reports a known state and the corresponding command exists.','Do not close the port while a cable is connected.'],
+     doors:['Door locks','The action changes with the live state: Unlock when locked and Lock when unlocked. If the state is unknown, the action is unavailable.','Access permission may be required for unlocking.'],
+     windows:['Windows','Shows the currently available open/close action for the vehicle windows. The command depends on a known sensor state.','No intermediate opening percentage is assumed unless the integration exposes one.'],
+     trunk:['Tailgate','Opens or closes the trunk according to the reported state and available command.','Keep people and objects clear of the moving tailgate.'],
+     map:['Vehicle location','Displays the position reported by the configured vehicle tracker using the native Home Assistant map.','Horn and flash actions appear only when their matching entities are supported.']
+   }[page];
+   if(!guide)return '';
+   let spec='';
+   if(page==='charge_controls')spec=this.xpGuideNumber('charge_limit_control','%');
+   if(page==='climate'){
+     const entity=this.xpLive('climate','cabin_climate');
+     const attrs=entity?.state?.attributes||{};
+     const lo=attrs.min_temp===undefined?'Not provided':xpNum(attrs.min_temp);
+     const hi=attrs.max_temp===undefined?'Not provided':xpNum(attrs.max_temp);
+     spec='Temperature: Min '+lo+' °C · Max '+hi+' °C (integration values)';
+   }
+   if(['doors','windows','trunk','port'].includes(page))spec='State: Open / Closed; actions require real sensor feedback';
+   if(page==='charge_schedule')spec='Editable range: None (read-only entities)';
+   return this.xpGuidePanel(guide[0],guide[1],xpEsc(spec),guide[2]);
+ }
  xpExtrasPanel(){
    const sections=[
      ['security','shield','X-Guard','אבטחה ורגישות השמירה'],
@@ -3457,7 +3548,7 @@ class XpengVehicleCard extends HTMLElement{
    const section=sections.find(x=>x[0]===this._xpExtraSection);
    if(section){
      return '<div class="xp-extra-body'+(section[0]==='diagnostics'?' xp-extra-diagnostics-layout':'')+'"><div class="xp-extra-heading"><strong>'+xpEsc(section[2])+'</strong></div>'
-       +'<div class="xp-extra-details">'+this.xpExtraSectionContent(section[0])+'</div>'
+       +'<div class="xp-extra-details">'+this.xpExtraSectionGuide(section[0])+this.xpExtraSectionContent(section[0])+'</div>'
        +(section[0]==='diagnostics'?'':'<p class="xp-ux-note">המידע מגיע מ־Xpengtk. הפקודות פועלות לפי הרשאות Home Assistant והרכב בלבד.</p>')+'</div>';
    }
    return '<div class="xp-extra-body"><p class="xp-extra-subtitle">אפשרויות נוספות לרכב — שבעת קיצורי הדרך נשארים במסך הבית בלבד.</p>'
