@@ -95,8 +95,8 @@ test('the Home screen hides maintenance summaries but preserves a single dedicat
 });
 
 test('modern glass design uses official Material Design action icons without changing vehicle actions',()=>{
- assert.match(source,/maintenance:'mdi:tools'/);
- assert.match(source,/settings:'mdi:cog'/);
+ assert.match(source,/maintenance:'mdi:wrench-outline'/);
+ assert.match(source,/settings:'mdi:cog-outline'/);
  assert.match(source,/xpIcon\(ico,27\)/);
  assert.match(css,/Modern Glass UI v2/);
  assert.match(css,/\.xp-home-navigation \.xp-overview-stat\{[^}]*backdrop-filter:blur\(20px\)/);
