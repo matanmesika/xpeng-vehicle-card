@@ -420,13 +420,25 @@ async function main(){
      wifi=root.querySelector('.xp-header .xp-wifi'),glyph=wifi?.querySelector('ha-icon'),
      gr=gear?.getBoundingClientRect(),wr=wifi?.getBoundingClientRect(),
      ir=glyph?.getBoundingClientRect();
-   const icons=[...root.querySelectorAll('.xp-ux-dock-seven .xp-ux-dock-action ha-icon')]
+   // Count the primary glyph of EACH dock button only. The official MDI
+   // trunk lift/lower badge is a subordinate action indicator, not an eighth
+   // shortcut or a replacement for the original neutral icon palette.
+   const icons=[...root.querySelectorAll('.xp-ux-dock-seven .xp-ux-dock-action')]
+     .map(button=>button.querySelector('ha-icon.xp-mdi-icon'))
+     .filter(Boolean)
      .map(icon=>getComputedStyle(icon).color);
+   const trunkButton=root.querySelector('.xp-ux-dock-action[data-xp-toggle="trunk"]');
+   const trunkArrow=trunkButton?.querySelector('.xp-trunk-arrow');
+   const trunkSymbol=trunkButton?.querySelector('.xp-trunk-symbol');
+   const tailgate={car:trunkSymbol?.querySelector('ha-icon.xp-mdi-icon')?.getAttribute('icon'),
+     arrow:trunkArrow?.getAttribute('icon'),
+     action:trunkButton?.getAttribute('aria-label'),
+     arrowColor:trunkArrow?getComputedStyle(trunkArrow).color:null};
    return {hasGear:!!gear,hasWifi:!!wifi,
      cssGap:parseFloat(getComputedStyle(root.querySelector('.xp-meta-tools')).gap),
      actualGap:gr&&wr?Math.abs(wr.left-gr.right):null,
      glyphOffset:ir&&wr?(ir.top+ir.height/2)-(wr.top+wr.height/2):null,
-     colors:[...new Set(icons)],iconCount:icons.length,
+     colors:[...new Set(icons)],iconCount:icons.length,tailgate,
      disabled:root.querySelectorAll('.xp-ux-dock-action[disabled]').length};
  });
  assert.equal(desktopHeaderPolish.hasGear,true,'Desktop gear must remain available');
@@ -438,6 +450,10 @@ async function main(){
  assert.deepEqual(desktopHeaderPolish.colors,['rgb(233, 244, 255)'],
    'Seven shortcut pictograms must share one neutral color');
  assert.equal(desktopHeaderPolish.iconCount,7);
+ assert.equal(desktopHeaderPolish.tailgate.car,'mdi:car-estate',
+   'Trunk shortcut must show a real rear-tailgate capable SUV side profile');
+ assert.ok(['mdi:arrow-up-bold','mdi:arrow-down-bold'].includes(desktopHeaderPolish.tailgate.arrow),
+   'Rear hatch must have a genuine MDI lift or lower action icon');
  assert.equal(desktopHeaderPolish.disabled,0,'All mock actions remain enabled');
  console.log('PASS desktop cog/Wi-Fi spacing and uniform action icon palette:',JSON.stringify(desktopHeaderPolish));
 
