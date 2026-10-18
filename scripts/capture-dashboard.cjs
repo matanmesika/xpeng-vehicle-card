@@ -523,7 +523,11 @@ async function main(){
  assert.ok(summary>=30,'Expected mocked integration entities in diagnostics: '+summary);
  await reviewShot('diagnostics-mobile');
  await car.locator('button[data-xp-close]').click();
- assert.equal(await car.locator('.xp-ux-dock-action').count(),7);
+ assert.equal(await car.locator('button[data-xp-extra-page="diagnostics"]').count(),1,
+   'Diagnostics Back must return to Extras, not Home');
+ await car.locator('button[data-xp-close]').click();
+ assert.equal(await car.locator('.xp-ux-dock-action').count(),7,
+   'Second Back should return to Home navigation');
 
  await page.evaluate(()=>{
    const card=document.querySelector('xpeng-vehicle-card'),h=card.hass;
@@ -602,7 +606,31 @@ async function main(){
      await car.locator('.xp-ux-modal-'+action).evaluate(el=>{el.scrollTop=0});
    }
 
+   const modalTitle=await car.locator('.xp-ux-modal-head').innerText();
+   assert.ok(!/(^|\\s)G6(\\s|$)/.test(modalTitle),
+     'No subpage repeats model G6 in title: '+modalTitle);
    await reviewShot(name);
+   if(action==='climate'){
+     // Real phone clicks: Climate -> HVAC schedules -> contextual Back -> Climate
+     await page.evaluate(()=>{
+       const card=document.querySelector('xpeng-vehicle-card'),h=card.hass;
+       card.hass={...h,states:{...h.states,
+         'sensor.my_xpeng_hvac_schedules':{state:'1',attributes:{schedules:[]}}}};
+     });
+     assert.equal(await car.locator('button[data-xp-extra-page="schedule"]').count(),1,
+       'Live HA schedule entity must add nested climate schedule action');
+     const scrollBefore=await car.locator('.xp-ux-modal-climate').evaluate(el=>{el.scrollTop=145;return el.scrollTop});
+     await car.locator('button[data-xp-extra-page="schedule"]').click();
+     assert.equal(await car.locator('.xp-ux-modal-extras').count(),1,'Nested schedule page missing');
+     assert.match(await car.locator('.xp-ux-modal-head button').getAttribute('aria-label'),/חלון הקודם/);
+     await car.locator('button[data-xp-close]').click();
+     assert.equal(await car.locator('.xp-ux-modal-climate').count(),1,
+       'Back from schedule must return to Climate, not to Home');
+     const scrollAfter=await car.locator('.xp-ux-modal-climate').evaluate(el=>el.scrollTop);
+     assert.ok(Math.abs(scrollAfter-scrollBefore)<=2,
+       'Return to Climate must restore scroll position: '+scrollBefore+' -> '+scrollAfter);
+     console.log('PASS contextual Back: Climate -> HVAC schedules -> Climate');
+   }
    await car.locator('button[data-xp-close]').click();
  }
  await page.evaluate(()=>{
