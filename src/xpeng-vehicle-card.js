@@ -2579,7 +2579,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  font-weight:730;letter-spacing:.115em;
  text-shadow:0 1px 12px rgba(10,28,44,.9);
 }
-.xp-scene .xp-header .xp-meta-tools{gap:10px}
+.xp-scene .xp-header .xp-meta-tools{gap:14px}
 .xp-scene .xp-header .xp-wifi,
 .xp-scene .xp-header .xp-more-trigger{
  border:1px solid var(--xp-v2-stroke-strong)!important;
@@ -2841,6 +2841,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 /* Compact phone and Sections: retain current content geometry and touch zones;
    only adjust visual density and typographic contrast. */
 @container xpeng-layout (max-width:850px){
+ .xp-scene .xp-header .xp-meta-tools{gap:8px}
  .xp-scene .xp-header{
   top:1.2%;left:3%;right:3%;min-height:48px;
   padding:6px 8px;border-radius:15px
