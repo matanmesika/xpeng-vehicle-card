@@ -2095,6 +2095,176 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-ux-modal-maintenance .xp-maintenance-page h3{font-size:14px;margin:3px 0}
 }
 
+/* G6 final visual review: use the screen's real available height, not 800px behind HA tabs. */
+.xp-scene{max-height:calc(100dvh - 96px)}
+@container xpeng-layout (max-width:850px){
+ .xp-scene{height:clamp(610px,calc(100dvh - 116px),750px);min-height:0}
+}
+@container xpeng-layout (max-width:520px){
+ .xp-scene{height:clamp(590px,calc(100dvh - 120px),725px);min-height:0}
+}
+/* Battery housing and inner fill are a single gauge driven by actual SOC. */
+.xp-batt-glyph{
+ box-sizing:border-box;flex:none;position:relative;display:flex;
+ align-items:flex-end;justify-content:center;
+ padding:5px!important;border-color:var(--xp-battery-color,#28eebc);
+ background:#051527ca;color:var(--xp-battery-color,#28eebc);
+}
+.xp-batt-glyph:before{border-color:var(--xp-battery-color,#28eebc)}
+.xp-batt-fill{
+ width:100%;height:var(--xp-battery-level,0%);
+ min-height:0;background:var(--xp-battery-color,#28eebc);
+ border-radius:3px;box-shadow:0 0 9px currentColor;
+ transition:height .25s ease,background-color .25s ease
+}
+.xp-batt-glyph[data-level="unknown"]{--xp-battery-color:#8096ad}
+.xp-batt-glyph[data-level="low"]{--xp-battery-color:#ff526a}
+.xp-batt-glyph[data-level="medium"]{--xp-battery-color:#ffc44e}
+.xp-batt-glyph[data-level="good"]{--xp-battery-color:#24f2bd}
+.xp-home-navigation .xp-batt-glyph{
+ width:39px!important;height:57px!important;min-width:39px;
+ border-width:3px!important;padding:4px!important
+}
+.xp-home-navigation .xp-batt-line{min-height:57px}
+/* Maintenance: physical tire overlay cannot invade the detail cards. */
+.xp-ux-modal-maintenance .xp-maintenance-page{
+ display:flex;flex-direction:column;gap:4px;width:100%;min-width:0
+}
+.xp-ux-modal-maintenance .xp-maintenance-page>h3{
+ margin:5px 0!important;position:relative;flex:0 0 auto
+}
+.xp-ux-modal-maintenance .xp-tire-screen{
+ flex:0 0 auto;height:clamp(210px,31dvh,310px)!important;
+ min-height:0!important;max-height:310px;margin:0 auto 13px!important;
+ width:100%;position:relative
+}
+.xp-ux-modal-maintenance .xp-tire-stage{
+ height:100%!important;min-height:0!important;max-height:100%!important
+}
+.xp-ux-modal-maintenance .xp-tire-center{
+ height:98%!important;max-height:98%!important
+}
+.xp-ux-modal-maintenance .xp-maint-info{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ position:relative;z-index:1;width:100%;min-width:0;gap:6px
+}
+.xp-ux-modal-maintenance .xp-maint-info .xp-extra-line{
+ min-width:0;min-height:39px;box-sizing:border-box;
+ gap:7px;padding:6px 9px!important;overflow:hidden
+}
+.xp-ux-modal-maintenance .xp-maint-info .xp-extra-line span{
+ flex:0 1 43%;min-width:0;overflow-wrap:normal;word-break:normal
+}
+.xp-ux-modal-maintenance .xp-maint-info .xp-extra-line b{
+ flex:0 1 57%;max-width:57%;min-width:0;
+ font-size:clamp(11px,1.2cqw,14px);
+ overflow-wrap:anywhere;word-break:normal;text-align:end;line-height:1.35
+}
+@container xpeng-layout (max-width:650px){
+ .xp-ux-modal-maintenance .xp-tire-screen{
+  height:clamp(175px,26dvh,225px)!important;max-height:225px;
+  margin:0 auto 6px!important
+ }
+ .xp-ux-modal-maintenance .xp-maint-info{
+  grid-template-columns:minmax(0,1fr);gap:4px
+ }
+ .xp-ux-modal-maintenance .xp-maint-info .xp-extra-line{
+  min-height:29px;padding:4px 8px!important
+ }
+ .xp-ux-modal-maintenance .xp-maint-info .xp-extra-line span{flex-basis:49%}
+ .xp-ux-modal-maintenance .xp-maint-info .xp-extra-line b{
+  flex-basis:51%;max-width:51%;font-size:11px
+ }
+}
+/* Diagnostics: use the available modal height, never clip a sensor ID or note. */
+.xp-ux-modal-extras .xp-extra-diagnostics-layout{width:min(880px,100%);max-width:100%}
+.xp-ux-modal-extras .xp-extra-diagnostics-layout .xp-diagnostics-scroll{
+ display:flex!important;flex:1 1 0!important;flex-direction:column;
+ height:100%!important;max-height:none!important;min-height:85px!important;
+ align-items:stretch;gap:5px
+}
+.xp-ux-modal-extras .xp-extra-diagnostics-layout .xp-diagnostics-scroll .xp-entity-diagnostic{
+ box-sizing:border-box;flex:0 0 auto;
+ display:flex;align-items:center;justify-content:space-between;
+ gap:8px;min-width:0;width:100%;max-width:100%;min-height:39px;
+ white-space:nowrap;line-height:1.2;padding:7px 11px!important;
+ overflow:hidden
+}
+.xp-ux-modal-extras .xp-diagnostics-scroll .xp-entity-diagnostic>span{
+ display:block;min-width:0;flex:1 1 auto;
+ overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+ font-size:clamp(10px,1.1cqw,13px);direction:ltr;text-align:start
+}
+.xp-ux-modal-extras .xp-diagnostics-scroll .xp-entity-diagnostic>b{
+ display:block;flex:0 0 auto;max-width:27%;
+ overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+ line-height:1.2;font-size:12px
+}
+.xp-ux-modal-extras .xp-extra-diagnostics-layout .xp-ux-note{
+ width:100%;max-width:100%;line-height:1.3;font-size:11px
+}
+/* Climate: no horizontal spill at mobile widths; seat and wheel controls are
+   transparent over their OWN physical positions, with MDI color feedback only. */
+.xp-ux-modal-climate .xp-climate-layout{
+ box-sizing:border-box;min-width:0;max-width:100%;width:100%;
+ gap:clamp(7px,1.5cqw,16px)!important
+}
+.xp-ux-modal-climate .xp-climate-layout>.xp-ux-climate-bottom{
+ box-sizing:border-box;min-width:0;max-width:100%;width:100%;
+ gap:8px!important
+}
+.xp-ux-modal-climate .xp-climate-primary-controls{gap:7px}
+.xp-ux-modal-climate .xp-climate-temp-panel,
+.xp-ux-modal-climate .xp-climate-fan-panel{
+ box-sizing:border-box;min-width:0;max-width:100%;overflow:hidden
+}
+.xp-ux-modal-climate .xp-climate-thermometers{
+ grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:5px
+}
+.xp-ux-modal-climate .xp-climate-target .xp-ux-temp-line{gap:4px;min-width:0}
+.xp-ux-modal-climate .xp-climate-target .xp-ux-temp-line button{
+ width:32px;height:34px;min-width:32px;flex:0 0 32px
+}
+.xp-ux-modal-climate .xp-climate-target .xp-ux-temp-line b{
+ min-width:0;font-size:clamp(19px,2.2cqw,29px)
+}
+.xp-ux-modal-climate .xp-fan-bars{min-width:0;width:100%;gap:3px;overflow:hidden}
+.xp-ux-modal-climate .xp-fan-bars i{min-width:0}
+.xp-ux-modal-climate .xp-climate-fan-panel input{width:100%;max-width:100%;min-width:0}
+.xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-cycle{
+ background:transparent!important;backdrop-filter:none!important;
+ border:1px solid transparent!important;box-shadow:none!important;
+ color:#f1f9ff;text-shadow:0 1px 5px #001629
+}
+.xp-ux-modal-climate .xp-ux-cycle.xp-ux-cycle-on{
+ box-shadow:none!important;filter:drop-shadow(0 0 6px #91e8ff)
+}
+.xp-ux-modal-climate .xp-ux-cycle-heat.xp-ux-cycle-on ha-icon{color:#ff8b87}
+.xp-ux-modal-climate .xp-ux-cycle-vent.xp-ux-cycle-on ha-icon{color:#77e6ff}
+.xp-ux-modal-climate .xp-cabin-action-label{display:none!important}
+.xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-hotspot-zone{gap:2px}
+@container xpeng-layout (max-width:600px){
+ .xp-ux-modal-climate .xp-climate-layout{
+  display:flex;flex-direction:column;align-items:stretch!important
+ }
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{
+  order:0;align-self:center
+ }
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-climate-bottom{
+  order:1;width:100%;max-width:100%
+ }
+ .xp-ux-modal-climate .xp-climate-primary{min-height:60px;padding:6px 4px}
+ .xp-ux-modal-climate .xp-climate-inside b{font-size:clamp(19px,5.5cqw,25px)}
+ .xp-ux-modal-climate .xp-climate-features{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important
+ }
+ .xp-ux-modal-climate .xp-climate-temp-panel,.xp-ux-modal-climate .xp-climate-fan-panel{padding:7px 9px}
+ .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-cycle{
+  width:clamp(31px,9cqw,37px);min-width:31px;
+  height:40px;min-height:40px;padding:1px;gap:0
+ }
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
