@@ -367,6 +367,7 @@ async function main(){
  await responsiveShot(320,false,'small-mobile-vehicle-status');
  await responsiveShot(320,true,'small-mobile-charging');
  await responsiveShot(420,false,'sections-vehicle-status',1200);
+ await responsiveShot(420,true,'sections-charging',1200);
  // Capture real component's additional home controls, using demo HA entities only.
  await page.setViewportSize({width:1440,height:900});
  await page.evaluate(()=>{
