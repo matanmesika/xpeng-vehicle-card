@@ -2549,6 +2549,324 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  }
 }
 
+/* ========================================================================
+   XPENG G6 / V2 DESIGN SYSTEM — owner design-review branch
+   All visuals live here. Never alter the real Xpengtk commands, state checks,
+   navigation, photo URLs or the automatic charging scene.
+   Surface language: midnight slate / mineral glass / soft cyan light.
+   ======================================================================== */
+.xp-scene{
+ --xp-v2-ink:#eef7ff;--xp-v2-muted:#a8c2d2;
+ --xp-v2-aqua:#69deef;--xp-v2-mint:#52e5b8;
+ --xp-v2-stroke:rgba(151,202,228,.25);
+ --xp-v2-stroke-strong:rgba(130,209,235,.53);
+ --xp-v2-surface:linear-gradient(144deg,rgba(18,41,58,.95),rgba(6,18,34,.94));
+ --xp-v2-soft:linear-gradient(155deg,rgba(18,48,66,.8),rgba(9,26,44,.88));
+ --xp-v2-elev:0 14px 36px rgba(0,4,14,.34),inset 0 1px 0 rgba(227,248,255,.11);
+ --xp-v2-radius:20px;
+ color:var(--xp-v2-ink);font-variant-numeric:tabular-nums;
+}
+/* Brand/tool rail: one compact, consistent control surface. */
+.xp-scene .xp-header{
+ top:2.4%;left:3.1%;right:3.1%;
+ min-height:60px;padding:9px clamp(12px,1.5cqw,22px);
+ background:linear-gradient(105deg,rgba(7,20,35,.91),rgba(8,30,45,.82));
+ border:1px solid var(--xp-v2-stroke);
+ border-radius:19px;box-shadow:0 8px 24px rgba(0,0,0,.29);
+ backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+}
+.xp-scene .xp-brand{
+ font-weight:730;letter-spacing:.115em;
+ text-shadow:0 1px 12px rgba(10,28,44,.9);
+}
+.xp-scene .xp-header .xp-meta-tools{gap:10px}
+.xp-scene .xp-header .xp-wifi,
+.xp-scene .xp-header .xp-more-trigger{
+ border:1px solid var(--xp-v2-stroke-strong)!important;
+ border-radius:13px!important;background:rgba(25,57,75,.68)!important;
+ box-shadow:inset 0 1px 0 rgba(240,254,255,.12);
+ transition:background .15s ease,border-color .15s ease;
+}
+.xp-scene .xp-header .xp-wifi:hover,
+.xp-scene .xp-header .xp-more-trigger:hover{
+ background:rgba(41,87,107,.9)!important;border-color:var(--xp-v2-aqua)!important;
+}
+/* Hero battery / range: establish a legible information hierarchy. */
+.xp-home-navigation .xp-overview-stat,
+.xp-charge-navigation .xp-overview-stat{
+ padding:clamp(14px,1.7cqw,26px)!important;
+ border:1px solid var(--xp-v2-stroke-strong)!important;
+ border-radius:24px!important;
+ background:linear-gradient(137deg,rgba(14,43,60,.94),rgba(4,21,38,.94))!important;
+ box-shadow:var(--xp-v2-elev),0 0 28px rgba(20,155,182,.08)!important;
+ backdrop-filter:blur(15px);
+}
+.xp-home-navigation .xp-batt-line,.xp-charge-navigation .xp-batt-line{
+ align-items:center;gap:clamp(9px,1.4cqw,19px)
+}
+.xp-home-navigation .xp-overview-stat .xp-soc,
+.xp-charge-navigation .xp-overview-stat .xp-soc{
+ font-weight:780;letter-spacing:-.05em;
+ text-shadow:0 2px 24px rgba(43,226,197,.18);
+}
+.xp-home-navigation .xp-overview-stat .xp-stat-label,
+.xp-charge-navigation .xp-overview-stat .xp-stat-label{
+ color:var(--xp-v2-muted)!important;font-weight:550;
+ letter-spacing:.025em
+}
+.xp-home-navigation .xp-overview-range,
+.xp-charge-navigation .xp-overview-range{
+ margin-top:clamp(10px,1.4cqw,23px);
+ padding-top:clamp(10px,1.25cqw,18px);
+ border-top:1px solid rgba(116,190,214,.23)
+}
+.xp-scene .xp-overview-stat .xp-progress{
+ height:9px;border:1px solid rgba(111,174,197,.26);
+ background:#04192b!important;box-shadow:inset 0 2px 7px rgba(0,0,0,.5)
+}
+.xp-scene .xp-overview-stat .xp-progress div{
+ background:linear-gradient(90deg,#34bfae,#61efd0)!important;
+ box-shadow:0 0 14px rgba(76,244,197,.32)
+}
+.xp-scene .xp-status-panel{
+ border:1px solid var(--xp-v2-stroke)!important;border-radius:22px!important;
+ background:var(--xp-v2-surface)!important;
+ box-shadow:var(--xp-v2-elev)!important;
+ backdrop-filter:blur(16px)
+}
+.xp-scene .xp-status-panel .xp-info-row{
+ border-bottom-color:rgba(155,205,235,.16)
+}
+.xp-scene .xp-info-icon{color:var(--xp-v2-aqua)}
+.xp-scene .xp-charge-meta{
+ border-top-color:rgba(131,209,225,.24)
+}
+/* Bottom dock — seven existing shortcuts, same bindings and order. */
+.xp-scene .xp-ux-dock-seven{
+ gap:clamp(5px,.8cqw,12px);
+ border:1px solid rgba(139,204,231,.37)!important;
+ border-radius:23px!important;
+ background:linear-gradient(120deg,rgba(4,15,29,.96),rgba(10,32,48,.93))!important;
+ box-shadow:0 15px 40px rgba(0,0,0,.4),inset 0 1px rgba(235,249,255,.11)!important;
+ backdrop-filter:blur(22px)
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action{
+ border:1px solid rgba(132,181,208,.21)!important;
+ border-radius:15px!important;
+ background:linear-gradient(160deg,rgba(27,53,72,.84),rgba(8,26,44,.86))!important;
+ box-shadow:inset 0 1px rgba(244,254,255,.06)!important;
+ transition:transform .17s ease,border-color .17s ease,background-color .17s ease
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action ha-icon{
+ color:#a7e5fb;
+ filter:drop-shadow(0 0 7px rgba(109,224,243,.14))
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action small{
+ color:#d2e4ef!important;font-weight:600!important;letter-spacing:.005em
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action:disabled{
+ opacity:.47!important;filter:saturate(.5);cursor:not-allowed
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action:not(:disabled):is(:hover,:focus-visible){
+ transform:translateY(-2px);border-color:rgba(109,230,245,.83)!important;
+ background:linear-gradient(145deg,rgba(30,89,105,.9),rgba(12,46,69,.94))!important;
+}
+/* Functional modal architecture: legible header, consistent material surfaces. */
+.xp-scene .xp-ux-modal{
+ background:linear-gradient(154deg,rgba(5,19,33,.97),rgba(10,33,52,.97) 63%,rgba(5,20,36,.98))!important;
+ border:1px solid rgba(143,199,226,.46)!important;
+ border-radius:23px!important;
+ box-shadow:0 24px 55px rgba(0,0,0,.52),inset 0 1px rgba(228,247,255,.11)!important;
+ backdrop-filter:blur(20px)
+}
+.xp-scene .xp-ux-modal-head{
+ padding-bottom:clamp(9px,1.15cqw,15px);
+ border-bottom:1px solid rgba(142,201,223,.25);
+ gap:clamp(9px,1.1cqw,16px)
+}
+.xp-scene .xp-ux-modal-head h2{
+ font-weight:750;letter-spacing:-.023em;color:#f3fbff;
+ text-shadow:0 1px 10px rgba(0,0,0,.28)
+}
+.xp-scene .xp-ux-modal-head button{
+ background:linear-gradient(145deg,#1c4961,#0b2944)!important;
+ border:1px solid rgba(147,219,239,.41)!important;border-radius:14px!important;
+ box-shadow:inset 0 1px rgba(235,249,255,.1);
+ color:var(--xp-v2-ink)
+}
+.xp-scene .xp-ux-modal-head button:is(:hover,:focus-visible){
+ background:#256c82!important;border-color:#7ee7ee!important
+}
+/* Help panel lives in each feature, but feels integrated rather than bolted on. */
+.xp-scene .xp-help-intro{
+ gap:7px;border:1px solid rgba(131,202,228,.37)!important;
+ border-left:3px solid var(--xp-v2-aqua)!important;
+ border-radius:15px!important;padding:clamp(12px,1.3cqw,17px)!important;
+ background:linear-gradient(108deg,rgba(25,62,78,.84),rgba(12,37,58,.77))!important;
+ box-shadow:inset 0 1px rgba(251,255,255,.07)!important
+}
+.xp-scene .xp-help-intro strong{
+ font-weight:770;color:#f0fcff;letter-spacing:.012em
+}
+.xp-scene .xp-help-intro p{color:#d5e7f0;line-height:1.52}
+.xp-scene .xp-help-spec{
+ border-top:1px solid rgba(128,203,226,.25)!important;
+ color:#91edf3!important;font-weight:690
+}
+/* Large real controls are distinct from read-only measurements. */
+.xp-scene .xp-extra-action,
+.xp-scene .xp-ux-climate-feature,
+.xp-scene .xp-climate-primary,
+.xp-scene .xp-ux-charge-stop,
+.xp-scene .xp-ux-charge-limit{
+ border:1px solid rgba(137,202,226,.39)!important;
+ background:linear-gradient(150deg,rgba(23,55,73,.9),rgba(9,30,49,.93))!important;
+ border-radius:16px!important;box-shadow:inset 0 1px rgba(234,250,255,.1)!important;
+}
+.xp-scene .xp-extra-action:not(:disabled):is(:hover,:focus-visible),
+.xp-scene .xp-ux-climate-feature:not(:disabled):is(:hover,:focus-visible),
+.xp-scene .xp-climate-primary:not(:disabled):is(:hover,:focus-visible){
+ border-color:rgba(99,225,243,.84)!important;
+ background:linear-gradient(150deg,#19536b,#0c364f)!important
+}
+.xp-scene .xp-ux-selected{
+ border-color:rgba(92,234,217,.88)!important;
+ box-shadow:inset 0 1px rgba(234,250,255,.16),0 0 0 1px rgba(79,227,199,.25)!important
+}
+.xp-scene .xp-extra-action:disabled,
+.xp-scene .xp-ux-climate-feature:disabled{opacity:.48!important}
+/* Rebuilt Climate visual hierarchy: cabin stays on the original side and
+   touch hotspots stay positioned on original owner photo. */
+.xp-scene .xp-ux-modal-climate .xp-climate-layout{
+ column-gap:clamp(12px,1.7cqw,24px)!important;
+ row-gap:clamp(8px,1.2cqw,16px)!important
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-primary{
+ border-radius:17px!important;
+ box-shadow:inset 0 1px rgba(238,251,255,.11),0 6px 18px rgba(0,0,0,.2)!important
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-temp-panel,
+.xp-scene .xp-ux-modal-climate .xp-climate-fan-panel,
+.xp-scene .xp-ux-modal-climate .xp-ux-climate-feature{
+ background:linear-gradient(138deg,rgba(23,57,75,.9),rgba(7,28,45,.91))!important;
+ border:1px solid rgba(134,202,228,.38)!important;
+ box-shadow:inset 0 1px rgba(255,255,255,.09)!important;
+ border-radius:16px!important
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-primary b{font-weight:740}
+.xp-scene .xp-ux-modal-climate .xp-climate-thermometers b{
+ letter-spacing:-.04em;font-weight:730
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-temp-line button{
+ border:1px solid rgba(136,214,235,.41)!important;
+ background:linear-gradient(135deg,#1b4b61,#102f4d)!important;
+ border-radius:11px!important;box-shadow:inset 0 1px rgba(241,251,255,.11)
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-temp-line button:is(:hover,:focus-visible){
+ border-color:#70e5f1!important;background:#25647b!important
+}
+.xp-scene .xp-ux-modal-climate .xp-fan-bars i{
+ background:#09283e!important;border:1px solid rgba(156,210,232,.17)!important;
+ border-radius:6px
+}
+.xp-scene .xp-ux-modal-climate .xp-fan-bars i.xp-fan-bar-on{
+ background:linear-gradient(0deg,#2b92cd,#83e5ee)!important;
+ box-shadow:0 0 8px rgba(87,204,235,.35)
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-cabin-art.xp-ux-cabin-portrait{
+ border-radius:19px;filter:drop-shadow(0 10px 14px rgba(0,0,0,.29))
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-cycle-heat ha-icon{
+ color:#ffac70!important;filter:drop-shadow(0 0 4px rgba(255,149,85,.55))
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-cycle-vent ha-icon{
+ color:#63dcff!important;filter:drop-shadow(0 0 4px rgba(70,202,242,.44))
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-wheel ha-icon{
+ color:#ffc47e!important
+}
+/* Tire screen: clean TPMS data around ORIGINAL top-view image, details below. */
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-page>h3{
+ color:#eaf6ff;letter-spacing:-.016em;font-weight:740;
+ border-left:3px solid rgba(111,225,228,.8);padding-left:10px
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tire-reading{
+ background:linear-gradient(150deg,rgba(19,56,75,.91),rgba(8,30,50,.93))!important;
+ border:1px solid rgba(119,188,221,.38)!important;
+ border-radius:14px!important;box-shadow:inset 0 1px rgba(241,255,255,.08)!important
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tire-reading strong{
+ font-weight:750;letter-spacing:-.03em
+}
+.xp-scene .xp-ux-modal-maintenance .xp-maint-info .xp-extra-line{
+ border:1px solid rgba(133,203,226,.3)!important;border-radius:12px!important;
+ background:linear-gradient(140deg,rgba(20,48,66,.81),rgba(8,28,47,.9))!important;
+ box-shadow:inset 0 1px rgba(237,255,255,.07)!important
+}
+/* Custom Functions: card collection reads like premium system controls, not
+   bright decorative tiles. All seven original destinations stay intact. */
+.xp-scene .xp-ux-modal-extras .xp-extra-grid{gap:clamp(8px,1.1cqw,15px)}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile{
+ background:linear-gradient(142deg,rgba(26,63,82,.83),rgba(8,27,46,.95))!important;
+ border:1px solid rgba(143,205,232,.34)!important;
+ border-radius:20px!important;
+ box-shadow:0 7px 20px rgba(0,3,10,.24),inset 0 1px rgba(247,255,255,.11)!important;
+ transition:border-color .17s,transform .17s,box-shadow .17s;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile ha-icon{
+ color:#83dfef!important;filter:drop-shadow(0 0 9px rgba(86,202,238,.2))
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile b{
+ color:#effaff;font-weight:735;letter-spacing:-.01em
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile small{
+ color:#b2ccdc;line-height:1.4
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile:is(:hover,:focus-visible){
+ border-color:#71e5ed!important;transform:translateY(-2px);
+ box-shadow:0 11px 23px rgba(0,6,17,.32),inset 0 1px rgba(255,255,255,.17)!important
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-heading strong{
+ font-weight:780;letter-spacing:-.018em
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-line,
+.xp-scene .xp-ux-modal-charge_controls .xp-extra-line,
+.xp-scene .xp-ux-modal-charge_schedule .xp-extra-line{
+ background:linear-gradient(120deg,rgba(17,48,66,.86),rgba(10,30,47,.9))!important;
+ border:1px solid rgba(142,199,224,.31)!important;
+ border-radius:13px!important
+}
+.xp-scene .xp-extra-line span{color:#b8d2e0}
+.xp-scene .xp-extra-line b{color:#f2fcff}
+.xp-scene input[type="range"]{accent-color:#66dce8}
+/* Compact phone and Sections: retain current content geometry and touch zones;
+   only adjust visual density and typographic contrast. */
+@container xpeng-layout (max-width:850px){
+ .xp-scene .xp-header{
+  top:1.2%;left:3%;right:3%;min-height:48px;
+  padding:6px 8px;border-radius:15px
+ }
+ .xp-scene .xp-brand{letter-spacing:.025em;font-size:clamp(11px,3cqw,14px)}
+ .xp-scene .xp-ux-modal{border-radius:17px!important}
+ .xp-scene .xp-ux-modal-head{padding-bottom:9px}
+ .xp-scene .xp-ux-dock-seven{gap:5px;border-radius:19px!important}
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action{border-radius:12px!important}
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile{border-radius:16px!important}
+ .xp-scene .xp-help-intro{border-radius:13px!important;padding:11px!important}
+ .xp-scene .xp-ux-modal-climate .xp-climate-layout{gap:8px!important}
+}
+@container xpeng-layout (max-width:390px){
+ .xp-scene .xp-header{padding:5px 7px}
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action small{
+  font-size:clamp(8px,2.45cqw,10px)!important
+ }
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile{min-height:112px}
+}
+@media(prefers-reduced-motion:reduce){
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action,
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile{transition:none!important;transform:none!important}
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
