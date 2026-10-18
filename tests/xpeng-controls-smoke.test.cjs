@@ -983,8 +983,8 @@ test('maintenance details appear only after pressing the Maintenance button, nev
  const {card}=createCard({show_controls:true});
  const home=card.overview();
  assert.doesNotMatch(home,/תחזוקת הרכב|צמיגים · טיפולים|data-xp-open="maintenance"/);
- assert.match(home,/xp-status-panel/);
- assert.match(home,/Location/);
+ assert.doesNotMatch(home,/xp-status-panel|xp-location-row|Location|data-xp-open="map"/);
+ assert.match(card.xpDock(),/data-xp-open="map"/);
  const dock=card.xpDock();
  assert.equal((dock.match(/data-xp-open="maintenance"/g)||[]).length,1);
  card._xpPanel='maintenance';
@@ -1002,4 +1002,19 @@ test('status-only legacy cards still show one simple Maintenance button, without
  assert.equal(card.xpDock(),'');
  card._xpPanel='maintenance';
  assert.match(card.xpModal(),/xp-ux-modal-maintenance/);
+});
+
+test('Home dock toggles doors windows trunk and port directly; only actual pages navigate',()=>{
+ const {card}=createCard({show_controls:true,enable_access_controls:true});
+ const home=card.overview(),dock=card.xpDock();
+ assert.doesNotMatch(home,/xp-status-panel|xp-location-row|Location/);
+ assert.equal((dock.match(/data-xp-toggle="(?:doors|windows|trunk|port)"/g)||[]).length,4);
+ for(const action of ['doors','windows','trunk','port']){
+   assert.doesNotMatch(dock,new RegExp('data-xp-open="'+action+'"'),'Must not launch '+action+' modal');
+ }
+ for(const page of ['climate','maintenance','map'])
+   assert.match(dock,new RegExp('data-xp-open="'+page+'"'));
+ assert.match(card.shadowRoot.innerHTML,/data-xp-toggle="doors"/);
+ assert.match(card.shadowRoot.innerHTML,/data-xp-toggle="windows"/);
+ assert.match(card.shadowRoot.innerHTML,/data-xp-toggle="trunk"/);
 });
