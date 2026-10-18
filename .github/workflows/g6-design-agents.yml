@@ -5,6 +5,7 @@ on:
     branches:
       - design/g6-premium-visual-pass-20261018
       - refactor/g6-isolated-design-and-help-20261018
+      - design/g6-v2-surface-redesign-20261018
   pull_request:
     branches:
       - release/v1.0.4-beta.10
