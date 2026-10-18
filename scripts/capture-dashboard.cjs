@@ -6,6 +6,22 @@ const path=require('node:path');
 const assert=require('node:assert/strict');
 const ROOT=path.resolve(__dirname,'..');
 const OUTPUT=path.join(ROOT,'docs','screenshots');
+// Only genuine rendered card pages, paired across desktop and phone.
+// Direct vehicle actions are tested, not presented as imaginary pages.
+const GALLERY=Object.freeze({
+ 'vehicle-status':'home-desktop.png',
+ 'mobile-vehicle-status':'home-mobile.png',
+ 'charging':'charging-desktop.png',
+ 'mobile-charging':'charging-mobile.png',
+ 'climate-desktop':'climate-desktop.png',
+ 'climate-mobile':'climate-mobile.png',
+ 'maintenance-desktop':'maintenance-desktop.png',
+ 'maintenance-mobile':'maintenance-mobile.png',
+ 'location-desktop':'map-desktop.png',
+ 'location-mobile':'map-mobile.png',
+ 'charging-actions-mobile':'charge-controls-mobile.png',
+ 'diagnostics-mobile':'diagnostics-mobile.png'
+});
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 
 /* Only the standalone screenshot harness needs a HA icon preview.
@@ -80,6 +96,10 @@ function demo(charging){
 }
 async function main(){
  fs.mkdirSync(OUTPUT,{recursive:true});
+ // Only purge old QA images inside docs/screenshots, never the car art assets.
+ for(const file of fs.readdirSync(OUTPUT)){
+   if(/\.(png|jpe?g|webp)$/i.test(file))fs.rmSync(path.join(OUTPUT,file));
+ }
  const browser=await chromium.launch({headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
  const page=await browser.newPage({viewport:{width:1440,height:860},deviceScaleFactor:1});
  const errors=[];
@@ -124,6 +144,15 @@ async function main(){
  },iconPaths);
  await page.addScriptTag({path:path.join(ROOT,'src','xpeng-vehicle-card.js')});
  const car=page.locator('xpeng-vehicle-card');
+ const created=new Set();
+ async function reviewShot(name){
+   const filename=GALLERY[name];
+   if(!filename)return; // all existing behaviour assertions still run
+   assert.ok(!created.has(filename),'Duplicate current gallery screenshot: '+filename);
+   created.add(filename);
+   await car.screenshot({path:path.join(OUTPUT,filename),animations:'disabled'});
+   console.log('Actual card screenshot:',filename);
+ }
  await page.evaluate(()=>{
    const card=document.querySelector('xpeng-vehicle-card');
    card.setConfig({type:'custom:xpeng-vehicle-card',prefix:'my_xpeng',model:'G6',year:'2026',
@@ -156,13 +185,12 @@ async function main(){
   console.log('Native MDI icons validated:',officialIcons.count,'scene:',name);
 
   await page.waitForTimeout(600);
-  await car.screenshot({path:path.join(OUTPUT,'g6-2026-'+name+'.png'),animations:'disabled'});
+  await reviewShot(name);
   console.log('Captured '+name,JSON.stringify(info));
  }
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
  await screen('vehicle-status');
- await car.screenshot({path:path.join(OUTPUT,'g6-2026-home-review-desktop.jpg'),
-   type:'jpeg',quality:73,animations:'disabled'});
+ // Curated gallery uses a single full-resolution PNG per view.
  // Desktop and mobile must contain exactly the same rendered actions and
  // vehicle-status rows with the same simulated HA payload.
  const contentSignature=async()=>car.evaluate(el=>{
@@ -186,8 +214,7 @@ async function main(){
  await screen('charging');
  // Compact owner-review JPEG: GitHub's binary API cannot preview large PNGs.
  // Keep the existing full-resolution PNG too.
- await car.screenshot({path:path.join(OUTPUT,'g6-2026-charging-review-desktop.jpg'),
-   type:'jpeg',quality:68,animations:'disabled'});
+ // Curated gallery uses a single full-resolution PNG per view.
  const rearArt=await car.locator('[data-car-art]').getAttribute('src');
  assert.match(rearArt,/\/g6\/2026\/graphite_gray\/charging\.webp/,'Charge view must use owner-supplied grey rear-three-quarter artwork');
  const overlays=await car.evaluate(el=>[...el.shadowRoot.querySelectorAll('svg[data-xp-cable]')].map(svg=>({
@@ -272,12 +299,11 @@ async function main(){
    }
    if(!charging)assert.equal(layout.panelColumns,0,'Home location panel must not render: '+JSON.stringify(layout));
    if(viewportWidth===width)assert.equal(layout.horizontalOverflow,false,JSON.stringify(layout));
-   await car.screenshot({path:path.join(OUTPUT,'g6-2026-'+name+'.png'),animations:'disabled'});
+   await reviewShot(name);
    console.log('Responsive capture '+name,JSON.stringify(layout));
  }
  await responsiveShot(390,false,'mobile-vehicle-status');
- await car.screenshot({path:path.join(OUTPUT,'g6-2026-home-review-mobile.jpg'),
-   type:'jpeg',quality:76,animations:'disabled'});
+ // Curated gallery uses a single full-resolution PNG per view.
  await responsiveShot(390,true,'mobile-charging');
  await responsiveShot(320,false,'small-mobile-vehicle-status');
  await responsiveShot(320,true,'small-mobile-charging');
@@ -295,7 +321,7 @@ async function main(){
  assert.equal(await car.locator('.xp-ux-dock-action').count(),7,'Seven home quick actions missing');
  for(const action of ['maintenance','map'])assert.equal(await car.locator('.xp-ux-dock-action[data-xp-open="'+action+'"]').count(),1,action+' home dock action missing');
  assert.equal(await car.locator('.xp-ux-dock-action:not([disabled])').count(),7,'Mock owner has approved Access, so all seven actions must work');
- await car.screenshot({path:path.join(OUTPUT,'g6-2026-controls-desktop.png'),animations:'disabled'});
+ await reviewShot('controls-desktop');
  const readActions=async()=>car.locator('.xp-ux-dock-action').allTextContents();
  let quickLabels=(await readActions()).join(' ');
  assert.match(quickLabels,/פתח נעילה/);
@@ -317,7 +343,7 @@ async function main(){
  assert.match(quickLabels,/סגור חלונות/);
  assert.match(quickLabels,/סגור שקע/);
  assert.match(quickLabels,/סגור תא מטען/);
- await car.screenshot({path:path.join(OUTPUT,'g6-2026-home-close-actions-desktop.png'),animations:'disabled'});
+ await reviewShot('home-close-actions-desktop');
  // Restore reference states; this mock does not issue any vehicle commands.
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
 
@@ -367,7 +393,7 @@ async function main(){
    type:'map',entities:[{entity:'device_tracker.my_xpeng_location'}],
    default_zoom:11,hours_to_show:0,dark_mode:true
  },'Native dark map must use the real vehicle tracker entity');
- await car.screenshot({path:path.join(OUTPUT,'g6-2026-location-desktop.png'),animations:'disabled'});
+ await reviewShot('location-desktop');
  console.log('Desktop Location map + finder + Back:',JSON.stringify(desktopMap));
  await car.locator('button[data-xp-close]').click();
  assert.equal(await car.locator('.xp-ux-modal-map').count(),0,'Desktop Back must close Location');
@@ -392,7 +418,7 @@ async function main(){
  assert.deepEqual(fan,{min:'1',max:'8',value:'3',step:'1'},'Use actual integration fan-range, not an invented 10-speed slider');
  console.log('HVAC validation: rear-left and rear-right heat visible; HA-provided fan-speed range',JSON.stringify(fan));
  await page.waitForFunction(()=>{const img=document.querySelector('xpeng-vehicle-card').shadowRoot.querySelector('img[data-cabin-art]');return img&&img.complete&&img.naturalWidth===752;});
- await car.screenshot({path:path.join(OUTPUT,'g6-2026-climate-desktop.png'),animations:'disabled'});
+ await reviewShot('climate-desktop');
  // Same user's actual cabin photo, dark finish configured in card editor.
  await page.evaluate(()=>{
    const card=document.querySelector('xpeng-vehicle-card');
@@ -400,7 +426,7 @@ async function main(){
      trim:'core_performance_awd',color:'arctic_white',interior:'dark_gray',enable_access_controls:true});
  });
  await page.waitForFunction(()=>{const img=document.querySelector('xpeng-vehicle-card').shadowRoot.querySelector('img[data-cabin-art]');return img&&img.complete&&img.naturalWidth===752&&img.src.includes('interior_dark_gray.webp');});
- await car.screenshot({path:path.join(OUTPUT,'g6-2026-climate-dark-desktop.png'),animations:'disabled'});
+ await reviewShot('climate-dark-desktop');
  await car.locator('button[data-xp-close]').click();
  await page.evaluate(()=>{
    const card=document.querySelector('xpeng-vehicle-card');
@@ -409,14 +435,14 @@ async function main(){
  });
  await page.setViewportSize({width:390,height:900});
  await page.evaluate(()=>{const w=document.querySelector('.card-wrap');w.style.width='390px';w.style.margin='0 auto';});
- await car.screenshot({path:path.join(OUTPUT,'g6-2026-controls-mobile.png'),animations:'disabled'});
+ await reviewShot('controls-mobile');
  // Diagnose all entities associated with this card without invoking car commands.
  await car.locator('button[data-xp-more]').click();
  await car.locator('button[data-xp-extra-page="diagnostics"]').click();
  assert.ok(await car.locator('.xp-ux-modal-extras').count(),'Diagnostics extra page missing');
  const summary=await car.locator('.xp-entity-diagnostic').count();
  assert.ok(summary>=30,'Expected mocked integration entities in diagnostics: '+summary);
- await car.screenshot({path:path.join(OUTPUT,'g6-2026-diagnostics-mobile.png'),animations:'disabled'});
+ await reviewShot('diagnostics-mobile');
  await car.locator('button[data-xp-close]').click();
  assert.equal(await car.locator('.xp-ux-dock-action').count(),7);
 
@@ -431,13 +457,13 @@ async function main(){
    card.hass={...h,states};
  });
  assert.match((await readActions()).join(' '),/סגור חלונות/);
- await car.screenshot({path:path.join(OUTPUT,'g6-2026-home-close-actions-mobile.png'),animations:'disabled'});
+ await reviewShot('home-close-actions-mobile');
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
  // The first-tap actions use real states; demo contains no backend car connection.
  for(const [action,name] of [['doors','doors-mobile'],['windows','windows-mobile'],['port','charge-port-mobile'],['trunk','trunk-mobile']]){
    await page.evaluate(action=>{const card=document.querySelector('xpeng-vehicle-card');card._xpPanel=action;card.render();},action);
    assert.ok(await car.locator('.xp-ux-modal-'+action).count(),action+' details modal missing');
-   await car.screenshot({path:path.join(OUTPUT,'g6-2026-'+name+'.png'),animations:'disabled'});
+   await reviewShot(name);
    await car.locator('button[data-xp-close]').click();
  }
  for(const [action,name] of [['climate','climate-mobile'],['maintenance','maintenance-mobile'],['map','location-mobile']]){
@@ -465,11 +491,11 @@ async function main(){
      assert.ok(scroll.position>scroll.start+30,
        action+' cannot scroll down on phone: '+JSON.stringify(scroll));
      assert.equal(scroll.visible,true,action+' last control not visible after scrolling');
-     await car.screenshot({path:path.join(OUTPUT,'g6-2026-'+action+'-scrolled-mobile.png'),animations:'disabled'});
+     await reviewShot(action+'-scrolled-mobile');
      await car.locator('.xp-ux-modal-'+action).evaluate(el=>{el.scrollTop=0});
    }
 
-   await car.screenshot({path:path.join(OUTPUT,'g6-2026-'+name+'.png'),animations:'disabled'});
+   await reviewShot(name);
    await car.locator('button[data-xp-close]').click();
  }
  await page.evaluate(()=>{
@@ -479,7 +505,7 @@ async function main(){
    card._xpPanel='climate';card.render();
  });
  await page.waitForFunction(()=>{const img=document.querySelector('xpeng-vehicle-card').shadowRoot.querySelector('img[data-cabin-art]');return img&&img.complete&&img.naturalWidth===752&&img.src.includes('interior_dark_gray.webp');},{timeout:12000});
- await car.screenshot({path:path.join(OUTPUT,'g6-2026-climate-dark-mobile.png'),animations:'disabled'});
+ await reviewShot('climate-dark-mobile');
  await car.locator('button[data-xp-close]').click();
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(true));
  assert.equal(await car.locator('.xp-ux-dock').count(),0,'Charging should have no visible quick action dock');
@@ -489,20 +515,20 @@ async function main(){
  assert.equal(await car.locator('button[data-xp-home]').count(),1,'Charging needs one Back to home');
  assert.equal(await car.locator('.xp-ux-dock').count(),0,'Charging must not have home dock');
 
- await car.screenshot({path:path.join(OUTPUT,'g6-2026-charging-reference-mobile.png'),animations:'disabled'});
+ await reviewShot('charging-reference-mobile');
  await car.locator('button[data-xp-open="charge_controls"]').click();
  assert.ok(await car.locator('.xp-ux-modal-charge_controls').count(),'Charging modal missing');
- await car.screenshot({path:path.join(OUTPUT,'g6-2026-charging-actions-mobile.png'),animations:'disabled'});
+ await reviewShot('charging-actions-mobile');
  await car.locator('button[data-xp-close]').click();
  await car.locator('button[data-xp-open="charge_schedule"]').click();
  assert.ok(await car.locator('.xp-ux-modal-charge_schedule').count(),'Charging schedules modal missing');
- await car.screenshot({path:path.join(OUTPUT,'g6-2026-charge-schedule-mobile.png'),animations:'disabled'});
+ await reviewShot('charge-schedule-mobile');
  // Automatic charging remains live, but Back returns Home until charging resets.
  await car.locator('button[data-xp-close]').click();
  await car.locator('button[data-xp-home]').click();
  assert.equal(await car.locator('.xp-ux-dock-action').count(),7,'Back from live Charging should display Home menu');
  assert.equal(await car.locator('button[data-xp-home]').count(),0,'Home should not have Back');
- await car.screenshot({path:path.join(OUTPUT,'g6-2026-back-home-mobile.png'),animations:'disabled'});
+ await reviewShot('back-home-mobile');
  // An explicit Back suppresses the current charge; a NEW charge session reopens it.
  assert.equal(await car.locator('button[data-xp-open="charging"]').count(),0);
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
@@ -519,6 +545,11 @@ async function main(){
  assert.equal(await car.locator('.xp-charge-cable-live').count(),0,'Idle state removes green cable');
  assert.equal(errors.length,0,errors.join('\n'));
  assert.ok(imagesServed>=4,'Expected bundled vehicle and background assets to be loaded');
+ const expected=Object.values(GALLERY).sort();
+ assert.deepEqual([...created].sort(),expected,'Missing curated screen capture');
+ assert.deepEqual(
+  fs.readdirSync(OUTPUT).filter(x=>/\.(png|jpe?g|webp)$/i.test(x)).sort(),expected,
+  'No obsolete screenshots may remain after capture');
  await browser.close();
 }
 main().catch(err=>{console.error(err);process.exit(1);});
