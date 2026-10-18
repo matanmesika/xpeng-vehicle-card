@@ -478,7 +478,6 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-ux-cabin{position:relative;margin:8px auto 12px;width:min(690px,100%);max-height:350px;border-radius:18px;overflow:hidden;background:linear-gradient(180deg,#06121e,#19304b);border:1px solid #6a81994f}
 .xp-ux-cabin svg,.xp-ux-cabin-picture{display:block;width:100%;max-height:325px;object-fit:contain}
 .xp-ux-cabin small{display:block;text-align:center;color:#b2c4d9;padding:4px;font-size:10px}
-.xp-ux-cabin-disclaimer{position:absolute;bottom:0;left:0;right:0;background:#061625a0}
 .xp-ux-hotspot{position:absolute;border:1px solid #88c5ff;color:#fff;background:#194879db;border-radius:50%;width:37px;height:37px;display:grid;place-items:center;box-shadow:0 0 17px #007ee95b}
 .xp-ux-wheel{top:12%;left:21%}.xp-ux-driver{top:49%;left:25%}.xp-ux-passenger{top:49%;right:25%}.xp-ux-rear{bottom:8%;left:50%}
 .xp-ux-climate-card,.xp-ux-range-row,.xp-ux-seat{border:1px solid #6787a165;border-radius:16px;background:#12253bca;padding:14px}
@@ -542,7 +541,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-ux-cabin-art .xp-ux-rear_right{left:72.5%;top:86%}
 .xp-ux-active-heat{background:#7b2534e9!important;border-color:#ff8b8b!important;box-shadow:0 0 14px #ff505085!important}
 .xp-ux-active-vent{background:#064c89ed!important;border-color:#79cfff!important;box-shadow:0 0 14px #18acff85!important}
-@media(max-width:600px){.xp-ux-cabin-art .xp-ux-hotspot{width:32px;height:32px;padding:5px}.xp-ux-cabin-art .xp-ux-cabin-disclaimer{font-size:9px}}
+@media(max-width:600px){.xp-ux-cabin-art .xp-ux-hotspot{width:32px;height:32px;padding:5px}}
 @media(pointer:coarse){.xp-ux-cabin-art .xp-ux-hotspot{min-width:44px;min-height:44px}}
 
 /* Adaptive card-width layout for HA Sections, desktop and mobile browsers. */
@@ -796,7 +795,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-charge.xp-has-controls .xp-car{bottom:29%;max-height:24%}
  .xp-ux-seat-line{align-items:flex-start;flex-direction:column}
 }
-@container xpeng-layout (max-width:600px){.xp-ux-cabin-art .xp-ux-hotspot{width:32px;height:32px;padding:5px}.xp-ux-cabin-art .xp-ux-cabin-disclaimer{font-size:9px}}
+@container xpeng-layout (max-width:600px){.xp-ux-cabin-art .xp-ux-hotspot{width:32px;height:32px;padding:5px}}
 @container xpeng-layout (max-width:600px){.xp-ux-vehicle-statuses,.xp-ux-vehicle-buttons{grid-template-columns:repeat(2,minmax(0,1fr))}.xp-ux-vehicle-buttons button{min-height:50px;padding:9px 7px;font-size:12px}}
 @container xpeng-layout (max-width:450px){.xp-ux-port-panel{padding:5px}.xp-ux-port-action{font-size:13px}.xp-ux-cabin-portrait .xp-ux-hotspot{width:44px;height:44px}}
 @container xpeng-layout (max-width:600px){
@@ -2572,8 +2571,8 @@ class XpengVehicleCard extends HTMLElement{
    const known=a.model==='G6';
    const photo=known?this.artworkUrl('vehicles/g6/interior_'+a.interior+'.webp'):null;
    const candidates=[
-     ...(xpLocalArtworkPath(custom)?[{src:custom,portrait:!(this._config.interior_images_landscape===true),caption:'תמונת פנים לפי הגדרות הרכב'}]:[]),
-     ...(photo?[{src:photo,portrait:true,caption:'תמונת פנים בעל הרכב · XPENG G6'}]:[])
+     ...(xpLocalArtworkPath(custom)?[{src:custom,portrait:!(this._config.interior_images_landscape===true)}]:[]),
+     ...(photo?[{src:photo,portrait:true}]:[])
    ];
    const found=candidates.find(x=>!this._failedArtwork.has(x.src));
    if(!found&&known)return '<div class="xp-ux-cabin xp-ux-cabin-art xp-ux-cabin-missing" role="status" dir="rtl">תמונת פנים G6 בצבע שנבחר עדיין לא צורפה לפרויקט. לא מוצגת הדמיה חלופית.</div>';
@@ -2581,7 +2580,7 @@ class XpengVehicleCard extends HTMLElement{
    const orientation=found.portrait?' xp-ux-cabin-portrait':'';
    return '<div class="xp-ux-cabin xp-ux-cabin-art'+orientation+'" dir="ltr"><img class="xp-ux-cabin-picture" data-cabin-art src="'+xpEsc(found.src)
      +'" alt="'+xpEsc(a.model+' '+a.year+', '+finish.label+' interior')+'" loading="eager">'
-     +this.xpCabinHotspots()+'<small class="xp-ux-cabin-disclaimer">'+xpEsc(found.caption)+' · '+xpEsc(finish.label)+'</small></div>';
+     +this.xpCabinHotspots()+'</div>';
  }
  xpCabinFallback(){
   const a=this.appearance();
@@ -2589,7 +2588,7 @@ class XpengVehicleCard extends HTMLElement{
   const pictures=Array.isArray(this._config.vehicles)&&this._config.vehicles.length?this.vehicle()?.interior_images:this._config.interior_images;
   const selected=pictures&&typeof pictures==='object'?pictures[a.interior]:null;
   if(xpLocalArtworkPath(selected))return '<div class="xp-ux-cabin"><img src="'+xpEsc(selected)+'" loading="lazy" alt="'+xpEsc('פנים רכב '+a.model+' בצבע '+finish.label)+'" class="xp-ux-cabin-picture">'
-    +'<small>תמונת פנים לפי הגדרת הצבע</small></div>';
+    +'</div>';
   const seat=xpEsc(finish.hex),shade=xpEsc(finish.secondary);
   // Honest, colour-matched illustration, never an invented factory photograph.
   const seatShape=(x,y,w,h)=>'<g><rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="24" fill="'+shade+'" stroke="#87a4b9" stroke-opacity=".48" stroke-width="2"/>'
@@ -2606,7 +2605,7 @@ class XpengVehicleCard extends HTMLElement{
     +'<rect x="288" y="122" width="104" height="153" rx="18" fill="#1c2c39" stroke="#5a778d"/>'
     +seatHtml+'</svg>'
     +this.xpSeatButtons()
-    +'<small class="xp-ux-cabin-disclaimer">תצוגה מאוירת · '+xpEsc(finish.label)+'</small></div>';
+    +'</div>';
  }
  xpTempControl(){
   const c=this.xpLive('climate','cabin_climate');
