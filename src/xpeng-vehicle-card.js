@@ -1663,6 +1663,8 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
   width:clamp(240px,70cqw,278px);max-width:100%;margin:0 auto;
  }
  .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-hotspot-zone{gap:2px}
+ /* Reset legacy right:25% anchoring: with left:72% it squeezes the passenger flex pair into a 3%-wide column. */
+ .xp-ux-modal-climate .xp-ux-cabin-portrait .xp-ux-passenger{right:auto;max-width:none}
  .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-cycle{
   width:clamp(36px,10cqw,40px);min-width:0;
   height:clamp(46px,12.3cqw,52px);min-height:0;
