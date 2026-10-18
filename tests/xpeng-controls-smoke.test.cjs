@@ -1516,3 +1516,16 @@ test('owner fixes: exact Open Trunk, real SOC icon levels, silent successful cal
  card._xpExtraSection='updates';card._xpPanel='extras';card.render();
  assert.doesNotMatch(card.shadowRoot.innerHTML,/פרטי עדכון/);
 });
+
+test('Black Edition G6 uses a dark cabin and never borrows another exterior paint view',()=>{
+ const {card}=createCard({model:'G6',year:'2026',color:'black_edition',interior:'light_gray'});
+ assert.equal(card.paint(),'black_edition');
+ assert.equal(card.xpCabinFinish(),'dark_gray','Black Edition must use the black/dark interior');
+ assert.match(card.xpCabinView(),/interior_dark_gray\.webp/);
+ card.render();
+ assert.match(card.shadowRoot.innerHTML,/xp-black-edition/);
+ const asset=card.assetSpec();
+ assert.equal(asset.view_status,'image_pending','Unapproved Black Edition artwork must be reported missing');
+ assert.doesNotMatch(asset.src,/\/graphite_gray\//,'Black Edition must never borrow Graphite Gray artwork');
+ assert.match(src,/\.xp-scene\.xp-black-edition \.xp-ux-cabin-picture/);
+});
