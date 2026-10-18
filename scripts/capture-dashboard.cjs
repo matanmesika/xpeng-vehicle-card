@@ -622,8 +622,18 @@ async function main(){
  assert.equal(await car.locator('button[data-xp-open="charge_schedule"]').count(),1,'Charge schedules shortcut missing');
  assert.equal(await car.locator('button[data-xp-command="stop_charge"]').count(),1,'Stop Charge must remain visible');
  await reviewShot('charging-reference-mobile');
+ const chargeVehicleBefore=await car.locator('.xp-charge .xp-car').boundingBox();
+ const chargeStationBefore=await car.locator('.xp-station').boundingBox();
  await car.locator('button[data-xp-open="charge_controls"]').click();
  assert.ok(await car.locator('.xp-charge-compact-modal.xp-ux-modal-charge_controls').count(),'Compact charge limit overlay missing');
+ const chargeVehicleInside=await car.locator('.xp-charge .xp-car').boundingBox();
+ const chargeStationInside=await car.locator('.xp-station').boundingBox();
+ assert.ok(chargeVehicleBefore&&chargeVehicleInside&&chargeStationBefore&&chargeStationInside,
+   'Charging scene geometry missing while opening controls');
+ for(const [a,b,label] of [[chargeVehicleBefore,chargeVehicleInside,'car'],[chargeStationBefore,chargeStationInside,'station']]){
+   for(const k of ['x','y','width','height'])
+     assert.ok(Math.abs(a[k]-b[k])<=1,'Opening small charge overlay must not shift '+label+' '+k);
+ }
  assert.equal(await car.locator('.xp-ux-modal-charge_controls input[data-xp-range="charge_limit_control"]').count(),1,
    'Charge limit should operate the real HA number entity');
  assert.equal(await car.locator('.xp-ux-modal-charge_controls button[data-xp-command="stop_charge"]').count(),0,
