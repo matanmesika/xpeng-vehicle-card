@@ -1,8 +1,8 @@
-# XPENG full artwork coverage — 2026-10-13
+# XPENG full artwork coverage — 2026-10-18
 
 This is a truthful **catalogue and image-slot matrix**, not a claim that all 339 pictures exist.
 
-The model catalogue contains **15 models**, **21 model-year groups**, and **113 exterior paint combinations**. Each combination has exactly three distinct **slot names**: `front.webp`, `charging.webp`, and `top.webp`. Currently **43 actual WebP images** are present (**14 fully occupied combinations**); **296 individual image views** are pending. AI renders are not official manufacturer photography.
+The model catalogue contains **15 models**, **21 model-year groups**, and **113 exterior paint combinations**. Each combination has exactly three distinct **slot names**: `front.webp`, `charging.webp`, and `top.webp`. Currently **64 actual view files** are registered (**21 fully occupied paint combinations**); **275 individual image views** are pending. AI renders are not official manufacturer photography.
 
 | Model | Year groups | Paint combinations | Existing WebP | Missing WebP |
 |---|---|---:|---:|---:|
@@ -10,12 +10,12 @@ The model catalogue contains **15 models**, **21 model-year groups**, and **113 
 | G3i | 2021-2023 | 4 | 0 | 12 |
 | P5 | 2021-2024 | 3 | 0 | 9 |
 | P7 | 2020-2022 | 5 | 0 | 15 |
-| P7i | 2023-2025 | 5 | 0 | 15 |
+| P7i | 2023-2025 | 7 | 1 | 20 |
 | Next P7 | 2025, 2026 | 16 | 0 | 48 |
 | P7+ | 2024-2026 | 5 | 0 | 15 |
 | G6 | 2023-2025, 2026 | 11 | 30 | 3 |
-| G7 | 2025, 2026 | 11 | 3 | 30 |
-| G9 | 2022-2024, 2025-2026 | 11 | 9 | 24 |
+| G7 | 2025, 2026 | 11 | 18 | 15 |
+| G9 | 2022-2024, 2025-2026 | 11 | 15 | 18 |
 | G9L | 2026 | 4 | 0 | 12 |
 | X9 | 2024-2025, 2026 | 10 | 0 | 30 |
 | MONA M03 | 2024-2025, 2026 | 12 | 0 | 36 |
@@ -48,7 +48,7 @@ Use `artwork-backlog.csv` as a sortable build queue and `tools/export_vehicle_ar
 For the G9 2025–2026 year-group, Arctic White, Graphite Gray and Midnight Black each have separate `front.webp`, `charging.webp` (rear three-quarter) and `top.webp` (overhead) AI-generated transparent WebP files. Manufacturer accuracy still requires visual review. Remaining G9 colours and the earlier generation remain pending.
 
 ## Year-specific colours
-All 42 individual model years have explicit paint lists and source confidence in [year-color-matrix.json](../year-color-matrix.json). P7i 2024 adds Starry Dusk Purple and Star Blue, without implying they were available in 2023 or 2025. Model/year/paint select the artwork; selected trim remains text only. Paint lists inherited from grouped market catalogues require additional historical or regional verification.
+All 42 individual model years have explicit paint lists and source confidence in [year-color-matrix.json](../data/year-color-matrix.json). P7i 2024 adds Starry Dusk Purple and Star Blue, without implying they were available in 2023 or 2025. Model/year/paint select the artwork; selected trim remains text only. Paint lists inherited from grouped market catalogues require additional historical or regional verification.
 
 
 ### P7i Arctic White front preview
