@@ -62,7 +62,7 @@ jobs:
           for name in names:
               p=root/(name+'.png')
               b=p.read_bytes()
-              assert b[:8] == b'\\x89PNG\\r\\n\\x1a\\n',(p,len(b))
+              assert b[:8] == bytes([137,80,78,71,13,10,26,10]),(p,len(b))
               w,h=struct.unpack('>II',b[16:24])
               if name.endswith('-desktop'):
                   assert w>=1100 and h>=620 and len(b)>80_000,(p,w,h,len(b))
