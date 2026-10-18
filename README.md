@@ -16,11 +16,11 @@ The following **12 images** were captured from the actual running card JavaScrip
 
 | Vehicle status | Automatic charging |
 | --- | --- |
-| ![XPENG G6 desktop vehicle status and battery card](docs/gallery-en/home-desktop.png) | ![XPENG G6 desktop charging dashboard](docs/gallery-en/charging-desktop.png) |
+| ![XPENG G6 desktop vehicle status and battery card](https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/docs/gallery-en/home-desktop.png) | ![XPENG G6 desktop charging dashboard](https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/docs/gallery-en/charging-desktop.png) |
 
 | Vehicle status on phone | Charging on phone |
 | --- | --- |
-| ![XPENG G6 mobile vehicle status](docs/gallery-en/home-mobile.png) | ![XPENG G6 mobile charging scene](docs/gallery-en/charging-mobile.png) |
+| ![XPENG G6 mobile vehicle status](https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/docs/gallery-en/home-mobile.png) | ![XPENG G6 mobile charging scene](https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/docs/gallery-en/charging-mobile.png) |
 
 Charging switches automatically when confirmed live charging is detected. The dedicated rear charging image and the night background remain unchanged. A thin cable becomes green only during active charging. Both views have the same seven quick actions.
 
@@ -28,7 +28,7 @@ Charging switches automatically when confirmed live charging is detected. The de
 
 | Desktop | Phone |
 | --- | --- |
-| ![XPENG G6 desktop climate controls and cabin view](docs/gallery-en/climate-desktop.png) | ![XPENG G6 mobile climate and cabin controls](docs/gallery-en/climate-mobile.png) |
+| ![XPENG G6 desktop climate controls and cabin view](https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/docs/gallery-en/climate-desktop.png) | ![XPENG G6 mobile climate and cabin controls](https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/docs/gallery-en/climate-mobile.png) |
 
 The light/dark cabin finish is selected in card settings, not on the climate screen. Supported front-seat heating and ventilation, rear-seat heating, and steering-wheel heating are activated directly at their physical locations on the original cabin photograph. Power, temperature, fan levels, defrost and AUTO feedback depend on available Home Assistant entities.
 
@@ -36,7 +36,7 @@ The light/dark cabin finish is selected in card settings, not on the climate scr
 
 | Desktop | Phone |
 | --- | --- |
-| ![XPENG G6 desktop tire pressure and maintenance view](docs/gallery-en/maintenance-desktop.png) | ![XPENG G6 mobile tire pressure and maintenance view](docs/gallery-en/maintenance-mobile.png) |
+| ![XPENG G6 desktop tire pressure and maintenance view](https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/docs/gallery-en/maintenance-desktop.png) | ![XPENG G6 mobile tire pressure and maintenance view](https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/docs/gallery-en/maintenance-mobile.png) |
 
 The four TPMS readings appear beside their corresponding wheels. Pressure unit selection is in the card editor. Vehicle details use real Xpengtk states when available; no unavailable value is simulated as a live measurement.
 
@@ -44,7 +44,7 @@ The four TPMS readings appear beside their corresponding wheels. Pressure unit s
 
 | Desktop | Phone |
 | --- | --- |
-| ![XPENG G6 desktop location page with mock map tiles](docs/gallery-en/map-desktop.png) | ![XPENG G6 phone location page with mock map tiles](docs/gallery-en/map-mobile.png) |
+| ![XPENG G6 desktop location page with mock map tiles](https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/docs/gallery-en/map-desktop.png) | ![XPENG G6 phone location page with mock map tiles](https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/docs/gallery-en/map-mobile.png) |
 
 The actual card mounts Home Assistant's native map using the selected vehicle's device tracker. Horn and flash buttons are available only if their real service entities exist. **The maps pictured above are test placeholders, not live map tiles.**
 
@@ -52,7 +52,7 @@ The actual card mounts Home Assistant's native map using the selected vehicle's 
 
 | Charging controls on phone | Xpengtk entity diagnostics on phone |
 | --- | --- |
-| ![XPENG G6 mobile charge limit and charging schedule controls](docs/gallery-en/charge-controls-mobile.png) | ![XPENG G6 mobile diagnostic sensor list and statuses](docs/gallery-en/diagnostics-mobile.png) |
+| ![XPENG G6 mobile charge limit and charging schedule controls](https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/docs/gallery-en/charge-controls-mobile.png) | ![XPENG G6 mobile diagnostic sensor list and statuses](https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/docs/gallery-en/diagnostics-mobile.png) |
 
 These are the remaining two screenshots in the curated set. [Open the full English screenshot gallery](docs/gallery-en/README.md).
 
