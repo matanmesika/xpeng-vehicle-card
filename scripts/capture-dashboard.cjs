@@ -454,6 +454,17 @@ async function main(){
    default_zoom:11,hours_to_show:0,dark_mode:true
  },'Native dark map must use the real vehicle tracker entity');
  await reviewShot('location-desktop');
+ const mapStable=await car.evaluate(el=>{
+   const map=el.shadowRoot.querySelector('[data-xp-map-host] hui-map-card');
+   const h=el.hass;
+   el._xpQaMapReference=map;
+   el.hass={...h,states:{...h.states,'sensor.my_xpeng_soc':{state:'73',attributes:{}}}};
+   return {sameElement:map===el.shadowRoot.querySelector('[data-xp-map-host] hui-map-card'),
+     hasCurrentHass:map.hass===el.hass,mapStillVisible:map.isConnected};
+ });
+ assert.ok(mapStable.sameElement&&mapStable.hasCurrentHass&&mapStable.mapStillVisible,
+   'Live HA updates must not tear down and recreate the native map: '+JSON.stringify(mapStable));
+ console.log('Desktop real HA map instance survives sensor update:',JSON.stringify(mapStable));
  console.log('Desktop Location map + finder + Back:',JSON.stringify(desktopMap));
  await car.locator('button[data-xp-close]').click();
  assert.equal(await car.locator('.xp-ux-modal-map').count(),0,'Desktop Back must close Location');
@@ -517,10 +528,37 @@ async function main(){
  await reviewShot('controls-mobile');
  // Diagnose all entities associated with this card without invoking car commands.
  await car.locator('button[data-xp-more]').click();
+ await car.locator('button[data-xp-extra-page="maintenance"]').click();
+ assert.equal(await car.locator('.xp-ux-modal-maintenance').count(),1,
+   'Gear -> Maintenance must use the dedicated tire/vehicle modal, not nested Extras');
+ const maintenanceFromGear=await car.evaluate(el=>{
+   const root=el.shadowRoot;
+   return {tires:root.querySelectorAll('.xp-ux-modal-maintenance .xp-tire-reading').length,
+     source:root.querySelector('.xp-ux-modal-maintenance .xp-maint-info')?.innerText||''};
+ });
+ assert.equal(maintenanceFromGear.tires,4);
+ assert.match(maintenanceFromGear.source,/שנת דגם \(מהגדרות הכרטיס\)/);
+ await car.locator('button[data-xp-close]').click();
+ assert.equal(await car.locator('.xp-ux-modal-extras').count(),1,'Maintenance Back must return to Gear options');
  await car.locator('button[data-xp-extra-page="diagnostics"]').click();
  assert.ok(await car.locator('.xp-ux-modal-extras').count(),'Diagnostics extra page missing');
  const summary=await car.locator('.xp-entity-diagnostic').count();
  assert.ok(summary>=30,'Expected mocked integration entities in diagnostics: '+summary);
+ const diagScroll=await car.evaluate(el=>{
+   const root=el.shadowRoot,modal=root.querySelector('.xp-ux-modal-extras'),
+     list=root.querySelector('.xp-diagnostics-scroll'),h=el.hass;
+   const innerOverflow=getComputedStyle(list).overflowY;
+   modal.scrollTop=200;
+   const start=modal.scrollTop;
+   el.hass={...h,states:{...h.states,'sensor.my_xpeng_soc':{state:'72',attributes:{}}}};
+   const restored=root.querySelector('.xp-ux-modal-extras');
+   return {innerOverflow,start,end:restored?.scrollTop,
+     exists:!!restored,modalOverflow:getComputedStyle(restored).overflowY};
+ });
+ assert.equal(diagScroll.innerOverflow,'visible','Diagnostics must scroll with its parent, not trap swipe');
+ assert.ok(diagScroll.start>=80&&Math.abs(diagScroll.end-diagScroll.start)<=2,
+   'Live HA updates must preserve phone diagnostics scroll: '+JSON.stringify(diagScroll));
+ await car.locator('.xp-ux-modal-extras').evaluate(e=>{e.scrollTop=0});
  await reviewShot('diagnostics-mobile');
  await car.locator('button[data-xp-close]').click();
  assert.equal(await car.locator('button[data-xp-extra-page="diagnostics"]').count(),1,
