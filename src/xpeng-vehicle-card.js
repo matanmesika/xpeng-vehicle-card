@@ -145,10 +145,13 @@ const XP_ICONS = Object.freeze({
  lock:'mdi:lock-outline',
  unlock:'mdi:lock-open-variant-outline',
  car:'mdi:car-outline',
- windows:'mdi:window-open',
- windows_open:'mdi:window-open-variant',
- trunk:'mdi:car-hatchback',
- trunk_open:'mdi:car-hatchback',
+ // Official automotive MDI pictograms, no house-window glyphs.
+ // MDI has no dedicated power-side-window-open glyph; the dynamic
+ // Hebrew action labels still distinguish opening from closing.
+ windows:'mdi:car-door',
+ windows_open:'mdi:car-door',
+ trunk:'mdi:car-back',
+ trunk_open:'mdi:car-back',
  horn:'mdi:bullhorn-outline',
  flash:'mdi:car-light-high',
  auto:'mdi:autorenew',
