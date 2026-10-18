@@ -120,3 +120,12 @@ test('shared premium styling spans actual pages without introducing vehicle-acti
    assert.match(source,new RegExp('xpToggleButton'),'Vehicle toggle buttons must stay directly addressable: '+key);
  }
 });
+
+test('there is only one control location for heated and ventilated seats in cabin photo',()=>{
+ assert.doesNotMatch(source,/xpSeatOverview\(/);
+ assert.doesNotMatch(source,/xp-climate-seat-overview|xp-seat-summary-action/);
+ assert.match(source,/seat_heat:'mdi:car-seat-heater'/);
+ assert.match(source,/seat_vent:'mdi:car-seat-cooler'/);
+ assert.match(source,/wheel_heat:'mdi:steering'/);
+ assert.match(css,/Physical seat\/steering location is the ONLY controls surface/);
+});
