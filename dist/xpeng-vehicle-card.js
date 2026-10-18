@@ -2331,6 +2331,146 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-scene{height:clamp(570px,calc(100dvh - 144px),710px)}
 }
 
+/* DESIGN-ONLY PREVIEW | premium G6 visual pass, no telemetry, control or
+   navigation logic changes. Preserve the original owner vehicle assets. */
+.xp-scene{
+ --xp-ui-cyan:#39d9f5;--xp-ui-line:#69baf17a;
+ --xp-ui-glass:linear-gradient(145deg,#102e4ce9 0%,#06182fe9 100%);
+}
+.xp-ux-dock-seven{
+ border:1px solid #68b5e277;
+ background:linear-gradient(150deg,#071a31ee,#08243bcc);
+ box-shadow:0 12px 32px #0008, inset 0 1px #ffffff12;
+ backdrop-filter:blur(16px)
+}
+.xp-ux-dock-seven .xp-ux-dock-action{
+ border:1px solid #5baee077;
+ border-radius:16px;background:var(--xp-ui-glass);
+ box-shadow:inset 0 1px #ffffff10,0 5px 15px #0005;
+ transition:background-color .15s ease,border-color .15s ease,transform .15s ease
+}
+.xp-ux-dock-seven .xp-ux-dock-action:hover:not(:disabled),
+.xp-ux-dock-seven .xp-ux-dock-action:focus-visible{
+ border-color:#43e0ff;background:#113e5ce8;transform:translateY(-1px)
+}
+.xp-ux-modal{
+ border:1px solid #77acd05e;
+ background:linear-gradient(155deg,#07182bed,#061628f6 70%,#071b34f6);
+ box-shadow:0 21px 58px #000b,inset 0 1px #ffffff0d;
+}
+.xp-ux-modal-head{
+ border-bottom:1px solid #719cba35;
+}
+.xp-ux-modal-head h2{
+ letter-spacing:.005em;font-weight:680;line-height:1.2
+}
+.xp-ux-modal-head button{
+ border-color:#7dbce474;background:#123654db;
+ transition:background-color .15s ease,border-color .15s ease
+}
+.xp-ux-modal-head button:hover,.xp-ux-modal-head button:focus-visible{
+ background:#174f70;border-color:#60e0fb
+}
+/* Same function tiles, status bindings and actions; only visual chrome. */
+.xp-ux-modal-extras .xp-extra-tile{
+ border:1px solid #69b2dc7b!important;
+ background:linear-gradient(155deg,#112f50f0,#081c36e9)!important;
+ border-radius:18px;box-shadow:inset 0 1px #ffffff10,0 7px 17px #0004;
+ transition:border-color .16s ease,transform .16s ease
+}
+.xp-ux-modal-extras .xp-extra-tile:hover,
+.xp-ux-modal-extras .xp-extra-tile:focus-visible{
+ border-color:#40e0fa!important;transform:translateY(-1px)
+}
+/* The original climate layout and photo remain. Refine surface treatments and
+   color-code actual seat/steering icons, including off levels, without overlays. */
+.xp-ux-modal-climate .xp-climate-primary,
+.xp-ux-modal-climate .xp-climate-temp-panel,
+.xp-ux-modal-climate .xp-climate-fan-panel,
+.xp-ux-modal-climate .xp-climate-layout .xp-ux-climate-feature{
+ border:1px solid #67aee277!important;
+ border-radius:16px!important;
+ background:linear-gradient(145deg,#10314fef,#091d36e8)!important;
+ box-shadow:inset 0 1px #ffffff10,0 6px 16px #0004;
+}
+.xp-ux-modal-climate .xp-climate-primary ha-icon{color:#52dafa}
+.xp-ux-modal-climate .xp-climate-thermometers small{color:#b8d4e9}
+.xp-ux-modal-climate .xp-climate-inside b,
+.xp-ux-modal-climate .xp-climate-target b{font-variant-numeric:tabular-nums}
+.xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-cycle-heat ha-icon{
+ color:#ff9b63!important;filter:drop-shadow(0 0 3px #d16a314a)
+}
+.xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-cycle-vent ha-icon{
+ color:#68d8ff!important;filter:drop-shadow(0 0 3px #38b4e34a)
+}
+.xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-wheel ha-icon{
+ color:#ffc174!important
+}
+.xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-cycle.xp-ux-cycle-on{
+ filter:drop-shadow(0 0 7px currentColor)
+}
+.xp-ux-modal-climate .xp-climate-fan-panel .xp-fan-bars{
+ border-radius:9px
+}
+/* Keep TPMS on its existing diagram and details below, never overlap. */
+.xp-ux-modal-maintenance .xp-tire-reading,
+.xp-ux-modal-maintenance .xp-maint-info .xp-extra-line{
+ border:1px solid #67acd679;
+ background:linear-gradient(140deg,#10314cf0,#071e38e8);
+ box-shadow:inset 0 1px #ffffff0d;
+ border-radius:13px
+}
+.xp-ux-modal-maintenance .xp-maintenance-page>h3{
+ color:#e6f8ff;font-weight:700
+}
+/* On desktop the SOC gauge must be visually proportional to its status card,
+   while small cards keep all existing mobile size and layout rules. */
+@container xpeng-layout (min-width:851px){
+ .xp-scene{
+  height:clamp(560px,calc(100dvh - 152px),760px);
+  max-height:calc(100dvh - 130px);
+  min-height:0;aspect-ratio:auto
+ }
+ .xp-home-navigation .xp-overview-stat{
+  width:clamp(275px,27cqw,430px);max-width:430px;
+  left:5%;top:35%;
+  padding:clamp(14px,1.5cqw,23px);
+  border-radius:22px
+ }
+ .xp-home-navigation .xp-batt-glyph{
+  width:88px!important;min-width:88px!important;height:116px!important
+ }
+ .xp-home-navigation .xp-batt-glyph .xp-battery-level-icon{
+  width:88px!important;height:110px!important;
+  --xp-icon-size:88px!important;--mdc-icon-size:88px!important
+ }
+ .xp-home-navigation .xp-batt-line{min-height:116px;gap:16px}
+ .xp-home-navigation .xp-overview-stat .xp-soc{
+  font-size:clamp(43px,4.4cqw,70px)
+ }
+ .xp-home-navigation .xp-overview-stat .xp-range-num{
+  font-size:clamp(25px,2.5cqw,38px)
+ }
+ .xp-ux-modal-climate .xp-climate-layout{
+  gap:clamp(12px,1.6cqw,25px)!important
+ }
+}
+/* Retain the exact same full-function single-card layout on phone / Sections. */
+@container xpeng-layout (max-width:850px){
+ .xp-ux-dock-seven .xp-ux-dock-action{
+  border-radius:12px
+ }
+ .xp-ux-modal-climate .xp-climate-primary,
+ .xp-ux-modal-climate .xp-climate-temp-panel,
+ .xp-ux-modal-climate .xp-climate-fan-panel{
+  border-radius:13px!important
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ .xp-ux-dock-seven .xp-ux-dock-action,
+ .xp-ux-modal-extras .xp-extra-tile{transition:none!important;transform:none!important}
+}
+
 /* Black Edition G6 uses black/dark cabin finish as well as its black
    exterior paint. This is a visual tone fallback until approved Black Edition
    cabin artwork exists; it does not create or substitute manufacturer photos. */
