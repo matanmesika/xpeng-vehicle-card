@@ -31,10 +31,14 @@ test('original desktop composition, vehicle artwork and automatic charge logic s
  assert.match(source,/interior:'dark_gray'/);
 });
 
-test('existing charge view keeps its own model artwork and no overview dock',()=>{
- assert.match(source,/this\.xpUiEnabled\(\)&&!isCharging\?'xp-has-controls':''/);
- assert.match(source,/xp-charge-heading-action/);
+test('original charging art uses the same seven-button dashboard dock',()=>{
+ assert.match(source,/this\.xpUiEnabled\(\)\?'xp-has-controls':''/);
+ assert.match(source,/const showDock=this\.xpUiEnabled\(\)&&\(onHome\|\|onChargeHome\)/);
+ assert.match(source,/xp-charge-navigation/);
+ assert.match(source,/xp-charge-panel-actions/);
  assert.match(source,/view==='rear'\?'charging':'front'/);
+ assert.match(css,/\.xp-charge-navigation \.xp-ux-dock-seven/);
+ assert.match(css,/\.xp-scene\.xp-charge\.xp-charge-navigation \.xp-car/);
 });
 
 test('phone subpages are touch scrollable and maintenance grid stacks rows',()=>{
