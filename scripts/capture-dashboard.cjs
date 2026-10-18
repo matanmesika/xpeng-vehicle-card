@@ -619,8 +619,10 @@ async function main(){
      });
      assert.equal(await car.locator('button[data-xp-extra-page="schedule"]').count(),1,
        'Live HA schedule entity must add nested climate schedule action');
-     const scrollBefore=await car.locator('.xp-ux-modal-climate').evaluate(el=>{el.scrollTop=145;return el.scrollTop});
-     await car.locator('button[data-xp-extra-page="schedule"]').click();
+     const scheduleButton=car.locator('button[data-xp-extra-page="schedule"]');
+     await scheduleButton.scrollIntoViewIfNeeded();
+     const scrollBefore=await car.locator('.xp-ux-modal-climate').evaluate(el=>el.scrollTop);
+     await scheduleButton.click();
      assert.equal(await car.locator('.xp-ux-modal-extras').count(),1,'Nested schedule page missing');
      assert.match(await car.locator('.xp-ux-modal-head button').getAttribute('aria-label'),/חלון הקודם/);
      await car.locator('button[data-xp-close]').click();
