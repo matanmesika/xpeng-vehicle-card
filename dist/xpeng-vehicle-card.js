@@ -429,10 +429,6 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-tire-reading{padding:12px 4px;border-radius:13px}.xp-tire-reading strong{font-size:24px}.xp-tire-reading small{font-size:11px}.xp-tire-reading span{font-size:12px}}
 @media(max-width:400px){.xp-tire-stage{grid-template-columns:minmax(70px,1fr) minmax(107px,40%) minmax(70px,1fr)}.xp-tire-reading strong{font-size:21px}}
 
-.xp-tire-row{width:100%;color:inherit;border:0;border-bottom:1px solid #56708a43;background:transparent;text-align:left;font:inherit}
-.xp-tire-row:hover,.xp-tire-row:focus-visible{background:#2e54653b}
-.xp-tire-row .xp-info-copy{align-items:flex-start}
-@media(max-width:850px){.xp-tire-row{min-height:88px;padding:7px 10px;border:0;border-right:1px solid #56708a43}}
 
 /* The approved 2026 white G6 cutout is already tightly cropped: frame its pixels to the reference shot. */
 .xp-overview .xp-car.xp-reference-cutout{left:25.5%;bottom:26.6%;width:51.4%;max-height:none;filter:drop-shadow(0 13px 13px #0005)}
@@ -571,11 +567,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-ux-port-action{display:flex;align-items:center;justify-content:center;gap:10px;border-radius:18px;background:#145069;border:1px solid #36a6bc;padding:14px 18px;min-height:48px;flex:1}
 @media(max-width:450px){.xp-ux-port-panel{padding:5px}.xp-ux-port-action{font-size:13px}.xp-ux-cabin-portrait .xp-ux-hotspot{width:44px;height:44px}}
 
-/* Four dedicated home controls plus seat, access and map interactions. */
-.xp-ux-dock-four{gap:clamp(3px,1vw,13px);max-width:92%}
-.xp-ux-dock-four .xp-ux-dock-action{flex:1 1 0;min-width:51px;max-width:94px;padding:6px 8px}
 .xp-ux-dock-action:disabled{opacity:.4;cursor:not-allowed}
-.xp-location-row{width:100%;text-align:inherit;background:transparent;border:0;color:inherit}
 .xp-ux-climate-bottom{margin-top:12px}
 .xp-ux-seat-sheet{margin:12px 0;padding:12px;background:#14253adf;border:1px solid #4a88ad;border-radius:18px}
 .xp-ux-sheet-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
@@ -603,16 +595,11 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-ux-map-actions button{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;border:1px solid #4d89ae;background:#133b5b;border-radius:14px;min-height:48px}
 .xp-ux-map-actions button:disabled{opacity:.4;cursor:not-allowed}
 @media(max-width:600px){
- .xp-ux-dock-four{max-width:97%;gap:4px}
- .xp-ux-dock-four .xp-ux-dock-action{min-width:49px;max-width:none;padding:6px 5px}
  .xp-ux-access-panel{padding:8px 0}
  .xp-ux-map-stage{min-height:250px}
  .xp-ux-map-actions button{font-size:12px;padding:10px 6px}
 }
-@container xpeng-card (max-width:430px){
- .xp-ux-dock-four{bottom:132px;gap:4px}
- .xp-ux-dock-four .xp-ux-dock-action{min-width:43px;min-height:48px;padding:5px 3px}
-}
+
 
 /* Tap to cycle each seat's actual Xpengtk select entity (not another page).
  * Zones line up with both paired cabin image palettes and shrink with the card.
@@ -759,7 +746,6 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-tire-stage{grid-template-columns:minmax(80px,1fr) minmax(116px,40%) minmax(80px,1fr);gap:5px}
 .xp-tire-reading{padding:12px 4px;border-radius:13px}.xp-tire-reading strong{font-size:24px}.xp-tire-reading small{font-size:11px}.xp-tire-reading span{font-size:12px}}
 @container xpeng-layout (max-width:400px){.xp-tire-stage{grid-template-columns:minmax(70px,1fr) minmax(107px,40%) minmax(70px,1fr)}.xp-tire-reading strong{font-size:21px}}
-@container xpeng-layout (max-width:850px){.xp-tire-row{min-height:88px;padding:7px 10px;border:0;border-right:1px solid #56708a43}}
 @container xpeng-layout (max-width:850px){.xp-overview .xp-car.xp-reference-cutout{left:-3%;bottom:27%;width:108%;max-height:42%}}
 @container xpeng-layout (max-width:400px){.xp-charge-meta>div{padding:0 7px}.xp-charge-heading{font-size:19px}.xp-charge-meta b{font-size:12px}.xp-overview-stat{top:219px}.xp-status-panel{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @container xpeng-layout (max-width:850px){
@@ -788,8 +774,6 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 @container xpeng-layout (max-width:600px){.xp-ux-vehicle-statuses,.xp-ux-vehicle-buttons{grid-template-columns:repeat(2,minmax(0,1fr))}.xp-ux-vehicle-buttons button{min-height:50px;padding:9px 7px;font-size:12px}}
 @container xpeng-layout (max-width:450px){.xp-ux-port-panel{padding:5px}.xp-ux-port-action{font-size:13px}.xp-ux-cabin-portrait .xp-ux-hotspot{width:44px;height:44px}}
 @container xpeng-layout (max-width:600px){
- .xp-ux-dock-four{max-width:97%;gap:4px}
- .xp-ux-dock-four .xp-ux-dock-action{min-width:49px;max-width:none;padding:6px 5px}
  .xp-ux-access-panel{padding:8px 0}
  .xp-ux-map-stage{min-height:250px}
  .xp-ux-map-actions button{font-size:12px;padding:10px 6px}
@@ -851,9 +835,6 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-ux-modal-charge_controls .xp-ux-charge-actions{position:static;inset:auto;display:flex;flex-wrap:wrap;margin:12px 0 20px}
 .xp-ux-modal-charge_controls .xp-ux-charge-limit{max-width:none}
 .xp-ux-modal-charge_controls .xp-ux-port-panel{margin-top:15px}
-/* Owner's original charging scene stays intact; only two compact shortcuts added. */
-.xp-charge-shortcuts{position:absolute;z-index:12;bottom:3.1%;left:3%;display:flex;gap:10px}
-.xp-charge-shortcuts button{min-height:44px;padding:8px 16px;border:1px solid #1cbec7;border-radius:13px;color:#e7fcff;background:#082e46e8;cursor:pointer}
 .xp-maintenance-page{max-width:940px;margin:0 auto}
 .xp-maintenance-page h3{font-size:17px;margin:15px 0 8px;color:#d8f5fa}
 .xp-ux-modal-maintenance .xp-tire-screen{position:relative;inset:auto;display:block;height:300px;min-height:260px;margin:0 auto 16px;width:100%}
@@ -865,8 +846,6 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-ux-charge-schedule{max-width:590px;margin:20px auto}
 .xp-ux-access-buttons button:disabled,.xp-ux-port-actions button:disabled{opacity:.45;cursor:not-allowed}
 @container xpeng-layout (max-width:520px){
- .xp-charge-shortcuts{bottom:3%;left:3%;right:3%;justify-content:center;gap:7px}
- .xp-charge-shortcuts button{font-size:12px;padding:8px 10px;min-height:44px}
  .xp-maint-info{grid-template-columns:1fr}
  .xp-ux-modal-maintenance .xp-tire-screen{height:250px;min-height:240px}
  .xp-ux-modal-maintenance .xp-tire-reading strong{font-size:18px}
@@ -1256,7 +1235,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  font-weight:770;text-shadow:0 2px 14px #001020a9;
 }
 .xp-ux-modal-head button,.xp-page-back,
-.xp-ux-map-actions button,.xp-charge-shortcuts button{
+.xp-ux-map-actions button{
  border:1px solid #69b8ef9b;
  border-radius:15px;
  background:linear-gradient(150deg,#163d5dcc,#091b31ed);
@@ -1337,7 +1316,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  background:linear-gradient(90deg,#11d78a,#35f5cf);
  box-shadow:0 0 17px #08ffb06b;
 }
-.xp-charge-shortcuts button,.xp-charge-stop{
+.xp-charge-stop{
  min-height:47px;
  border:1px solid #3dc8d0b6;
  background:linear-gradient(150deg,#10475cde,#092239ed);
