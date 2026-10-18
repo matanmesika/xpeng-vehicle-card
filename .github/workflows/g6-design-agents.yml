@@ -1,0 +1,128 @@
+name: G6 specialist design review agents
+
+on:
+  push:
+    branches:
+      - design/g6-premium-visual-pass-20261018
+  pull_request:
+    branches:
+      - release/v1.0.4-beta.10
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: xpeng-g6-design-agents-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  design-architect:
+    name: Design Agent | typography, colors and component hierarchy
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify deliberate visual system improvements
+        run: node --test --test-name-pattern="Design Agent" tests/g6-design-agents.test.cjs
+
+  ux-reviewer:
+    name: UX Agent | focus, responsive usability and safe navigation
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check keyboard focus and narrow container contracts
+        run: node --test --test-name-pattern="UX Agent" tests/g6-design-agents.test.cjs
+
+  vehicle-regression-guardian:
+    name: Function Guardian | unchanged JS, actions, assets and mapping
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Confirm no functional JavaScript or car-art changes from Beta 10
+        env:
+          G6_REVIEW_BASE: origin/release/v1.0.4-beta.10
+        run: node --test --test-name-pattern="Behavior Guardian|Integration Guardian" tests/g6-design-agents.test.cjs
+      - name: Run existing behavior and responsive regression suites
+        run: |
+          node --test \
+            tests/xpeng-controls-smoke.test.cjs \
+            tests/responsive-dual-state.test.cjs \
+            tests/charging-cable-static.test.cjs
+
+  english-copy-reviewer:
+    name: English Copy Agent | English screenshot text and bilingual fallback
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify screenshots explicitly use English locale and preserve live code
+        run: node --test --test-name-pattern="English Copy Agent" tests/g6-design-agents.test.cjs
+
+  real-browser-visual-audit:
+    name: Visual QA Agent | real desktop, iPhone and Sections screenshot artifacts
+    runs-on: ubuntu-latest
+    timeout-minutes: 17
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install headless Chromium and genuine Material Design previews
+        run: |
+          npm install --prefix /tmp/g6-design-check --no-audit --no-fund playwright@1.56.1 @mdi/js@7.4.47
+          /tmp/g6-design-check/node_modules/.bin/playwright install --with-deps chromium
+      - name: Render actual card and assert modal bounds/charging/English copy
+        env:
+          PLAYWRIGHT_MODULE: /tmp/g6-design-check/node_modules/playwright
+        run: timeout 180s node scripts/capture-dashboard.cjs
+      - name: Verify all twelve review screenshots have correct pixel sizes
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from struct import unpack
+          root=Path('docs/screenshots')
+          names=['home-desktop','home-mobile','charging-desktop','charging-mobile',
+                 'climate-desktop','climate-mobile','maintenance-desktop','maintenance-mobile',
+                 'map-desktop','map-mobile','charge-controls-mobile','diagnostics-mobile']
+          for base in names:
+              p=root/(base+'.png')
+              raw=p.read_bytes()
+              assert raw[:8]==bytes([137,80,78,71,13,10,26,10]),(p,'invalid PNG')
+              w,h=unpack('>II',raw[16:24])
+              assert ((w>=1100 and h>=620) if base.endswith('-desktop') else (300<=w<=500 and h>=700)),(base,w,h)
+              assert len(raw)>10000,(base,len(raw))
+              print(f'PASS {base}: {w}x{h}, {len(raw):,} bytes')
+          PY
+      - name: Save visual review images for owner approval
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: g6-premium-design-review-screenshots
+          path: docs/screenshots/*.png
+          if-no-files-found: warn
+          retention-days: 14
