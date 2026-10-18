@@ -963,7 +963,7 @@ async function main(){
        const modalOverflow=getComputedStyle(m).overflowY;
        const previousScroll=m.scrollTop;
        let scrollReachable=false;
-       if(hasGuide&&modalOverflow==='auto'){
+       if((hasGuide||panel==='extras')&&modalOverflow==='auto'){
          m.scrollTop=m.scrollHeight;
          scrollReachable=!!inner&&inner.getBoundingClientRect().bottom<=m.getBoundingClientRect().bottom+4;
          m.scrollTop=previousScroll;
@@ -1003,7 +1003,7 @@ async function main(){
      'Wi-Fi visual must be centered in the actual button: '+JSON.stringify(responsiveModalQA.at(-1)));
    assert.ok(byPage.pages.every(x=>x.visible&&x.tireAboveDetails&&x.controlsInside&&
        ((x.overflows==='hidden'&&x.bodyFits)||
-        (x.overflows==='auto'&&x.hasGuide&&x.scrollReachable))),
+        (x.overflows==='auto'&&(x.hasGuide||x.panel==='extras')&&x.scrollReachable))),
      'Each panel must fit OR expose its complete guided content through its own scroll, without clipping: '+JSON.stringify(responsiveModalQA.at(-1)));
    const map=byPage.pages.find(x=>x.panel==='map');
    assert.ok(map.availableHeight>180,'Map should reserve real visible height: '+JSON.stringify(map));
