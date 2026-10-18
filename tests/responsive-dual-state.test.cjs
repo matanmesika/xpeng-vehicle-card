@@ -149,7 +149,7 @@ test('beta.7: desktop cog/communication separation, Wi-Fi alignment and uniform 
   assert.match(beta7,/@container xpeng-layout \(max-width:850px\)\{[\s\S]*?\.xp-header \.xp-meta-tools\{gap:8px\}/,
     'Narrow HA Sections/phone retains comfortable 8px header spacing');
   assert.match(beta7,/@container xpeng-layout \(min-width:851px\)\{[\s\S]*?\.xp-header \.xp-wifi \.xp-mdi-icon\{transform:translateY\(-4px\)\}/,
-    'Move only the desktop Wi-Fi glyph upward, keeping full button tap target');
+    'Beta 7 historical Wi-Fi offset remains in prior rules; beta 9 must override to exact center');
   assert.match(beta7,/\.xp-home-navigation \.xp-ux-dock-seven \.xp-ux-dock-action ha-icon,[\s\S]*?\.xp-charge-navigation \.xp-ux-dock-seven \.xp-ux-dock-action ha-icon\{\s*color:#e9f4ff;/,
     'Home and Charging must have the identical neutral action icon palette');
   assert.doesNotMatch(css,/\.xp-(?:home|charge)-navigation \.xp-ux-dock-action\[data-xp-(?:open|toggle)="(?:map|climate|port|doors)"\] ha-icon\{color:/,
@@ -157,4 +157,14 @@ test('beta.7: desktop cog/communication separation, Wi-Fi alignment and uniform 
   assert.match(css,/\.xp-ux-dock-action:disabled\{opacity:/,'Unavailable buttons remain visibly disabled');
   assert.match(css,/\.xp-wifi\.xp-error\{color:#ffb16a/,'Real connection error keeps semantic warning color');
   assert.match(css,/\.xp-batt-glyph>\.xp-mdi-icon\{[\s\S]*?color:#6dfdc1/,'Battery indication remains green');
+});
+
+test('beta.9: HA Sections grid auto-height, map bounds, nested diagnostics scrolling and centered Wi-Fi',()=>{
+ assert.match(source,/getGridOptions\(\)\{return \{columns:12,min_columns:12,rows:'auto'\}\}/);
+ assert.match(css,/\.xp-ux-modal-map \.xp-ux-map-panel\{[\s\S]*?grid-template-rows:minmax\(0,1fr\) auto/);
+ assert.match(css,/\.xp-scene \.xp-ux-modal\{[\s\S]*?overflow:hidden!important/);
+ assert.match(css,/\.xp-ux-modal-extras \.xp-extra-diagnostics-layout \.xp-diagnostics-scroll\{[\s\S]*?overflow-y:auto!important/);
+ assert.match(source,/xp-extra-diagnostics-layout/);
+ assert.match(css,/\.xp-header \.xp-wifi \.xp-mdi-icon\{[\s\S]*?transform:none!important/);
+ assert.match(css,/@container xpeng-layout \(max-width:600px\)\{[\s\S]*?\.xp-scene\{height:clamp\(630px,calc\(100dvh - 84px\),780px\)/);
 });
