@@ -135,28 +135,33 @@ const XP_CONTROL_FALLBACKS=Object.freeze({
  'calendar.hvac_schedule_calendar':'hvac_schedule'
 });
 
+/* Official Home Assistant Material Design Icons only.
+ * Outlined UI icons for a contemporary, consistent glass interface.
+ * Seat/tire/HVAC pictograms retain the exact official specialised MDI glyphs.
+ * For Hebrew (RTL), the contextual Back arrow points right.
+ */
 const XP_ICONS = Object.freeze({
- home:'mdi:home',
- lock:'mdi:lock',
- unlock:'mdi:lock-open-variant',
- car:'mdi:car',
+ home:'mdi:home-outline',
+ lock:'mdi:lock-outline',
+ unlock:'mdi:lock-open-variant-outline',
+ car:'mdi:car-outline',
  windows:'mdi:window-open',
  windows_open:'mdi:window-open-variant',
  trunk:'mdi:car-hatchback',
  trunk_open:'mdi:car-hatchback',
- horn:'mdi:bullhorn',
+ horn:'mdi:bullhorn-outline',
  flash:'mdi:car-light-high',
  auto:'mdi:autorenew',
  windscreen:'mdi:car-defrost-front',
  port_open:'mdi:power-plug-outline',
  fan:'mdi:fan',
  bolt:'mdi:lightning-bolt',
- pin:'mdi:map-marker',
+ pin:'mdi:map-marker-outline',
  arrow:'mdi:chevron-right',
- back:'mdi:chevron-left',
+ back:'mdi:arrow-right',
  refresh:'mdi:refresh',
- settings:'mdi:cog',
- maintenance:'mdi:tools',
+ settings:'mdi:cog-outline',
+ maintenance:'mdi:wrench-outline',
  thermometer:'mdi:thermometer',
  tire:'mdi:tire',
  seat_heat:'mdi:car-seat-heater',
@@ -164,14 +169,15 @@ const XP_ICONS = Object.freeze({
  wheel_heat:'mdi:steering',
  info:'mdi:information-outline',
  clock:'mdi:clock-outline',
- battery:'mdi:battery',
+ battery:'mdi:battery-outline',
  power:'mdi:power',
- plug:'mdi:power-plug',
- check:'mdi:check',
- carfront:'mdi:car',
- shield:'mdi:shield-check',
+ plug:'mdi:power-plug-outline',
+ check:'mdi:check-circle-outline',
+ carfront:'mdi:car-outline',
+ shield:'mdi:shield-check-outline',
  sun:'mdi:white-balance-sunny',
  gauge:'mdi:speedometer',
+ station:'mdi:ev-station',
  wifi:'mdi:wifi'
 });
 /** Render native Home Assistant MDI glyphs, never home-made SVG icons. */
@@ -1828,6 +1834,85 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  }
 }
 
+
+/* Genuine MDI-only control icon polish. No home-made action SVGs or emoji.
+ * The original vehicle artwork, fallback illustrations and curved charging
+ * cable are non-control visuals and remain unchanged. */
+.xp-scene .xp-mdi-icon{
+ flex-shrink:0;vertical-align:middle;
+ line-height:1;overflow:visible;
+ -webkit-font-smoothing:antialiased;
+}
+.xp-ux-dock-action .xp-mdi-icon,
+.xp-ux-modal-head button .xp-mdi-icon,
+.xp-ux-climate-feature .xp-mdi-icon,
+.xp-extra-tile .xp-mdi-icon,
+.xp-ux-map-actions button .xp-mdi-icon,
+.xp-charge-panel-actions button .xp-mdi-icon{
+ color:#b6e4ff;filter:drop-shadow(0 1px 5px #59baff28);
+ transition:color .18s ease,filter .18s ease;
+}
+.xp-ux-dock-action:hover .xp-mdi-icon,
+.xp-ux-modal-head button:hover .xp-mdi-icon,
+.xp-ux-climate-feature:hover .xp-mdi-icon,
+.xp-extra-tile:hover .xp-mdi-icon,
+.xp-charge-panel-actions button:hover .xp-mdi-icon{
+ color:#84f3e3;filter:drop-shadow(0 1px 5px #38e7cf54);
+}
+.xp-ux-dock-action:disabled .xp-mdi-icon,
+.xp-ux-climate-feature:disabled .xp-mdi-icon{
+ filter:none;opacity:.55;
+}
+/* Standard back navigation: one official RTL arrow, no visible text.
+   aria-label / title remain readable to assistive technologies. */
+.xp-ux-modal-head button[data-xp-close],
+.xp-tire-actions button[data-tire-toggle]{
+ width:46px;height:46px;min-width:46px;min-height:46px;
+ display:inline-flex;align-items:center;justify-content:center;
+ flex:none;gap:0;padding:0;border-radius:14px;
+}
+.xp-ux-modal-head button[data-xp-close] .xp-mdi-icon,
+.xp-tire-actions button[data-tire-toggle] .xp-mdi-icon{
+ --xp-icon-size:24px!important;--mdc-icon-size:24px!important;
+ width:24px!important;height:24px!important;
+ color:#bfe8ff;
+}
+.xp-tire-actions button[data-tire-toggle]{min-width:46px}
+.xp-batt-glyph{
+ border:0!important;padding:0!important;border-radius:0!important;
+ background:none!important;box-shadow:none!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ flex:none;color:#60f8ba;
+}
+.xp-batt-glyph:before{display:none!important;content:none!important}
+.xp-batt-glyph>.xp-mdi-icon{
+ width:100%!important;height:100%!important;
+ --xp-icon-size:100%!important;--mdc-icon-size:100%!important;
+ color:#6dfdc1;filter:drop-shadow(0 0 9px #13e0a560);
+}
+.xp-station .xp-mdi-icon{
+ color:#9fe9ff;filter:drop-shadow(0 0 7px #58cfff);
+ --xp-icon-size:24px!important;--mdc-icon-size:24px!important;
+}
+@container xpeng-layout (max-width:600px){
+ .xp-ux-modal-head button[data-xp-close],
+ .xp-tire-actions button[data-tire-toggle]{
+  width:44px;height:44px;min-width:44px;min-height:44px;
+ }
+ .xp-ux-modal-head button[data-xp-close] .xp-mdi-icon{
+  width:22px!important;height:22px!important;
+  --xp-icon-size:22px!important;--mdc-icon-size:22px!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ .xp-ux-dock-action .xp-mdi-icon,
+ .xp-ux-modal-head button .xp-mdi-icon,
+ .xp-ux-climate-feature .xp-mdi-icon,
+ .xp-extra-tile .xp-mdi-icon,
+ .xp-ux-map-actions button .xp-mdi-icon,
+ .xp-charge-panel-actions button .xp-mdi-icon{transition:none}
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -3089,7 +3174,7 @@ class XpengVehicleCard extends HTMLElement{
  header(){
    const connection=this.val('connection'),status=xpConnText(connection);
    const stateClass=status==='Connected'?'xp-connected':status==='Connection error'?'xp-error':'xp-disconnected';
-   return `<header class="xp-header"><div class="xp-brand"><span class="xp-x-mark">✕</span><span>XPENG</span></div>
+   return `<header class="xp-header"><div class="xp-brand"><span>XPENG</span></div>
      <div class="xp-header-right"><div class="xp-meta-tools">
         ${this.xpUiEnabled()&&this._view!=='charging'&&!this._xpPanel?'<button type="button" class="xp-more-trigger" data-xp-more aria-label="אפשרויות נוספות" title="אפשרויות נוספות">'+xpIcon('settings',21)+'</button>':''}
        <button class="xp-wifi ${stateClass}" type="button" data-meta-toggle
@@ -3164,7 +3249,7 @@ class XpengVehicleCard extends HTMLElement{
         <strong dir="ltr">${xpEsc(reading.value)} <span>${reading.value==='—'?'לא זמין':unit==='kpa'?'kPa':unit==='psi'?'PSI':'bar'}</span></strong></div>
       </div>`;};
     return `<section class="xp-tire-screen" role="region" aria-label="Tire pressure from above">
-       ${showBack?`<div class="xp-tire-actions"><button type="button" data-tire-toggle aria-label="Back to vehicle status">${xpIcon('back',20)} Back to vehicle</button></div>`:''}
+       ${showBack?`<div class="xp-tire-actions"><button type="button" data-tire-toggle aria-label="חזרה לתצוגת הרכב" title="חזרה לתצוגת הרכב">${xpIcon('back',22)}</button></div>`:''}
        <div class="xp-tire-stage"><div class="xp-tire-center">${this.topCarArt()}</div>
          ${wheel('tire_fl',showBack?'Front left':'קדמי שמאל')}${wheel('tire_fr',showBack?'Front right':'קדמי ימין')}
          ${wheel('tire_rl',showBack?'Rear left':'אחורי שמאל')}${wheel('tire_rr',showBack?'Rear right':'אחורי ימין')}</div>
@@ -3176,7 +3261,7 @@ class XpengVehicleCard extends HTMLElement{
   // through its dedicated dock button only, on both desktop and phone.
   return `${this.title()}${this.carArt()}
     <section class="xp-overview-stat" aria-label="Battery and estimated range">
-     <div class="xp-batt-line"><div class="xp-batt-glyph"><div class="xp-batt-fill" style="height:${xpPercent(this.val('soc'))??0}%"></div></div>
+     <div class="xp-batt-line"><div class="xp-batt-glyph" aria-hidden="true">${xpIcon('battery',48)}</div>
        <div><div class="xp-stat-label">Battery</div><div class="xp-soc">${this.socHtml()}</div></div></div>
      ${this.progress()}<div class="xp-overview-range"><div class="xp-stat-label">Estimated range</div><div class="xp-range-num">${xpIcon('gauge',36)}<span>${xpEsc(this.num('range','km'))}</span></div></div>
     </section>
@@ -3184,7 +3269,7 @@ class XpengVehicleCard extends HTMLElement{
  }
  charging(){
   return `${this.title()}
-    <div class="xp-station" aria-hidden="true">✕</div>${this.carArt()}
+    <div class="xp-station" aria-hidden="true">${xpIcon('station',24)}</div>${this.carArt()}
     ${this.model()==='G6'&&this.xpChargingActive()?
       '<svg class="xp-charge-cable xp-charge-cable-live xp-cable-desktop" data-xp-cable="desktop" aria-hidden="true" viewBox="0 0 1400 788" preserveAspectRatio="none"><path class="xp-charge-cable-halo" d="M935 460 C950 499 960 555 998 589 C1038 623 1095 629 1145 632 S1235 635 1277 610 C1311 588 1317 535 1310 475"/><path class="xp-charge-cable-core" d="M935 460 C950 499 960 555 998 589 C1038 623 1095 629 1145 632 S1235 635 1277 610 C1311 588 1317 535 1310 475"/></svg>'+
       '<svg class="xp-charge-cable xp-charge-cable-live xp-cable-mobile" data-xp-cable="mobile" aria-hidden="true" viewBox="0 0 390 780" preserveAspectRatio="none"><path class="xp-charge-cable-halo" d="M171 489 C190 515 191 558 211 581 C236 609 270 612 301 603 C333 596 349 573 358 551 C362 541 359 529 358 516"/><path class="xp-charge-cable-core" d="M171 489 C190 515 191 558 211 581 C236 609 270 612 301 603 C333 596 349 573 358 551 C362 541 359 529 358 516"/></svg>':''}
