@@ -2286,6 +2286,13 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  --xp-icon-size:51px!important;--mdc-icon-size:51px!important
 }
 
+/* Black Edition G6 uses black/dark cabin finish as well as its black
+   exterior paint. This is a visual tone fallback until approved Black Edition
+   cabin artwork exists; it does not create or substitute manufacturer photos. */
+.xp-scene.xp-black-edition .xp-ux-cabin-picture{
+ filter:grayscale(1) brightness(.52) contrast(1.18)
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -3807,7 +3814,7 @@ class XpengVehicleCard extends HTMLElement{
   const oldPanel=oldModal?.className||'';
   const oldScroll=oldModal?.scrollTop||0;
   const oldDiagnostics=oldModal?.querySelector?.('.xp-diagnostics-scroll')?.scrollTop||0;
-  const html=xpLocalizeMarkup(`<style>${XP_CSS}</style><ha-card><div class="xp-scene ${isCharging?'xp-charge':this._tireOpen?'xp-overview xp-tire-mode':'xp-overview'} ${this.xpUiEnabled()?'xp-has-controls':''} ${onHome&&this.xpUiEnabled()?'xp-home-navigation':''} ${chargeLayout?'xp-charge-navigation':''} ${xpIsEnglish(this._hass)?'xp-locale-en':''}">
+  const html=xpLocalizeMarkup(`<style>${XP_CSS}</style><ha-card><div class="xp-scene ${isCharging?'xp-charge':this._tireOpen?'xp-overview xp-tire-mode':'xp-overview'} ${this.xpUiEnabled()?'xp-has-controls':''} ${onHome&&this.xpUiEnabled()?'xp-home-navigation':''} ${chargeLayout?'xp-charge-navigation':''} ${xpIsEnglish(this._hass)?'xp-locale-en':''} ${this.paint()==='black_edition'?'xp-black-edition':''}">
    ${this.sceneBackdrop()}${this.header()}${isCharging?this.charging():this._tireOpen?this.title()+this.tireScreen():this.overview()}${showDock?this.xpDock():""}${this.xpModal()}
    
    </div></ha-card>`,this._hass);
