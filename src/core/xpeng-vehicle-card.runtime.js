@@ -1949,10 +1949,33 @@ class XpengVehicleCard extends HTMLElement{
  }
  charging(){
   return `${this.title()}
-    <div class="xp-station xp-station-v3" aria-hidden="true"><span class="xp-station-display">${xpIcon('station',24)}</span><span class="xp-station-charge-light"></span><span class="xp-station-side-light"></span></div>${this.carArt()}
+    <div class="xp-station xp-station-v3 xp-station-xpeng19" aria-hidden="true">
+     <svg class="xp-xpeng-pedestal" viewBox="0 0 100 250" preserveAspectRatio="xMidYMid meet">
+      <defs>
+       <linearGradient id="xp19-case" x1="0" x2="1" y1="0" y2=".14"><stop offset="0" stop-color="#b4c6d2"/><stop offset=".15" stop-color="#64788b"/><stop offset=".32" stop-color="#243343"/><stop offset=".78" stop-color="#111c29"/><stop offset="1" stop-color="#070f18"/></linearGradient>
+       <linearGradient id="xp19-panel" x1="0" x2="1"><stop stop-color="#081524"/><stop offset=".55" stop-color="#182d3c"/><stop offset="1" stop-color="#03080d"/></linearGradient>
+       <linearGradient id="xp19-edge" x1="0" x2="1"><stop stop-color="#c9ddeb"/><stop offset=".6" stop-color="#6a8b9f"/><stop offset="1" stop-color="#1c2939"/></linearGradient>
+       <linearGradient id="xp19-led" x1="0" x2="1"><stop stop-color="#39bdf7"/><stop offset=".5" stop-color="#f5ffff"/><stop offset="1" stop-color="#1597d1"/></linearGradient>
+      </defs>
+      <ellipse cx="54" cy="243" rx="39" ry="4" fill="#01050d" opacity=".6"/>
+      <path d="M27 10Q27 5 35 4L73 1Q82 1 83 11L86 223Q87 229 79 233L34 237Q26 236 25 228Z" fill="url(#xp19-case)" stroke="#74899c" stroke-width="1.3"/>
+      <path d="M32 11Q32 9 36 9L73 6Q78 6 79 12L81 226Q80 230 76 230L36 232Q31 230 31 226Z" fill="url(#xp19-panel)" stroke="#3a5b73" stroke-width=".6"/>
+      <path d="M25 20L25 225Q27 234 33 236" stroke="url(#xp19-edge)" stroke-width="4" fill="none"/>
+      <rect x="37" y="13" width="38" height="93" rx="11" fill="#06111e" stroke="#2a3f51" stroke-width="1"/>
+      <path d="M43 36L52 45L61 36M43 45L52 36L61 45" stroke="#d6f2ff" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+      <text x="56" y="60" fill="#d9eafa" text-anchor="middle" font-size="8" letter-spacing="1.2" font-family="Arial,sans-serif">XPENG</text>
+      <rect x="53" y="134" width="4" height="74" rx="2" fill="#20b9f5" opacity=".21"/>
+      <rect x="54.4" y="134" width="2" height="74" rx="1" fill="url(#xp19-led)"/>
+      <path d="M31 113L21 114Q17 115 17 122V132Q17 137 21 138L31 139" fill="#172736" stroke="#8ba9bd" stroke-width="1.7"/>
+      <circle cx="18.5" cy="126" r="5" fill="#091622" stroke="#8ba9bd" stroke-width="1.5"/>
+      <circle cx="18.5" cy="126" r="1.8" fill="#28e7c7"/>
+      <path d="M82 30L84 216" stroke="#91a7b5" stroke-opacity=".35" stroke-width="1.5"/>
+     </svg>
+     <span class="xp-station-display">${xpIcon('station',24)}</span><span class="xp-station-charge-light"></span><span class="xp-station-side-light"></span>
+    </div>${this.carArt()}
     ${this.model()==='G6'&&this.xpChargingActive()?
-      '<svg class="xp-charge-cable xp-charge-cable-live xp-cable-desktop" data-xp-cable="desktop" aria-hidden="true" viewBox="0 0 1400 788" preserveAspectRatio="none"><path class="xp-charge-cable-halo" d="M935 460 C950 499 960 555 998 589 C1038 623 1095 629 1145 632 S1235 635 1277 610 C1311 588 1317 535 1310 475"/><path class="xp-charge-cable-core" d="M935 460 C950 499 960 555 998 589 C1038 623 1095 629 1145 632 S1235 635 1277 610 C1311 588 1317 535 1310 475"/></svg>'+
-      '<svg class="xp-charge-cable xp-charge-cable-live xp-cable-mobile" data-xp-cable="mobile" aria-hidden="true" viewBox="0 0 390 780" preserveAspectRatio="none"><path class="xp-charge-cable-halo" d="M171 489 C190 515 191 558 211 581 C236 609 270 612 301 603 C333 596 349 573 358 551 C362 541 359 529 358 516"/><path class="xp-charge-cable-core" d="M171 489 C190 515 191 558 211 581 C236 609 270 612 301 603 C333 596 349 573 358 551 C362 541 359 529 358 516"/></svg>':''}
+      '<svg class="xp-charge-cable xp-charge-cable-live xp-cable-desktop" data-xp-cable="desktop" aria-hidden="true" viewBox="0 0 1400 788" preserveAspectRatio="none"><path class="xp-charge-cable-halo" d="M935 460 C950 499 960 555 998 589 C1038 623 1095 629 1145 632 S1235 635 1277 610 C1301 590 1296 538 1287 474"/><path class="xp-charge-cable-core" d="M935 460 C950 499 960 555 998 589 C1038 623 1095 629 1145 632 S1235 635 1277 610 C1301 590 1296 538 1287 474"/></svg>'+
+      '<svg class="xp-charge-cable xp-charge-cable-live xp-cable-mobile" data-xp-cable="mobile" aria-hidden="true" viewBox="0 0 390 780" preserveAspectRatio="none"><path class="xp-charge-cable-halo" d="M171 489 C190 515 191 558 211 581 C236 609 270 612 301 603 C333 596 349 573 358 551 C359 540 353 530 346 516"/><path class="xp-charge-cable-core" d="M171 489 C190 515 191 558 211 581 C236 609 270 612 301 603 C333 596 349 573 358 551 C359 540 353 530 346 516"/></svg>':''}
     <section class="xp-charge-card" aria-label="Charging information">
        <div class="xp-charge-heading">${xpIcon('bolt',42)}<span>${xpEsc(this.chargeStatus())}</span></div>
        ${this.progress()}
