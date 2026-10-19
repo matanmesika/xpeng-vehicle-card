@@ -11,6 +11,7 @@ on:
       - design/g6-v2-surface-redesign-20261018
       - fix/g6-beta19-final-stabilization-20261019
       - release/v1.0.4-beta.21
+      - release/v1.0.4
       - fix/g6-charging-station-alignment-20261019
     paths:
       - scripts/capture-dashboard.cjs
