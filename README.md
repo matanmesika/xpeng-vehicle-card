@@ -2,7 +2,7 @@
 
 A responsive **English-only** Lovelace card for XPENG vehicles. One card fits desktop, iPhone and Home Assistant Sections automatically. It preserves the original night-lakeside scene, separately approved vehicle artwork and native Xpengtk entities.
 
-**Published preview:** [v1.0.4-beta.19](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.4-beta.19). **Stable HACS release:** [v1.0.3](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.3). The [post-beta stabilization PR](https://github.com/matanmesika/xpeng-vehicle-card/pull/57) is under review and has not been released.
+**Opt-in owner preview:** [v1.0.4-beta.20](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.4-beta.20) (not stable). **Stable HACS release:** [v1.0.3](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.3). [Post-Beta 19 fixes](docs/releases/v1.0.4-beta.20.md) remain under real Home Assistant/iPhone acceptance; do not merge to main.
 
 [HACS installation](https://my.home-assistant.io/redirect/hacs_repository/?owner=matanmesika&repository=xpeng-vehicle-card&category=plugin) · [Final acceptance](docs/G6_FINAL_STABILIZATION.md) · [Screenshot gallery](docs/screenshots/README.md) · [Artwork status](docs/ARTWORK_STATUS.md)
 
