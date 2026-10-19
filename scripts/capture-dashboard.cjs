@@ -667,7 +667,7 @@ async function main(){
    el._xpQaMapReference=map;
    el.hass={...h,states:{...h.states,'sensor.my_xpeng_soc':{state:'73',attributes:{}}}};
    return {sameElement:map===el.shadowRoot.querySelector('[data-xp-map-host] hui-map-card'),
-     hasCurrentHass:map.hass===el.hass,mapStillVisible:map.isConnected};
+     hasCurrentHass:map.hass!==el.hass&&map.hass.states['sensor.my_xpeng_soc']?.state==='73'&&map.hass.states['device_tracker.my_xpeng_location']?.attributes.icon==='mdi:car-back',mapStillVisible:map.isConnected};
  });
  assert.ok(mapStable.sameElement&&mapStable.hasCurrentHass&&mapStable.mapStillVisible,
    'Live HA updates must not tear down and recreate the native map: '+JSON.stringify(mapStable));
