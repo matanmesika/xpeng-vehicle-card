@@ -477,7 +477,28 @@ async function main(){
      assert.ok(layers.station<layers.car&&layers.car<layers.cable&&layers.cable<layers.info,
        'Charging layering: station behind car, cable on top, panel on top: '+JSON.stringify(layers));
      console.log('Mobile charging geometry verified '+width+'px',JSON.stringify(geo));
-      await chargingVisualAgent(width);
+      if(width<=520){
+        const metrics=await car.evaluate(el=>{
+          const root=el.shadowRoot,panel=root.querySelector('.xp-charge-card');
+          const buttons=[...root.querySelectorAll('.xp-charge-panel-actions button')];
+          return {height:panel.getBoundingClientRect().height,
+            stats:root.querySelectorAll('.xp-charge-meta>div').length,
+            buttons:buttons.map(btn=>{
+              const r=btn.getBoundingClientRect(),s=getComputedStyle(btn),
+                label=btn.querySelector('span').getBoundingClientRect();
+              return {ring:parseFloat(s.getPropertyValue('--xp-ring-size')),
+                glyph:parseFloat(s.getPropertyValue('--xp-glyph-size')),
+                touch:r.height,captionFits:label.left>=r.left-1&&label.right<=r.right+1};
+            })};
+        });
+        assert.ok(metrics.height<215,'Mobile charging data panel too tall: '+JSON.stringify(metrics));
+        assert.equal(metrics.stats,3,'Mobile charging must keep every live statistic');
+        assert.ok(metrics.buttons.length===3&&metrics.buttons.every(b=>
+          b.ring>=29&&b.ring<=32&&b.glyph<=16&&b.touch>=44&&b.captionFits),
+          'Mobile control size/label overflow: '+JSON.stringify(metrics));
+        console.log('PASS compact charging data/controls '+width+'px',JSON.stringify(metrics));
+      }
+       await chargingVisualAgent(width);
 
    }
    if(!charging){
