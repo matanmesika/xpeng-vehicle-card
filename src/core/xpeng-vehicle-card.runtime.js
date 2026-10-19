@@ -152,9 +152,9 @@ const XP_ICONS = Object.freeze({
  windows:'mdi:car-door',
  windows_open:'mdi:car-door',
  // Side-profile SUV with official MDI lift/lower action badge: no front view.
- trunk:'mdi:car-estate',
- trunk_open:'mdi:car-estate',
- trunk_close:'mdi:car-estate',
+ trunk:'mdi:car-back',
+ trunk_open:'mdi:car-back',
+ trunk_close:'mdi:car-back',
  trunk_lift:'mdi:arrow-up-bold',
  trunk_lower:'mdi:arrow-down-bold',
  horn:'mdi:bullhorn-outline',
@@ -192,16 +192,7 @@ const XP_ICONS = Object.freeze({
 function xpIcon(name,size=22){
  const mdi=XP_ICONS[name]||XP_ICONS.info;
  const px=Math.max(12,Math.min(80,Number(size)||22));
- const car='<ha-icon class="xp-mdi-icon" icon="'+mdi+'" style="--xp-icon-size:'+px+'px" aria-hidden="true"></ha-icon>';
- if(name==='trunk_open'||name==='trunk_close'){
-  const arrow=name==='trunk_open'?XP_ICONS.trunk_lift:XP_ICONS.trunk_lower;
-  const arrowSize=Math.max(12,Math.round(px*.53));
-  return '<span class="xp-trunk-symbol xp-trunk-symbol-'+(name==='trunk_open'?'lift':'lower')+
-   '" style="--xp-trunk-size:'+px+'px" aria-hidden="true">'+car+
-   '<ha-icon class="xp-trunk-arrow" icon="'+arrow+
-   '" style="--xp-icon-size:'+arrowSize+'px" aria-hidden="true"></ha-icon></span>';
- }
- return car;
+ return '<ha-icon class="xp-mdi-icon" icon="'+mdi+'" style="--xp-icon-size:'+px+'px" aria-hidden="true"></ha-icon>';
 }
 function xpEsc(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
 
