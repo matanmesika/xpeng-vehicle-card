@@ -1,0 +1,139 @@
+name: Publish XPENG G6 Beta 20 (owner preview)
+
+on:
+  push:
+    branches:
+      - release/v1.0.4-beta.20
+    paths:
+      - .github/workflows/publish-g6-v3-beta20.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-g6-v3-beta20
+  cancel-in-progress: false
+
+jobs:
+  verify-and-publish:
+    name: Full regression, Chromium screenshots, immutable beta prerelease
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate English-only copy, JavaScript, HACS and original art
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check src/xpeng-vehicle-card.js
+          node --check dist/xpeng-vehicle-card.js
+          node --check scripts/capture-dashboard.cjs
+          cmp src/xpeng-vehicle-card.js dist/xpeng-vehicle-card.js
+          node tools/build_vehicle_card.mjs --check
+          node tools/check_english_text.mjs
+          python -m json.tool hacs.json >/dev/null
+          python -m json.tool data/model-artwork.json >/dev/null
+          python -m json.tool data/vehicle-art-inventory.json >/dev/null
+          python tools/sync_vehicle_artwork.py --check
+          python tools/export_vehicle_artwork_backlog.py --check
+          python tools/sync_year_palettes.py --check
+          python tools/sync_master_view_queue.py --check
+          node tools/render_artwork_status.mjs --check
+          python tools/check_photo_candidates.py
+          python tools/audit_vehicle_provenance.py
+      - name: Run maintained functional, Xpengtk, responsive and design regressions
+        shell: bash
+        env:
+          G6_REVIEW_BASE: origin/release/v1.0.4-beta.10
+        run: |
+          set -euo pipefail
+          node --test \
+            tests/vehicle-artwork-mapping.test.cjs \
+            tests/charging-cable-static.test.cjs \
+            tests/xpeng-controls-smoke.test.cjs \
+            tests/xpeng-simulation.test.cjs \
+            tests/responsive-dual-state.test.cjs \
+            tests/release-documentation.test.cjs \
+            tests/g6-isolated-design-help.test.cjs \
+            tests/g6-design-agents.test.cjs \
+            tests/g6-approved-glass-design.test.cjs \
+            tests/g6-v3-canonical-style.test.cjs \
+            tests/g6-v3-inner-pages.test.cjs \
+            tests/g6-v3-owner-reference.test.cjs \
+            tests/g6-v3-visual-acceptance.test.cjs
+      - name: Install pinned Chromium and official MDI icon paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --prefix /tmp/xpeng-g6-beta20 --no-audit --no-fund playwright@1.56.1 @mdi/js@7.4.47
+          /tmp/xpeng-g6-beta20/node_modules/.bin/playwright install --with-deps chromium
+      - name: Capture real running card in Chromium using simulated sensor data
+        shell: bash
+        env:
+          PLAYWRIGHT_MODULE: /tmp/xpeng-g6-beta20/node_modules/playwright
+        run: |
+          set -euo pipefail
+          timeout 180s node scripts/capture-dashboard.cjs
+      - name: Verify exactly fourteen fresh desktop and phone screenshot PNGs
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from struct import unpack
+          root=Path('docs/screenshots')
+          names=['home-desktop','home-mobile','charging-desktop','charging-mobile',
+            'climate-desktop','climate-mobile','maintenance-desktop','maintenance-mobile',
+            'map-desktop','map-mobile','charge-controls-mobile','diagnostics-mobile',
+            'functions-desktop','functions-mobile']
+          expected={name+'.png' for name in names}
+          actual={p.name for p in root.iterdir() if p.suffix.lower() in ('.png','.jpg','.jpeg','.webp')}
+          assert actual==expected,(expected-actual,actual-expected)
+          for name in names:
+              b=(root/(name+'.png')).read_bytes()
+              assert b[:8]==bytes([137,80,78,71,13,10,26,10]) and len(b)>10000,name
+              w,h=unpack('>II',b[16:24])
+              assert ((w>=1100 and h>=620) if name.endswith('-desktop') else (300<=w<=500 and h>=700)),(name,w,h)
+              print('PASS',name,w,h,len(b))
+          PY
+      - name: Package screenshot archive
+        run: zip -q -j xpeng-g6-beta20-screenshots.zip docs/screenshots/*.png
+      - name: Save QA screenshot evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xpeng-g6-beta20-screenshots
+          path: docs/screenshots/*.png
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Publish opt-in Beta 20 without changing main
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF_NAME" = "release/v1.0.4-beta.20"
+          if gh release view v1.0.4-beta.20 >/dev/null 2>&1; then
+            echo "::error::Beta 20 already exists; refusing to rewrite its immutable tag"
+            exit 1
+          fi
+          gh release create v1.0.4-beta.20 \
+            src/xpeng-vehicle-card.js \
+            xpeng-g6-beta20-screenshots.zip \
+            --target "$GITHUB_SHA" \
+            --title "XPENG Vehicle Card v1.0.4-beta.20 | G6 Owner Test" \
+            --notes-file docs/releases/v1.0.4-beta.20.md \
+            --prerelease
+          gh release view v1.0.4-beta.20 --json url,tagName,isPrerelease,targetCommitish
+          actual_sha="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/v1.0.4-beta.20" --jq '.object.sha')"
+          test "$actual_sha" = "$GITHUB_SHA" || { echo "::error::Tag does not point to verified workflow commit"; exit 1; }
+          echo "PASS: beta.20 immutable tag targets the fully checked commit"
