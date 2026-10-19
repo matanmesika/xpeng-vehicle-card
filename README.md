@@ -8,7 +8,7 @@ A responsive, bilingual Lovelace card for XPENG vehicles, built for the native *
 
 ## Screenshots — real card in browser, simulated XPENG sensors
 
-All captures are from the **running card JavaScript in Chromium**, with synthetic Home Assistant/Xpengtk entity states; they are not AI-generated UI mockups and do not represent the owner's live vehicle. **The Location map in standalone tests uses a stub**; real map tiles can be verified only inside Home Assistant. These are the 12 curated screenshots for current release-review UI.
+All captures are from the **running card JavaScript in Chromium**, with synthetic Home Assistant/Xpengtk entity states; they are not AI-generated UI mockups and do not represent the owner's live vehicle. **The Location map in standalone tests uses a stub**; real map tiles can be verified only inside Home Assistant. These are the 14 curated screenshots for current release-review UI.
 
 | Screen | Desktop | Mobile |
 | --- | --- | --- |
@@ -17,6 +17,7 @@ All captures are from the **running card JavaScript in Chromium**, with syntheti
 | Climate · seats and steering wheel | ![Climate desktop](docs/screenshots/climate-desktop.png) | ![Climate mobile](docs/screenshots/climate-mobile.png) |
 | Maintenance · four TPMS wheel readings | ![Maintenance desktop](docs/screenshots/maintenance-desktop.png) | ![Maintenance mobile](docs/screenshots/maintenance-mobile.png) |
 | Location · HA native map / horn / flash | ![Location desktop (map stub)](docs/screenshots/map-desktop.png) | ![Location mobile (map stub)](docs/screenshots/map-mobile.png) |
+| Custom Functions · compact 21px/19px MDI icons in floating 48px/44px glass circles | ![Functions desktop](docs/screenshots/functions-desktop.png) | ![Functions mobile](docs/screenshots/functions-mobile.png) |
 
 **Other relevant views:** [charging limits and schedules](docs/screenshots/charge-controls-mobile.png) · [Xpengtk entity diagnostics](docs/screenshots/diagnostics-mobile.png). The direct vehicle actions (doors/lock, windows, charge flap and tailgate) are interactive buttons rather than separate permanent navigation screens; they are covered by functional QA. See [the gallery guide](docs/screenshots/README.md) for the complete set and limitations.
 
@@ -86,4 +87,4 @@ Automated QA validates JavaScript source/distribution parity, HACS metadata, tru
 
 ## Developer layout / folders
 
-`src/` is the maintained source, `dist/` the byte-identical HACS frontend. `assets/` holds approved backgrounds, owner cabin images and the model/year/paint artwork collection. `data/`, `profiles/` and `sources/` hold the **still-active** generation/asset inventories, provenance and pending-image queue; `tools/` rebuild and audit them. `tests/` contains maintained regression suites and simulator fixtures, `scripts/` capture actual browser visuals, `docs/screenshots/` holds **only 12 curated gallery images**, and `docs/releases/` is historical documentation. Historical pre-v1 test suites and obsolete alpha publishing workflows have been removed from this maintenance branch; release history/tags remain available on GitHub.
+`src/` is the maintained source, `dist/` the byte-identical HACS frontend. `assets/` holds approved backgrounds, owner cabin images and the model/year/paint artwork collection. `data/`, `profiles/` and `sources/` hold the **still-active** generation/asset inventories, provenance and pending-image queue; `tools/` rebuild and audit them. `tests/` contains maintained regression suites and simulator fixtures, `scripts/` capture actual browser visuals, `docs/screenshots/` holds **only 14 curated gallery images**, and `docs/releases/` is historical documentation. Historical pre-v1 test suites and obsolete alpha publishing workflows have been removed from this maintenance branch; release history/tags remain available on GitHub.

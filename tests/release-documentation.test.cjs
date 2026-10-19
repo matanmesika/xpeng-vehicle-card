@@ -10,12 +10,13 @@ const read=path=>fs.readFileSync(require('node:path').join(root,path),'utf8');
 const screenshotNames=[
  'home-desktop.png','home-mobile.png','charging-desktop.png','charging-mobile.png',
  'climate-desktop.png','climate-mobile.png','maintenance-desktop.png','maintenance-mobile.png',
- 'map-desktop.png','map-mobile.png','charge-controls-mobile.png','diagnostics-mobile.png'
+ 'map-desktop.png','map-mobile.png','charge-controls-mobile.png','diagnostics-mobile.png',
+ 'functions-desktop.png','functions-mobile.png'
 ];
-test('release README and G6 guide link only to the twelve current screenshots',()=>{
+test('release README and G6 guide link only to the fourteen current screenshots',()=>{
  const dir=path.join(root,'docs/screenshots');
  const actual=fs.readdirSync(dir).filter(f=>/\.(?:png|jpe?g|webp)$/i.test(f)).sort();
- assert.deepEqual(actual,screenshotNames.slice().sort(),'The curated screenshot folder must contain exactly 12 files');
+ assert.deepEqual(actual,screenshotNames.slice().sort(),'The curated screenshot folder must contain exactly 14 files');
  for(const doc of ['README.md','docs/README_HE.md','docs/G6_DASHBOARD_GUIDE_HE.md']){
    const markdown=read(doc),base=path.join(root,path.dirname(doc));
    const markdownImages=[...markdown.matchAll(/!\[[^\]]*\]\(([^)]+)\)/g)].map(m=>m[1]);
@@ -23,7 +24,7 @@ test('release README and G6 guide link only to the twelve current screenshots',(
    for(const rel of markdownImages){
      assert.ok(fs.existsSync(path.resolve(base,rel)),doc+' references missing screenshot '+rel);
    }
-   for(const n of screenshotNames.slice(0,10))
+   for(const n of screenshotNames)
      assert.ok(markdown.includes(n),doc+' should link '+n);
  }
 });

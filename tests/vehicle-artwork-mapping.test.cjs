@@ -316,16 +316,17 @@ test('P7i keeps exact-year colour selection for the 2024-only paints',()=>{
  assert.equal(editor._cfg.color,'arctic_white');
 });
 
-test('root README links to the same curated twelve screenshot gallery as actual Playwright',()=>{
+test('root README links to the same curated fourteen screenshot gallery as actual Playwright',()=>{
  const readme=fs.readFileSync(path.join(ROOT,'README.md'),'utf8');
  const gallery=fs.readFileSync(path.join(ROOT,'docs/screenshots/README.md'),'utf8');
  const names=[
   'home-desktop','home-mobile','charging-desktop','charging-mobile',
   'climate-desktop','climate-mobile','maintenance-desktop','maintenance-mobile',
-  'map-desktop','map-mobile','charge-controls-mobile','diagnostics-mobile'
+  'map-desktop','map-mobile','charge-controls-mobile','diagnostics-mobile',
+  'functions-desktop','functions-mobile'
  ];
  const imgs=fs.readdirSync(path.join(ROOT,'docs/screenshots')).filter(x=>/\.(png|jpe?g|webp)$/i.test(x));
- assert.deepEqual(imgs.sort(),names.map(x=>x+'.png').sort(),'Only the twelve current screenshots should exist');
+ assert.deepEqual(imgs.sort(),names.map(x=>x+'.png').sort(),'Only the fourteen current screenshots should exist');
  for(const name of names){
   const relative='docs/screenshots/'+name+'.png';
   assert.ok(readme.includes(']('+relative+')'),'root README link missing: '+relative);
