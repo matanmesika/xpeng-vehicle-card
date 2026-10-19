@@ -1,0 +1,122 @@
+name: G6 post-Beta19 parallel validation
+
+on:
+  push:
+    branches:
+      - fix/g6-beta19-final-stabilization-20261019
+  workflow_dispatch:
+
+# This is a read-only QA workflow: never tag, release, push captures, or touch stable main.
+permissions:
+  contents: read
+
+concurrency:
+  group: g6-post-beta19-parallel-validation
+  cancel-in-progress: true
+
+jobs:
+  vehicle-regression:
+    name: Vehicle controls, sensors and responsive regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate bundle and all control, sensor and responsive tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check src/xpeng-vehicle-card.js
+          node --check dist/xpeng-vehicle-card.js
+          cmp src/xpeng-vehicle-card.js dist/xpeng-vehicle-card.js
+          node tools/build_vehicle_card.mjs --check
+          node --test \
+            tests/vehicle-artwork-mapping.test.cjs \
+            tests/charging-cable-static.test.cjs \
+            tests/xpeng-controls-smoke.test.cjs \
+            tests/xpeng-simulation.test.cjs \
+            tests/responsive-dual-state.test.cjs \
+            tests/release-documentation.test.cjs
+
+  design-regression:
+    name: English-only, visual design and navigation regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate English-only copy and V3 design suites
+        shell: bash
+        env:
+          G6_REVIEW_BASE: origin/release/v1.0.4-beta.10
+        run: |
+          set -euo pipefail
+          node tools/check_english_text.mjs
+          node --test \
+            tests/g6-isolated-design-help.test.cjs \
+            tests/g6-design-agents.test.cjs \
+            tests/g6-approved-glass-design.test.cjs \
+            tests/g6-v3-canonical-style.test.cjs \
+            tests/g6-v3-inner-pages.test.cjs \
+            tests/g6-v3-owner-reference.test.cjs \
+            tests/g6-v3-visual-acceptance.test.cjs
+
+  chromium-screenshots:
+    name: Real Chromium desktop, iPhone and Sections visual QA
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned Chromium and Material Design preview icons
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --prefix /tmp/xpeng-parallel-qa --no-audit --no-fund playwright@1.56.1 @mdi/js@7.4.47
+          /tmp/xpeng-parallel-qa/node_modules/.bin/playwright install --with-deps chromium
+      - name: Capture current card in Chromium with simulated vehicle states
+        shell: bash
+        env:
+          PLAYWRIGHT_MODULE: /tmp/xpeng-parallel-qa/node_modules/playwright
+        run: |
+          set -euo pipefail
+          timeout 180s node scripts/capture-dashboard.cjs
+      - name: Verify all 14 freshly rendered screenshots
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from struct import unpack
+          root=Path('docs/screenshots')
+          names=['home-desktop','home-mobile','charging-desktop','charging-mobile',
+                 'climate-desktop','climate-mobile','maintenance-desktop','maintenance-mobile',
+                 'map-desktop','map-mobile','charge-controls-mobile','diagnostics-mobile',
+                 'functions-desktop','functions-mobile']
+          expected={n+'.png' for n in names}
+          actual={p.name for p in root.iterdir() if p.suffix.lower() in ('.png','.jpg','.jpeg','.webp')}
+          assert actual==expected,(expected-actual,actual-expected)
+          for n in names:
+              data=(root/(n+'.png')).read_bytes()
+              assert data[:8]==b'\x89PNG\r\n\x1a\n' and len(data)>10000,n
+              w,h=unpack('>II',data[16:24])
+              assert ((w>=1100 and h>=620) if n.endswith('-desktop' else (300<=w<=500 and h>=700)),(n,w,h)
+              print('PASS',n,w,h,len(data))
+          PY
+      - name: Upload verified screenshots for owner review
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xpeng-g6-post-beta19-verified-chromium
+          path: docs/screenshots/*.png
+          if-no-files-found: error
+          retention-days: 14
