@@ -1,46 +1,43 @@
 'use strict';
-const test = require('node:test');
-const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const path = require('node:path');
-const root = path.resolve(__dirname, '..');
-const read = file => fs.readFileSync(path.join(root, file), 'utf8');
-const css = read('src/design/xpeng-vehicle-card.css');
-const runtime = read('src/core/xpeng-vehicle-card.runtime.js');
-const capture = read('scripts/capture-dashboard.cjs');
+const test=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const root=path.resolve(__dirname,'..');
+const read=p=>fs.readFileSync(path.join(root,p),'utf8');
+const runtime=read('src/core/xpeng-vehicle-card.runtime.js');
+const css=read('src/design/xpeng-vehicle-card.css');
+const capture=read('scripts/capture-dashboard.cjs');
 
-test('charging and dock share the same ring and native icon sizing on desktop and iPhone', () => {
- const mark = '/* 1.0.4 dock + charging: the exact same native MDI size and glass circle. */';
- assert.ok(css.includes(mark));
- const shared = css.slice(css.lastIndexOf(mark));
- for(const part of [
-   '--xp-common-ring:48px', '--xp-common-icon:22px',
-   '--xp-common-ring:46px', '--xp-common-icon:21px',
-   '--xp-common-ring:44px', '--xp-common-icon:20px',
-   '--xp-ring-size:var(--xp-common-ring)!important',
-   '--xp-glyph-size:var(--xp-common-icon)!important',
-   '.xp-ux-dock-seven .xp-ux-dock-action',
-   '.xp-charge-panel-actions button>.xp-mdi-icon',
-   'top:auto!important;left:auto!important;right:auto!important',
- ]) assert.ok(shared.includes(part),'Missing shared icon style: '+part);
-});
-
-test('native Home Assistant MDI symbols are used for all three live charging actions', () => {
- const start = runtime.indexOf('charging(){');
- const end = runtime.indexOf('xpReconcileChildren(',start);
- assert.ok(start>0&&end>start,'Charging screen method not found');
- const charging = runtime.slice(start,end);
- for(const action of ['charge_controls','charge_schedule','stop_charge'])
-   assert.ok(charging.includes(action),'Missing control: '+action);
- for(const icon of ["xpIcon('battery',22)","xpIcon('clock',22)","xpIcon('power',22)"])
-   assert.ok(charging.includes(icon),'Missing icon: '+icon);
+test('single charging component is used on mobile, Sections and desktop',()=>{
+ const begin=runtime.indexOf(' charging(){'),end=runtime.indexOf('// Update matching nodes',begin);
+ assert.ok(begin>0&&end>begin);
+ const view=runtime.slice(begin,end);
+ assert.equal(view.split('xp-charge-card xp-charge-unified').length-1,1);
+ for(const x of ['xp-charge-heading','xp-charge-main','xp-charge-meta',
+  'xp-charge-action-core','xp-charge-action-ring','xp-charge-action-label',
+  'charge_controls','charge_schedule','stop_charge',
+  "xpIcon('battery',22)","xpIcon('clock',22)","xpIcon('power',22)"]){
+   assert.ok(view.includes(x),'Charging feature lost: '+x);
+ }
  assert.ok(runtime.includes('<ha-icon class="xp-mdi-icon" icon="'));
 });
-
-test('real Chromium validates dock parity, icon centering and captures detail screenshots',()=>{
- for(const needle of ['chargingDiscMetrics.dock','metrics.dock.ring','metrics.dock.glyph',
-   'xOffset<=1.5','yOffset<=1.5','captionFits','nativeMdi',
-   'charging-mobile-icon-detail.png','charging-mobile-panel-detail.png']){
-   assert.ok(capture.includes(needle),'Missing live browser assertion: '+needle);
+test('responsive styles change only dimensions, not markup or visual style',()=>{
+ const marker='/* ONE responsive charging dashboard component';
+ assert.equal(css.split(marker).length-1,1);
+ const style=css.slice(css.indexOf(marker));
+ for(const x of ['--xp-charge-ring:48px','--xp-charge-icon:22px',
+  '--xp-charge-ring:46px','--xp-charge-icon:21px',
+  '--xp-charge-ring:44px','--xp-charge-icon:20px',
+  'xp-charge-action-core','xp-charge-action-ring>.xp-mdi-icon',
+  'justify-content:center!important','content:none!important',
+  '@container xpeng-layout (max-width:520px)','@container xpeng-layout (max-width:360px)']){
+   assert.ok(style.includes(x),'Charging layout rule missing: '+x);
+ }
+});
+test('Chromium verifies real unified action rings and labels',()=>{
+ for(const x of ['charging-mobile-panel-detail.png','charging-mobile-icon-detail.png',
+  'chargingDiscMetrics','await chargingVisualAgent(width)']){
+  assert.ok(capture.includes(x),'Browser QA missing '+x);
  }
 });
