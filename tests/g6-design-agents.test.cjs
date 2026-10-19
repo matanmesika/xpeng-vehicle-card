@@ -86,6 +86,11 @@ test('Behavior Guardian: JS and vehicle assets do not change from the accepted b
     'this.xpClimatePrimaryControls()+this.xpTempControl()+this.xpFanControl()+');
   v=v.replace('<div class="xp-station xp-station-v3" aria-hidden="true"><span class="xp-station-display">${xpIcon(\'station\',24)}</span><span class="xp-station-charge-light"></span><span class="xp-station-side-light"></span></div>',
     '<div class="xp-station" aria-hidden="true">${xpIcon(\'station\',24)}</div>');
+  // Beta 15 changes only native map presentation and excludes duplicate maintenance.
+  v=v.replace("default_zoom:16,auto_fit:true,fit_zones:false,hours_to_show:0",
+    "default_zoom:11,hours_to_show:0");
+  v=v.replace("return this.xpMaintenancePanel();",
+    "return this.xpMaintenancePanel()+(out?'<div class=\"xp-maint-additional\">'+out+'</div>':'');");
   return v;
  };
  assert.equal(normalize(source),normalize(reference),
