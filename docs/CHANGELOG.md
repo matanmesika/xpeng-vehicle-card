@@ -1,5 +1,16 @@
 # XPENG Dashboard changelog
 
+## v1.0.4 — Stable (2026-10-19)
+
+- Rebuilt one charging-information component for desktop, phone and narrow Sections cards, with true MDI icons and centered icon+label groups.
+- Preserved the original G6 scenery, charging pedestal, green cable, vehicle and interior images and all existing supported Xpengtk controls.
+- Re-captured the 14-image canonical Chromium gallery, with simulated Home Assistant data, for the GitHub and HACS README.
+- Updated English HACS, installation and release documentation; removed obsolete beta publishing workflows, duplicate screenshots and redundant asset placeholders.
+- Kept historical releases and artwork provenance records; automated tests cannot replace real vehicle command, GPS and iPhone Safari acceptance.
+
+---
+
+
 ## Unreleased — October 18 owner screenshot fixes
 
 - Replaced ambiguous trunk glyph with official `mdi:car-hatchback`; English action reads **Open Trunk** exactly.
