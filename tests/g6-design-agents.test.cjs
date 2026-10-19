@@ -117,7 +117,8 @@ test('Behavior Guardian: JS and vehicle assets do not change from the accepted b
   v=v.replace("const homeSurface=!isCharging&&!this._tireOpen&&this.xpUiEnabled();\n",'');
   v=v.replace("${homeSurface?'xp-home-navigation':''}","${onHome&&this.xpUiEnabled()?'xp-home-navigation':''}");
   v=v.replace("<h1><em>${xpEsc(this.model())}</em></h1>","<h1>XPENG <em>${xpEsc(this.model())}</em></h1>");
-  v=v.replace('<header class="xp-header">','<header class="xp-header"><div class="xp-brand"><span>XPENG</span></div>');
+  if(v.includes('return `<header class="xp-header"><div class="xp-header-right">'))
+    v=v.replace('<header class="xp-header">','<header class="xp-header"><div class="xp-brand"><span>XPENG</span></div>');
   v=v.replace("' aria-label=\"'+xpEsc(label)+'\" '","' aria-label=\"'+xpEsc(label)+'\" title=\"'+xpEsc(label)+'\" '");
   v=v.replace("this._xpMapElement.hass=this.xpMapDisplayHass(gps);","this._xpMapElement.hass=this._hass;");
   v=v.replace("map.hass=this.xpMapDisplayHass(gps);","map.hass=this._hass;");
