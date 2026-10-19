@@ -1191,8 +1191,8 @@ test('charging cable uses approved dedicated charging image and separate full-le
  const html=card.charging();
  assert.match(html,/data-xp-cable="desktop"/);
  assert.match(html,/data-xp-cable="mobile"/);
- assert.match(html,/M171 489.*346 516/);
- assert.match(html,/M935 460.*1287 474/);
+ assert.match(html,/M171 489.*333 520/);
+ assert.match(html,/M935 460.*1225 520/);
  card._hass.states['binary_sensor.is_charging'].state='off';
  assert.doesNotMatch(card.charging(),/data-xp-cable/);
 });
