@@ -22,3 +22,5 @@ captures before approving beta release. Do not merge the draft PR automatically.
 The final compact subpage module intentionally follows the V3 overview
 rules. This gives it cascade priority over retained legacy structural rules
 without modifying the functional runtime.
+
+Chromium also captures Functions desktop/phone, verifies all seven launchers, 48px/44px circular MDI badges, 21px/19px glyphs and transparent outer buttons. Fourteen screenshots form the curated acceptance gallery.

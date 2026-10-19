@@ -20,7 +20,9 @@ const GALLERY=Object.freeze({
  'location-desktop':'map-desktop.png',
  'location-mobile':'map-mobile.png',
  'charging-actions-mobile':'charge-controls-mobile.png',
- 'diagnostics-mobile':'diagnostics-mobile.png'
+ 'diagnostics-mobile':'diagnostics-mobile.png',
+ 'functions-desktop':'functions-desktop.png',
+ 'functions-mobile':'functions-mobile.png'
 });
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 
@@ -281,6 +283,21 @@ async function main(){
  await car.locator('button[data-xp-open="maintenance"]').first().click();
  assert.ok(await car.locator('.xp-ux-modal-maintenance').count(),'Maintenance modal was not opened');
  await screen('maintenance-desktop');
+ await car.locator('button[data-xp-close]').click();
+ // Browser-level V3 glass QA: seven official MDI badges, no opaque tile backing.
+ await car.locator('button[data-xp-more]').click();
+ const functionTiles=await car.evaluate(el=>[...el.shadowRoot.querySelectorAll('button.xp-extra-tile')].map(button=>{
+   const icon=button.querySelector('ha-icon.xp-mdi-icon');
+   const size=icon?.getBoundingClientRect(),disc=icon&&getComputedStyle(icon),style=getComputedStyle(button);
+   return {page:button.dataset.xpExtraPage,mdi:icon?.getAttribute('icon'),
+     diameter:size?.width,radius:disc?.borderRadius,
+     glyph:disc?.getPropertyValue('--mdc-icon-size').trim(),background:style.backgroundColor};
+ }));
+ assert.equal(functionTiles.length,7,'All seven advanced function launchers must remain');
+ assert.ok(functionTiles.every(t=>t.mdi?.startsWith('mdi:')&&t.diameter>=44&&t.diameter<=50&&
+   t.radius==='50%'&&t.glyph==='21px'&&t.background==='rgba(0, 0, 0, 0)'),
+   'Desktop functions must display small glass MDI discs, not rectangles: '+JSON.stringify(functionTiles));
+ await reviewShot('functions-desktop');
  await car.locator('button[data-xp-close]').click();
  // Exercise both HA-driven screens at phone widths and within a narrow
  // Home Assistant Sections column on a wide desktop viewport.
@@ -640,6 +657,16 @@ async function main(){
    'Verified Xpengtk identity year must be explicitly distinguished from editor default');
  await car.locator('button[data-xp-close]').click();
  assert.equal(await car.locator('.xp-ux-modal-extras').count(),1,'Maintenance Back must return to Gear options');
+ const mobileFunctionTiles=await car.evaluate(el=>[...el.shadowRoot.querySelectorAll('button.xp-extra-tile')].map(button=>{
+  const symbol=button.querySelector('ha-icon.xp-mdi-icon'),disc=symbol&&getComputedStyle(symbol);
+  return {page:button.dataset.xpExtraPage,diameter:symbol?.getBoundingClientRect().width,
+   glyph:disc?.getPropertyValue('--mdc-icon-size').trim(),background:getComputedStyle(button).backgroundColor};
+ }));
+ assert.equal(mobileFunctionTiles.length,7);
+ assert.ok(mobileFunctionTiles.every(t=>t.diameter>=43&&t.diameter<=47&&t.glyph==='19px'&&
+  t.background==='rgba(0, 0, 0, 0)'),
+  'Mobile functions must use proportional 44px glass MDI discs: '+JSON.stringify(mobileFunctionTiles));
+ await reviewShot('functions-mobile');
  await car.locator('button[data-xp-extra-page="diagnostics"]').click();
  assert.ok(await car.locator('.xp-ux-modal-extras').count(),'Diagnostics extra page missing');
  const summary=await car.locator('.xp-entity-diagnostic').count();

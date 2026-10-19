@@ -102,7 +102,7 @@ jobs:
           set -euo pipefail
           timeout 150s node scripts/capture-dashboard.cjs | tee /tmp/xpeng-g6-browser.log
 
-      - name: Validate the clean 12-image screenshot gallery and responsive evidence
+      - name: Validate the clean 14-image screenshot gallery and responsive evidence
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -111,7 +111,7 @@ jobs:
           names=[
             'home-desktop','home-mobile','charging-desktop','charging-mobile',
             'climate-desktop','climate-mobile','maintenance-desktop','maintenance-mobile',
-            'map-desktop','map-mobile','charge-controls-mobile','diagnostics-mobile'
+            'map-desktop','map-mobile','charge-controls-mobile','diagnostics-mobile','functions-desktop','functions-mobile'
           ]
           expected={name+'.png' for name in names}
           actual={p.name for p in root.iterdir() if p.suffix.lower() in ('.png','.jpg','.jpeg','.webp')}
@@ -126,10 +126,10 @@ jobs:
             else:
               assert 300<=w<=500 and h>=700,(name,w,h)
             print('PASS screenshot',name,w,h)
-          print('PASS: all 12 current real-browser captures valid; no legacy screenshots')
+          print('PASS: all 14 current real-browser captures valid; no legacy screenshots')
           PY
 
-      - name: Upload the 12 current G6 acceptance screenshots
+      - name: Upload the 14 current G6 acceptance screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:

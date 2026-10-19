@@ -104,7 +104,7 @@ jobs:
         env:
           PLAYWRIGHT_MODULE: /tmp/g6-design-check/node_modules/playwright
         run: timeout 180s node scripts/capture-dashboard.cjs
-      - name: Verify all twelve review screenshots have correct pixel sizes
+      - name: Verify all fourteen review screenshots have correct pixel sizes
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -112,7 +112,7 @@ jobs:
           root=Path('docs/screenshots')
           names=['home-desktop','home-mobile','charging-desktop','charging-mobile',
                  'climate-desktop','climate-mobile','maintenance-desktop','maintenance-mobile',
-                 'map-desktop','map-mobile','charge-controls-mobile','diagnostics-mobile']
+                 'map-desktop','map-mobile','charge-controls-mobile','diagnostics-mobile','functions-desktop','functions-mobile']
           for base in names:
               p=root/(base+'.png')
               raw=p.read_bytes()
