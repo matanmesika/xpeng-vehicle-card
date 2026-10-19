@@ -4789,7 +4789,7 @@ background:transparent!important;
 .xp-scene.xp-charge.xp-charge-navigation>.xp-station.xp-station-v3.xp-station-xpeng19,
 .xp-scene.xp-charge.xp-charge-navigation .xp-station.xp-station-v3.xp-station-xpeng19{
  right:3.0%!important;
- bottom:23.0%!important;
+ bottom:24.0%!important;
  width:7.3%!important;min-width:75px!important;max-width:106px!important;
  height:34%!important;min-height:172px!important;max-height:273px!important;
  z-index:5!important;
