@@ -319,7 +319,7 @@ test('passenger heat Off is never sent when upstream does not support it',async(
   for(let i=0;i<4;i++)await card.xpCycleSeat('passenger_seat_heat_select');
   assert.deepEqual(JSON.parse(JSON.stringify(commands.map(c=>c.data.option))),
     ['Heat 1','Heat 2','Heat 3']);
-  assert.match(card._xpNotice,/unsupported/);
+  assert.match(card._xpNotice,/not supported/);
 });
 test('rapid repeated taps serialize native HA commands by entity',async()=>{
   const {card,commands}=createCard();
@@ -1024,7 +1024,7 @@ test('G6 English text and icon contract',()=>{
  card._xpengByKey['button.open_windows']='button.open_windows_translation';
  card._hass.states['binary_sensor.window_for_translation']={state:'off',attributes:{}};
  card._hass.states['button.open_windows_translation']={state:'unknown',attributes:{}};
- for(const name of ['Climate','Maintenance','Location','Windows','Open Trunk'])
+ for(const name of ['Climate','Maintenance','Location','Open windows','Open Trunk'])
    assert.ok(card.xpDock().includes(name),'Missing English action: '+name);
  assert.match(card.xpTrunkPanel(),/The tailgate/);
  assert.match(card.xpMapPanel(),/Horn/);
