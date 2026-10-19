@@ -49,5 +49,12 @@ test('Behavior Guardian | no executable wiring changes, both distributed copies 
  const dock=core.slice(core.indexOf(' xpDock(){'),core.indexOf(' xpSeatShownState('));
  for(const action of ['climate','doors','windows','port','trunk','maintenance','map'])
   assert.ok(dock.includes("['"+action+"'"),action+' action removed');
- assert.doesNotMatch(v3,/\.xp-car\{|\.xp-charge-cable\{|\.xp-night-photo\{/);
+ // Only the owner's charging-scene z-index is exempt. The night photograph,
+ // Home layout and vehicle art selection remain protected.
+ assert.doesNotMatch(v3,/\.xp-night-photo\{/);
+ const owner=v3.slice(v3.indexOf('Owner-annotated charging composition'));
+ assert.match(owner,/\.xp-scene\.xp-charge\.xp-charge-navigation \.xp-car\{z-index:7!important\}/);
+ assert.match(owner,/\.xp-scene\.xp-charge\.xp-charge-navigation \.xp-charge-cable\{/);
+ assert.match(owner,/\.xp-charge-card\{z-index:12!important\}/);
+ assert.doesNotMatch(owner,/\.xp-overview[^}]*\.xp-car\{/);
 });
