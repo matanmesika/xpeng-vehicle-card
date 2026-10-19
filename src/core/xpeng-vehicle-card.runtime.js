@@ -1136,7 +1136,7 @@ class XpengVehicleCard extends HTMLElement{
      host.replaceChildren(map);
      this.xpCenterMapOnVehicle(map,gps);
    }catch(err){
-     host.textContent=xpLocalizeMarkup('The map is unavailable in this card. Open the vehicle's location details below.',this._hass);
+     host.textContent=xpLocalizeMarkup('The map is unavailable in this card. Open the vehicle location details below.',this._hass);
    }
  }
  xpModal(){
