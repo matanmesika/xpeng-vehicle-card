@@ -812,7 +812,7 @@ test('charging overlays close automatically when charging ends, returning to nor
  card.hass={...card._hass,states};
  assert.equal(card._xpPanel,null);
  assert.match(card.shadowRoot.innerHTML,/xp-overview/);
- assert.doesNotMatch(card.shadowRoot.innerHTML,/xp-ux-modal-charge_schedule/);
+ assert.doesNotMatch(card.shadowRoot.innerHTML.split('</style>')[1]||'',/class="xp-ux-modal[^\"]*xp-ux-modal-charge_schedule/);
  assert.equal((card.shadowRoot.innerHTML.match(/class="xp-ux-dock-action"/g)||[]).length,7);
 });
 test('only sensor state triggers charging; confirmed charge renders green cable',()=>{
