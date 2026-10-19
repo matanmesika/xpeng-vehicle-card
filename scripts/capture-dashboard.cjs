@@ -333,10 +333,17 @@ async function main(){
  }));
  assert.equal(functionTiles.length,7,'All seven Custom Functions routes must remain');
  assert.ok(functionTiles.every(t=>t.mdi?.startsWith('mdi:')&&
-   t.circleSize>=46&&t.circleSize<=50&&t.glyphSize>=19&&t.glyphSize<=23&&
+   t.circleSize>=59&&t.circleSize<=63&&t.glyphSize>=29&&t.glyphSize<=31&&
    t.circleSize/t.glyphSize>=2&&t.radius==='50%'&&
    t.outerBackground==='rgba(0, 0, 0, 0)'&&t.badgeBackground!=='rgba(0, 0, 0, 0)'),
-   'Desktop functions must have a transparent outer button, a 48px glass ring and a separate 21px native glyph: '+JSON.stringify(functionTiles));
+   'Desktop functions must have a transparent outer button, a 62px glass ring and a separate 30px native glyph: '+JSON.stringify(functionTiles));
+ const launcherSize=await car.evaluate(el=>{
+   const root=el.shadowRoot,modal=root.querySelector('.xp-ux-modal-extras'),scene=root.querySelector('.xp-scene');
+   const mr=modal.getBoundingClientRect(),sr=scene.getBoundingClientRect();
+   return {width:mr.width,scene:sr.width,centerOffset:Math.abs((mr.left+mr.right)/2-(sr.left+sr.right)/2)};
+ });
+ assert.ok(launcherSize.width<=855&&launcherSize.scene>1100&&launcherSize.centerOffset<=3,
+   'Extras launcher must be compact and centered on desktop: '+JSON.stringify(launcherSize));
  await reviewShot('functions-desktop');
  await car.locator('button[data-xp-close]').click();
  // Exercise both HA-driven screens at phone widths and within a narrow
@@ -535,6 +542,10 @@ async function main(){
  assert.deepEqual(desktopHeaderPolish.colors,['rgb(233, 244, 255)'],
    'Seven shortcut pictograms must share one neutral color');
  assert.equal(desktopHeaderPolish.iconCount,7);
+ const desktopIconSize=await car.evaluate(el=>[...el.shadowRoot.querySelectorAll('.xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon')].map(icon=>icon.getBoundingClientRect().width));
+ assert.ok(desktopIconSize.every(size=>size>=29&&size<=31),
+  'Desktop dock pictograms must be 30px while mobile stays unchanged: '+JSON.stringify(desktopIconSize));
+
  assert.equal(desktopHeaderPolish.tailgate.car,'mdi:car-estate',
    'Trunk shortcut must show a real rear-tailgate capable SUV side profile');
  assert.ok(['mdi:arrow-up-bold','mdi:arrow-down-bold'].includes(desktopHeaderPolish.tailgate.arrow),
@@ -548,6 +559,16 @@ async function main(){
 
  for(const action of ['maintenance','map'])assert.equal(await car.locator('.xp-ux-dock-action[data-xp-open="'+action+'"]').count(),1,action+' home dock action missing');
  assert.equal(await car.locator('.xp-ux-dock-action:not([disabled])').count(),7,'Mock owner has approved Access, so all seven actions must work');
+ const ownerBattery=await car.evaluate(el=>{
+   const root=el.shadowRoot,wrapper=root.querySelector('.xp-home-navigation .xp-batt-glyph'),
+    icon=wrapper?.querySelector('.xp-battery-level-icon');
+   const cs=wrapper&&getComputedStyle(wrapper);
+   return {width:icon?.getBoundingClientRect().width,border:cs?.borderTopWidth,
+     borderRadius:cs?.borderRadius,background:cs?.backgroundColor};
+ });
+ assert.ok(ownerBattery.width>=108&&ownerBattery.border==='0px'&&
+   ownerBattery.background==='rgba(0, 0, 0, 0)',
+   'Battery must be enlarged without the green circular housing: '+JSON.stringify(ownerBattery));
  await reviewShot('controls-desktop');
  const readActions=async()=>car.locator('.xp-ux-dock-action').allTextContents();
  let quickLabels=(await readActions()).join(' ');
