@@ -322,6 +322,8 @@ function xpVehicleAssetPath(a,view){
 }
 const XP_SCENE_BACKGROUND = 'https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/assets/xpeng-approved-lakeside-background.webp';
 const XP_HACS_BASE='/hacsfiles/xpeng-vehicle-card/';
+// Owner-approved photorealistic charger art, kept self-contained for manual JS installations.
+const XP_STATION_PHOTO='data:image/webp;base64,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';
 function xpPackagedUrl(relative){return 'https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/assets/'+relative;}
 function xpLocalArtworkPath(value){return typeof value==='string'&&/^\/(?:local|hacsfiles)\/[a-zA-Z0-9/_\-.]+$/.test(value);}
 const XP_CSS = "__XPENG_STYLES_FROM_THEME__";
@@ -1947,42 +1949,7 @@ class XpengVehicleCard extends HTMLElement{
  charging(){
   return `${this.title()}
     <div class="xp-station xp-station-v3 xp-station-xpeng19" aria-hidden="true">
-     <svg class="xp-xpeng-pedestal" viewBox="0 0 100 250" preserveAspectRatio="xMidYMid meet" role="presentation">
-       <defs>
-        <linearGradient id="xp19-case" x1="0%" y1="0%" x2="100%" y2="9%"><stop offset="0" stop-color="#d1dce3"/><stop offset=".11" stop-color="#718392"/><stop offset=".28" stop-color="#344553"/><stop offset=".76" stop-color="#111d27"/><stop offset="1" stop-color="#091119"/></linearGradient>
-        <linearGradient id="xp19-panel" x1="0%" y1="0%" x2="100%" y2="12%"><stop stop-color="#08121d"/><stop offset=".26" stop-color="#1d303f"/><stop offset=".64" stop-color="#0a1722"/><stop offset="1" stop-color="#030a11"/></linearGradient>
-        <linearGradient id="xp19-metal" x1="0%" y1="0%" x2="100%" y2="0%"><stop stop-color="#839aa9"/><stop offset=".14" stop-color="#e3edf0"/><stop offset=".38" stop-color="#6c8392"/><stop offset="1" stop-color="#253643"/></linearGradient>
-        <linearGradient id="xp19-screen" x1="0%" y1="0%" x2="100%" y2="100%"><stop stop-color="#132634"/><stop offset=".39" stop-color="#07131d"/><stop offset="1" stop-color="#02080e"/></linearGradient>
-        <linearGradient id="xp19-green" x1="0%" y1="0%" x2="100%" y2="0%"><stop stop-color="#078f65"/><stop offset=".48" stop-color="#6effca"/><stop offset="1" stop-color="#10ab80"/></linearGradient>
-        <linearGradient id="xp19-reflection" x1="0%" y1="0%" x2="100%" y2="100%"><stop stop-color="#d4edfc" stop-opacity=".37"/><stop offset=".3" stop-color="#8bbbd0" stop-opacity=".12"/><stop offset="1" stop-color="#eefcff" stop-opacity="0"/></linearGradient>
-       </defs>
-       <ellipse cx="52" cy="244" rx="44" ry="5" fill="#000711" opacity=".66"/>
-       <path d="M23 236L35 232L80 229L92 236L82 242L25 243Z" fill="#16222d" stroke="#586e7d" stroke-width="1.1"/>
-       <path d="M29 6L70 2Q80 2 84 11L87 223Q87 232 78 235L35 240Q24 238 23 228L23 19Q23 9 29 6Z" fill="url(#xp19-case)" stroke="#8c9ead" stroke-width="1.3"/>
-       <path d="M76 6Q83 7 84 15L87 223Q88 230 78 235L72 235L72 10Z" fill="#09141e" opacity=".7"/>
-       <path d="M31 12L71 7Q77 8 78 15L80 224Q79 231 74 231L34 235Q29 234 29 226L29 19Q29 14 31 12Z" fill="url(#xp19-panel)" stroke="#617687" stroke-width=".65"/>
-       <path d="M24.8 20L25 226Q26 233 31 237" fill="none" stroke="url(#xp19-metal)" stroke-width="3.3" stroke-linecap="round"/>
-       <path d="M31 15L37 13L39 230L34 233Z" fill="url(#xp19-reflection)" opacity=".6"/>
-       <rect x="37" y="16" width="35" height="92" rx="7" fill="url(#xp19-screen)" stroke="#344b5b" stroke-width="1"/>
-       <path d="M40 23Q51 19 68 21L70 36Q56 28 42 33Z" fill="url(#xp19-reflection)" opacity=".5"/>
-       <path d="M43 41L52.5 48L62 41M43 48L52.5 41L62 48" stroke="#ebf6fc" stroke-width="3.2" fill="none" stroke-linecap="round"/>
-       <text x="54" y="63" fill="#d7e5ed" text-anchor="middle" font-size="7.2" letter-spacing="1.1" font-family="Arial,sans-serif">XPENG</text>
-       <rect x="43" y="82" width="25" height="3" rx="1.5" fill="#1a2c37"/>
-       <circle cx="65" cy="91" r="2.4" fill="#23e9a5"/>
-       <path d="M43 95H66" stroke="#263b47" stroke-width="1"/>
-       <path d="M43 113H68" stroke="#5b7181" stroke-opacity=".4" stroke-width=".7"/>
-       <path d="M34 117H73" stroke="#05131c" stroke-width="1.4"/>
-       <path d="M34 117L22 119Q17 120 17 126V137Q18 142 23 144L33 143Z" fill="#263a47" stroke="#8295a1" stroke-width="1.3"/>
-       <rect x="14" y="121" width="9" height="20" rx="3" fill="#101e29" stroke="#718797" stroke-width="1.2"/>
-       <circle cx="17.6" cy="131" r="3.1" fill="#08141d" stroke="#52bb9f" stroke-width="1.3"/>
-       <path d="M35 128H70" stroke="#a0b5bf" stroke-opacity=".25" stroke-width=".5"/>
-       <rect x="51" y="143" width="8" height="69" rx="3.4" fill="#06171c" stroke="#1e343d" stroke-width=".7"/>
-       <rect x="53.3" y="145" width="3.3" height="65" rx="1.65" fill="url(#xp19-green)"/>
-       <path d="M38 194L46 193M38 199L46 198M38 204L46 203M38 209L46 208" stroke="#566e79" stroke-width="1.1" stroke-linecap="round" opacity=".6"/>
-       <circle cx="35" cy="222" r="1.1" fill="#8ca2af"/><circle cx="73" cy="220" r="1.1" fill="#4f6977"/>
-       <path d="M78 15L82 218" stroke="#acc2cb" stroke-opacity=".32" stroke-width="1.4"/>
-       <path d="M37 235L74 231" stroke="#c3d6db" stroke-opacity=".34" stroke-width="1.6"/>
-      </svg>
+     <svg class="xp-xpeng-pedestal" viewBox="0 0 100 250" preserveAspectRatio="xMidYMid meet" role="presentation" data-xp-station-art="photo"><image href="${XP_STATION_PHOTO}" width="100" height="250" x="0" y="0" preserveAspectRatio="xMidYMid meet"/></svg>
      <span class="xp-station-display">${xpIcon('station',24)}</span><span class="xp-station-charge-light"></span><span class="xp-station-side-light"></span>
     </div>${this.carArt()}
     ${this.model()==='G6'&&this.xpChargingActive()?
