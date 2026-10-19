@@ -4722,6 +4722,13 @@ background:transparent!important;
 .xp-scene .xp-header .xp-meta-tools button,
 .xp-scene .xp-header .xp-meta-popover{pointer-events:auto!important}
 
+/* Beta 19: retain interactive Settings/Wi-Fi in their original header positions
+   without allowing their hit targets to cover the modal Back arrow. The modal
+   title and Back remain one responsive row on desktop and narrow iPhone. */
+.xp-scene:has(.xp-ux-modal) .xp-ux-modal-head{
+ padding-inline-start:clamp(110px,12cqw,135px)!important;
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
