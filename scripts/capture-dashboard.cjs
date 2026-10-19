@@ -273,11 +273,45 @@ async function main(){
    'Charging must retain the three scoped charge buttons');
  assert.ok(chargingDesktop.image.width<.45*1400,
    'Desktop vehicle image must be smaller than original charging layout');
- assert.ok(chargingDesktop.image.right<=chargingDesktop.station.left+5,
-   'Desktop charging station must be exposed beside smaller car');
+ assert.ok(chargingDesktop.station.left>=chargingDesktop.image.left+chargingDesktop.image.width*.75 &&
+   chargingDesktop.station.left<=chargingDesktop.image.right+chargingDesktop.image.width*.18,
+   'Desktop charger should stand diagonally ahead of the front corner: '+JSON.stringify(chargingDesktop));
  assert.ok(chargingDesktop.image.bottom<chargingDesktop.dock.top+2,
    'Desktop car must not cover Home dock');
  console.log('Desktop charging: smaller car, station, 3 controls and identical Home dock',JSON.stringify(chargingDesktop));
+ // Owner-approved station visual agent, operating on the ACTUAL Chrome card DOM.
+ async function chargingVisualAgent(width){
+   const q=await car.evaluate(el=>{
+     const r=el.shadowRoot,rect=x=>r.querySelector(x)?.getBoundingClientRect().toJSON(),
+       st=rect('.xp-station-xpeng19'),car=rect('.xp-charge .xp-car'),
+       info=rect('.xp-charge-card'),
+       mobile=r.querySelector('.xp-scene').getBoundingClientRect().width<=850,
+       svg=r.querySelector(mobile?'.xp-cable-mobile':'.xp-cable-desktop'),
+       d=svg.querySelector('.xp-charge-cable-core').getAttribute('d'),
+       nums=[...d.matchAll(/-?[0-9]+(?:\\.[0-9]+)?/g)].map(x=>+x[0]),
+       b=svg.getBoundingClientRect(),v=svg.viewBox.baseVal,
+       point=(x,y)=>({x:b.left+x*b.width/v.width,y:b.top+y*b.height/v.height});
+     return {st,car,info,mobile,
+       start:point(nums[0],nums[1]),end:point(nums.at(-2),nums.at(-1)),
+       photo:!!r.querySelector('svg[data-xp-station-art="photo"] image'),
+       z:['.xp-station-xpeng19','.xp-charge .xp-car',mobile?'.xp-cable-mobile':'.xp-cable-desktop','.xp-charge-card']
+         .map(x=>Number(getComputedStyle(r.querySelector(x)).zIndex))};
+   });
+   const {st,car:c,start,end,z}=q;
+   assert.ok(q.photo&&st&&c&&start&&end,'Charging photo/geometry absent: '+JSON.stringify(q));
+   assert.ok(z.every((v,i)=>i===0||v>z[i-1]),'Station must be behind car; cable above: '+JSON.stringify(q));
+   assert.ok(st.height/c.height>.57&&st.height/c.height<1.24,'Charger out of proportion: '+JSON.stringify(q));
+   assert.ok(st.left>=c.right-15&&st.left<c.right+c.width*.22,'Charger not ahead of front headlamp: '+JSON.stringify(q));
+   assert.ok(st.top<c.top+24&&st.bottom<c.bottom-10,'Charger must sit farther forward: '+JSON.stringify(q));
+   assert.ok(start.x>c.left+c.width*.25&&start.x<c.right&&start.y>c.top&&start.y<c.bottom,
+     'Cable origin must contact the car: '+JSON.stringify(q));
+   assert.ok(end.x>=st.left-14&&end.x<st.right+10&&end.y>st.top&&end.y<st.bottom,
+     'Cable must connect to the station: '+JSON.stringify(q));
+   if(q.mobile)assert.ok(q.info.bottom<=c.top+4,'Mobile charging card obscures car: '+JSON.stringify(q));
+   console.log('PASS charging visual agent '+width+'px',JSON.stringify(q));
+ }
+ await chargingVisualAgent(1400);
+
  const rearArt=await car.locator('[data-car-art]').getAttribute('src');
  assert.match(rearArt,/\/g6\/2026\/graphite_gray\/charging\.webp/,'Charge view must use owner-supplied grey rear-three-quarter artwork');
  const overlays=await car.evaluate(el=>[...el.shadowRoot.querySelectorAll('svg[data-xp-cable]')].map(svg=>({
@@ -426,13 +460,24 @@ async function main(){
      assert.deepEqual(geo.controls,['charge_controls','charge_schedule','stop_charge'],'Charging loses a charge control on '+width+'px');
      assert.ok(geo.car.width<=width*.81&&geo.car.width>=width*.72,
        'Scaled charging car is too large/small: '+JSON.stringify(geo));
-     assert.ok(geo.car.right<=geo.station.left+5,
-       'Charging station hidden behind vehicle on '+width+'px: '+JSON.stringify(geo));
+     assert.ok(geo.station.left>=geo.car.left+geo.car.width*.79 &&
+       geo.station.left<=geo.car.right+geo.car.width*.20,
+       'Charger must align near the front-right of car: '+JSON.stringify(geo));
      assert.ok(geo.car.bottom<geo.dock.top+4&&geo.station.bottom<geo.dock.top+4,
        'Charging scene objects overlap navigation dock: '+JSON.stringify(geo));
-     assert.ok(geo.panel.bottom<geo.car.bottom,
-       'Charging telemetry must stay above the car and navigation: '+JSON.stringify(geo));
+     assert.ok(geo.panel.bottom<=geo.car.top+12,
+       'Charging telemetry must not cover the car: '+JSON.stringify(geo));
+     const layers=await car.evaluate(el=>{
+       const r=el.shadowRoot,station=r.querySelector('.xp-station-xpeng19'),
+          vehicle=r.querySelector('.xp-charge .xp-car'),cable=r.querySelector('.xp-cable-mobile'),
+          info=r.querySelector('.xp-charge-card');
+       return {station:Number(getComputedStyle(station).zIndex),car:Number(getComputedStyle(vehicle).zIndex),
+          cable:Number(getComputedStyle(cable).zIndex),info:Number(getComputedStyle(info).zIndex)};
+     });
+     assert.ok(layers.station<layers.car&&layers.car<layers.cable&&layers.cable<layers.info,
+       'Charging layering: station behind car, cable on top, panel on top: '+JSON.stringify(layers));
      console.log('Mobile charging geometry verified '+width+'px',JSON.stringify(geo));
+      await chargingVisualAgent(width);
 
    }
    if(!charging){

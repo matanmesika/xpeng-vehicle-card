@@ -11,6 +11,7 @@ on:
       - design/g6-v2-surface-redesign-20261018
       - fix/g6-beta19-final-stabilization-20261019
       - release/v1.0.4-beta.21
+      - fix/g6-charging-station-alignment-20261019
     paths:
       - scripts/capture-dashboard.cjs
       - src/xpeng-vehicle-card.js
@@ -75,6 +76,14 @@ jobs:
                   assert 300<=w<=500 and h>=700 and len(b)>10_000,(p,w,h,len(b))
               print('verified',p,w,h,len(b))
           PY
+
+      - name: Upload genuine Chromium screenshots for owner review
+        uses: actions/upload-artifact@v4
+        with:
+          name: xpeng-g6-v104-browser-screenshots
+          path: docs/screenshots/*.png
+          retention-days: 30
+          if-no-files-found: error
 
       - name: Commit browser captures to the screenshot gallery
         shell: bash

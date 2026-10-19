@@ -4783,6 +4783,99 @@ background:transparent!important;
  outline:2px solid #8fe8f2!important;outline-offset:3px!important;
 }
 
+/* Owner-annotated charging composition: same position relative to the car in
+   desktop and phone. Station BEHIND the real car; cable ABOVE car; glass telemetry
+   on top. Coordinates are relative to the card container, not screen resolution. */
+.xp-scene.xp-charge.xp-charge-navigation>.xp-station.xp-station-v3.xp-station-xpeng19,
+.xp-scene.xp-charge.xp-charge-navigation .xp-station.xp-station-v3.xp-station-xpeng19{
+ right:3.0%!important;
+ bottom:24.0%!important;
+ width:7.3%!important;min-width:75px!important;max-width:106px!important;
+ height:34%!important;min-height:172px!important;max-height:273px!important;
+ z-index:5!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-car{z-index:7!important}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-cable{
+ z-index:11!important;pointer-events:none!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-card{z-index:12!important}
+@container xpeng-layout (max-width:850px){
+ .xp-scene.xp-charge.xp-charge-navigation .xp-station.xp-station-v3.xp-station-xpeng19{
+  right:1.3%!important;bottom:28%!important;
+  width:15.6%!important;min-width:43px!important;max-width:71px!important;
+  height:21.5%!important;min-height:117px!important;max-height:166px!important;
+ }
+}
+@container xpeng-layout (max-width:520px){
+ .xp-scene.xp-charge.xp-charge-navigation .xp-station.xp-station-v3.xp-station-xpeng19{
+  right:1.5%!important;bottom:28%!important;
+  width:15.6%!important;min-width:43px!important;max-width:68px!important;
+  height:21.5%!important;min-height:115px!important;max-height:163px!important;
+ }
+ /* Only iPhone card: tighten data, but preserve every live value and action. */
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card{
+  top:142px!important;left:4%!important;width:92%!important;
+  padding:9px 12px!important;border-radius:16px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-heading{
+  font-size:17px!important;margin-bottom:5px!important;gap:6px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-heading>.xp-mdi-icon{
+  width:21px!important;height:21px!important;--xp-icon-size:21px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card .xp-progress{
+  height:7px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-main{
+  margin-top:6px!important;gap:8px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-main .xp-soc{
+  font-size:31px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-divider{
+  height:34px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-range b{
+  font-size:17px!important;margin-top:2px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-meta{
+  margin-top:7px!important;padding-top:7px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-meta>div{gap:2px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-meta small{font-size:9px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-meta b{font-size:13px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-meta .xp-mdi-icon{
+  width:15px!important;height:15px!important;--xp-icon-size:15px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-panel-actions{
+  margin-top:6px!important;gap:5px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-panel-actions button{
+  min-height:44px!important;gap:2px!important;padding:2px!important;font-size:9px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-panel-actions button>.xp-mdi-icon{
+  width:33px!important;height:33px!important;
+  --xp-icon-size:18px!important;--mdc-icon-size:18px!important;
+ }
+}
+@container xpeng-layout (max-width:360px){
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card{
+  top:153px!important;padding:8px 10px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-station.xp-station-v3.xp-station-xpeng19{
+  right:1.5%!important;width:16%!important;min-width:43px!important;
+  bottom:28%!important;height:21.5%!important;min-height:110px!important;
+ }
+}
+
+/* G6 charging owner-final: the charger is a separate foreground-right scene
+ * object placed behind vehicle art, not a baked-in mockup. Relative calibration:
+ * desktop image: station ahead of front wheel / above ground; narrow card: the
+ * charger is behind car and never clipped by the compact charge telemetry. */
+.xp-scene.xp-charge.xp-charge-navigation .xp-station.xp-station-xpeng19 .xp-xpeng-pedestal{
+ object-fit:contain!important;object-position:center bottom!important;
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -6410,8 +6503,8 @@ class XpengVehicleCard extends HTMLElement{
      <span class="xp-station-display">${xpIcon('station',24)}</span><span class="xp-station-charge-light"></span><span class="xp-station-side-light"></span>
     </div>${this.carArt()}
     ${this.model()==='G6'&&this.xpChargingActive()?
-      '<svg class="xp-charge-cable xp-charge-cable-live xp-cable-desktop" data-xp-cable="desktop" aria-hidden="true" viewBox="0 0 1400 788" preserveAspectRatio="none"><path class="xp-charge-cable-halo" d="M935 460 C950 499 960 555 998 589 C1038 623 1095 629 1145 632 S1235 635 1277 610 C1301 590 1296 538 1287 474"/><path class="xp-charge-cable-core" d="M935 460 C950 499 960 555 998 589 C1038 623 1095 629 1145 632 S1235 635 1277 610 C1301 590 1296 538 1287 474"/></svg>'+
-      '<svg class="xp-charge-cable xp-charge-cable-live xp-cable-mobile" data-xp-cable="mobile" aria-hidden="true" viewBox="0 0 390 780" preserveAspectRatio="none"><path class="xp-charge-cable-halo" d="M171 489 C190 515 191 558 211 581 C236 609 270 612 301 603 C333 596 349 573 358 551 C359 540 353 530 346 516"/><path class="xp-charge-cable-core" d="M171 489 C190 515 191 558 211 581 C236 609 270 612 301 603 C333 596 349 573 358 551 C359 540 353 530 346 516"/></svg>':''}
+      '<svg class="xp-charge-cable xp-charge-cable-live xp-cable-desktop" data-xp-cable="desktop" aria-hidden="true" viewBox="0 0 1400 788" preserveAspectRatio="none"><path class="xp-charge-cable-halo" d="M935 460 C953 505 980 576 1025 604 C1090 648 1186 626 1220 607 C1264 583 1278 533 1284 465"/><path class="xp-charge-cable-core" d="M935 460 C953 505 980 576 1025 604 C1090 648 1186 626 1220 607 C1264 583 1278 533 1284 465"/></svg>'+
+      '<svg class="xp-charge-cable xp-charge-cable-live xp-cable-mobile" data-xp-cable="mobile" aria-hidden="true" viewBox="0 0 390 780" preserveAspectRatio="none"><path class="xp-charge-cable-halo" d="M171 489 C185 522 200 570 230 584 C270 606 299 583 315 570 C331 551 339 500 343 487"/><path class="xp-charge-cable-core" d="M171 489 C185 522 200 570 230 584 C270 606 299 583 315 570 C331 551 339 500 343 487"/></svg>':''}
     <section class="xp-charge-card" aria-label="Charging information">
        <div class="xp-charge-heading">${xpIcon('bolt',42)}<span>${xpEsc(this.chargeStatus())}</span></div>
        ${this.progress()}
