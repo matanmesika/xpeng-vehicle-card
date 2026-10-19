@@ -4402,7 +4402,7 @@ background:transparent!important;
 /* Phone TPMS tire symbols precede the sensor labels and pressure values. */
 @container xpeng-layout (max-width:520px){
  .xp-scene .xp-ux-modal-maintenance .xp-maintenance-v4 .xp-tire-reading{flex-direction:column!important;align-items:center!important}
- .xp-scene .xp-ux-modal-maintenance .xp-maintenance-v4 .xp-tire-reading>.xp-mdi-icon{
+ .xp-scene .xp-ux-modal-maintenance .xp-maintenance-v4 .xp-tire-reading[data-wheel]>.xp-mdi-icon{
   order:-1!important;margin:0 auto 2px!important;
   width:17px!important;height:17px!important;flex-basis:17px!important;
   --xp-icon-size:17px!important;--mdc-icon-size:17px!important;
