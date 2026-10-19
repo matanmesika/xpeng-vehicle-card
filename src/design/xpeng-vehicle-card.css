@@ -4460,10 +4460,10 @@ background:transparent!important;
    on top. Coordinates are relative to the card container, not screen resolution. */
 .xp-scene.xp-charge.xp-charge-navigation>.xp-station.xp-station-v3.xp-station-xpeng19,
 .xp-scene.xp-charge.xp-charge-navigation .xp-station.xp-station-v3.xp-station-xpeng19{
- right:8.5%!important;
- bottom:18.5%!important;
+ right:3.0%!important;
+ bottom:23.0%!important;
  width:7.3%!important;min-width:75px!important;max-width:106px!important;
- height:31%!important;min-height:150px!important;max-height:254px!important;
+ height:34%!important;min-height:172px!important;max-height:273px!important;
  z-index:5!important;
 }
 .xp-scene.xp-charge.xp-charge-navigation .xp-car{z-index:7!important}
@@ -4473,16 +4473,16 @@ background:transparent!important;
 .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card{z-index:12!important}
 @container xpeng-layout (max-width:850px){
  .xp-scene.xp-charge.xp-charge-navigation .xp-station.xp-station-v3.xp-station-xpeng19{
-  right:5%!important;bottom:24%!important;
-  width:16%!important;min-width:42px!important;max-width:76px!important;
-  height:23%!important;min-height:112px!important;max-height:178px!important;
+  right:1.3%!important;bottom:28%!important;
+  width:15.6%!important;min-width:43px!important;max-width:71px!important;
+  height:21.5%!important;min-height:117px!important;max-height:166px!important;
  }
 }
 @container xpeng-layout (max-width:520px){
  .xp-scene.xp-charge.xp-charge-navigation .xp-station.xp-station-v3.xp-station-xpeng19{
-  right:6%!important;bottom:24%!important;
-  width:16.5%!important;min-width:46px!important;max-width:67px!important;
-  height:23%!important;min-height:112px!important;max-height:170px!important;
+  right:1.5%!important;bottom:28%!important;
+  width:15.6%!important;min-width:43px!important;max-width:68px!important;
+  height:21.5%!important;min-height:115px!important;max-height:163px!important;
  }
  /* Only iPhone card: tighten data, but preserve every live value and action. */
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card{
@@ -4535,7 +4535,15 @@ background:transparent!important;
   top:153px!important;padding:8px 10px!important;
  }
  .xp-scene.xp-charge.xp-charge-navigation .xp-station.xp-station-v3.xp-station-xpeng19{
-  right:5%!important;width:18%!important;min-width:42px!important;
-  height:22%!important;min-height:108px!important;
+  right:1.5%!important;width:16%!important;min-width:43px!important;
+  bottom:28%!important;height:21.5%!important;min-height:110px!important;
  }
+}
+
+/* G6 charging owner-final: the charger is a separate foreground-right scene
+ * object placed behind vehicle art, not a baked-in mockup. Relative calibration:
+ * desktop image: station ahead of front wheel / above ground; narrow card: the
+ * charger is behind car and never clipped by the compact charge telemetry. */
+.xp-scene.xp-charge.xp-charge-navigation .xp-station.xp-station-xpeng19 .xp-xpeng-pedestal{
+ object-fit:contain!important;object-position:center bottom!important;
 }
