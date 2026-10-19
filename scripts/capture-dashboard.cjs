@@ -559,16 +559,20 @@ async function main(){
  assert.ok(!desktopHeaderPolish.tailgate.arrow,'No invented hatch arrow or composite SVG');
  assert.ok(desktopHeaderPolish.tailgate.carWidth>=30,'Tailgate side profile must remain legible');
  assert.equal(desktopHeaderPolish.disabled,0,'All mock actions remain enabled');
+ await car.locator('.xp-ux-dock-action[data-xp-open="climate"]').hover();
  const hoverSquare=await car.evaluate(el=>{
   const button=el.shadowRoot.querySelector('.xp-ux-dock-action[data-xp-open="climate"]');
   const icon=button.querySelector('.xp-mdi-icon');
-  button.classList.add('xp-qa-hover');
-  return {iconBackground:getComputedStyle(icon).backgroundColor,
-   iconBorder:getComputedStyle(icon).borderTopWidth,
-   iconShadow:getComputedStyle(icon).boxShadow};
+  const css=getComputedStyle(icon),ring=getComputedStyle(button,'::before');
+  return {hovered:button.matches(':hover'),
+   iconBackground:css.backgroundColor,iconBorder:css.borderTopWidth,
+   iconShadow:css.boxShadow,ringBackground:ring.backgroundColor};
  });
- assert.equal(hoverSquare.iconBackground,'rgba(0, 0, 0, 0)','No colored square behind HVAC pictogram');
- assert.equal(hoverSquare.iconBorder,'0px','HVAC glyph has no square border');
+ assert.equal(hoverSquare.hovered,true,'Browser pointer must truly hover on Climate shortcut');
+ assert.equal(hoverSquare.iconBackground,'rgba(0, 0, 0, 0)','No blue rectangle behind hovered HVAC icon');
+ assert.equal(hoverSquare.iconBorder,'0px','No square border on hovered HVAC icon');
+ assert.equal(hoverSquare.iconShadow,'none','No blue square shadow on hovered HVAC icon');
+ assert.notEqual(hoverSquare.ringBackground,'rgba(0, 0, 0, 0)','Only round button disc may highlight');
 
  console.log('PASS desktop cog/Wi-Fi spacing and uniform action icon palette:',JSON.stringify(desktopHeaderPolish));
 
