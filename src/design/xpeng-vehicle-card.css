@@ -4225,3 +4225,59 @@ background:transparent!important;
 /* Modal stays scrollable without changing the dashboard canvas. */
 .xp-scene .xp-ux-modal-climate .xp-ux-modal-content,
 .xp-scene .xp-ux-modal-extras .xp-ux-modal-content{min-height:0;overflow-y:auto}
+
+/* Beta 18: all desktop dialogs share the approved full-size More-options frame. */
+@container xpeng-layout (min-width:851px){
+ .xp-scene .xp-ux-modal.xp-ux-modal-climate,
+ .xp-scene .xp-ux-modal.xp-ux-modal-maintenance,
+ .xp-scene .xp-ux-modal.xp-ux-modal-map,
+ .xp-scene .xp-ux-modal.xp-ux-modal-extras,
+ .xp-scene .xp-ux-modal.xp-ux-modal-port,
+ .xp-scene .xp-ux-modal.xp-ux-modal-doors,
+ .xp-scene .xp-ux-modal.xp-ux-modal-windows,
+ .xp-scene .xp-ux-modal.xp-ux-modal-trunk,
+ .xp-scene .xp-ux-modal.xp-ux-modal-charge_controls,
+ .xp-scene .xp-ux-modal.xp-ux-modal-charge_schedule{
+   inset:auto!important;left:50%!important;right:auto!important;
+   top:50%!important;bottom:auto!important;
+   transform:translate(-50%,-50%)!important;
+   width:min(1230px,calc(100% - 24px))!important;
+   height:min(735px,calc(100% - 24px))!important;
+   max-width:calc(100% - 16px)!important;
+   max-height:calc(100% - 20px)!important;
+   box-sizing:border-box!important;
+ }
+ /* A single fixed-size shell: content independently scrolls when needed. */
+ .xp-scene .xp-ux-modal .xp-ux-modal-content{
+   flex:1 1 0!important;min-height:0!important;overflow-y:auto!important;
+ }
+}
+/* The old dock hover rule colored the 32px ha-icon HOST blue, drawing a square
+   inside the correctly round 68px button. Only ::before is the hit halo. */
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon,
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action:not(:disabled):is(:hover,:focus,:focus-visible)>.xp-mdi-icon,
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action[data-xp-open="climate"]:is(:hover,:focus,:focus-visible)>.xp-mdi-icon{
+ background:transparent!important;border:0!important;
+ border-radius:0!important;box-shadow:none!important;
+ outline:0!important;outline-offset:0!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+/* Home buttons remain circles with no rectangular focus background. */
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action:not(:disabled):is(:hover,:focus,:focus-visible){
+ background:transparent!important;
+ box-shadow:none!important;border-color:transparent!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action:focus-visible::before{
+ outline:2px solid #8fe8f2!important;outline-offset:3px!important;
+}
+/* The Open Trunk SVG uses the same 32px visual bounding box as MDI; no box fill. */
+.xp-scene .xp-tailgate-icon,
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-tailgate-icon{
+ fill:none!important;background:transparent!important;
+ color:#e9f4ff!important;filter:none!important;
+ box-shadow:none!important;border:0!important;
+ overflow:visible!important;
+}
+.xp-scene .xp-ux-modal .xp-tailgate-icon{
+ width:42px;height:32px;max-width:100%;
+}

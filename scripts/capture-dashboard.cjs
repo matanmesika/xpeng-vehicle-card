@@ -318,6 +318,12 @@ async function main(){
    'Desktop wheel badges must remain compact, not stretch to legacy stage height: '+JSON.stringify(tpmsDesktop));
  assert.ok(tpmsDesktop.note&&tpmsDesktop.tiles.every(item=>item.rect.bottom<=tpmsDesktop.note.top+1),
    'All four tire data labels must remain fully visible above the live-data note: '+JSON.stringify(tpmsDesktop));
+ const maintenanceGeometry=await car.evaluate(el=>{
+   const r=el.shadowRoot.querySelector('.xp-ux-modal-maintenance').getBoundingClientRect();
+   return {width:r.width,height:r.height};
+ });
+ assert.ok(maintenanceGeometry.width>=1100&&maintenanceGeometry.height>=700,
+ 'Maintenance must have the same full-size dialog shell as More options: '+JSON.stringify(maintenanceGeometry));
  await screen('maintenance-desktop');
  await car.locator('button[data-xp-close]').click();
  // Browser-level V3 glass QA: seven official MDI badges, no opaque tile backing.
@@ -344,6 +350,8 @@ async function main(){
  });
  assert.ok(launcherSize.width>=1100&&launcherSize.width<=1240&&launcherSize.scene>1100&&launcherSize.centerOffset<=3,
    'Extras launcher must be compact and centered on desktop: '+JSON.stringify(launcherSize));
+ assert.ok(Math.abs(maintenanceGeometry.width-launcherSize.width)<=2,
+   'Maintenance and More options must share exactly the same desktop width');
  await reviewShot('functions-desktop');
  await car.locator('button[data-xp-close]').click();
  // Exercise both HA-driven screens at phone widths and within a narrow
@@ -481,17 +489,17 @@ async function main(){
  const homeIconQuality=await car.evaluate(el=>{
    const root=el.shadowRoot;
    return [...root.querySelectorAll('.xp-ux-dock-action')].map(button=>{
-     const icon=button.querySelector('ha-icon');
+     const icon=button.querySelector('ha-icon,svg.xp-tailgate-icon');
      const r=icon?.getBoundingClientRect(),b=button.getBoundingClientRect();
-     return {mdi:icon?.getAttribute('icon'),width:r?.width,height:r?.height,
+     return {mdi:icon?.getAttribute('icon'),tailgate:icon?.classList?.contains('xp-tailgate-icon'),width:r?.width,height:r?.height,
        within:!!r&&r.width>0&&r.height>0&&
          r.left>=b.left-1&&r.right<=b.right+1&&r.top>=b.top-1&&r.bottom<=b.bottom+1};
    });
  });
- assert.ok(homeIconQuality.length===7&&homeIconQuality.every(i=>i.mdi?.startsWith('mdi:')&&i.within),
-   'All seven actions must have genuine, centered native MDI icons: '+JSON.stringify(homeIconQuality));
+ assert.ok(homeIconQuality.length===7&&homeIconQuality.every(i=>(i.mdi?.startsWith('mdi:')||i.tailgate)&&i.within),
+   'All seven actions must have centered MDI icons or the approved raised tailgate SVG: '+JSON.stringify(homeIconQuality));
  const dockProportions=await car.evaluate(el=>[...el.shadowRoot.querySelectorAll('.xp-ux-dock-action')].map(button=>{
-   const glyph=button.querySelector('ha-icon.xp-mdi-icon');
+   const glyph=button.querySelector('.xp-mdi-icon');
    const size=glyph?.getBoundingClientRect().width;
    const circle=parseFloat(getComputedStyle(button,'::before').width);
    return {icon:glyph?.getAttribute('icon'),glyph:size,circle,background:getComputedStyle(button).backgroundColor};
@@ -499,7 +507,7 @@ async function main(){
  assert.ok(dockProportions.length===7&&dockProportions.every(x=>
    x.glyph>=28&&x.glyph<=33&&x.circle>=66&&x.circle<=70&&x.circle/x.glyph>=1.8&&
    x.background==='rgba(0, 0, 0, 0)'),
-   'Home action MDI glyphs must be physically smaller than their floating glass circles: '+JSON.stringify(dockProportions));
+   'Home pictograms must be smaller than their circular glass surfaces: '+JSON.stringify(dockProportions));
  console.log('Desktop official MDI icons and bounding-box alignment verified:',JSON.stringify(homeIconQuality));
 
  // Beta 7: rendered Home Assistant header geometry and actual dock icon colors.
@@ -512,15 +520,15 @@ async function main(){
    // trunk lift/lower badge is a subordinate action indicator, not an eighth
    // shortcut or a replacement for the original neutral icon palette.
    const icons=[...root.querySelectorAll('.xp-ux-dock-seven .xp-ux-dock-action')]
-     .map(button=>button.querySelector('ha-icon.xp-mdi-icon'))
+     .map(button=>button.querySelector('.xp-mdi-icon'))
      .filter(Boolean)
      .map(icon=>getComputedStyle(icon).color);
    const trunkButton=root.querySelector('.xp-ux-dock-action[data-xp-toggle="trunk"]');
    const trunkArrow=trunkButton?.querySelector('.xp-trunk-arrow');
    const trunkSymbol=trunkButton?.querySelector('.xp-trunk-symbol');
-   const trunkCar=trunkButton?.querySelector('ha-icon.xp-mdi-icon');
+   const trunkCar=trunkButton?.querySelector('svg.xp-tailgate-icon');
    const carRect=trunkCar?.getBoundingClientRect(),arrowRect=trunkArrow?.getBoundingClientRect();
-   const tailgate={car:trunkCar?.getAttribute('icon'),
+   const tailgate={car:trunkCar?.getAttribute('class'),
      arrow:trunkArrow?.getAttribute('icon'),
      action:trunkButton?.getAttribute('aria-label'),
      arrowColor:trunkArrow?getComputedStyle(trunkArrow).color:null,
@@ -544,13 +552,28 @@ async function main(){
  assert.equal(desktopHeaderPolish.iconCount,7);
  const desktopIconSize=await car.evaluate(el=>[...el.shadowRoot.querySelectorAll('.xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon')].map(icon=>icon.getBoundingClientRect().width));
  assert.ok(desktopIconSize.every(size=>size>=31&&size<=33),
-  'Desktop dock pictograms must be 30px while mobile stays unchanged: '+JSON.stringify(desktopIconSize));
+  'Desktop dock pictograms must be 32px while mobile stays unchanged: '+JSON.stringify(desktopIconSize));
 
- assert.equal(desktopHeaderPolish.tailgate.car,'mdi:car-back',
-   'Trunk shortcut must show a real rear-tailgate capable SUV side profile');
+ assert.equal(desktopHeaderPolish.tailgate.car,'xp-mdi-icon xp-tailgate-icon',
+   'Open Trunk must be a genuine side-profile silhouette with a raised hatch');
  assert.ok(!desktopHeaderPolish.tailgate.arrow,'No invented hatch arrow or composite SVG');
- assert.ok(desktopHeaderPolish.tailgate.carWidth>=30,'Official rear vehicle icon must be legible');
+ assert.ok(desktopHeaderPolish.tailgate.carWidth>=30,'Tailgate side profile must remain legible');
  assert.equal(desktopHeaderPolish.disabled,0,'All mock actions remain enabled');
+ await car.locator('.xp-ux-dock-action[data-xp-open="climate"]').hover();
+ const hoverSquare=await car.evaluate(el=>{
+  const button=el.shadowRoot.querySelector('.xp-ux-dock-action[data-xp-open="climate"]');
+  const icon=button.querySelector('.xp-mdi-icon');
+  const css=getComputedStyle(icon),ring=getComputedStyle(button,'::before');
+  return {hovered:button.matches(':hover'),
+   iconBackground:css.backgroundColor,iconBorder:css.borderTopWidth,
+   iconShadow:css.boxShadow,ringBackground:ring.backgroundColor};
+ });
+ assert.equal(hoverSquare.hovered,true,'Browser pointer must truly hover on Climate shortcut');
+ assert.equal(hoverSquare.iconBackground,'rgba(0, 0, 0, 0)','No blue rectangle behind hovered HVAC icon');
+ assert.equal(hoverSquare.iconBorder,'0px','No square border on hovered HVAC icon');
+ assert.equal(hoverSquare.iconShadow,'none','No blue square shadow on hovered HVAC icon');
+ assert.notEqual(hoverSquare.ringBackground,'rgba(0, 0, 0, 0)','Only round button disc may highlight');
+
  console.log('PASS desktop cog/Wi-Fi spacing and uniform action icon palette:',JSON.stringify(desktopHeaderPolish));
 
  for(const action of ['maintenance','map'])assert.equal(await car.locator('.xp-ux-dock-action[data-xp-open="'+action+'"]').count(),1,action+' home dock action missing');

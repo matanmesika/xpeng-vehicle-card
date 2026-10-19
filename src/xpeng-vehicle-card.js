@@ -193,8 +193,19 @@ function xpIcon(name,size=22){
  const mdi=XP_ICONS[name]||XP_ICONS.info;
  const px=Math.max(12,Math.min(80,Number(size)||22));
  const glyph='<ha-icon class="xp-mdi-icon" icon="'+mdi+'" style="--xp-icon-size:'+px+'px" aria-hidden="true"></ha-icon>';
- // Use a single official rear-view vehicle glyph for trunk commands.
- // The actual next action remains in the live, accessible button label.
+ // Purpose-built accessible side-profile icon for the owner's open-tailgate
+ // reference. A vector in the distributed bundle, no third-party image fetch.
+ // Real action labels still come from the live vehicle state.
+ if(['trunk','trunk_open','trunk_close'].includes(name)){
+   return '<svg class="xp-mdi-icon xp-tailgate-icon" viewBox="0 0 64 36" role="img"'+
+     ' aria-label="Open trunk" style="--xp-icon-size:'+px+'px" xmlns="http://www.w3.org/2000/svg">'+
+     '<g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">'+
+       '<path d="M5 26v-6c0-2.4 1.8-4 4.3-4H20l6.9-8.1h12.2c2.4 0 3.9 1.1 5.3 3.3l4.6 6.8h4.2v-4"/>'+
+       '<path d="M53.2 14 59.8 5.5h3.1M53.2 14.5c3.5.6 5.6 3 5.6 6v5.5h-5.7M14.5 26H5M43.6 26H28.2"/>'+
+       '<circle cx="21.4" cy="26" r="4.2"/><circle cx="49.1" cy="26" r="4.2"/>'+
+       '<path d="M26.6 8.7v7.3h19.2M37 8.7v7.3M9.3 16h11.2"/>'+
+     '</g></svg>';
+ }
  return glyph;
 }
 function xpEsc(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
@@ -4550,6 +4561,62 @@ background:transparent!important;
 .xp-scene .xp-ux-modal-climate .xp-ux-modal-content,
 .xp-scene .xp-ux-modal-extras .xp-ux-modal-content{min-height:0;overflow-y:auto}
 
+/* Beta 18: all desktop dialogs share the approved full-size More-options frame. */
+@container xpeng-layout (min-width:851px){
+ .xp-scene .xp-ux-modal.xp-ux-modal-climate,
+ .xp-scene .xp-ux-modal.xp-ux-modal-maintenance,
+ .xp-scene .xp-ux-modal.xp-ux-modal-map,
+ .xp-scene .xp-ux-modal.xp-ux-modal-extras,
+ .xp-scene .xp-ux-modal.xp-ux-modal-port,
+ .xp-scene .xp-ux-modal.xp-ux-modal-doors,
+ .xp-scene .xp-ux-modal.xp-ux-modal-windows,
+ .xp-scene .xp-ux-modal.xp-ux-modal-trunk,
+ .xp-scene .xp-ux-modal.xp-ux-modal-charge_controls,
+ .xp-scene .xp-ux-modal.xp-ux-modal-charge_schedule{
+   inset:auto!important;left:50%!important;right:auto!important;
+   top:50%!important;bottom:auto!important;
+   transform:translate(-50%,-50%)!important;
+   width:min(1230px,calc(100% - 24px))!important;
+   height:min(735px,calc(100% - 24px))!important;
+   max-width:calc(100% - 16px)!important;
+   max-height:calc(100% - 20px)!important;
+   box-sizing:border-box!important;
+ }
+ /* A single fixed-size shell: content independently scrolls when needed. */
+ .xp-scene .xp-ux-modal .xp-ux-modal-content{
+   flex:1 1 0!important;min-height:0!important;overflow-y:auto!important;
+ }
+}
+/* The old dock hover rule colored the 32px ha-icon HOST blue, drawing a square
+   inside the correctly round 68px button. Only ::before is the hit halo. */
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon,
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action:not(:disabled):is(:hover,:focus,:focus-visible)>.xp-mdi-icon,
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action[data-xp-open="climate"]:is(:hover,:focus,:focus-visible)>.xp-mdi-icon{
+ background:transparent!important;border:0!important;
+ border-radius:0!important;box-shadow:none!important;
+ outline:0!important;outline-offset:0!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+/* Home buttons remain circles with no rectangular focus background. */
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action:not(:disabled):is(:hover,:focus,:focus-visible){
+ background:transparent!important;
+ box-shadow:none!important;border-color:transparent!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action:focus-visible::before{
+ outline:2px solid #8fe8f2!important;outline-offset:3px!important;
+}
+/* The Open Trunk SVG uses the same 32px visual bounding box as MDI; no box fill. */
+.xp-scene .xp-tailgate-icon,
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-tailgate-icon{
+ fill:none!important;background:transparent!important;
+ color:#e9f4ff!important;filter:none!important;
+ box-shadow:none!important;border:0!important;
+ overflow:visible!important;
+}
+.xp-scene .xp-ux-modal .xp-tailgate-icon{
+ width:42px;height:32px;max-width:100%;
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -5627,7 +5694,7 @@ class XpengVehicleCard extends HTMLElement{
      spec='Temperature: Min '+lo+' °C · Max '+hi+' °C (integration values)';
    }
    if(['doors','windows','trunk','port'].includes(page))spec='State: Open / Closed; actions require real sensor feedback';
-   if(page==='maintenance')spec='TPMS: '+['tire_fl','tire_fr','tire_rl','tire_rr'].filter(k=>this.tirePressureBar(k)!==null).length+'/4 live readings · unit '+this.tirePressureUnit();
+   if(page==='maintenance')spec='TPMS: '+['tire_fl','tire_fr','tire_rl','tire_rr'].filter(k=>this.tirePressureBar(k)!==null).length+'/4 live readings';
    if(page==='charge_schedule')spec='Editable range: None (read-only entities)';
    return this.xpGuidePanel(guide[0],guide[1],xpEsc(spec),guide[2]);
  }
@@ -5984,7 +6051,7 @@ class XpengVehicleCard extends HTMLElement{
   return 'Charging unavailable';
  }
  title(){
-  return `<div class="xp-title"><h1><em>${xpEsc(this.model())}</em></h1><div class="xp-subtitle">${this._view==='charging'?xpEsc(this.chargeStatus()):this._tireOpen?'Tire pressure':'Vehicle status'}</div></div>`;
+  return `<div class="xp-title"><h1>XPENG <em>${xpEsc(this.model())}</em></h1><div class="xp-subtitle">${this._view==='charging'?xpEsc(this.chargeStatus()):this._tireOpen?'Tire pressure':'Vehicle status'}</div></div>`;
  }
  sceneBackdrop(){
     // The scenic background belongs to the DASHBOARD, not to a model image folder.

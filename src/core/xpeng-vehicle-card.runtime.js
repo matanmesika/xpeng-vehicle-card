@@ -193,8 +193,19 @@ function xpIcon(name,size=22){
  const mdi=XP_ICONS[name]||XP_ICONS.info;
  const px=Math.max(12,Math.min(80,Number(size)||22));
  const glyph='<ha-icon class="xp-mdi-icon" icon="'+mdi+'" style="--xp-icon-size:'+px+'px" aria-hidden="true"></ha-icon>';
- // Use a single official rear-view vehicle glyph for trunk commands.
- // The actual next action remains in the live, accessible button label.
+ // Purpose-built accessible side-profile icon for the owner's open-tailgate
+ // reference. A vector in the distributed bundle, no third-party image fetch.
+ // Real action labels still come from the live vehicle state.
+ if(['trunk','trunk_open','trunk_close'].includes(name)){
+   return '<svg class="xp-mdi-icon xp-tailgate-icon" viewBox="0 0 64 36" role="img"'+
+     ' aria-label="Open trunk" style="--xp-icon-size:'+px+'px" xmlns="http://www.w3.org/2000/svg">'+
+     '<g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">'+
+       '<path d="M5 26v-6c0-2.4 1.8-4 4.3-4H20l6.9-8.1h12.2c2.4 0 3.9 1.1 5.3 3.3l4.6 6.8h4.2v-4"/>'+
+       '<path d="M53.2 14 59.8 5.5h3.1M53.2 14.5c3.5.6 5.6 3 5.6 6v5.5h-5.7M14.5 26H5M43.6 26H28.2"/>'+
+       '<circle cx="21.4" cy="26" r="4.2"/><circle cx="49.1" cy="26" r="4.2"/>'+
+       '<path d="M26.6 8.7v7.3h19.2M37 8.7v7.3M9.3 16h11.2"/>'+
+     '</g></svg>';
+ }
  return glyph;
 }
 function xpEsc(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
@@ -1399,7 +1410,7 @@ class XpengVehicleCard extends HTMLElement{
      spec='Temperature: Min '+lo+' °C · Max '+hi+' °C (integration values)';
    }
    if(['doors','windows','trunk','port'].includes(page))spec='State: Open / Closed; actions require real sensor feedback';
-   if(page==='maintenance')spec='TPMS: '+['tire_fl','tire_fr','tire_rl','tire_rr'].filter(k=>this.tirePressureBar(k)!==null).length+'/4 live readings · unit '+this.tirePressureUnit();
+   if(page==='maintenance')spec='TPMS: '+['tire_fl','tire_fr','tire_rl','tire_rr'].filter(k=>this.tirePressureBar(k)!==null).length+'/4 live readings';
    if(page==='charge_schedule')spec='Editable range: None (read-only entities)';
    return this.xpGuidePanel(guide[0],guide[1],xpEsc(spec),guide[2]);
  }
@@ -1756,7 +1767,7 @@ class XpengVehicleCard extends HTMLElement{
   return 'Charging unavailable';
  }
  title(){
-  return `<div class="xp-title"><h1><em>${xpEsc(this.model())}</em></h1><div class="xp-subtitle">${this._view==='charging'?xpEsc(this.chargeStatus()):this._tireOpen?'Tire pressure':'Vehicle status'}</div></div>`;
+  return `<div class="xp-title"><h1>XPENG <em>${xpEsc(this.model())}</em></h1><div class="xp-subtitle">${this._view==='charging'?xpEsc(this.chargeStatus()):this._tireOpen?'Tire pressure':'Vehicle status'}</div></div>`;
  }
  sceneBackdrop(){
     // The scenic background belongs to the DASHBOARD, not to a model image folder.
