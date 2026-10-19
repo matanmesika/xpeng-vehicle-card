@@ -378,8 +378,10 @@ async function main(){
        'Mobile vehicle object was not proportionally sized: '+JSON.stringify(sized));
      assert.ok(sized.battery?.height<=171&&sized.battery.height>=80,
        'Mobile battery card was not compacted: '+JSON.stringify(sized));
-     assert.ok(sized.icon?.width<=25&&sized.icon.width>=19,
-       'Mobile dock icons did not scale with card: '+JSON.stringify(sized));
+     // V3 draws a 46–63px transparent glass TOUCH DISC around a 27px MDI glyph.
+     // The old <=25px assertion mistook the button circle for the glyph.
+     assert.ok(sized.icon?.width>=45&&sized.icon.width<=64,
+       'Mobile transparent dock circles did not scale with card: '+JSON.stringify(sized));
      assert.ok(sized.actions.length===7&&sized.actions.every(r=>r.height>=48),
        'Mobile dock has clipped/untappable actions: '+JSON.stringify(sized));
      assert.ok(sized.battery.bottom<=sized.car.top+3,

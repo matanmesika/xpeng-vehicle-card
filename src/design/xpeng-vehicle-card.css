@@ -2437,12 +2437,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  }
 }
 
-/* =======================================================================
-   G6 V2.1 — actual information-layout refresh, not just surface recoloring.
-   Desktop HVAC now gives the original cabin photograph its own left stage
-   and groups the existing live controls in the right-side instrument stack.
-   Other pages keep all their current entities and buttons.
-   ======================================================================= */
+/* Retained responsive structural geometry for the owner-approved V3 design. */
 @container xpeng-layout (min-width:851px){
  .xp-ux-modal-climate .xp-climate-layout{
   display:grid!important;
