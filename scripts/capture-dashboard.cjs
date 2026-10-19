@@ -291,6 +291,18 @@ async function main(){
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
  await car.locator('button[data-xp-open="maintenance"]').first().click();
  assert.ok(await car.locator('.xp-ux-modal-maintenance').count(),'Maintenance modal was not opened');
+ const tpmsDesktop=await car.evaluate(el=>{
+  const root=el.shadowRoot;
+  const tiles=[...root.querySelectorAll('.xp-ux-modal-maintenance .xp-tire-reading')]
+    .map(tile=>({wheel:tile.dataset.wheel,rect:tile.getBoundingClientRect().toJSON()}));
+  const note=root.querySelector('.xp-tire-source-note')?.getBoundingClientRect().toJSON();
+  return {tiles,note};
+ });
+ assert.equal(tpmsDesktop.tiles.length,4);
+ assert.ok(tpmsDesktop.tiles.every(item=>item.rect.height>=60&&item.rect.height<=85),
+   'Desktop wheel badges must remain compact, not stretch to legacy stage height: '+JSON.stringify(tpmsDesktop));
+ assert.ok(tpmsDesktop.note&&tpmsDesktop.tiles.every(item=>item.rect.bottom<=tpmsDesktop.note.top+1),
+   'All four tire data labels must remain fully visible above the live-data note: '+JSON.stringify(tpmsDesktop));
  await screen('maintenance-desktop');
  await car.locator('button[data-xp-close]').click();
  // Browser-level V3 glass QA: seven official MDI badges, no opaque tile backing.

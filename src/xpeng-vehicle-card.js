@@ -4287,6 +4287,22 @@ background:transparent!important;
  }
 }
 
+
+/* TPMS photo-geometry acceptance: legacy top+bottom placement must not stretch
+   the four floating wheel readings (all data remains sensor-driven). */
+.xp-scene .xp-ux-modal.xp-ux-modal-maintenance .xp-tpms-only .xp-tire-stage>.xp-tire-reading{
+ box-sizing:border-box!important;
+ bottom:auto!important;
+ height:68px!important;min-height:68px!important;max-height:68px!important;
+ overflow:visible!important;
+}
+@container xpeng-layout (max-width:520px){
+ .xp-scene .xp-ux-modal.xp-ux-modal-maintenance .xp-tpms-only .xp-tire-stage>.xp-tire-reading{
+  bottom:auto!important;height:62px!important;
+  min-height:62px!important;max-height:62px!important;
+ }
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
