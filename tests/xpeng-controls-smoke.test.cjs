@@ -825,7 +825,7 @@ test('only sensor state triggers charging; confirmed charge renders green cable'
  card._hass.states['binary_sensor.is_charging'].state='on';
  card._hass.states['binary_sensor.cable_present'].state='on';
  card.render();
- assert.match(card.shadowRoot.innerHTML,/class="xp-charge-card"/);
+ assert.match(card.shadowRoot.innerHTML,/class="xp-charge-card(?: xp-charge-unified)?"/);
  assert.match(card.shadowRoot.innerHTML,/data-xp-cable="desktop"/);
  assert.match(card.shadowRoot.innerHTML,/data-xp-cable="mobile"/);
  card._hass.states['binary_sensor.is_charging'].state='off';card.render();
