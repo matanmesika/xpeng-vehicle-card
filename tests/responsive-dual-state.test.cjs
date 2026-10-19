@@ -41,13 +41,15 @@ test('original charging art uses the same seven-button dashboard dock',()=>{
  assert.match(css,/\.xp-scene\.xp-charge\.xp-charge-navigation \.xp-car/);
 });
 
-test('phone subpages are touch scrollable and maintenance grid stacks rows',()=>{
+test('phone subpages remain touch scrollable and tire readings stay beside wheels',()=>{
  // Canonical V3 keeps the mobile scroll declarations in two complementary
  // .xp-ux-modal rules instead of the previous single duplicated rule.
  assert.match(css,/\.xp-ux-modal\{overflow-x:hidden;/);
  assert.match(css,/\.xp-ux-modal\{[\s\S]*?overflow-y:auto;-webkit-overflow-scrolling:touch;/);
  assert.match(css,/touch-action:pan-y/);
- assert.match(css,/\.xp-ux-modal-maintenance \.xp-tire-stage\{display:grid;width:100%;height:auto/);
+ // The current owner-approved TPMS view uses positioned wheel indicators,
+ // rather than the obsolete full-width stacked grid.
+ assert.match(css,/\.xp-ux-modal-maintenance \.xp-tire-stage\{[\s\S]*?display:block!important;position:relative/);
 });
 test('original charging art is restored and green cable only exists during charging',()=>{
  assert.match(source,/ownerCharging=a\.model==='G6'/);
