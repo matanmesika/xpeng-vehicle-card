@@ -45,12 +45,16 @@ test('Cabin layout guardian: unchanged cabin photo and seat-zone event handling'
  assert.match(theme,/\.xp-ux-modal\.xp-ux-modal-climate \.xp-climate-primary-controls \.xp-climate-primary/);
  assert.match(runtime,/data-xp-range="fan_speed_control"/);
 });
-test('Pedestal guardian: only CSS-built charging unit around original car and cable',()=>{
- assert.match(runtime,/class="xp-station xp-station-v3"/);
+test('Pedestal guardian: single responsive premium XPENG station and original dynamic car',()=>{
+ assert.match(runtime,/class="xp-station xp-station-v3 xp-station-xpeng19"/);
  assert.match(runtime,/this\.carArt\(\)/);
  assert.match(runtime,/xp-charge-cable-core/);
  assert.match(theme,/\.xp-station-display/);
  assert.match(theme,/\.xp-station-charge-light/);
+ assert.match(runtime,/class="xp-xpeng-pedestal"/);
+ assert.match(runtime,/id="xp19-case"/);
+ assert.match(runtime,/M935 460[\s\S]*?1287 474/);
+ assert.match(runtime,/M171 489[\s\S]*?346 516/);
 });
 test('Build guardian: isolated design and runtime create identical HACS JS',()=>{
  assert.equal(bundle,dist);
