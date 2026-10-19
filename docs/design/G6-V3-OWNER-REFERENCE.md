@@ -21,3 +21,10 @@ in `src/core/xpeng-vehicle-card.runtime.js` needed for presentation.
 Avoid fake functions or imaginary states. Run the reference guardian, browser
 screenshots on 1400px desktop / 390px mobile / narrow Home Assistant Sections,
 and the full regression suite. Do not merge into main without owner approval.
+
+## Acceptance changes
+Older tests that expected odometer/model year inside Maintenance are replaced with
+a check for **only four mapped TPMS tiles**. Model year remains on its original
+integration entity; it is not deleted or synthesized. The station HTML keeps
+the native `mdi:ev-station` icon in the new facade. Browser QA verifies that
+the tire view scrolls to its real sensor note, not obsolete service details.

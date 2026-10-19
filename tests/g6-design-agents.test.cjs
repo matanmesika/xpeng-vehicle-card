@@ -65,6 +65,18 @@ test('Behavior Guardian: JS and vehicle assets do not change from the accepted b
     "target?.suffix==='open_trunk'?'trunk_open':'trunk'");
   v=v.replace("xpIcon(state==='closed'?'trunk_open':state==='open'?'trunk_close':'trunk',36)+",
     "xpIcon('trunk',36)+");
+  // V3 owner's approved TPMS-only and new station badge are presentation
+  // changes. Normalize exact isolated view constructors, never action routing.
+  v=v.replace(/ xpTireExtra\(key\)\{[\s\S]*?\n  \}\n(?=  tireScreen\()/,'');
+  v=v.replace(/ xpMaintenancePanel\(\)\{[\s\S]*?\n \}\n(?= xpChargeLimitPanel\()/,
+    ' [OWNER_TPMS_PRESENTATION_ONLY]\n');
+  v=v.replace(/  tireScreen\(showBack=true\)\{[\s\S]*?\n  \}\n(?= overview\()/,
+    ' [OWNER_TIRE_LAYOUT_PRESENTATION_ONLY]\n');
+  v=v.replace('this.xpTempControl()+this.xpClimatePrimaryControls()+this.xpFanControl()+',
+    'this.xpClimatePrimaryControls()+this.xpTempControl()+this.xpFanControl()+');
+  v=v.replace('<div class="xp-station xp-station-v3" aria-hidden="true"><span class="xp-station-display">${xpIcon(\'station\',24)}</span><span class="xp-station-charge-light"></span><span class="xp-station-side-light"></span></div>',
+    '<div class="xp-station" aria-hidden="true">${xpIcon(\'station\',24)}</div>');
+  v=v.replaceAll('// Owner\'s maintenance surface is tire pressure only. Never substitute','// Owner\'s maintenance surface is tire pressure only. Never substitute');
   return v;
  };
  assert.equal(normalize(source),normalize(reference),

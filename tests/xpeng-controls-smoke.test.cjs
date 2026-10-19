@@ -64,13 +64,16 @@ test('maintenance from Extras routes to one correctly styled maintenance modal a
  assert.match(card.xpExtrasPanel(),/data-xp-extra-page="maintenance"/);
  assert.match(src,/if\(page==='maintenance'\)\{this\.xpNavigatePanel\('maintenance'\);return;\}/);
 });
-test('maintenance model year identifies explicit integration attribute vs editor-configured year',()=>{
+test('Maintenance is tire-only; integration identity remains available in its own entity',()=>{
  const {card}=createCard({year:'2025'});
  card._xpengByKey['sensor.vehicle_identity']='sensor.owner_vehicle_identity';
  card._hass.states['sensor.owner_vehicle_identity']={state:'ok',attributes:{model_year:'2024'}};
- assert.match(card.xpMaintenancePanel(),/שנת דגם \(מהאינטגרציה\)<\/span><b>2024/);
- delete card._hass.states['sensor.owner_vehicle_identity'];
- assert.match(card.xpMaintenancePanel(),/שנת דגם \(מהגדרות הכרטיס\)<\/span><b>2025/);
+ const html=card.xpMaintenancePanel();
+ assert.match(html,/xp-tpms-only/);
+ for(const wheel of ['tire_fl','tire_fr','tire_rl','tire_rr'])assert.ok(html.includes('data-wheel="'+wheel+'"'));
+ assert.doesNotMatch(html,/שנת דגם|קילומטראז׳|מספר שלדה|הטיפול הבא/);
+ assert.equal(card.xpLive('sensor','vehicle_identity').state.attributes.model_year,'2024',
+   'The integration identity sensor is still accessible outside the TPMS-only view');
 });
 test('native map reuses one unchanged Map card on repeated Xpengtk hass updates',async()=>{
  const {card,sandbox}=createCard();
@@ -1039,7 +1042,7 @@ test('every action is a native modern MDI glyph, including battery and charge st
  assert.match(home,/data-xp-battery-icon[^>]*><ha-icon[^>]*icon="mdi:battery-(?:[0-9]+|unknown|outline)"/,
    'Battery pictogram must be official MDI, not a custom drawn icon');
  assert.doesNotMatch(home,/class="xp-batt-fill"/);
- assert.match(charging,/class="xp-station"[^>]*><ha-icon[^>]*icon="mdi:ev-station"/,
+ assert.match(charging,/class="xp-station xp-station-v3"[^>]*><span class="xp-station-display"><ha-icon[^>]*icon="mdi:ev-station"/,
    'Charging station badge must be official MDI');
  assert.doesNotMatch(card.header(),/✕/,'No improvised decorative X brand icon');
 });

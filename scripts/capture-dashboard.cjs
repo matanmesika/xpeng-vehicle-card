@@ -674,11 +674,13 @@ async function main(){
  const maintenanceFromGear=await car.evaluate(el=>{
    const root=el.shadowRoot;
    return {tires:root.querySelectorAll('.xp-ux-modal-maintenance .xp-tire-reading').length,
-     source:root.querySelector('.xp-ux-modal-maintenance .xp-maint-info')?.innerText||''};
+     source:root.querySelector('.xp-ux-modal-maintenance .xp-tire-source-note')?.innerText||'',
+     additionalDetails:root.querySelectorAll('.xp-ux-modal-maintenance .xp-maint-info').length};
  });
  assert.equal(maintenanceFromGear.tires,4);
- assert.match(maintenanceFromGear.source,/שנת דגם \(מהאינטגרציה\)/,
-   'Verified Xpengtk identity year must be explicitly distinguished from editor default');
+ assert.match(maintenanceFromGear.source,/חיישני הרכב דרך Home Assistant/);
+ assert.equal(maintenanceFromGear.additionalDetails,0,
+   'Owner requires only TPMS readouts on Maintenance, not unrelated vehicle data');
  await car.locator('button[data-xp-close]').click();
  assert.equal(await car.locator('.xp-ux-modal-extras').count(),1,'Maintenance Back must return to Gear options');
  const mobileFunctionTiles=await car.evaluate(el=>[...el.shadowRoot.querySelectorAll('button.xp-extra-tile')].map(button=>{
@@ -783,7 +785,7 @@ async function main(){
        const root=el.shadowRoot,stage=root.querySelector('.xp-ux-modal-maintenance .xp-tire-stage').getBoundingClientRect();
        return {height:stage.height,width:stage.width};
      });
-     assert.ok(tyre.height>=155&&tyre.height<=320,'Mobile tire-stage objects not scaled: '+JSON.stringify(tyre));
+     assert.ok(tyre.height>=155&&tyre.height<=390,'Mobile TPMS stage must fit with larger original car art: '+JSON.stringify(tyre));
    }
 
    if(action==='climate'||action==='maintenance'){
@@ -792,7 +794,7 @@ async function main(){
        el.scrollTop=el.scrollHeight;
        const target=action==='climate'
          ?el.querySelector('.xp-ux-climate-feature:last-child')
-         :el.querySelector('.xp-maint-info .xp-extra-line:last-child');
+         :el.querySelector('.xp-tire-source-note');
        const area=el.getBoundingClientRect(),end=target?.getBoundingClientRect();
        return {start,position:el.scrollTop,clientHeight,scrollHeight,
          visible:!!end&&end.top<area.bottom&&end.bottom>area.top};
@@ -1046,7 +1048,7 @@ async function main(){
        const inner=content?.querySelector('.xp-ux-modal-content-inner'),
          bodyRect=inner?.getBoundingClientRect();
        const tire=panel==='maintenance'?m.querySelector('.xp-tire-stage')?.getBoundingClientRect():null;
-       const metrics=panel==='maintenance'?m.querySelector('.xp-maint-info')?.getBoundingClientRect():null;
+       const metrics=panel==='maintenance'?m.querySelector('.xp-tire-source-note')?.getBoundingClientRect():null;
        const climateControls=panel==='climate'?m.querySelector('.xp-climate-layout>.xp-ux-climate-bottom')?.getBoundingClientRect():null;
        const hasGuide=!!m.querySelector('.xp-help-intro');
        const modalOverflow=getComputedStyle(m).overflowY;
