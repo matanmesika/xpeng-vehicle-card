@@ -4876,176 +4876,162 @@ background:transparent!important;
  object-fit:contain!important;object-position:center bottom!important;
 }
 
-/* v1.0.4: proportional mobile-only charging telemetry and glass control rings.
-   Keep the approved XPENG pedestal/car/cable untouched on every screen. */
-@container xpeng-layout (max-width:520px){
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card{
-  box-sizing:border-box!important;top:142px!important;left:4%!important;width:92%!important;
-  padding:9px 11px 10px!important;border-radius:15px!important;
- }
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-heading{
-  margin:0 0 5px!important;gap:5px!important;font-size:clamp(14px,4cqw,16px)!important;line-height:1.12!important;
- }
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-heading>.xp-mdi-icon{
-  flex:0 0 18px!important;width:18px!important;height:18px!important;--xp-icon-size:18px!important;
- }
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card .xp-progress{height:6px!important}
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-main{margin-top:6px!important;gap:8px!important}
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-main .xp-soc{
-  font-size:clamp(26px,7.6cqw,30px)!important;line-height:1.07!important;white-space:nowrap!important;
- }
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-divider{height:29px!important}
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-range .xp-stat-label{
-  font-size:9px!important;line-height:1.13!important;
- }
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-range b{
-  font-size:clamp(13px,3.7cqw,15px)!important;margin-top:2px!important;gap:4px!important;
- }
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-range b>.xp-mdi-icon{
-  flex:0 0 15px!important;width:15px!important;height:15px!important;--xp-icon-size:15px!important;
- }
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-meta{
-  margin-top:7px!important;padding-top:7px!important;gap:0!important;
- }
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-meta>div{
-  display:grid!important;grid-template-columns:14px minmax(0,1fr)!important;
-  grid-template-rows:minmax(16px,auto) auto!important;
-  column-gap:3px!important;row-gap:2px!important;
-  align-items:center!important;justify-items:start!important;
-  min-width:0!important;padding:0 5px!important;
- }
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-meta>div:first-child{padding-left:0!important}
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-meta>div:last-child{padding-right:0!important}
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-meta .xp-mdi-icon{
-  grid-column:1!important;grid-row:1!important;width:13px!important;height:13px!important;--xp-icon-size:13px!important;
- }
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-meta small{
-  grid-column:2!important;grid-row:1!important;font-size:clamp(8px,2.2cqw,9px)!important;
-  line-height:1.12!important;white-space:normal!important;overflow-wrap:break-word!important;
- }
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-meta b{
-  grid-column:1/-1!important;grid-row:2!important;
-  font-size:clamp(11px,3.2cqw,13px)!important;line-height:1.15!important;white-space:nowrap!important;
- }
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-panel-actions{
-  margin-top:8px!important;gap:4px!important;align-items:start!important;
- }
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-panel-actions button{
-  --xp-ring-size:34px!important;--xp-glyph-size:18px!important;
-  position:relative!important;isolation:isolate!important;
-  box-sizing:border-box!important;min-width:0!important;min-height:59px!important;
-  padding:39px 1px 3px!important;gap:0!important;
-  display:flex!important;flex-direction:column!important;
-  align-items:center!important;justify-content:flex-start!important;
- }
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-panel-actions button::before{
-  width:var(--xp-ring-size)!important;height:var(--xp-ring-size)!important;
-  top:0!important;left:50%!important;transform:translateX(-50%)!important;
-  background:linear-gradient(155deg,rgba(15,53,79,.8),rgba(7,29,52,.55))!important;
-  border:1px solid rgba(123,199,229,.48)!important;box-sizing:border-box!important;
- }
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-panel-actions button>.xp-mdi-icon{
-  flex:0 0 var(--xp-glyph-size)!important;width:var(--xp-glyph-size)!important;
-  height:var(--xp-glyph-size)!important;--xp-icon-size:var(--xp-glyph-size)!important;
-  --mdc-icon-size:var(--xp-glyph-size)!important;
-  --iron-icon-width:var(--xp-glyph-size)!important;--iron-icon-height:var(--xp-glyph-size)!important;
-  display:block!important;position:absolute!important;
-  top:calc((var(--xp-ring-size) - var(--xp-glyph-size)) / 2)!important;
-  left:50%!important;transform:translateX(-50%)!important;
-  margin:0!important;padding:0!important;line-height:1!important;
-  background:transparent!important;border:0!important;box-shadow:none!important;
- }
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-panel-actions button span{
-  font-size:clamp(8.5px,2.35cqw,10px)!important;line-height:1.1!important;
-  display:block!important;white-space:normal!important;max-width:100%!important;
-  text-align:center!important;min-height:11px!important;
- }
-}
-@container xpeng-layout (max-width:360px){
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card{
-  top:153px!important;padding:8px 9px 9px!important;
- }
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-meta>div{
-  padding:0 3px!important;column-gap:2px!important;
- }
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-meta small{font-size:8px!important}
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-panel-actions button{
-  --xp-ring-size:32px!important;--xp-glyph-size:17px!important;
-  min-height:56px!important;padding-top:37px!important;gap:0!important;
- }
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-panel-actions button span{font-size:9px!important}
-}
 
-/* 1.0.4 dock + charging: the exact same native MDI size and glass circle. */
-/* Shared variables, one rule for both kinds of actions. */
-.xp-scene{
- --xp-common-ring:48px;
- --xp-common-icon:22px;
- --xp-common-pad:12px;
- --xp-common-gap:15px;
- --xp-common-height:76px;
+/* ONE responsive charging dashboard component for desktop, iPhone and HA Sections.
+   Preserve original vehicle/pedestal/cable geometry; breakpoints change sizes only. */
+.xp-scene{--xp-charge-ring:48px;--xp-charge-icon:22px;--xp-charge-gap:11px;--xp-charge-label:11px}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{
+ display:flex!important;flex-direction:column!important;box-sizing:border-box!important;
+ gap:var(--xp-charge-gap)!important;
+ left:4.3%!important;top:27.3%!important;width:39.3%!important;
+ padding:clamp(15px,1.8cqw,25px)!important;border-radius:20px!important;
 }
-@container xpeng-layout (max-width:850px){
- .xp-scene{--xp-common-ring:46px;--xp-common-icon:21px;--xp-common-pad:11px;--xp-common-gap:14px;--xp-common-height:75px}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-heading{
+ display:flex!important;align-items:center!important;
+ gap:8px!important;margin:0!important;line-height:1.15!important;font-size:clamp(20px,2cqw,29px)!important;
 }
-@container xpeng-layout (max-width:520px){
- .xp-scene{--xp-common-ring:44px;--xp-common-icon:20px;--xp-common-pad:11px;--xp-common-gap:14px;--xp-common-height:73px}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-heading>.xp-mdi-icon{
+ flex:0 0 24px!important;width:24px!important;height:24px!important;--xp-icon-size:24px!important;
 }
-.xp-scene .xp-ux-dock-seven .xp-ux-dock-action,
-.xp-scene.xp-charge.xp-charge-navigation .xp-charge-panel-actions button{
- --xp-ring-size:var(--xp-common-ring)!important;
- --xp-glyph-size:var(--xp-common-icon)!important;
- position:relative!important;isolation:isolate!important;box-sizing:border-box!important;
- display:flex!important;flex-direction:column!important;
- align-items:center!important;justify-content:flex-start!important;
- min-width:0!important;min-height:var(--xp-common-height)!important;
- padding:var(--xp-common-pad) 2px 0!important;gap:var(--xp-common-gap)!important;
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-progress{
+ height:9px!important;margin:0!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-main{
+ display:grid!important;grid-template-columns:minmax(0,1fr) 1px minmax(0,1fr)!important;
+ margin:0!important;align-items:center!important;gap:12px!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-soc-block,
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-range{
+ display:flex!important;flex-direction:column!important;justify-content:center!important;align-items:flex-start!important;
+ gap:4px!important;min-width:0!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-soc{
+ font-size:clamp(36px,4.1cqw,59px)!important;line-height:1!important;white-space:nowrap!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-soc-label,
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-stat-label{
+ font-size:clamp(10px,.95cqw,12px)!important;line-height:1.12!important;color:#a6c2d7!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-divider{
+ width:1px!important;height:37px!important;border:0!important;background:rgba(150,202,228,.26)!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-range b{
+ display:flex!important;align-items:center!important;gap:5px!important;
+ margin:0!important;line-height:1.1!important;font-size:clamp(18px,1.8cqw,27px)!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-range b>.xp-mdi-icon{
+ width:18px!important;height:18px!important;flex:0 0 18px!important;--xp-icon-size:18px!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta{
+ display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ margin:0!important;padding:10px 0 0!important;gap:0!important;
+ border-top:1px solid rgba(150,202,228,.25)!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta>.xp-charge-stat{
+ display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;
+ box-sizing:border-box!important;gap:4px!important;min-width:0!important;
+ padding:0 8px!important;border-right:1px solid rgba(150,202,228,.17)!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta>.xp-charge-stat:first-child{padding-left:0!important}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta>.xp-charge-stat:last-child{border-right:0!important;padding-right:0!important}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-stat-top{
+ display:flex!important;align-items:center!important;gap:4px!important;min-width:0!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-stat-top>.xp-mdi-icon{
+ flex:0 0 15px!important;width:15px!important;height:15px!important;
+ --xp-icon-size:15px!important;--mdc-icon-size:15px!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-stat-top small{
+ font-size:clamp(9px,.85cqw,12px)!important;line-height:1.12!important;white-space:normal!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-stat-value{
+ font-size:clamp(14px,1.35cqw,20px)!important;line-height:1.12!important;white-space:nowrap!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-panel-actions{
+ display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ gap:7px!important;direction:ltr!important;align-items:stretch!important;margin:0!important;padding:0!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action{
+ box-sizing:border-box!important;position:relative!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ min-width:0!important;min-height:82px!important;padding:2px!important;gap:0!important;
  border:0!important;background:transparent!important;box-shadow:none!important;
 }
-.xp-scene .xp-ux-dock-seven .xp-ux-dock-action::before,
-.xp-scene.xp-charge.xp-charge-navigation .xp-charge-panel-actions button::before{
- content:"";position:absolute!important;top:0!important;left:50%!important;
- transform:translateX(-50%)!important;
- width:var(--xp-ring-size)!important;height:var(--xp-ring-size)!important;
- border-radius:50%!important;box-sizing:border-box!important;
- border:1px solid var(--xp-v3-edge)!important;
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action::before{
+ content:none!important;display:none!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action-core{
+ display:flex!important;flex-direction:column!important;align-items:center!important;
+ justify-content:center!important;gap:7px!important;
+ box-sizing:border-box!important;width:100%!important;
+ padding:2px 0!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action-ring{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ width:var(--xp-charge-ring)!important;height:var(--xp-charge-ring)!important;
+ flex:0 0 var(--xp-charge-ring)!important;box-sizing:border-box!important;
+ border:1px solid var(--xp-v3-edge)!important;border-radius:50%!important;
  background:var(--xp-v3-glass)!important;
  box-shadow:0 4px 18px rgba(0,3,13,.17),inset 0 1px rgba(245,254,255,.12)!important;
  backdrop-filter:blur(11px)!important;-webkit-backdrop-filter:blur(11px)!important;
- pointer-events:none!important;z-index:0!important;
 }
-.xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon,
-.xp-scene.xp-charge.xp-charge-navigation .xp-charge-panel-actions button>.xp-mdi-icon{
- position:relative!important;top:auto!important;left:auto!important;right:auto!important;
- transform:none!important;
- display:block!important;box-sizing:border-box!important;
- flex:0 0 var(--xp-glyph-size)!important;
- width:var(--xp-glyph-size)!important;height:var(--xp-glyph-size)!important;
- --xp-icon-size:var(--xp-glyph-size)!important;
- --mdc-icon-size:var(--xp-glyph-size)!important;
- --iron-icon-width:var(--xp-glyph-size)!important;
- --iron-icon-height:var(--xp-glyph-size)!important;
- padding:0!important;margin:0!important;line-height:1!important;
- border:0!important;border-radius:0!important;background:transparent!important;
- box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
- z-index:1!important;
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action-ring>.xp-mdi-icon{
+ position:static!important;display:block!important;transform:none!important;
+ flex:0 0 var(--xp-charge-icon)!important;
+ width:var(--xp-charge-icon)!important;height:var(--xp-charge-icon)!important;
+ --xp-icon-size:var(--xp-charge-icon)!important;--mdc-icon-size:var(--xp-charge-icon)!important;
+ --iron-icon-width:var(--xp-charge-icon)!important;--iron-icon-height:var(--xp-charge-icon)!important;
+ margin:0!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;
 }
-.xp-scene .xp-ux-dock-seven .xp-ux-dock-action:not(:disabled):is(:hover,:focus-visible)::before,
-.xp-scene.xp-charge.xp-charge-navigation .xp-charge-panel-actions button:not(:disabled):is(:hover,:focus-visible)::before{
- border-color:rgba(102,233,231,.85)!important;background:rgba(20,88,117,.49)!important;
- box-shadow:0 0 22px var(--xp-v3-halo)!important;
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action-label{
+ display:block!important;max-width:100%!important;font-size:var(--xp-charge-label)!important;
+ line-height:1.13!important;text-align:center!important;white-space:normal!important;min-height:0!important;
 }
-.xp-scene.xp-charge.xp-charge-navigation .xp-charge-panel-actions{align-items:start!important}
-.xp-scene.xp-charge.xp-charge-navigation .xp-charge-panel-actions button span{
- position:relative!important;
- font-size:clamp(10px,.92cqw,13px)!important;
- line-height:1.16!important;max-width:100%!important;
- text-align:center!important;white-space:normal!important;
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action:not(:disabled):is(:hover,:focus-visible) .xp-charge-action-ring{
+ border-color:rgba(102,233,231,.85)!important;
+ background:rgba(20,88,117,.49)!important;box-shadow:0 0 22px var(--xp-v3-halo)!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action:disabled{opacity:.44!important;cursor:not-allowed!important}
+@container xpeng-layout (max-width:850px){
+ .xp-scene{--xp-charge-ring:46px;--xp-charge-icon:21px;--xp-charge-gap:9px;--xp-charge-label:10px}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{
+  left:4%!important;top:196px!important;width:92%!important;padding:12px 13px!important;border-radius:17px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action{min-height:76px!important}
 }
 @container xpeng-layout (max-width:520px){
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-panel-actions button span{
-  font-size:clamp(9px,2.5cqw,10px)!important;
+ .xp-scene{--xp-charge-ring:44px;--xp-charge-icon:20px;--xp-charge-gap:7px;--xp-charge-label:9px}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{
+  top:142px!important;padding:9px 11px!important;border-radius:15px!important;
  }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-heading{font-size:15px!important;gap:5px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-heading>.xp-mdi-icon{
+  flex:0 0 18px!important;width:18px!important;height:18px!important;--xp-icon-size:18px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-progress{height:6px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-main{gap:9px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-soc{font-size:28px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-divider{height:29px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-soc-label,
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-stat-label{font-size:9px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-range b{font-size:15px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-range b>.xp-mdi-icon{
+  width:15px!important;height:15px!important;flex:0 0 15px!important;--xp-icon-size:15px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta{padding-top:7px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta>.xp-charge-stat{padding:0 4px!important;gap:3px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-stat-top>.xp-mdi-icon{
+  width:13px!important;height:13px!important;flex:0 0 13px!important;--xp-icon-size:13px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-stat-top small{font-size:9px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-stat-value{font-size:12px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-panel-actions{gap:5px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action{min-height:69px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action-core{gap:5px!important}
+}
+@container xpeng-layout (max-width:360px){
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{top:153px!important;padding:8px 9px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-stat-top small{font-size:8px!important}
 }
 
 `;
@@ -6677,25 +6663,25 @@ class XpengVehicleCard extends HTMLElement{
     ${this.model()==='G6'&&this.xpChargingActive()?
       '<svg class="xp-charge-cable xp-charge-cable-live xp-cable-desktop" data-xp-cable="desktop" aria-hidden="true" viewBox="0 0 1400 788" preserveAspectRatio="none"><path class="xp-charge-cable-halo" d="M935 460 C953 505 980 576 1025 604 C1090 648 1186 626 1220 607 C1264 583 1278 533 1284 465"/><path class="xp-charge-cable-core" d="M935 460 C953 505 980 576 1025 604 C1090 648 1186 626 1220 607 C1264 583 1278 533 1284 465"/></svg>'+
       '<svg class="xp-charge-cable xp-charge-cable-live xp-cable-mobile" data-xp-cable="mobile" aria-hidden="true" viewBox="0 0 390 780" preserveAspectRatio="none"><path class="xp-charge-cable-halo" d="M171 489 C185 522 200 570 230 584 C270 606 299 583 315 570 C331 551 339 500 343 487"/><path class="xp-charge-cable-core" d="M171 489 C185 522 200 570 230 584 C270 606 299 583 315 570 C331 551 339 500 343 487"/></svg>':''}
-    <section class="xp-charge-card" aria-label="Charging information">
-       <div class="xp-charge-heading">${xpIcon('bolt',42)}<span>${xpEsc(this.chargeStatus())}</span></div>
-       ${this.progress()}
-       <div class="xp-charge-main">
-         <div class="xp-soc" aria-label="Battery percentage">${this.socHtml()}</div>
-         <div class="xp-charge-divider"></div>
-         <div class="xp-charge-range"><div class="xp-stat-label">Estimated range</div>
-           <b>${xpIcon('gauge',25)}${xpEsc(this.num('range','km'))}</b></div>
-       </div>
-       <div class="xp-charge-meta">
-         <div>${xpIcon('bolt',23)}<small>Charging power</small><b>${xpEsc(this.num('power','kW',1))}</b></div>
-         <div>${xpIcon('clock',23)}<small>Time remaining</small><b>${xpEsc(this.remainingText())}</b></div>
-         <div>${xpIcon('battery',23)}<small>Charge limit</small><b>${xpEsc(this.num('target','%'))}</b></div>
-       </div>
-       ${this.xpUiEnabled()&&!this._xpPanel?'<nav class="xp-charge-panel-actions" aria-label="Charging controls" dir="rtl">'+
-        '<button type="button" data-xp-open="charge_controls">'+xpIcon('battery',22)+'<span>Charge limit</span></button>'+
-        '<button type="button" data-xp-open="charge_schedule">'+xpIcon('clock',22)+'<span>Schedule</span></button>'+
-        '<button type="button" data-xp-command="stop_charge" '+(this.xpLive('button','stop_charge')?'':'disabled title="Stop charging command unavailable"')+'>'+xpIcon('power',22)+'<span>Stop charging</span></button>'+
-        '</nav>':''}
+    <section class="xp-charge-card xp-charge-unified" aria-label="Charging information">
+      <div class="xp-charge-heading">${xpIcon('bolt',22)}<span>${xpEsc(this.chargeStatus())}</span></div>
+      ${this.progress()}
+      <div class="xp-charge-main">
+        <div class="xp-charge-soc-block"><div class="xp-soc" aria-label="Battery percentage">${this.socHtml()}</div><small class="xp-charge-soc-label">Battery</small></div>
+        <div class="xp-charge-divider" aria-hidden="true"></div>
+        <div class="xp-charge-range"><div class="xp-stat-label">Estimated range</div>
+          <b>${xpIcon('gauge',18)}${xpEsc(this.num('range','km'))}</b></div>
+      </div>
+      <div class="xp-charge-meta">
+        <div class="xp-charge-stat"><div class="xp-charge-stat-top">${xpIcon('bolt',16)}<small>Charging power</small></div><b class="xp-charge-stat-value">${xpEsc(this.num('power','kW',1))}</b></div>
+        <div class="xp-charge-stat"><div class="xp-charge-stat-top">${xpIcon('clock',16)}<small>Time remaining</small></div><b class="xp-charge-stat-value">${xpEsc(this.remainingText())}</b></div>
+        <div class="xp-charge-stat"><div class="xp-charge-stat-top">${xpIcon('battery',16)}<small>Charge limit</small></div><b class="xp-charge-stat-value">${xpEsc(this.num('target','%'))}</b></div>
+      </div>
+      ${this.xpUiEnabled()&&!this._xpPanel?'<nav class="xp-charge-panel-actions" aria-label="Charging controls" dir="ltr">'+
+       '<button type="button" class="xp-charge-action" data-xp-open="charge_controls"><span class="xp-charge-action-core"><span class="xp-charge-action-ring">'+xpIcon('battery',22)+'</span><span class="xp-charge-action-label">Charge limit</span></span></button>'+
+       '<button type="button" class="xp-charge-action" data-xp-open="charge_schedule"><span class="xp-charge-action-core"><span class="xp-charge-action-ring">'+xpIcon('clock',22)+'</span><span class="xp-charge-action-label">Schedule</span></span></button>'+
+       '<button type="button" class="xp-charge-action" data-xp-command="stop_charge" '+(this.xpLive('button','stop_charge')?'':'disabled title="Stop charging command unavailable"')+'><span class="xp-charge-action-core"><span class="xp-charge-action-ring">'+xpIcon('power',22)+'</span><span class="xp-charge-action-label">Stop charging</span></span></button>'+
+       '</nav>':''}
     </section>`;
  }
  // Update matching nodes in place instead of replacing the entire shadow tree
