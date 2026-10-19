@@ -52,18 +52,29 @@ test('Behavior Guardian: JS and vehicle assets do not change from the accepted b
    assert.ok(j>i,'Method terminator missing: '+sig);
    return str.slice(i,j+3);
  };
+ // Compare executable behavior byte-for-byte while allowing approved English
+ // presentation copy to differ from the older Hebrew preview baseline.
+ // This intentionally does NOT normalize domains, services, suffixes, permissions,
+ // command arguments, conditions or state transitions.
+ const withoutDisplayCopy=text=>text
+   .replace(/label:'[^']*'/g,"label:'[COPY]'")
+   .replace(/this\._xpNotice='[^']*'/g,"this._xpNotice='[COPY]'")
+   .replace(/throw Error\('[^']*'\)/g,"throw Error('[COPY]')")
+   .replace(/\(error\?\.message\|\|'[^']*'\)/g,"(error?.message||'[COPY]')")
+   .replace(/\(err\?\.message\|\|'[^']*'\)/g,"(err?.message||'[COPY]')")
+   .replace(/xpLocalizeMarkup\('[^']*',this\._hass\)/g,"xpLocalizeMarkup('[COPY]',this._hass)");
  for(const sig of [
    ' xpengEntity(domain,suffix){',' xpLive(domain,suffix){',
    ' xpActionState(action){',' xpToggleTarget(action){',
    ' xpPendingToggle(action){',' xpToggle(action){',' xpAccessAllowed(){',
    ' async xpCycleSeat(suffix){'
  ]){
-   assert.equal(method(sig)(source),method(sig)(reference),
+   assert.equal(withoutDisplayCopy(method(sig)(source)),withoutDisplayCopy(method(sig)(reference)),
      'Protected vehicle/permission behavior was changed: '+sig);
  }
  const sendSig=' async xpSend(domain,service,suffix,value,verifiedDirectTap=false){';
- const oldSend=method(sendSig)(reference);
- const newSend=method(sendSig)(source).replace(",'honk_horn','flash_lights'","");
+ const oldSend=withoutDisplayCopy(method(sendSig)(reference));
+ const newSend=withoutDisplayCopy(method(sendSig)(source)).replace(",'honk_horn','flash_lights'","");
  assert.equal(newSend,oldSend,'Only two verified direct map actions may extend xpSend');
  assert.match(method(sendSig)(source),/verifiedDirectTap&&/);
  assert.match(source,/if\(\['honk_horn','flash_lights'\]\.includes\(action\)\)this\.xpMapDirectAction\(action\)/);
