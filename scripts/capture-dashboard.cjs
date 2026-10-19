@@ -548,7 +548,7 @@ async function main(){
 
  assert.equal(desktopHeaderPolish.tailgate.car,'mdi:car-back',
    'Trunk shortcut must show a real rear-tailgate capable SUV side profile');
- assert.equal(desktopHeaderPolish.tailgate.arrow,null,'No invented hatch arrow or composite SVG');
+ assert.ok(!desktopHeaderPolish.tailgate.arrow,'No invented hatch arrow or composite SVG');
  assert.ok(desktopHeaderPolish.tailgate.carWidth>=30,'Official rear vehicle icon must be legible');
  assert.equal(desktopHeaderPolish.disabled,0,'All mock actions remain enabled');
  console.log('PASS desktop cog/Wi-Fi spacing and uniform action icon palette:',JSON.stringify(desktopHeaderPolish));
