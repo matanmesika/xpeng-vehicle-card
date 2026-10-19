@@ -4976,6 +4976,78 @@ background:transparent!important;
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-panel-actions button span{font-size:9px!important}
 }
 
+/* 1.0.4 dock + charging: the exact same native MDI size and glass circle. */
+/* Shared variables, one rule for both kinds of actions. */
+.xp-scene{
+ --xp-common-ring:48px;
+ --xp-common-icon:22px;
+ --xp-common-pad:12px;
+ --xp-common-gap:15px;
+ --xp-common-height:76px;
+}
+@container xpeng-layout (max-width:850px){
+ .xp-scene{--xp-common-ring:46px;--xp-common-icon:21px;--xp-common-pad:11px;--xp-common-gap:14px;--xp-common-height:75px}
+}
+@container xpeng-layout (max-width:520px){
+ .xp-scene{--xp-common-ring:44px;--xp-common-icon:20px;--xp-common-pad:11px;--xp-common-gap:14px;--xp-common-height:73px}
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action,
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-panel-actions button{
+ --xp-ring-size:var(--xp-common-ring)!important;
+ --xp-glyph-size:var(--xp-common-icon)!important;
+ position:relative!important;isolation:isolate!important;box-sizing:border-box!important;
+ display:flex!important;flex-direction:column!important;
+ align-items:center!important;justify-content:flex-start!important;
+ min-width:0!important;min-height:var(--xp-common-height)!important;
+ padding:var(--xp-common-pad) 2px 0!important;gap:var(--xp-common-gap)!important;
+ border:0!important;background:transparent!important;box-shadow:none!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action::before,
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-panel-actions button::before{
+ content:"";position:absolute!important;top:0!important;left:50%!important;
+ transform:translateX(-50%)!important;
+ width:var(--xp-ring-size)!important;height:var(--xp-ring-size)!important;
+ border-radius:50%!important;box-sizing:border-box!important;
+ border:1px solid var(--xp-v3-edge)!important;
+ background:var(--xp-v3-glass)!important;
+ box-shadow:0 4px 18px rgba(0,3,13,.17),inset 0 1px rgba(245,254,255,.12)!important;
+ backdrop-filter:blur(11px)!important;-webkit-backdrop-filter:blur(11px)!important;
+ pointer-events:none!important;z-index:0!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon,
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-panel-actions button>.xp-mdi-icon{
+ position:relative!important;top:auto!important;left:auto!important;right:auto!important;
+ transform:none!important;
+ display:block!important;box-sizing:border-box!important;
+ flex:0 0 var(--xp-glyph-size)!important;
+ width:var(--xp-glyph-size)!important;height:var(--xp-glyph-size)!important;
+ --xp-icon-size:var(--xp-glyph-size)!important;
+ --mdc-icon-size:var(--xp-glyph-size)!important;
+ --iron-icon-width:var(--xp-glyph-size)!important;
+ --iron-icon-height:var(--xp-glyph-size)!important;
+ padding:0!important;margin:0!important;line-height:1!important;
+ border:0!important;border-radius:0!important;background:transparent!important;
+ box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+ z-index:1!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action:not(:disabled):is(:hover,:focus-visible)::before,
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-panel-actions button:not(:disabled):is(:hover,:focus-visible)::before{
+ border-color:rgba(102,233,231,.85)!important;background:rgba(20,88,117,.49)!important;
+ box-shadow:0 0 22px var(--xp-v3-halo)!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-panel-actions{align-items:start!important}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-panel-actions button span{
+ position:relative!important;
+ font-size:clamp(10px,.92cqw,13px)!important;
+ line-height:1.16!important;max-width:100%!important;
+ text-align:center!important;white-space:normal!important;
+}
+@container xpeng-layout (max-width:520px){
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-panel-actions button span{
+  font-size:clamp(9px,2.5cqw,10px)!important;
+ }
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
