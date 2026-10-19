@@ -64,16 +64,23 @@ test('maintenance from Extras routes to one correctly styled maintenance modal a
  assert.match(card.xpExtrasPanel(),/data-xp-extra-page="maintenance"/);
  assert.match(src,/if\(page==='maintenance'\)\{this\.xpNavigatePanel\('maintenance'\);return;\}/);
 });
-test('Maintenance is tire-only; integration identity remains available in its own entity',()=>{
+test('Maintenance restores real service/identity beside four tire readings without fake data',()=>{
  const {card}=createCard({year:'2025'});
  card._xpengByKey['sensor.vehicle_identity']='sensor.owner_vehicle_identity';
- card._hass.states['sensor.owner_vehicle_identity']={state:'ok',attributes:{model_year:'2024'}};
+ card._xpengByKey['sensor.maintenance']='sensor.owner_maintenance';
+ card._xpengByKey['sensor.odometer']='sensor.owner_odometer';
+ card._hass.states['sensor.owner_vehicle_identity']={state:'ok',attributes:{model_year:'2024',vin_masked:'L1N******123'}};
+ card._hass.states['sensor.owner_maintenance']={state:'20 days',attributes:{next_date:'2027-01-10',km_remaining:2450}};
+ card._hass.states['sensor.owner_odometer']={state:'15284',attributes:{unit_of_measurement:'km'}};
  const html=card.xpMaintenancePanel();
- assert.match(html,/xp-tpms-only/);
+ assert.match(html,/xp-maintenance-split/);
  for(const wheel of ['tire_fl','tire_fr','tire_rl','tire_rr'])assert.ok(html.includes('data-wheel="'+wheel+'"'));
- assert.doesNotMatch(html,/שנת דגם|קילומטראז׳|מספר שלדה|הטיפול הבא/);
- assert.equal(card.xpLive('sensor','vehicle_identity').state.attributes.model_year,'2024',
-   'The integration identity sensor is still accessible outside the TPMS-only view');
+ assert.match(html,/2027-01-10/);
+ assert.match(html,/15284/);
+ assert.match(html,/2024/);
+ assert.match(html,/L1N\*\*\*\*\*\*123/);
+ assert.match(html,/טיפול הבא/);
+ assert.doesNotMatch(html,/NaN/);
 });
 test('native map reuses one unchanged Map card on repeated Xpengtk hass updates',async()=>{
  const {card,sandbox}=createCard();
@@ -992,7 +999,7 @@ test('Location requests HA native GPS map with dark mode and zoom 11, not a fabr
  await card.xpMountMap();
  assert.deepEqual(JSON.parse(JSON.stringify(captured)),{
    type:'map',entities:[{entity:'device_tracker.real_vehicle'}],
-   default_zoom:11,hours_to_show:0,theme_mode:'dark',aspect_ratio:'4:3'
+   default_zoom:16,auto_fit:true,fit_zones:false,hours_to_show:0,theme_mode:'dark',aspect_ratio:'4:3'
  });
  assert.equal(attached.hass,card._hass);
  card._xpPanel=null;captured=null;
