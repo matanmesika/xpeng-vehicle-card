@@ -1,54 +1,12 @@
-# XPENG G6 — מדריך הכרטיס המעודכן
+# G6 dashboard guide — English compatibility page
 
-**כרטיס Home Assistant מסדרת XPENG Vehicle Card · Beta 9 + שיפורי ההכנה לשחרור**
+The current XPENG card is a single automatically responsive Home Assistant Lovelace card with automatic Charging and Overview scenes. Use the [main English README](../README.md) for installation, [current gallery](screenshots/README.md) for screen views and [final acceptance](G6_FINAL_STABILIZATION.md) for release readiness.
 
-הדשבורד מותאם אוטומטית למחשב, iPhone ולכרטיס צר בתצוגת Sections, ללא דשבורד נפרד או תצוגת טעינה ידנית. הוא תומך בעברית ובאנגלית לפי הגדרות Home Assistant. זהו **כרטיס צד לקוח**; לא אינטגרציית Xpengtk עצמה.
+## Current controls
+- Seven main shortcuts for climate, door locks, windows, charging flap, trunk, maintenance and location.
+- Live charging controls and schedules only where Xpengtk entities support them; charging appears automatically.
+- Climate panel with the owner's cabin art and entity-supported front/rear seats, wheel, fan and temperature.
+- Maintenance displays four TPMS readings and available service data; units follow card settings.
+- Location uses the Home Assistant native tracker map with available Honk/Flash buttons.
 
-## המסכים, מתוך בדיקות דפדפן
-
-| תצוגה | מחשב | טלפון |
-| --- | --- | --- |
-| בית | ![בית מחשב](screenshots/home-desktop.png) | ![בית טלפון](screenshots/home-mobile.png) |
-| טעינה פעילה | ![טעינה מחשב](screenshots/charging-desktop.png) | ![טעינה טלפון](screenshots/charging-mobile.png) |
-| מיזוג ומושבים | ![מיזוג מחשב](screenshots/climate-desktop.png) | ![מיזוג טלפון](screenshots/climate-mobile.png) |
-| תחזוקה ולחצי צמיגים | ![תחזוקה מחשב](screenshots/maintenance-desktop.png) | ![תחזוקה טלפון](screenshots/maintenance-mobile.png) |
-| מיקום | ![מיקום מחשב](screenshots/map-desktop.png) | ![מיקום טלפון](screenshots/map-mobile.png) |
-| פונקציות נוספות | ![פונקציות מחשב](screenshots/functions-desktop.png) | ![פונקציות טלפון](screenshots/functions-mobile.png) |
-
-[בקרת טעינה](screenshots/charge-controls-mobile.png) · [אבחון כל הישויות](screenshots/diagnostics-mobile.png) · [כל הגלריה](screenshots/README.md).
-
-הצילומים נוצרו מתוך הקוד האמיתי באמצעות Chromium וחיישני Home Assistant מדומים. תמונות המיקום כוללות מפת בדיקה ולא אריחי מפה חיים; יש לוודא GPS ומפה במערכת האמיתית.
-
-## שבע פעולות הרכב
-
-| פעולה | מה קורה |
-|---|---|
-| מיזוג | מצב וטמפרטורה, מהירות מאוורר, הפשרה, חימום/אוורור מושבים וחימום הגה כאשר קיימת ישות נתמכת |
-| נעילה | נעילה/שחרור לפי מצב אמיתי ובכפוף להרשאות |
-| חלונות | פתיחה/סגירה לפי מצב אמיתי, סמל דלת/חלון רכב רשמי |
-| שקע טעינה | פתיחה/סגירת דלתית בכפוף לחיווי, ללא סגירה כשכבל מחובר |
-| תא מטען | פתיחה/סגירה לפי מצב אמיתי וסמל רכב אחורי |
-| תחזוקה | לחצי ארבעת הצמיגים, קילומטראז׳, שנת דגם, מספר שלדה מוסתר וטיפול |
-| מיקום | מפת Home Assistant מקורית, צופר והבהוב כאשר הישויות זמינות |
-
-אותם שבעה כפתורים מופיעים בשני מצבי הבית והטעינה. מסך הטעינה מופיע **רק כשהחיישן מדווח על טעינה פעילה**, עם תמונה נפרדת וכבל ירוק. אין כפתור ידני לפתיחת מסך טעינה.
-
-## מיזוג אוויר ופנים הרכב
-
-שתי התמונות שסיפק בעל הרכב (פנים בהיר ופנים כהה) נטענות לפי צבע הפנים שנקבע **בעורך הכרטיס** בלבד. הכיתוב שהיה מונח על התמונה הוסר; לתמונה נשאר תיאור נגיש ללא תווית חזותית מיותרת. חימום ואוורור מופעלים רק בלחיצה על המושב/ההגה המתאימים. דרגות מאוורר ופעולות AUTO מגיעות מישויות Xpengtk בפועל — בלי להמציא פקודות.
-
-## התאמת גודל, Wi-Fi ואבחון
-
-כל מסכי המשנה מצטמצמים לגבולות הכרטיס. במסך המיקום המפה מתכווצת לגובה הנותר ומותירה את כפתורי צופר/הבהוב/פרטי מיקום גלויים. סמל ה־Wi-Fi ממורכז בכפתור, עם רווח מההגדרות. ב־**אבחון ישויות** הרשימה המלאה נמצאת בתוך תיבת גלילה קטנה, והסיכום וההערות מוצגים תמיד מחוץ לתיבה.
-
-כרטיס Sections מומלץ בפריסה **Full width / 12 columns**, כשגובהו נקבע אוטומטית. קוד הכרטיס עצמו מחזיר `getGridOptions()` בהתאם ל־Home Assistant.
-
-## התקנה ודגמים
-
-הוסף ב־HACS את המאגר `https://github.com/matanmesika/xpeng-vehicle-card` בתור Dashboard. גרסת ה־Beta המתויגת האחרונה היא [v1.0.4-beta.9](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.4-beta.9); בהכנה לשחרור מלא יש גם תיקון צילום פנים שטרם פורסם.
-
-**מיפוי ה־G6 הושלם ברמת המסכים, החיישנים והפעולות הנתמכות.** באוסף התמונות עדיין חסרים 3/33 מבטי G6 לצבע 2026 אחד, ונדרשת אפיון תמונות לדגמים האחרים. [מפת מצב הדגמים](ARTWORK_STATUS.md) · [בדיקות שחרור](G6_RELEASE_READINESS_HE.md).
-
-## לפני שחרור יציב
-
-יש לבדוק במערכת HA אמיתית: חיווי חלונות, דלתות, נעילה, שקע, צמיגים, מצב טעינה, מפה חיה, פעולות המושבים ושטחי לחיצה באייפון. אין להסתפק בסימולציה, ואין למזג ל־main ללא אישור מפורש. [מדריך בדיקה חיה](G6_BETA_LIVE_ACCEPTANCE_HE.md).
+UI and editor text are English even if Home Assistant uses another language. Do not assume unsupported vehicle capabilities or manual OTA checks.
