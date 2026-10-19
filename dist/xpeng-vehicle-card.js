@@ -4303,6 +4303,100 @@ background:transparent!important;
  }
 }
 
+/* Beta 15 owner visual refinements. Presentation only. */
+@container xpeng-layout (min-width:851px){
+ .xp-scene{height:clamp(700px,calc(100dvh - 85px),980px)!important;
+  max-height:calc(100dvh - 55px)!important;aspect-ratio:auto!important}
+ .xp-scene .xp-ux-modal{max-height:calc(100% - 22px)!important}
+}
+.xp-scene .xp-header .xp-brand,
+.xp-scene .xp-header .xp-brand>span{
+ padding:0!important;margin:0!important;background:transparent!important;
+ border:0!important;border-radius:0!important;box-shadow:none!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon{
+ color:#edf8fc!important;filter:none!important;
+ --xp-icon-size:25px!important;--mdc-icon-size:25px!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action[data-xp-open="climate"]{
+ background:transparent!important;box-shadow:none!important;color:inherit!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action[data-xp-open="climate"]::before{
+ background:rgba(13,47,64,.35)!important;border-color:rgba(134,217,236,.53)!important;
+ box-shadow:inset 0 1px rgba(243,254,255,.11)!important;
+}
+@container xpeng-layout (max-width:520px){
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon{
+  --xp-icon-size:22px!important;--mdc-icon-size:22px!important}
+}
+/* TPMS-only visual markers removed; actual sensor pressure boxes remain. */
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-v4 .xp-wheel-highlight{display:none!important}
+/* Responsive service details alongside four-wheel TPMS. */
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-page.xp-maintenance-v4{
+ display:block!important;max-width:none!important;width:100%!important;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-split{
+ display:grid!important;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)!important;
+ gap:clamp(12px,2cqw,26px);align-items:stretch;min-width:0;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-tires,
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-service{
+ min-width:0;display:flex;flex-direction:column;gap:8px;padding:12px;
+ border:1px solid rgba(135,208,229,.22);border-radius:18px;background:rgba(7,26,44,.27);
+}
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-v4 .xp-tire-screen{
+ position:relative!important;inset:auto!important;width:100%!important;
+ max-width:100%!important;height:clamp(310px,48dvh,470px)!important;
+ min-height:0!important;margin:auto 0!important;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-tires h3,
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-service h3{
+ margin:0 0 5px!important;color:#ecfbff;font-size:clamp(15px,1.45cqw,20px);
+}
+.xp-scene .xp-ux-modal-maintenance .xp-maint-service-group{
+ border:1px solid rgba(127,204,227,.18);border-radius:14px;
+ padding:10px 12px;background:rgba(7,28,46,.32);overflow-wrap:anywhere;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-maint-service-group h4{
+ margin:0 0 8px;color:#9fe8e9;font-size:13px;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-maint-service-row{
+ display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+ border-top:1px solid rgba(140,201,224,.13);padding:9px 0;
+ font-size:clamp(11px,1.1cqw,14px);
+}
+.xp-scene .xp-ux-modal-maintenance .xp-maint-service-row:first-of-type{border-top:0}
+.xp-scene .xp-ux-modal-maintenance .xp-maint-service-row>span{color:#bdd6e2;min-width:0}
+.xp-scene .xp-ux-modal-maintenance .xp-maint-service-row>b{color:#f3fdff;text-align:end;min-width:0}
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-v4 .xp-tire-reading[data-wheel="tire_fl"]>.xp-mdi-icon,
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-v4 .xp-tire-reading[data-wheel="tire_rl"]>.xp-mdi-icon{
+ order:2!important;margin-left:3px!important;
+}
+@container xpeng-layout (max-width:850px){
+ .xp-scene .xp-ux-modal-maintenance .xp-maintenance-split{
+  display:flex!important;flex-direction:column!important;gap:12px!important}
+ .xp-scene .xp-ux-modal-maintenance .xp-maintenance-v4 .xp-tire-screen{
+  height:clamp(270px,60cqw,410px)!important}
+}
+/* Refined fan control: no glowing blue surrounding pill. */
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-climate-fan-panel{
+ border:0!important;border-radius:0!important;background:transparent!important;
+ box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+ padding:10px 3px!important;margin:0!important;
+}
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-climate-fan-panel>span>.xp-mdi-icon{
+ color:#d6f2f8!important;filter:none!important;
+ --xp-icon-size:23px!important;--mdc-icon-size:23px!important;
+}
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-fan-bars i.xp-fan-bar-on{
+ background:#83e8e2!important;border-color:#83e8e2!important;box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-climate-fan-panel input[type="range"]{
+ height:4px!important;margin:14px 2px 10px!important;accent-color:#82e8e2!important;
+ border:0!important;box-shadow:none!important;
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -5057,7 +5151,7 @@ class XpengVehicleCard extends HTMLElement{
      if(this._xpPanel!=='map'||!this.shadowRoot?.contains?.(host)||
         this.xpLive('device_tracker','location')?.id!==gps.id)return;
      const map=helper.createCardElement({type:'map',entities:[{entity:gps.id}],
-       default_zoom:11,hours_to_show:0,theme_mode:'dark',aspect_ratio:'4:3'});
+       default_zoom:16,auto_fit:true,fit_zones:false,hours_to_show:0,theme_mode:'dark',aspect_ratio:'4:3'});
      map.hass=this._hass;
      this._xpMapElement=map;this._xpMapEntityId=gps.id;
      host.replaceChildren(map);
@@ -5094,12 +5188,33 @@ class XpengVehicleCard extends HTMLElement{
  }
 
  xpMaintenancePanel(){
-   // Owner's maintenance surface is tire pressure only. Never substitute
-   // stale service or vehicle-identity cards for live TPMS.
-   return '<div class="xp-maintenance-page xp-tpms-only">'+
-     '<h3>לחץ אוויר בארבעת הצמיגים</h3>'+this.tireScreen(false)+
-     '<p class="xp-ux-note xp-tire-source-note">לחצי הצמיגים מתקבלים מחיישני הרכב דרך Home Assistant. ערך חסר נשאר לא זמין; יחידות הלחץ נקבעות בהגדרות הכרטיס.</p>'+
-     '</div>';
+   // Display only real mapped Home Assistant vehicle values.
+   const maintenance=this.xpLive('sensor','maintenance');
+   const odometer=this.xpLive('sensor','odometer');
+   const identity=this.xpLive('sensor','vehicle_identity');
+   const attrs=maintenance?.state?.attributes||{};
+   const info=identity?.state?.attributes||{};
+   const line=(label,value,unit='')=>{
+     if(value===null||value===undefined||!String(value).trim()||XP_INVALID.has(String(value).toLowerCase()))return '';
+     return '<div class="xp-maint-service-row"><span>'+xpEsc(label)+'</span><b dir="auto">'+xpEsc(value)+(unit?' <small>'+xpEsc(unit)+'</small>':'')+'</b></div>';
+   };
+   const service=line('הטיפול הבא',maintenance?.state?.state)
+       +line('תאריך טיפול',attrs.next_date)
+       +line('ימים נותרו',attrs.days_remaining)
+       +line('קילומטרים נותרו',attrs.km_remaining,'km');
+   const details=line('נסועה כוללת',odometer?.state?.state,odometer?.state?.attributes?.unit_of_measurement||'')
+       +line('דגם',info.model_family||info.vehicle_type_name)
+       +line('שנת דגם',info.model_year)
+       +line('מספר שלדה מוסתר',info.vin_masked);
+   return '<div class="xp-maintenance-page xp-tpms-only xp-maintenance-v4"><div class="xp-maintenance-split">'+
+    '<section class="xp-maintenance-tires"><h3>לחץ אוויר בארבעת הצמיגים</h3>'+this.tireScreen(false)+
+    '<p class="xp-ux-note xp-tire-source-note">נתוני הצמיגים מתקבלים מ־Home Assistant, והיחידות נקבעות בהגדרות הכרטיס.</p></section>'+
+    '<section class="xp-maintenance-service" aria-label="נתוני טיפול אמיתיים">'+
+     '<h3>תחזוקת הרכב</h3><div class="xp-maint-service-group"><h4>הטיפול הבא</h4>'+
+       (service||'<p class="xp-ux-note">אין כרגע נתוני טיפול זמינים באינטגרציה.</p>')+'</div>'+
+     '<div class="xp-maint-service-group"><h4>פרטי הרכב</h4>'+
+       (details||'<p class="xp-ux-note">נתוני הרכב אינם זמינים כרגע.</p>')+'</div>'+
+    '</section></div></div>';
  }
 
  xpChargeLimitPanel(){
@@ -5224,7 +5339,7 @@ class XpengVehicleCard extends HTMLElement{
        }
        out+='<button type="button" class="xp-extra-action" data-xp-extra-detail="maintenance">פרטי תחזוקה ב־Home Assistant</button>';
      }
-     return this.xpMaintenancePanel()+(out?'<div class="xp-maint-additional">'+out+'</div>':'');
+     return this.xpMaintenancePanel();
    }
    if(section==='updates'){
      let out=this.xpExtraLine('גרסת XOS','sensor','xos_version');
@@ -5308,7 +5423,7 @@ class XpengVehicleCard extends HTMLElement{
      climate:['Climate controls','Climate power, AUTO, target temperature and fan settings operate only with mapped Home Assistant entities. Seat and steering-wheel controls cycle the supported levels directly on the cabin image.','Fan and temperature limits depend on the available entities.'],
      charge_controls:['Charge limit','Sets the target maximum battery percentage for charging. A lower limit stops at a lower target SOC; a higher limit allows a higher target SOC.','Changes are sent to Home Assistant and should be confirmed in the vehicle.'],
      charge_schedule:['Charging schedule','Displays the charging start and end times published by Xpengtk. This page does not invent an unsupported schedule editing action.','Read-only start and end times; no editable numeric limits.'],
-     maintenance:['Tire pressure','Live TPMS readings are shown directly beside the four wheels of the existing vehicle image. Additional tire temperature or air-life values appear only if their own tire sensor publishes them.','Recommended tire pressure comes from the actual vehicle placard; no universal minimum or maximum is assumed.'],
+     maintenance:['Tire pressure and vehicle maintenance','Four live TPMS values appear around the original vehicle image. The next-service, odometer and vehicle details are displayed only when their Home Assistant entities report them.','Tire pressure units come from card settings. Service dates and mileage are never invented.'],
      port:['Charge port','Opens or closes the charge port when the vehicle reports a known state and the corresponding command exists.','Do not close the port while a cable is connected.'],
      doors:['Door locks','The action changes with the live state: Unlock when locked and Lock when unlocked. If the state is unknown, the action is unavailable.','Access permission may be required for unlocking.'],
      windows:['Windows','Shows the currently available open/close action for the vehicle windows. The command depends on a known sensor state.','No intermediate opening percentage is assumed unless the integration exposes one.'],
