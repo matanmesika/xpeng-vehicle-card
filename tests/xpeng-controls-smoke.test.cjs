@@ -1682,5 +1682,5 @@ test('Owner charging composition stays layered and phone panel compact',()=>{
  assert.match(src,/\.xp-car\{z-index:7!important\}/);
  assert.match(src,/\.xp-charge-cable\{[\s\S]*?z-index:11!important/);
  assert.match(src,/\.xp-charge-card\{z-index:12!important\}/);
- assert.match(src,/top:158px!important/);
+ assert.match(src,/top:142px!important/);
 });
