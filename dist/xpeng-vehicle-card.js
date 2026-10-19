@@ -328,8 +328,8 @@ const XP_SCENE_BACKGROUND = 'https://raw.githubusercontent.com/matanmesika/xpeng
 const XP_HACS_BASE='/hacsfiles/xpeng-vehicle-card/';
 function xpPackagedUrl(relative){return 'https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/assets/'+relative;}
 function xpLocalArtworkPath(value){return typeof value==='string'&&/^\/(?:local|hacsfiles)\/[a-zA-Z0-9/_\-.]+$/.test(value);}
-const XP_CSS = `
-:host{display:block;color:#fff;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;--xp-mint:#00efbe;--xp-sky:#6aaaff}
+const XP_CSS = `/* XPENG G6 canonical V3 stylesheet: structural layout and owner-approved floating glass design. */
+:host{display:block;color:#fff;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;}
 *{box-sizing:border-box}
 ha-card{display:block;width:100%;container-type:inline-size;container-name:xpeng-layout;background:transparent!important;border:0!important;box-shadow:none!important;overflow:visible!important}
 button{font:inherit;color:inherit;cursor:pointer}
@@ -359,9 +359,9 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-car.xp-paint-stellar_purple{filter:drop-shadow(0 20px 20px #000b) brightness(.84) sepia(.13) hue-rotate(190deg)}
 .xp-overview-stat{position:absolute;left:5.3%;top:42%;z-index:5;width:18%;max-width:290px;display:flex;flex-direction:column;gap:4px}
 .xp-batt-line{display:flex;align-items:center;gap:18px}
-.xp-batt-glyph{width:62px;height:90px;border:3px solid #cad7e7;border-radius:11px;position:relative;padding:7px;flex:none;display:flex;align-items:flex-end}
-.xp-batt-glyph:before{content:"";position:absolute;width:22px;height:8px;border:3px solid #cad7e7;border-bottom:0;top:-10px;left:calc(50% - 11px);border-radius:4px 4px 0 0}
-.xp-batt-fill{width:100%;background:linear-gradient(180deg,#7cefb1,#00ba84);border-radius:4px;min-height:0;box-shadow:0 0 12px #00e4a941}
+.xp-batt-glyph{width:62px;height:90px;}
+.xp-batt-glyph:before{position:absolute;width:22px;height:8px;border:3px solid #cad7e7;border-bottom:0;top:-10px;left:calc(50% - 11px);border-radius:4px 4px 0 0}
+
 .xp-stat-label{font-size:clamp(13px,1.3vw,21px);color:#b0c1dd}
 .xp-soc{font-size:clamp(42px,5vw,76px);line-height:1.08;font-weight:730;white-space:nowrap}
 .xp-unit{font-size:.55em}
@@ -378,21 +378,21 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-info-copy small{font-size:clamp(10px,.99vw,15px);color:#c8d5e7}
 .xp-info-copy b{font-size:clamp(12px,1.1vw,18px);font-weight:450;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .xp-status-panel .xp-chevron{color:#dceeff;opacity:.75}
-.xp-charge-card{position:absolute;z-index:6;left:2.8%;top:33.5%;width:40.8%;border:1px solid #2089ce88;border-radius:22px;background:linear-gradient(130deg,#041422e8,#06162acb);backdrop-filter:blur(14px);box-shadow:0 10px 55px #0007;padding:clamp(16px,2.4vw,36px) clamp(17px,2.7vw,43px)}
-.xp-charge-heading{display:flex;align-items:center;gap:17px;color:var(--xp-mint);font-weight:630;font-size:clamp(17px,2.6vw,40px);margin:0 0 22px}
+.xp-charge-card{position:absolute;z-index:6;backdrop-filter:blur(14px);}
+.xp-charge-heading{display:flex;align-items:center;font-weight:630;margin:0 0 22px}
 .xp-charge-heading ha-icon{flex:none;width:clamp(26px,3.6vw,56px);height:clamp(26px,3.6vw,56px);--mdc-icon-size:clamp(26px,3.6vw,56px)}
-.xp-charge-card .xp-progress{height:20px}
-.xp-charge-main{display:flex;align-items:center;gap:18px;justify-content:space-between;margin-top:23px}
-.xp-charge-main .xp-soc{font-size:clamp(40px,5.4vw,86px)}
+
+.xp-charge-main{display:flex;align-items:center;justify-content:space-between;}
+
 .xp-charge-divider{height:65px;border-left:1px solid #56708a88}
 .xp-charge-range{flex:1;min-width:0}
-.xp-charge-range b{display:block;font-size:clamp(22px,2.1vw,36px);margin-top:8px;white-space:nowrap}
-.xp-charge-meta{border-top:1px solid #4268878a;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:25px;padding-top:22px}
-.xp-charge-meta>div{min-width:0;display:flex;flex-direction:column;gap:8px;padding:0 13px;border-right:1px solid #52719066}
+.xp-charge-range b{margin-top:8px;white-space:nowrap}
+.xp-charge-meta{border-top:1px solid #4268878a;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));}
+.xp-charge-meta>div{min-width:0;display:flex;flex-direction:column;border-right:1px solid #52719066}
 .xp-charge-meta>div:first-child{padding-left:0}
 .xp-charge-meta>div:last-child{padding-right:0;border-right:0}
-.xp-charge-meta small{font-size:clamp(10px,1vw,16px);color:#9eb3d0;white-space:nowrap}
-.xp-charge-meta b{font-size:clamp(12px,1.5vw,25px);font-weight:560;white-space:nowrap}
+.xp-charge-meta small{color:#9eb3d0;white-space:nowrap}
+.xp-charge-meta b{font-weight:560;white-space:nowrap}
 .xp-charge .xp-car{width:52%;left:41%;bottom:12%;height:auto;max-height:70%;z-index:7}
 .xp-charge .xp-title{left:5.3%;top:17%}
 .xp-station{position:absolute;z-index:2;right:3%;bottom:30%;width:5.3%;height:23%;min-width:45px;border:2px solid #55c8fb;border-radius:13px 13px 6px 6px;background:linear-gradient(90deg,#013861,#041b32 55%,#0b3150);box-shadow:0 0 18px #00c6ff85,inset 0 0 13px #08cafa74;display:grid;place-items:start center;padding-top:25px;font-size:26px;color:#e1f7ff}
@@ -403,7 +403,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-scene{min-height:800px;aspect-ratio:auto}
 .xp-header{top:16px;left:4%;right:4%}
 .xp-brand{font-size:13px;letter-spacing:.12em}
-.xp-header-right{gap:9px}
+
 .xp-title{left:5%;top:89px}
 .xp-title h1{font-size:34px}
 .xp-subtitle{font-size:18px}
@@ -456,10 +456,10 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-tire-stage{width:min(900px,100%);flex:1;min-height:0;align-self:center;display:grid;grid-template-columns:minmax(92px,1fr) minmax(170px,43%) minmax(92px,1fr);grid-template-rows:1fr 1fr;gap:10px;align-items:center}
 .xp-tire-center{grid-area:1/2/3/3;min-height:0;height:100%;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 16px 20px #0009)}
 .xp-top-car,.xp-top-cutout{width:100%;max-width:325px;height:100%;max-height:100%;object-fit:contain}
-.xp-tire-reading{background:linear-gradient(125deg,#091a2bda,#051020eb);border:1px solid #6782a058;backdrop-filter:blur(17px);border-radius:20px;padding:14px 9px;text-align:center;display:flex;flex-direction:column;gap:4px;min-width:0}
+.xp-tire-reading{backdrop-filter:blur(17px);padding:14px 9px;text-align:center;display:flex;flex-direction:column;gap:4px;min-width:0}
 .xp-tire-reading small{color:#c8d5e7;font-size:clamp(10px,1.15vw,15px)}
-.xp-tire-reading strong{font-size:clamp(24px,3vw,45px);color:#fff;line-height:1.1}
-.xp-tire-reading span{color:#75f4c5;font-size:clamp(11px,1.2vw,17px)}
+.xp-tire-reading strong{font-size:clamp(24px,3vw,45px);line-height:1.1}
+.xp-tire-reading span{font-size:clamp(11px,1.2vw,17px)}
 .xp-tire-reading[data-wheel="tire_fl"]{grid-area:1/1}.xp-tire-reading[data-wheel="tire_fr"]{grid-area:1/3}
 .xp-tire-reading[data-wheel="tire_rl"]{grid-area:2/1}.xp-tire-reading[data-wheel="tire_rr"]{grid-area:2/3}
 .xp-tire-disclaimer{text-align:center;font-size:10px;color:#b9c9d8;padding-bottom:5px}
@@ -477,15 +477,15 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 
 /* Opt-in XPENG controls. Keep all existing hero and charging artwork unchanged. */
 .xp-ux-dock{position:absolute;z-index:12;bottom:2.5%;left:50%;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;gap:10px;padding:8px 12px;border:1px solid #6598b45c;border-radius:40px;background:#06162acb;backdrop-filter:blur(18px);max-width:96%}
-.xp-ux-dock-action{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:60px;min-height:58px;border:1px solid #78a1b84b;background:#132b4587;border-radius:24px;color:#effbff}
+.xp-ux-dock-action{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:60px;min-height:58px;color:#effbff}
 .xp-ux-dock-action ha-icon{color:#99caff}
 .xp-ux-dock-action small{font-size:10px;white-space:nowrap}
 .xp-ux-dock-action:hover,.xp-ux-dock-action:focus-visible{border-color:#1debca;background:#124965}
-.xp-ux-modal{position:absolute;z-index:35;inset:2% 2.5%;padding:16px 20px 25px;overflow:auto;overscroll-behavior:contain;border:1px solid #5e91b078;border-radius:23px;background:linear-gradient(165deg,#060d19f8,#081e34fa);box-shadow:0 28px 75px #000d;backdrop-filter:blur(22px);direction:rtl}
+.xp-ux-modal{position:absolute;z-index:35;inset:2% 2.5%;padding:16px 20px 25px;overflow:auto;overscroll-behavior:contain;direction:rtl}
 .xp-ux-modal-head{display:flex;align-items:center;gap:15px}
-.xp-ux-modal-head h2{margin:0;flex:1;font-size:clamp(18px,2.1vw,29px)}
+.xp-ux-modal-head h2{margin:0;flex:1;}
 .xp-ux-modal-head span{color:#b4c8df;font-size:13px}
-.xp-ux-modal-head button{border:1px solid #60849d82;background:#12334d;border-radius:12px;padding:8px;display:grid;place-items:center;min-width:43px;min-height:43px}
+.xp-ux-modal-head button{border:1px solid #60849d82;border-radius:12px;padding:8px;display:grid;place-items:center;min-width:43px;min-height:43px}
 .xp-ux-tabs{display:flex;gap:10px;margin:13px 0}
 .xp-ux-tabs button{border:1px solid #557b9f88;border-radius:18px;padding:10px 19px;background:#1b2b42;color:#bdcee0}
 .xp-ux-selected{background:#124c86!important;color:#fff!important;border-color:#54b9ff!important;box-shadow:0 0 0 1px #54b9ff3a inset}
@@ -499,7 +499,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-ux-climate-caption span{font-size:12px;color:#afc7e2}
 .xp-ux-temp-line{display:flex;gap:18px;align-items:center;justify-content:center;margin:12px auto}
 .xp-ux-temp-line b{font-size:clamp(29px,3vw,43px);min-width:115px;text-align:center}
-.xp-ux-temp-line button{border:1px solid #668ab3;background:#1d344d;width:45px;height:45px;border-radius:50%;font-size:26px}
+.xp-ux-temp-line button{border:1px solid #668ab3;background:#1d344d;font-size:26px}
 .xp-ux-pill-row{display:flex;flex-wrap:wrap;gap:10px}
 .xp-ux-pill-row button,.xp-ux-nav-seats{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid #5783a5;border-radius:14px;padding:10px 16px;background:#1b334c}
 .xp-ux-range-row{display:flex;flex-direction:column;gap:10px;margin-top:10px}
@@ -521,7 +521,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-ux-charge-limit input{height:17px}
 @media(max-width:850px){
  .xp-overview .xp-ux-dock{bottom:133px;gap:5px;padding:5px 7px}
- .xp-ux-dock-action{min-width:49px;min-height:51px;border-radius:18px;gap:2px}
+ .xp-ux-dock-action{min-width:49px;min-height:51px;gap:2px}
  .xp-ux-dock-action small{font-size:9px}
  .xp-ux-modal{inset:1.5% 2%;padding:13px}
  .xp-ux-cabin{max-height:290px}
@@ -544,7 +544,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 @media(pointer:coarse){.xp-ux-seat-options button,.xp-ux-dock-action,.xp-ux-pill-row button{min-height:44px}}
 
 /* Matching G6 cabin image hotspot alignment, consistent across both palettes. */
-.xp-ux-cabin-art{aspect-ratio:8/5;max-height:none!important}
+.xp-ux-cabin-art{max-height:none!important}
 .xp-ux-cabin-art{aspect-ratio:8/5}
 .xp-ux-cabin-art .xp-ux-cabin-picture{display:block;max-height:none!important;width:100%;height:100%;object-fit:contain}
 .xp-ux-cabin-art .xp-ux-hotspot{z-index:2;transform:translate(-50%,-50%);width:38px;height:38px}
@@ -562,7 +562,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 @supports (container-type:inline-size){.xp-scene.xp-has-controls{container-name:xpeng-card;container-type:inline-size}}
 @container xpeng-card (max-width:650px){
  .xp-ux-dock{bottom:127px;gap:5px;padding:5px 7px;max-width:94%}
- .xp-ux-dock-action{min-width:49px;min-height:50px;border-radius:18px;gap:2px}
+ .xp-ux-dock-action{min-width:49px;min-height:50px;gap:2px}
  .xp-ux-dock-action small{font-size:9px}
  .xp-ux-modal{inset:1.5% 2%;padding:13px}
  .xp-ux-seats-grid,.xp-ux-vehicle-statuses,.xp-ux-vehicle-buttons{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -621,17 +621,17 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-ux-access-buttons{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
 .xp-ux-access-buttons button{border:1px solid #467e9a;background:#12445a;padding:12px 16px;border-radius:14px;display:inline-flex;align-items:center;gap:8px;min-height:48px;flex:1}
 .xp-ux-access-buttons button:disabled{opacity:.4;cursor:not-allowed}
-.xp-ux-map-stage{min-height:260px;border-radius:14px;overflow:hidden;background:#0c2237;display:flex;align-items:center;justify-content:center}
+.xp-ux-map-stage{min-height:260px;background:#0c2237;display:flex;align-items:center;justify-content:center}
 .xp-ux-map-stage hui-map-card{display:block;width:100%;min-height:300px}
-.xp-ux-modal-map .xp-ux-map-panel{width:100%;margin:12px auto 0}
-.xp-ux-modal-map .xp-ux-map-stage{min-height:clamp(350px,51vh,520px)}
-.xp-ux-modal-map .xp-ux-map-stage hui-map-card{display:block;align-self:stretch;width:100%;min-height:clamp(350px,51vh,520px)}
+
+
+.xp-ux-modal-map .xp-ux-map-stage hui-map-card{align-self:stretch;}
 @container xpeng-layout (max-width:600px){
- .xp-ux-modal-map .xp-ux-map-stage{min-height:260px}
+ 
  .xp-ux-modal-map .xp-ux-map-stage hui-map-card{min-height:260px}
 }
 .xp-ux-map-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0 7px}
-.xp-ux-map-actions button{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;border:1px solid #4d89ae;background:#133b5b;border-radius:14px;min-height:48px}
+.xp-ux-map-actions button{padding:14px;border:1px solid #4d89ae;background:#133b5b;border-radius:14px;}
 .xp-ux-map-actions button:disabled{opacity:.4;cursor:not-allowed}
 @media(max-width:600px){
  .xp-ux-access-panel{padding:8px 0}
@@ -645,10 +645,10 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  */
 .xp-ux-cabin-art .xp-ux-hotspot-zone{position:absolute;z-index:4;display:flex;align-items:center;justify-content:center;gap:4px;transform:translate(-50%,-50%);width:auto;height:auto;max-width:44%;background:transparent;box-shadow:none}
 .xp-ux-cycle{border:1px solid #608ead;background:#0c243fdc;color:#ebf6ff;width:42px;height:44px;min-width:42px;min-height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:3px;box-shadow:0 3px 15px #06111e70;cursor:pointer;touch-action:manipulation}
-.xp-ux-cycle ha-icon{width:17px;height:17px;--mdc-icon-size:17px}
+
 .xp-ux-cycle .xp-ux-level{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;min-width:8px}
-.xp-ux-cycle-heat.xp-ux-cycle-on{background:#963746ed;border-color:#ff8b8b;color:#fff;box-shadow:0 0 12px #ff5b5780}
-.xp-ux-cycle-vent.xp-ux-cycle-on{background:#145b9de9;border-color:#6cd3ff;color:#fff;box-shadow:0 0 12px #47aeff80}
+.xp-ux-cycle-heat.xp-ux-cycle-on{color:#fff;}
+.xp-ux-cycle-vent.xp-ux-cycle-on{color:#fff;}
 .xp-ux-cycle-busy{outline:1px dotted #dce9f2;outline-offset:2px}
 .xp-ux-cycle:focus-visible{outline:3px solid #fff;outline-offset:3px}
 .xp-ux-cabin-fallback .xp-ux-wheel{top:21%;left:26%}
@@ -717,9 +717,8 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 /* Verified Xpengtk A/C actions, intentionally excluding unsupported app tiles. */
 .xp-ux-climate-features{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin:13px 0 8px}
 .xp-ux-climate-feature{display:flex;flex-direction:column;align-items:center;justify-content:center;
- gap:9px;min-height:105px;padding:12px 8px;border:1px solid #658cab80;border-radius:16px;
- background:#0f2942dd;color:#f0f8ff;cursor:pointer;text-align:center}
-.xp-ux-climate-feature ha-icon{color:#bbdbfa}
+ gap:9px;padding:12px 8px;border-radius:16px;color:#f0f8ff;cursor:pointer;text-align:center}
+
 .xp-ux-climate-feature span{font-size:14px;font-weight:650}
 .xp-ux-climate-feature small{font-size:11px;color:#b0c9db}
 .xp-ux-climate-feature:focus-visible{outline:2px solid #9ddaff;outline-offset:2px}
@@ -741,10 +740,10 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 /* Automatic card-width adaptation even when Home Assistant Sections renders a narrow
    card on a wide desktop monitor. Legacy viewport media rules above remain as fallback. */
 @container xpeng-layout (max-width:850px){
-.xp-scene{min-height:800px;aspect-ratio:auto}
+
 .xp-header{top:16px;left:4%;right:4%}
 .xp-brand{font-size:13px;letter-spacing:.12em}
-.xp-header-right{gap:9px}
+
 .xp-title{left:5%;top:89px}
 .xp-title h1{font-size:34px}
 .xp-subtitle{font-size:18px}
@@ -766,16 +765,16 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-info-copy b{font-size:12px;white-space:normal;overflow-wrap:anywhere}
 .xp-status-panel .xp-chevron{display:none}
 .xp-charge .xp-title{left:5%;top:83px}
-.xp-charge-card{top:225px;left:5%;width:90%;padding:18px}
-.xp-charge-heading{font-size:22px;margin-bottom:15px}
+
+
 .xp-charge-card .xp-progress{height:13px}
-.xp-charge-main{margin-top:13px}
-.xp-charge-main .xp-soc{font-size:42px}
-.xp-charge-range b{font-size:20px}
+
+
+
 .xp-charge-divider{height:45px}
-.xp-charge-meta{margin-top:15px;padding-top:15px}
-.xp-charge-meta small{font-size:10px;white-space:normal}
-.xp-charge-meta b{font-size:14px}
+
+.xp-charge-meta small{white-space:normal}
+
 .xp-charge .xp-car{width:96%;left:2%;bottom:9%;max-height:36%}
 .xp-station{right:5%;bottom:22%;height:13%;min-width:40px;font-size:16px}
 }
@@ -789,7 +788,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 @container xpeng-layout (max-width:400px){.xp-charge-meta>div{padding:0 7px}.xp-charge-heading{font-size:19px}.xp-charge-meta b{font-size:12px}.xp-overview-stat{top:219px}.xp-status-panel{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @container xpeng-layout (max-width:850px){
  .xp-overview .xp-ux-dock{bottom:133px;gap:5px;padding:5px 7px}
- .xp-ux-dock-action{min-width:49px;min-height:51px;border-radius:18px;gap:2px}
+ .xp-ux-dock-action{min-width:49px;min-height:51px;gap:2px}
  .xp-ux-dock-action small{font-size:9px}
  .xp-ux-modal{inset:1.5% 2%;padding:13px}
  .xp-ux-cabin{max-height:290px}
@@ -840,7 +839,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-extra-schedule-line .xp-extra-line{flex-basis:100%}
  .xp-extra-schedule-toggle{width:100%}}
 @container xpeng-layout (max-width:520px){
- .xp-scene{min-height:780px}
+ 
  .xp-title{top:84px}
  .xp-title h1{font-size:30px}
  .xp-overview-stat{left:5%;top:207px;width:53%;max-width:none}
@@ -876,10 +875,10 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-ux-modal-charge_controls .xp-ux-port-panel{margin-top:15px}
 .xp-maintenance-page{max-width:940px;margin:0 auto}
 .xp-maintenance-page h3{font-size:17px;margin:15px 0 8px;color:#d8f5fa}
-.xp-ux-modal-maintenance .xp-tire-screen{position:relative;inset:auto;display:block;height:300px;min-height:260px;margin:0 auto 16px;width:100%}
-.xp-ux-modal-maintenance .xp-tire-stage{width:min(690px,100%);height:100%;min-height:0;grid-template-columns:minmax(60px,1fr) minmax(100px,43%) minmax(60px,1fr);grid-template-rows:1fr 1fr;gap:7px}
-.xp-ux-modal-maintenance .xp-tire-reading{padding:7px 4px;border-radius:12px}
-.xp-ux-modal-maintenance .xp-tire-reading strong{font-size:clamp(17px,2vw,27px)}
+.xp-ux-modal-maintenance .xp-tire-screen{display:block;}
+.xp-ux-modal-maintenance .xp-tire-stage{grid-template-columns:minmax(60px,1fr) minmax(100px,43%) minmax(60px,1fr);grid-template-rows:1fr 1fr;gap:7px}
+.xp-ux-modal-maintenance .xp-tire-reading{border-radius:12px}
+
 .xp-maint-info{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .xp-ux-modal-maintenance .xp-extra-line{overflow-wrap:anywhere;gap:9px}
 .xp-ux-charge-schedule{max-width:590px;margin:20px auto}
@@ -887,35 +886,35 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 @container xpeng-layout (max-width:520px){
  .xp-maint-info{grid-template-columns:1fr}
  .xp-ux-modal-maintenance .xp-tire-screen{height:250px;min-height:240px}
- .xp-ux-modal-maintenance .xp-tire-reading strong{font-size:18px}
+ 
 }
 
 /* The home dashboard owns the only navigation menu. Subpages show Back only. */
-.xp-ux-dock-seven{gap:clamp(4px,.6vw,10px);max-width:96%;padding:8px 10px;bottom:2.3%;border-radius:26px}
-.xp-ux-dock-seven .xp-ux-dock-action{flex:0 1 84px;min-width:66px;max-width:88px;min-height:63px;padding:6px 4px;border-radius:17px}
-.xp-ux-dock-seven .xp-ux-dock-action small{font-size:11px}
+.xp-ux-dock-seven{gap:clamp(4px,.6vw,10px);max-width:96%;padding:8px 10px;bottom:2.3%;}
+.xp-ux-dock-seven .xp-ux-dock-action{flex:0 1 84px;min-height:63px;padding:6px 4px;}
+
 .xp-page-back{position:absolute;z-index:22;top:10%;right:3.5%;min-height:44px;border:1px solid #6d9dbbba;border-radius:13px;background:#0b2c48e9;color:#effaff;display:flex;align-items:center;gap:9px;padding:8px 13px;cursor:pointer;direction:rtl}
 .xp-page-back:hover,.xp-page-back:focus-visible{background:#145371;border-color:#17dfcd}
-.xp-ux-modal-head{position:sticky;top:-16px;z-index:9;padding:8px 0 12px;background:linear-gradient(180deg,#071626 78%,#07162600)}
+
 @container xpeng-layout (max-width:850px){
- .xp-home-navigation .xp-ux-dock-seven{bottom:22px;left:50%;max-width:94%;width:min(550px,94%);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;padding:7px;border-radius:18px}
- .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{width:100%;min-width:0;max-width:none;min-height:53px;padding:4px;gap:3px}
- .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action small{font-size:10px;white-space:normal;line-height:1.15}
+ .xp-home-navigation .xp-ux-dock-seven{left:50%;}
+ 
+ .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action small{white-space:normal;line-height:1.15}
  .xp-page-back{top:22px;right:4%;padding:6px 10px}
 }
 @container xpeng-layout (max-width:360px){
- .xp-home-navigation .xp-ux-dock-seven{bottom:20px;gap:3px}
- .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{min-height:49px}
- .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action small{font-size:9px}
+ 
+ 
+ 
 }
 
 /* Home content parity: controls and status exist at every card width.
  * Scale rather than hide; width is the HA card container, not browser viewport.
  */
-.xp-home-navigation .xp-title h1{font-size:clamp(25px,3.25cqw,46px)}
-.xp-home-navigation .xp-subtitle{font-size:clamp(13px,1.35cqw,19px)}
+
+
 .xp-home-navigation .xp-overview .xp-car{width:50%;left:25%;bottom:18%;max-height:62%}
-.xp-home-navigation .xp-overview-stat{width:19%;top:38%;max-width:250px}
+
 .xp-home-navigation .xp-overview-stat .xp-batt-glyph{height:64px;width:44px}
 .xp-home-navigation .xp-overview-stat .xp-soc{font-size:clamp(32px,4cqw,59px)}
 .xp-home-navigation .xp-overview-stat .xp-range-num{font-size:clamp(21px,2.5cqw,34px)}
@@ -926,36 +925,36 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-home-navigation .xp-status-panel .xp-info-icon ha-icon{width:23px;height:23px;--mdc-icon-size:23px}
 .xp-home-navigation .xp-status-panel .xp-info-copy small{font-size:clamp(10px,.9cqw,13px)}
 .xp-home-navigation .xp-status-panel .xp-info-copy b{font-size:clamp(11px,1cqw,15px)}
-.xp-home-navigation .xp-ux-dock-seven{max-width:94%;width:max-content;gap:6px;padding:5px 8px;bottom:2.5%;border-radius:19px}
-.xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{flex:0 1 70px;min-width:61px;max-width:76px;min-height:54px;padding:4px 5px;border-radius:14px}
-.xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action small{font-size:10px;line-height:1.15}
+
+
+
 .xp-home-navigation .xp-ux-dock-seven ha-icon{width:19px;height:19px;--mdc-icon-size:19px!important;--xp-icon-size:19px!important}
 @container xpeng-layout (max-width:850px){
  .xp-home-navigation .xp-overview .xp-car{width:94%;left:3%;bottom:36%;max-height:31%}
- .xp-home-navigation .xp-overview-stat{top:205px;left:5%;width:52%;max-width:none}
- .xp-home-navigation .xp-status-panel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:92%;left:4%;right:4%;bottom:153px;padding:5px 8px}
- .xp-home-navigation .xp-status-panel .xp-info-row{display:flex;min-height:62px;padding:6px 8px;border-right:1px solid #56708a43;gap:4px}
+ 
+ .xp-home-navigation .xp-status-panel{grid-template-columns:repeat(3,minmax(0,1fr));}
+ .xp-home-navigation .xp-status-panel .xp-info-row{border-right:1px solid #56708a43;gap:4px}
  .xp-home-navigation .xp-status-panel .xp-info-row:last-child{border-right:0}
  .xp-home-navigation .xp-status-panel .xp-info-icon{display:none}
  .xp-home-navigation .xp-status-panel .xp-info-copy b{font-size:11px;white-space:normal}
- .xp-home-navigation .xp-ux-dock-seven{bottom:19px;width:min(550px,94%);gap:5px;padding:7px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
- .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{width:100%;min-width:0;max-width:none;min-height:53px;padding:4px;gap:3px}
+ 
+ 
 }
 @container xpeng-layout (max-width:520px){
  .xp-home-navigation .xp-overview .xp-car{left:0;width:100%;bottom:34%;max-height:23%}
- .xp-home-navigation .xp-overview-stat{top:201px;width:55%}
+ .xp-home-navigation .xp-overview-stat{width:55%}
  .xp-home-navigation .xp-status-panel{grid-template-columns:repeat(2,minmax(0,1fr));bottom:155px;padding:5px 9px}
  .xp-home-navigation .xp-status-panel .xp-info-row{min-height:51px;border-right:1px solid #56708a43;padding:5px 7px}
  .xp-home-navigation .xp-status-panel .xp-info-row:nth-child(2){border-right:0}
  .xp-home-navigation .xp-status-panel .xp-info-row:last-child{grid-column:1/-1;min-height:40px;border-right:0;border-top:1px solid #56708a43}
- .xp-home-navigation .xp-ux-dock-seven{bottom:18px}
+ 
 }
 @container xpeng-layout (max-width:360px){
  .xp-home-navigation .xp-overview .xp-car{bottom:35%;max-height:22%}
- .xp-home-navigation .xp-status-panel{bottom:144px}
- .xp-home-navigation .xp-ux-dock-seven{bottom:14px}
- .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{min-height:48px}
- .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action small{font-size:9px}
+ 
+ 
+ 
+ 
 }
 /* Maintenance is reached via one navigation button only: never render a Home
  * maintenance summary card. Keep the location status as a small independent row.
@@ -975,17 +974,17 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 }
 /* Desktop climate = cabin + controls side by side; mobile = one scrolling page.
    The two owner photos remain unchanged and preserve their proportions. */
-.xp-ux-modal-climate .xp-climate-layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(300px,.9fr);gap:clamp(14px,2.5vw,42px);align-items:start;max-width:1180px;margin:12px auto 0;direction:ltr}
-.xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{width:min(354px,100%);margin:0 auto;height:auto;max-height:none}
-.xp-ux-modal-climate .xp-climate-layout>.xp-ux-climate-bottom{margin:0;direction:rtl;min-width:0;display:flex;flex-direction:column;gap:10px}
+.xp-ux-modal-climate .xp-climate-layout{display:grid;margin:12px auto 0;}
+.xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{margin:0 auto;height:auto;}
+.xp-ux-modal-climate .xp-climate-layout>.xp-ux-climate-bottom{margin:0;display:flex;flex-direction:column;}
 .xp-ux-modal-climate .xp-climate-layout .xp-ux-climate-card,
 .xp-ux-modal-climate .xp-climate-layout .xp-ux-range-row{margin:0}
-.xp-ux-modal-climate .xp-climate-layout .xp-ux-climate-features{grid-template-columns:repeat(2,minmax(0,1fr));margin:0}
+.xp-ux-modal-climate .xp-climate-layout .xp-ux-climate-features{margin:0}
 .xp-ux-modal-climate .xp-climate-layout .xp-ux-climate-feature{min-height:89px}
 @container xpeng-layout (max-width:850px){
- .xp-ux-modal-climate .xp-climate-layout{display:flex;flex-direction:column;align-items:center;gap:8px;margin:6px auto 0}
- .xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{width:min(258px,100%);margin:0 auto}
- .xp-ux-modal-climate .xp-climate-layout>.xp-ux-climate-bottom{width:100%;max-width:530px;gap:8px}
+ .xp-ux-modal-climate .xp-climate-layout{margin:6px auto 0}
+ 
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-climate-bottom{gap:8px}
  .xp-ux-modal-climate .xp-climate-layout .xp-ux-climate-features{grid-template-columns:repeat(3,minmax(0,1fr))}
  .xp-ux-modal-climate .xp-climate-layout .xp-ux-climate-feature{min-height:82px}
 }
@@ -1017,30 +1016,27 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-entity-diagnostic b{font-size:12px;text-align:right}
 @container xpeng-layout (max-width:430px){.xp-entity-diagnostic{grid-template-columns:minmax(0,1fr)}.xp-entity-diagnostic b{text-align:left}}
 /* Mobile scroll: modal is an independent touch-scrolling surface inside the scene. */
-.xp-ux-modal{overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;
- touch-action:pan-y;overscroll-behavior-y:contain;max-height:96%;box-sizing:border-box}
+.xp-ux-modal{overflow-x:hidden;max-height:96%;box-sizing:border-box}
 .xp-ux-modal-head{position:sticky;top:-16px;z-index:5;padding:4px 2px 12px;
  background:linear-gradient(180deg,#07182b 80%,#07182b00)}
 @container xpeng-layout (max-width:600px){
- .xp-ux-modal{inset:1% 1%;height:auto;min-height:0;max-height:98%;
-   padding:11px 11px 38px;touch-action:pan-y}
+ .xp-ux-modal{inset:1% 1%;height:auto;min-height:0;max-height:98%;touch-action:pan-y}
  .xp-ux-modal-head{top:-11px}
- .xp-ux-modal-maintenance .xp-tire-screen{position:relative;inset:auto;
-    height:auto!important;min-height:0!important;margin:8px 0 22px;overflow:visible}
- .xp-ux-modal-maintenance .xp-tire-stage{display:grid;width:100%;height:auto;direction:ltr;
+ .xp-ux-modal-maintenance .xp-tire-screen{position:relative;inset:auto;overflow:visible}
+ .xp-ux-modal-maintenance .xp-tire-stage{display:grid;width:100%;direction:ltr;
     grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-    grid-template-rows:auto auto auto;gap:10px;align-items:stretch}
- .xp-ux-modal-maintenance .xp-tire-center{grid-area:1/1/2/3;height:195px;
+    grid-template-rows:auto auto auto;align-items:stretch}
+ .xp-ux-modal-maintenance .xp-tire-center{grid-area:1/1/2/3;
     width:100%;max-width:220px;justify-self:center;filter:none}
  .xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_fl"]{grid-area:2/1}
  .xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_fr"]{grid-area:2/2}
  .xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_rl"]{grid-area:3/1}
  .xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_rr"]{grid-area:3/2}
- .xp-ux-modal-maintenance .xp-tire-reading{min-width:0;padding:12px 8px}
- .xp-ux-modal-maintenance .xp-tire-reading strong{font-size:clamp(21px,6vw,29px)}
- .xp-ux-modal-maintenance .xp-maint-info{grid-template-columns:minmax(0,1fr)}
+ .xp-ux-modal-maintenance .xp-tire-reading{min-width:0;}
+ 
+ 
  .xp-ux-modal-maintenance .xp-extra-line{min-width:0;overflow-wrap:anywhere}
- .xp-ux-modal-climate .xp-climate-layout{padding-bottom:55px}
+ 
 }
 .xp-charge-cable-live .xp-charge-cable-halo{stroke:#00df90;stroke-width:5.2;
  filter:drop-shadow(0 0 5px #00ed91)}
@@ -1099,10 +1095,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  -webkit-backdrop-filter:blur(20px) saturate(1.25);
 }
 .xp-home-navigation .xp-batt-line{gap:clamp(12px,1.3cqw,20px);align-items:center}
-.xp-home-navigation .xp-batt-glyph{
- width:clamp(36px,3.6cqw,53px);
- height:clamp(54px,5.1cqw,73px);
- padding:5px;border:2px solid #27f3b7;
+.xp-home-navigation .xp-batt-glyph{border:2px solid #27f3b7;
  border-radius:9px;
  box-shadow:0 0 18px #13e8a93b;
 }
@@ -1140,21 +1133,12 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-home-navigation .xp-ux-dock-seven{
  width:max-content;max-width:95%;gap:clamp(6px,.8cqw,12px);
  bottom:2.7%;padding:10px 12px;
- border-radius:27px;
- border:1px solid #6db7f3a1;
- background:linear-gradient(155deg,#0b2b4be8,#061a30f0);
- backdrop-filter:blur(24px) saturate(1.25);
- -webkit-backdrop-filter:blur(24px) saturate(1.25);
- box-shadow:0 13px 34px #000a,inset 0 1px 0 #dcf4ff31,0 0 20px #2797f723;
 }
 .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{
  position:relative;flex:0 1 110px;
  width:clamp(76px,7.3cqw,110px);
  max-width:110px;min-width:0;min-height:clamp(65px,6.8cqw,86px);
- padding:9px 7px;gap:8px;border-radius:21px;
- background:linear-gradient(165deg,#193d60ee,#08182eea);
- border:1px solid #77baf28c;
- box-shadow:inset 0 1px 0 #d7eeff26,0 3px 9px #0006;
+ padding:9px 7px;gap:8px;
  color:#f4f9ff;transition:background .18s,border-color .18s,transform .18s,box-shadow .18s;
 }
 .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action ha-icon{
@@ -1188,7 +1172,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  transition:border-color .16s,background .16s,box-shadow .16s;
 }
 .xp-ux-modal button:not(:disabled):hover{border-color:#45b7e7;box-shadow:0 0 12px #238ceb29}
-.xp-ux-modal-head h2{letter-spacing:-.015em;font-weight:750}
+
 .xp-ux-climate-card,.xp-ux-climate-feature,.xp-extra-tile,
 .xp-extra-line,.xp-tire-reading,.xp-ux-access-panel{
  border-radius:15px;
@@ -1214,11 +1198,11 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-home-navigation .xp-ux-dock-seven{
    bottom:17px;width:min(560px,94%);max-width:94%;
    display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
-   gap:6px;padding:8px;border-radius:22px;
+   gap:6px;padding:8px;
  }
  .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{
    width:100%;max-width:none;min-width:0;min-height:57px;
-   padding:6px 4px;gap:4px;border-radius:15px;
+   padding:6px 4px;gap:4px;
  }
  .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action ha-icon{
    width:25px!important;height:25px!important;
@@ -1238,10 +1222,10 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 @container xpeng-layout (max-width:360px){
  .xp-home-navigation .xp-overview-stat{top:178px;padding:11px 13px}
  .xp-home-navigation .xp-batt-glyph{height:42px;width:32px}
- .xp-home-navigation .xp-ux-dock-seven{bottom:13px;gap:4px;padding:6px}
- .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{min-height:51px;padding:5px 3px}
+ .xp-home-navigation .xp-ux-dock-seven{bottom:13px;}
+ .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{padding:5px 3px}
  .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action small{font-size:9px}
- .xp-scene.xp-overview.xp-home-navigation .xp-car{bottom:25%;max-height:29%}
+ .xp-scene.xp-overview.xp-home-navigation .xp-car{bottom:25%;}
 }
 @media(prefers-reduced-motion:reduce){
  .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{transition:none}
@@ -1256,18 +1240,15 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  border:1px solid var(--xp-stroke)!important;
  border-radius:clamp(18px,2.2cqw,28px);
  background:linear-gradient(155deg,#081e35f5,#041326f7 65%,#0b2640f4)!important;
- box-shadow:0 30px 55px #000b,inset 0 1px 0 #dff7ff24,0 0 21px #268ae72a;
  backdrop-filter:blur(20px) saturate(1.17);
  -webkit-backdrop-filter:blur(20px) saturate(1.17);
 }
 .xp-ux-modal-head{
- border-bottom:1px solid #79b9ee46;
  margin-bottom:14px;
 }
 .xp-ux-modal-head h2{
- color:#f3faff;letter-spacing:.01em;
- font-size:clamp(20px,2.25cqw,31px);
- font-weight:770;text-shadow:0 2px 14px #001020a9;
+ color:#f3faff;
+ font-size:clamp(20px,2.25cqw,31px);text-shadow:0 2px 14px #001020a9;
 }
 .xp-ux-modal-head button,.xp-page-back,
 .xp-ux-map-actions button{
@@ -1336,12 +1317,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-ux-range-row input[type="range"],.xp-ux-modal input[type="range"]{
  accent-color:#20e9c7;
 }
-.xp-charge-card{
- border:1px solid #53a7e9a4!important;
- border-radius:25px;
- background:linear-gradient(145deg,#071d33ed,#061529e8)!important;
- box-shadow:0 20px 48px #0009,inset 0 1px 0 #dcf8ff1d,0 0 18px #2a9ce52c;
-}
+
 .xp-charge-heading{color:#36f0c3}
 .xp-charge-heading ha-icon{
  color:#24f5c7;filter:drop-shadow(0 0 7px #14e6a37c);
@@ -1449,7 +1425,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-charge-panel-actions button ha-icon{--mdc-icon-size:19px}
 }
 @container xpeng-layout (max-width:360px){
- .xp-charge-card{top:186px;padding:12px}
+ .xp-charge-card{padding:12px}
  .xp-charge-heading{margin-bottom:8px}
  .xp-charge-meta{margin-top:8px;padding-top:8px}
  .xp-charge-panel-actions button{min-height:52px}
@@ -1457,17 +1433,15 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 /* Owner reference: four live pressure badges immediately beside all four
  * wheels, not detached in outer side columns or stacked below the car.
  */
-.xp-ux-modal-maintenance .xp-tire-screen{
- position:relative;inset:auto;width:100%;height:auto;
- margin:0 auto;padding:0;
+.xp-ux-modal-maintenance .xp-tire-screen{inset:auto;padding:0;
 }
 .xp-ux-modal-maintenance .xp-tire-stage{
  display:block!important;position:relative;
- width:min(720px,100%);height:clamp(300px,41cqw,470px);
- margin:0 auto;min-height:0;overflow:visible;
+ width:min(720px,100%);
+ margin:0 auto;overflow:visible;
 }
 .xp-ux-modal-maintenance .xp-tire-center{
- position:absolute;left:33%;top:1%;width:34%;height:98%;
+ position:absolute;left:33%;top:1%;width:34%;
  display:flex;align-items:center;justify-content:center;
 }
 .xp-ux-modal-maintenance .xp-tire-center img,
@@ -1522,11 +1496,9 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  * photograph on the right. Every button uses existing verified HA services.
  */
 .xp-ux-modal-climate .xp-climate-layout{
- grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);gap:clamp(12px,1.6cqw,27px);
- max-width:1280px;align-items:start;direction:ltr;
+ grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);align-items:start;direction:ltr;
 }
-.xp-ux-modal-climate .xp-climate-layout>.xp-ux-climate-bottom{
- width:100%;max-width:none;direction:rtl;gap:11px;
+.xp-ux-modal-climate .xp-climate-layout>.xp-ux-climate-bottom{direction:rtl;
 }
 .xp-climate-primary-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .xp-climate-primary{
@@ -1572,11 +1544,9 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-ux-modal-climate .xp-climate-layout{
    display:flex;flex-direction:column;align-items:stretch;gap:10px;
  }
- .xp-ux-modal-climate .xp-climate-layout>.xp-ux-climate-bottom{
-   order:2;width:100%;max-width:none;
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-climate-bottom{width:100%;max-width:none;
  }
- .xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{
-   order:1;width:min(310px,100%);margin:0 auto;
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{width:min(310px,100%);margin:0 auto;
  }
  .xp-climate-primary{min-height:77px;padding:9px}
  .xp-climate-primary ha-icon{--mdc-icon-size:27px}
@@ -1599,27 +1569,24 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  * preserve aspect ratio and four rear/front zones, without cutting rear seats.
  */
 @container xpeng-layout (min-width:851px){
- .xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{
-  width:min(338px,100%);max-width:338px;height:auto;max-height:none;
-  margin:0 auto;
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{height:auto;max-height:none;
  }
 }
 /* Physical seat/steering location is the ONLY controls surface for heating and
  * ventilation: no duplicate buttons outside the photo.
  */
 .xp-ux-modal-climate .xp-ux-cabin-art{overflow:visible}
-.xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-hotspot-zone{z-index:8;gap:5px;white-space:nowrap}
+.xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-hotspot-zone{z-index:8;white-space:nowrap}
 .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-cycle{
  width:clamp(40px,4cqw,57px);min-width:40px;
  height:clamp(56px,5.1cqw,69px);min-height:56px;
  flex-direction:column;gap:3px;padding:5px 3px;border-radius:13px;
- box-shadow:0 3px 12px #0009,inset 0 1px 0 #d5f4ff23;
 }
 .xp-ux-modal-climate .xp-ux-cycle ha-icon{
  color:#e5f8ff;width:23px;height:23px;--xp-icon-size:23px;--mdc-icon-size:23px;
 }
-.xp-ux-modal-climate .xp-ux-cycle-heat.xp-ux-cycle-on ha-icon{color:#ffb2aa}
-.xp-ux-modal-climate .xp-ux-cycle-vent.xp-ux-cycle-on ha-icon{color:#8aeaff}
+
+
 .xp-ux-modal-climate .xp-cabin-action-label{font-size:9px;line-height:1;white-space:nowrap;font-weight:650}
 .xp-ux-modal-climate .xp-ux-cycle .xp-ux-level{font-size:12px;line-height:1}
 .xp-ux-modal-climate .xp-ux-cycle-busy{opacity:.65}
@@ -1660,10 +1627,10 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
   left:7%;width:86%;bottom:25%;max-height:28%;object-fit:contain;
  }
  .xp-home-navigation .xp-ux-dock-seven{
-  bottom:12px;width:94%;padding:6px;gap:5px;border-radius:17px;
+  bottom:12px;width:94%;padding:6px;gap:5px;
  }
  .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{
-  min-height:52px;padding:5px 3px;gap:3px;border-radius:12px;
+  min-height:52px;padding:5px 3px;gap:3px;
  }
  .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action ha-icon{
   width:clamp(20px,5.7cqw,24px)!important;
@@ -1693,16 +1660,12 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-ux-modal{padding:clamp(8px,2.4cqw,12px) clamp(8px,2.5cqw,12px) 32px}
  .xp-ux-modal-head{padding-bottom:6px;margin-bottom:8px}
  .xp-ux-modal-head h2{font-size:clamp(18px,5cqw,21px)}
- .xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{
-  width:clamp(240px,70cqw,278px);max-width:100%;margin:0 auto;
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{max-width:100%;
  }
  .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-hotspot-zone{gap:2px}
  /* Reset legacy right:25% anchoring: with left:72% it squeezes the passenger flex pair into a 3%-wide column. */
  .xp-ux-modal-climate .xp-ux-cabin-portrait .xp-ux-passenger{right:auto;max-width:none}
- .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-cycle{
-  width:clamp(36px,10cqw,40px);min-width:0;
-  height:clamp(46px,12.3cqw,52px);min-height:0;
-  padding:3px 2px;gap:2px;border-radius:11px;
+ .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-cycle{border-radius:11px;
  }
  .xp-ux-modal-climate .xp-ux-cycle ha-icon{
   width:18px;height:18px;--xp-icon-size:18px;--mdc-icon-size:18px;
@@ -1715,7 +1678,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-fan-bars{height:23px}
  .xp-ux-modal-maintenance .xp-tire-stage{height:clamp(260px,73cqw,315px)}
  .xp-ux-modal-maintenance .xp-tire-reading{
-  width:28%;min-height:46px;padding:4px;gap:3px;
+  width:28%;min-height:46px;gap:3px;
  }
  .xp-ux-modal-maintenance .xp-tire-reading strong{font-size:clamp(13px,3.7cqw,17px)}
  .xp-ux-modal-maintenance .xp-tire-reading small{font-size:clamp(8px,2.2cqw,10px)}
@@ -1741,16 +1704,11 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  */
 .xp-charge-navigation .xp-ux-dock-seven{
  bottom:2%;left:50%;width:max-content;max-width:94%;
- gap:6px;padding:6px 9px;border-radius:21px;
- border:1px solid #6db7f3a1;
- background:linear-gradient(155deg,#0b2b4be8,#061a30f0);
- box-shadow:0 13px 34px #000a,inset 0 1px 0 #dcf4ff31;
+ gap:6px;padding:6px 9px;
 }
 .xp-charge-navigation .xp-ux-dock-seven .xp-ux-dock-action{
  min-width:61px;max-width:78px;min-height:58px;
- flex:0 1 78px;padding:5px 4px;gap:4px;border-radius:15px;
- background:linear-gradient(165deg,#193d60ee,#08182eea);
- border:1px solid #77baf28c;
+ flex:0 1 78px;padding:5px 4px;gap:4px;
 }
 .xp-charge-navigation .xp-ux-dock-seven .xp-ux-dock-action ha-icon{
  width:25px!important;height:25px!important;
@@ -1788,7 +1746,6 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-charge-navigation .xp-ux-dock-seven{
   width:min(560px,94%);max-width:94%;bottom:14px;display:grid;
   grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding:7px;
-  border-radius:19px;
  }
  .xp-charge-navigation .xp-ux-dock-seven .xp-ux-dock-action{
   width:100%;max-width:none;min-width:0;min-height:56px;padding:5px 3px;
@@ -1842,16 +1799,12 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 }
 .xp-ux-modal-extras .xp-extra-body{width:min(900px,100%);}
 .xp-ux-modal-map .xp-ux-map-stage{
- position:relative;isolation:isolate;overflow:hidden;
+ position:relative;isolation:isolate;
 }
-.xp-header .xp-wifi{
- display:flex;align-items:center;justify-content:center;
- padding:0;line-height:1;vertical-align:middle;
+.xp-header .xp-wifi{align-items:center;justify-content:center;line-height:1;vertical-align:middle;
 }
-.xp-header .xp-wifi .xp-mdi-icon{
- display:flex;align-items:center;justify-content:center;
+.xp-header .xp-wifi .xp-mdi-icon{align-items:center;justify-content:center;
  width:24px;height:24px;--xp-icon-size:24px;--mdc-icon-size:24px;
- margin:0;transform:translateY(-2px);
 }
 @container xpeng-layout (max-width:850px){
  .xp-header .xp-wifi .xp-mdi-icon{
@@ -1904,12 +1857,11 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 }
 .xp-tire-actions button[data-tire-toggle]{min-width:46px}
 .xp-batt-glyph{
- border:0!important;padding:0!important;border-radius:0!important;
+ border:0!important;border-radius:0!important;
  background:none!important;box-shadow:none!important;
  display:flex!important;align-items:center!important;justify-content:center!important;
- flex:none;color:#60f8ba;
 }
-.xp-batt-glyph:before{display:none!important;content:none!important}
+.xp-batt-glyph:before{content:none!important}
 .xp-batt-glyph>.xp-mdi-icon{
  width:100%!important;height:100%!important;
  --xp-icon-size:100%!important;--mdc-icon-size:100%!important;
@@ -1984,7 +1936,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  transform:none!important;
 }
 @container xpeng-layout (max-width:850px){
- .xp-scene{min-height:0;height:clamp(660px,calc(100dvh - 90px),800px);aspect-ratio:auto}
+ .xp-scene{aspect-ratio:auto}
 }
 @container xpeng-layout (max-width:600px){
  .xp-scene{height:clamp(630px,calc(100dvh - 84px),780px)}
@@ -2029,8 +1981,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 }
 /* The entity list, not the dashboard/modal, scrolls. Explanation stays visible. */
 .xp-ux-modal-extras .xp-extra-diagnostics-layout{
- display:flex;flex:1 1 auto;flex-direction:column;
- width:min(740px,100%);height:100%;min-height:0;
+ display:flex;flex:1 1 auto;flex-direction:column;height:100%;min-height:0;
  margin:0 auto!important;gap:7px;overflow:hidden
 }
 .xp-ux-modal-extras .xp-extra-diagnostics-layout .xp-extra-heading{flex:0 0 auto;margin:0}
@@ -2045,14 +1996,11 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-ux-modal-extras .xp-extra-diagnostics-layout .xp-entity-diagnostics>p[role="status"]{
  flex:0 0 auto;margin:2px 0 0
 }
-.xp-ux-modal-extras .xp-extra-diagnostics-layout .xp-diagnostics-scroll{
- flex:1 1 auto;display:grid!important;align-content:start;
- min-height:0!important;height:auto!important;
- max-height:min(292px,37dvh)!important;
+.xp-ux-modal-extras .xp-extra-diagnostics-layout .xp-diagnostics-scroll{align-content:start;
  overflow-y:auto!important;overflow-x:hidden!important;
  overscroll-behavior:contain;touch-action:pan-y!important;
  border:1px solid #618eb078;border-radius:12px;
- background:#071f35b3;padding:7px;gap:5px;scrollbar-gutter:stable
+ background:#071f35b3;padding:7px;scrollbar-gutter:stable
 }
 .xp-ux-modal-extras .xp-extra-diagnostics-layout .xp-entity-diagnostics>.xp-ux-note,
 .xp-ux-modal-extras .xp-extra-diagnostics-layout>.xp-ux-note{
@@ -2075,8 +2023,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-ux-modal-climate .xp-climate-layout{
    padding-bottom:0!important;gap:6px!important;margin:0 auto!important
  }
- .xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{
-   width:min(204px,53cqw)!important;margin:0 auto!important
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{margin:0 auto!important
  }
  .xp-ux-modal-climate .xp-climate-layout>.xp-ux-climate-bottom{gap:5px!important}
  .xp-ux-modal-climate .xp-climate-layout .xp-ux-climate-features{gap:4px!important}
@@ -2093,16 +2040,11 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-ux-modal-extras:has(.xp-extra-diagnostics-layout) .xp-ux-modal-content-inner{
  display:flex;flex:1 1 auto;flex-direction:column;min-height:0;height:100%
 }
-.xp-ux-modal-maintenance .xp-maint-info{
- grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(4px,.7cqw,8px)
-}
+
 .xp-ux-modal-maintenance .xp-maint-info .xp-extra-line{
- min-width:0;min-height:0;padding:clamp(5px,.55cqw,8px)!important;
  font-size:clamp(10px,1.1cqw,13px)
 }
-.xp-ux-modal-maintenance .xp-tire-screen{
- height:clamp(180px,28dvh,245px)!important;min-height:0!important;margin:0 auto 8px!important
-}
+
 @container xpeng-layout (max-width:600px){
  .xp-ux-modal-maintenance .xp-maint-info{grid-template-columns:repeat(2,minmax(0,1fr))}
  .xp-ux-modal-maintenance .xp-maint-info .xp-extra-line{padding:5px!important}
@@ -2112,10 +2054,10 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 /* G6 final visual review: use the screen's real available height, not 800px behind HA tabs. */
 .xp-scene{max-height:calc(100dvh - 96px)}
 @container xpeng-layout (max-width:850px){
- .xp-scene{height:clamp(610px,calc(100dvh - 116px),750px);min-height:0}
+ .xp-scene{min-height:0}
 }
 @container xpeng-layout (max-width:520px){
- .xp-scene{height:clamp(590px,calc(100dvh - 120px),725px);min-height:0}
+ .xp-scene{min-height:0}
 }
 /* Battery housing and inner fill are a single gauge driven by actual SOC. */
 .xp-batt-glyph{
@@ -2136,7 +2078,6 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-batt-glyph[data-level="medium"]{--xp-battery-color:#ffc44e}
 .xp-batt-glyph[data-level="good"]{--xp-battery-color:#24f2bd}
 .xp-home-navigation .xp-batt-glyph{
- width:39px!important;height:57px!important;min-width:39px;
  border-width:3px!important;padding:4px!important
 }
 .xp-home-navigation .xp-batt-line{min-height:57px}
@@ -2159,8 +2100,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  height:98%!important;max-height:98%!important
 }
 .xp-ux-modal-maintenance .xp-maint-info{
- display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
- position:relative;z-index:1;width:100%;min-width:0;gap:6px
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%;min-width:0;gap:6px
 }
 .xp-ux-modal-maintenance .xp-maint-info .xp-extra-line{
  min-width:0;min-height:39px;box-sizing:border-box;
@@ -2206,8 +2146,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 }
 .xp-ux-modal-extras .xp-diagnostics-scroll .xp-entity-diagnostic>span{
  display:block;min-width:0;flex:1 1 auto;
- overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
- font-size:clamp(10px,1.1cqw,13px);direction:ltr;text-align:start
+ overflow:hidden;direction:ltr;text-align:start
 }
 .xp-ux-modal-extras .xp-diagnostics-scroll .xp-entity-diagnostic>b{
  display:block;flex:0 0 auto;max-width:27%;
@@ -2345,22 +2284,13 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-scene{height:clamp(570px,calc(100dvh - 144px),710px)}
 }
 
-/* DESIGN-ONLY PREVIEW | premium G6 visual pass, no telemetry, control or
-   navigation logic changes. Preserve the original owner vehicle assets. */
+/* V3 structural compatibility for vehicle controls and responsive layouts. */
 .xp-scene{
  --xp-ui-cyan:#39d9f5;--xp-ui-line:#69baf17a;
  --xp-ui-glass:linear-gradient(145deg,#102e4ce9 0%,#06182fe9 100%);
 }
-.xp-ux-dock-seven{
- border:1px solid #68b5e277;
- background:linear-gradient(150deg,#071a31ee,#08243bcc);
- box-shadow:0 12px 32px #0008, inset 0 1px #ffffff12;
- backdrop-filter:blur(16px)
-}
+
 .xp-ux-dock-seven .xp-ux-dock-action{
- border:1px solid #5baee077;
- border-radius:16px;background:var(--xp-ui-glass);
- box-shadow:inset 0 1px #ffffff10,0 5px 15px #0005;
  transition:background-color .15s ease,border-color .15s ease,transform .15s ease
 }
 .xp-ux-dock-seven .xp-ux-dock-action:hover:not(:disabled),
@@ -2471,9 +2401,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 }
 /* Retain the exact same full-function single-card layout on phone / Sections. */
 @container xpeng-layout (max-width:850px){
- .xp-ux-dock-seven .xp-ux-dock-action{
-  border-radius:12px
- }
+ 
  .xp-ux-modal-climate .xp-climate-primary,
  .xp-ux-modal-climate .xp-climate-temp-panel,
  .xp-ux-modal-climate .xp-climate-fan-panel{
@@ -2563,12 +2491,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  }
 }
 
-/* ========================================================================
-   XPENG G6 / V2 DESIGN SYSTEM — owner design-review branch
-   All visuals live here. Never alter the real Xpengtk commands, state checks,
-   navigation, photo URLs or the automatic charging scene.
-   Surface language: midnight slate / mineral glass / soft cyan light.
-   ======================================================================== */
+/* Canonical V3 structural rules: live vehicle layout and approved imagery. */
 .xp-scene{
  --xp-v2-ink:#eef7ff;--xp-v2-muted:#a8c2d2;
  --xp-v2-aqua:#69deef;--xp-v2-mint:#52e5b8;
@@ -2584,21 +2507,14 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-scene .xp-header{
  top:2.4%;left:3.1%;right:3.1%;
  min-height:60px;padding:9px clamp(12px,1.5cqw,22px);
- background:linear-gradient(105deg,rgba(7,20,35,.91),rgba(8,30,45,.82));
- border:1px solid var(--xp-v2-stroke);
- border-radius:19px;box-shadow:0 8px 24px rgba(0,0,0,.29);
- backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+ border-radius:19px;-webkit-backdrop-filter:blur(20px);
 }
-.xp-scene .xp-brand{
- font-weight:730;letter-spacing:.115em;
+.xp-scene .xp-brand{letter-spacing:.115em;
  text-shadow:0 1px 12px rgba(10,28,44,.9);
 }
 .xp-scene .xp-header .xp-meta-tools{gap:14px}
 .xp-scene .xp-header .xp-wifi,
 .xp-scene .xp-header .xp-more-trigger{
- border:1px solid var(--xp-v2-stroke-strong)!important;
- border-radius:13px!important;background:rgba(25,57,75,.68)!important;
- box-shadow:inset 0 1px 0 rgba(240,254,255,.12);
  transition:background .15s ease,border-color .15s ease;
 }
 .xp-scene .xp-header .xp-wifi:hover,
@@ -2656,43 +2572,22 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  border-top-color:rgba(131,209,225,.24)
 }
 /* Bottom dock — seven existing shortcuts, same bindings and order. */
-.xp-scene .xp-ux-dock-seven{
- gap:clamp(5px,.8cqw,12px);
- border:1px solid rgba(139,204,231,.37)!important;
- border-radius:23px!important;
- background:linear-gradient(120deg,rgba(4,15,29,.96),rgba(10,32,48,.93))!important;
- box-shadow:0 15px 40px rgba(0,0,0,.4),inset 0 1px rgba(235,249,255,.11)!important;
- backdrop-filter:blur(22px)
-}
+
 .xp-scene .xp-ux-dock-seven .xp-ux-dock-action{
- border:1px solid rgba(132,181,208,.21)!important;
- border-radius:15px!important;
- background:linear-gradient(160deg,rgba(27,53,72,.84),rgba(8,26,44,.86))!important;
- box-shadow:inset 0 1px rgba(244,254,255,.06)!important;
  transition:transform .17s ease,border-color .17s ease,background-color .17s ease
 }
 .xp-scene .xp-ux-dock-seven .xp-ux-dock-action ha-icon{
  color:#e9f4ff;
  filter:drop-shadow(0 0 7px rgba(109,224,243,.14))
 }
-.xp-scene .xp-ux-dock-seven .xp-ux-dock-action small{
- color:#d2e4ef!important;font-weight:600!important;letter-spacing:.005em
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action small{letter-spacing:.005em
 }
-.xp-scene .xp-ux-dock-seven .xp-ux-dock-action:disabled{
- opacity:.47!important;filter:saturate(.5);cursor:not-allowed
-}
-.xp-scene .xp-ux-dock-seven .xp-ux-dock-action:not(:disabled):is(:hover,:focus-visible){
- transform:translateY(-2px);border-color:rgba(109,230,245,.83)!important;
- background:linear-gradient(145deg,rgba(30,89,105,.9),rgba(12,46,69,.94))!important;
+
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action:not(:disabled):is(:hover,:focus-visible){border-color:rgba(109,230,245,.83)!important;
 }
 /* Functional modal architecture: legible header, consistent material surfaces. */
 .xp-scene .xp-ux-modal{
- background:linear-gradient(154deg,rgba(5,19,33,.97),rgba(10,33,52,.97) 63%,rgba(5,20,36,.98))!important;
- border:1px solid rgba(143,199,226,.46)!important;
- border-radius:23px!important;
- box-shadow:0 24px 55px rgba(0,0,0,.52),inset 0 1px rgba(228,247,255,.11)!important;
- backdrop-filter:blur(20px)
-}
+ border-radius:23px!important;}
 .xp-scene .xp-ux-modal-head{
  padding-bottom:clamp(9px,1.15cqw,15px);
  border-bottom:1px solid rgba(142,201,223,.25);
@@ -2703,9 +2598,6 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  text-shadow:0 1px 10px rgba(0,0,0,.28)
 }
 .xp-scene .xp-ux-modal-head button{
- background:linear-gradient(145deg,#1c4961,#0b2944)!important;
- border:1px solid rgba(147,219,239,.41)!important;border-radius:14px!important;
- box-shadow:inset 0 1px rgba(235,249,255,.1);
  color:var(--xp-v2-ink)
 }
 .xp-scene .xp-ux-modal-head button:is(:hover,:focus-visible){
@@ -2713,12 +2605,8 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 }
 /* Help panel lives in each feature, but feels integrated rather than bolted on. */
 .xp-scene .xp-help-intro{
- gap:7px;border:1px solid rgba(131,202,228,.37)!important;
- border-left:3px solid var(--xp-v2-aqua)!important;
- border-radius:15px!important;padding:clamp(12px,1.3cqw,17px)!important;
- background:linear-gradient(108deg,rgba(25,62,78,.84),rgba(12,37,58,.77))!important;
- box-shadow:inset 0 1px rgba(251,255,255,.07)!important
-}
+ gap:7px;
+ border-left:3px solid var(--xp-v2-aqua)!important;padding:clamp(12px,1.3cqw,17px)!important;}
 .xp-scene .xp-help-intro strong{
  font-weight:770;color:#f0fcff;letter-spacing:.012em
 }
@@ -2771,11 +2659,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-scene .xp-ux-modal-climate .xp-climate-thermometers b{
  letter-spacing:-.04em;font-weight:730
 }
-.xp-scene .xp-ux-modal-climate .xp-ux-temp-line button{
- border:1px solid rgba(136,214,235,.41)!important;
- background:linear-gradient(135deg,#1b4b61,#102f4d)!important;
- border-radius:11px!important;box-shadow:inset 0 1px rgba(241,251,255,.11)
-}
+
 .xp-scene .xp-ux-modal-climate .xp-ux-temp-line button:is(:hover,:focus-visible){
  border-color:#70e5f1!important;background:#25647b!important
 }
@@ -2804,27 +2688,16 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  color:#eaf6ff;letter-spacing:-.016em;font-weight:740;
  border-left:3px solid rgba(111,225,228,.8);padding-left:10px
 }
-.xp-scene .xp-ux-modal-maintenance .xp-tire-reading{
- background:linear-gradient(150deg,rgba(19,56,75,.91),rgba(8,30,50,.93))!important;
- border:1px solid rgba(119,188,221,.38)!important;
- border-radius:14px!important;box-shadow:inset 0 1px rgba(241,255,255,.08)!important
-}
+
 .xp-scene .xp-ux-modal-maintenance .xp-tire-reading strong{
  font-weight:750;letter-spacing:-.03em
 }
-.xp-scene .xp-ux-modal-maintenance .xp-maint-info .xp-extra-line{
- border:1px solid rgba(133,203,226,.3)!important;border-radius:12px!important;
- background:linear-gradient(140deg,rgba(20,48,66,.81),rgba(8,28,47,.9))!important;
- box-shadow:inset 0 1px rgba(237,255,255,.07)!important
-}
+.xp-scene .xp-ux-modal-maintenance .xp-maint-info .xp-extra-line{border-radius:12px!important;}
 /* Custom Functions: card collection reads like premium system controls, not
    bright decorative tiles. All seven original destinations stay intact. */
 .xp-scene .xp-ux-modal-extras .xp-extra-grid{gap:clamp(8px,1.1cqw,15px)}
 .xp-scene .xp-ux-modal-extras .xp-extra-tile{
- background:linear-gradient(142deg,rgba(26,63,82,.83),rgba(8,27,46,.95))!important;
- border:1px solid rgba(143,205,232,.34)!important;
  border-radius:20px!important;
- box-shadow:0 7px 20px rgba(0,3,10,.24),inset 0 1px rgba(247,255,255,.11)!important;
  transition:border-color .17s,transform .17s,box-shadow .17s;
 }
 .xp-scene .xp-ux-modal-extras .xp-extra-tile ha-icon{
@@ -2863,8 +2736,8 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-scene .xp-brand{letter-spacing:.025em;font-size:clamp(11px,3cqw,14px)}
  .xp-scene .xp-ux-modal{border-radius:17px!important}
  .xp-scene .xp-ux-modal-head{padding-bottom:9px}
- .xp-scene .xp-ux-dock-seven{gap:5px;border-radius:19px!important}
- .xp-scene .xp-ux-dock-seven .xp-ux-dock-action{border-radius:12px!important}
+ 
+ 
  .xp-scene .xp-ux-modal-extras .xp-extra-tile{border-radius:16px!important}
  .xp-scene .xp-help-intro{border-radius:13px!important;padding:11px!important}
  .xp-scene .xp-ux-modal-climate .xp-climate-layout{gap:8px!important}
