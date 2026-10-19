@@ -152,9 +152,9 @@ const XP_ICONS = Object.freeze({
  windows:'mdi:car-door',
  windows_open:'mdi:car-door',
  // Side-profile SUV with official MDI lift/lower action badge: no front view.
- trunk:'mdi:car-estate',
- trunk_open:'mdi:car-estate',
- trunk_close:'mdi:car-estate',
+ trunk:'mdi:car-back',
+ trunk_open:'mdi:car-back',
+ trunk_close:'mdi:car-back',
  trunk_lift:'mdi:arrow-up-bold',
  trunk_lower:'mdi:arrow-down-bold',
  horn:'mdi:bullhorn-outline',
@@ -193,15 +193,9 @@ function xpIcon(name,size=22){
  const mdi=XP_ICONS[name]||XP_ICONS.info;
  const px=Math.max(12,Math.min(80,Number(size)||22));
  const glyph='<ha-icon class="xp-mdi-icon" icon="'+mdi+'" style="--xp-icon-size:'+px+'px" aria-hidden="true"></ha-icon>';
- // State-aware trunk icon is composed only of genuine Home Assistant MDI glyphs.
- // Never infer a hatch movement if its live state/next action is unknown.
- if(!['trunk','trunk_open','trunk_close'].includes(name))return glyph;
- const arrowKey=name==='trunk_open'?'trunk_lift':name==='trunk_close'?'trunk_lower':null;
- const arrowSize=Math.max(8,Math.min(13,Math.round(px*.36)));
- return '<span class="xp-trunk-symbol'+(name==='trunk_close'?' xp-trunk-symbol-lower':'')+
-   '" style="--xp-trunk-size:'+px+'px">'+glyph+
-   (arrowKey?'<ha-icon class="xp-mdi-icon xp-trunk-arrow" icon="'+XP_ICONS[arrowKey]+
-   '" style="--xp-icon-size:'+arrowSize+'px" aria-hidden="true"></ha-icon>':'')+'</span>';
+ // Use a single official rear-view vehicle glyph for trunk commands.
+ // The actual next action remains in the live, accessible button label.
+ return glyph;
 }
 function xpEsc(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
 
@@ -4500,6 +4494,66 @@ background:transparent!important;
  }
 }
 
+/* Beta 17 — owner-approved overlay-only polish. No source image or command changes. */
+@container xpeng-layout (min-width:851px){
+ .xp-scene .xp-ux-modal-climate{
+   inset:auto!important;top:50%!important;left:50%!important;right:auto!important;
+   bottom:auto!important;transform:translate(-50%,-50%)!important;
+   width:min(1050px,calc(100% - 30px))!important;
+   height:min(735px,calc(100% - 26px))!important;
+   max-height:calc(100% - 20px)!important;box-sizing:border-box!important;
+ }
+ /* Full-sized More options screen again, with seven centered real MDI shortcuts. */
+ .xp-scene .xp-ux-modal-extras:not(:has(.xp-extra-details)){
+   inset:auto!important;top:50%!important;left:50%!important;right:auto!important;
+   bottom:auto!important;transform:translate(-50%,-50%)!important;
+   width:min(1230px,calc(100% - 24px))!important;
+   height:min(735px,calc(100% - 24px))!important;
+   max-height:calc(100% - 20px)!important;
+ }
+ .xp-scene .xp-ux-modal-extras .xp-extra-grid{max-width:1010px!important;width:100%!important}
+ /* 68px round home buttons, preserving all seven actions and labels. */
+ .xp-scene.xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{
+   --xp-ring-size:68px!important;
+   min-width:75px!important;min-height:99px!important;
+   padding-top:18px!important;gap:22px!important;
+   border-radius:45px!important;
+ }
+ .xp-scene.xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon{
+   width:32px!important;height:32px!important;flex:0 0 32px!important;
+   --xp-icon-size:32px!important;--mdc-icon-size:32px!important;
+ }
+ .xp-scene.xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action::before{
+   width:68px!important;height:68px!important;border-radius:50%!important;
+ }
+}
+/* Remove pointer-focus square while retaining an accessible keyboard focus cue. */
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action:focus:not(:focus-visible),
+.xp-scene .xp-ux-modal-extras .xp-extra-tile:focus:not(:focus-visible),
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon{
+ outline:0!important;outline-offset:0!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action:focus-visible,
+.xp-scene .xp-ux-modal-extras .xp-extra-tile:focus-visible{
+ outline:2px solid #8fe8f2!important;outline-offset:3px!important;
+ border-radius:45px!important;
+}
+/* One line of page headings, consistent sizing and less duplicate copy. */
+.xp-scene .xp-ux-modal-head h2{
+ font-size:clamp(18px,1.8cqw,25px)!important;font-weight:720!important;
+ letter-spacing:-.012em!important;line-height:1.22!important;
+}
+.xp-scene .xp-ux-modal-head{align-items:center!important;gap:12px!important}
+.xp-scene .xp-header .xp-header-right{margin-inline-start:auto}
+/* All backgrounds/images remain as-is; opening a page never removes home layout. */
+.xp-scene.xp-home-navigation .xp-night-photo{
+ background-size:cover!important;background-position:center center!important;
+ transform:none!important;filter:none!important;
+}
+/* Modal stays scrollable without changing the dashboard canvas. */
+.xp-scene .xp-ux-modal-climate .xp-ux-modal-content,
+.xp-scene .xp-ux-modal-extras .xp-ux-modal-content{min-height:0;overflow-y:auto}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -4861,7 +4915,7 @@ class XpengVehicleCard extends HTMLElement{
          action==='trunk'?(target?.suffix==='open_trunk'?'trunk_open':target?.suffix==='close_trunk'?'trunk_close':'trunk'):icon;
        return '<button class="xp-ux-dock-action" type="button" '+
          (toggle?'data-xp-toggle="'+action+'"':'data-xp-open="'+action+'"')+
-         ' aria-label="'+xpEsc(label)+'" title="'+xpEsc(label)+'" '+(pending?'aria-busy="true" ':'')+(available?'':'disabled')+'>'+
+         ' aria-label="'+xpEsc(label)+'" '+(pending?'aria-busy="true" ':'')+(available?'':'disabled')+'>'+
          xpIcon(ico,27)+'<small>'+xpEsc(compact)+'</small></button>';
      }).join('')+'</nav>';
  }
@@ -5237,29 +5291,36 @@ class XpengVehicleCard extends HTMLElement{
    return XP_MAP_HELPERS_PROMISE;
  }
 
+ xpMapDisplayHass(gps){
+   const original=this._hass;
+   const state=original?.states?.[gps.id]||gps.state;
+   if(!original||!state)return original;
+   const attributes={...(state.attributes||{}),icon:'mdi:car-back'};
+   delete attributes.entity_picture;
+   const presented={...state,attributes};
+   return {...original,states:{...original.states,[gps.id]:presented}};
+ }
  xpCenterMapOnVehicle(map,gps){
-   // One-time camera correction for Leaflet maps mounted after a modal resize.
-   // Only real tracker coordinates may set the camera, never a fallback city.
-   const at=gps?.state?.attributes||{};
-   const lat=Number(at.latitude),lon=Number(at.longitude);
-   if(!Number.isFinite(lat)||!Number.isFinite(lon)||Math.abs(lat)>90||Math.abs(lon)>180
-      ||at.latitude==null||at.longitude==null)return;
+   // Native Home Assistant ha-map handles both MapLibre and Leaflet.
+   // Never use a fallback place, never re-center when states merely refresh.
+   const a=gps?.state?.attributes||{};
+   if(a.latitude==null||a.longitude==null)return;
+   const lat=Number(a.latitude),lon=Number(a.longitude);
+   if(!Number.isFinite(lat)||!Number.isFinite(lon)||Math.abs(lat)>90||Math.abs(lon)>180)return;
    if(typeof window==='undefined')return;
-   const camera=()=>{
+   const recenter=()=>{
      if(this._xpPanel!=='map'||this._xpMapElement!==map)return;
      const host=this.shadowRoot?.querySelector?.('[data-xp-map-host]');
      if(!host||!host.contains?.(map))return;
-     const surface=map.shadowRoot?.querySelector?.('ha-map')
-       ||map.querySelector?.('ha-map')||map._mapElement;
-     const leaflet=surface?._map||surface?.map||map._map;
-     if(!leaflet||typeof leaflet.setView!=='function')return;
-     leaflet.invalidateSize?.({pan:false});
-     leaflet.setView([lat,lon],16,{animate:false});
+     const surface=map.shadowRoot?.querySelector?.('ha-map')||map.querySelector?.('ha-map');
+     if(!surface)return;
+     // Home Assistant's public component API: works on both map engines.
+     if(typeof surface.setView==='function')surface.setView([lat,lon],16);
+     else if(typeof surface.fitMap==='function')surface.fitMap({zoom:16,pad:0});
    };
-   // Do not recenter on every Home Assistant update: preserve manual panning.
    if(typeof window.requestAnimationFrame==='function')
-     window.requestAnimationFrame(()=>window.requestAnimationFrame(camera));
-   if(typeof window.setTimeout==='function')window.setTimeout(camera,350);
+     window.requestAnimationFrame(()=>window.requestAnimationFrame(recenter));
+   if(typeof window.setTimeout==='function')window.setTimeout(recenter,600);
  }
  async xpMountMap(){
    if(this._xpPanel!=='map')return;
@@ -5270,7 +5331,7 @@ class XpengVehicleCard extends HTMLElement{
      // Retain the actual HA map card instance and tiles across sensor updates.
      // Recreating Leaflet with innerHTML on each HA hass tick causes flashing.
      if(this._xpMapElement&&this._xpMapEntityId===gps.id){
-       this._xpMapElement.hass=this._hass;
+       this._xpMapElement.hass=this.xpMapDisplayHass(gps);
        if(!host.contains?.(this._xpMapElement))host.replaceChildren(this._xpMapElement);
        return;
      }
@@ -5278,9 +5339,9 @@ class XpengVehicleCard extends HTMLElement{
      if(!helper){host.textContent=xpLocalizeMarkup('המפה המובנית אינה זמינה בכרטיס זה כרגע.',this._hass);return;}
      if(this._xpPanel!=='map'||!this.shadowRoot?.contains?.(host)||
         this.xpLive('device_tracker','location')?.id!==gps.id)return;
-     const map=helper.createCardElement({type:'map',entities:[{entity:gps.id}],
+     const map=helper.createCardElement({type:'map',entities:[{entity:gps.id,label_mode:'icon',focus:true}],
        default_zoom:16,auto_fit:true,fit_zones:false,hours_to_show:0,theme_mode:'dark',aspect_ratio:'4:3'});
-     map.hass=this._hass;
+     map.hass=this.xpMapDisplayHass(gps);
      this._xpMapElement=map;this._xpMapEntityId=gps.id;
      host.replaceChildren(map);
      this.xpCenterMapOnVehicle(map,gps);
@@ -5927,7 +5988,7 @@ class XpengVehicleCard extends HTMLElement{
   return 'Charging unavailable';
  }
  title(){
-  return `<div class="xp-title"><h1>XPENG <em>${xpEsc(this.model())}</em></h1><div class="xp-subtitle">${this._view==='charging'?xpEsc(this.chargeStatus()):this._tireOpen?'Tire pressure':'Vehicle status'}</div></div>`;
+  return `<div class="xp-title"><h1><em>${xpEsc(this.model())}</em></h1><div class="xp-subtitle">${this._view==='charging'?xpEsc(this.chargeStatus()):this._tireOpen?'Tire pressure':'Vehicle status'}</div></div>`;
  }
  sceneBackdrop(){
     // The scenic background belongs to the DASHBOARD, not to a model image folder.
@@ -5941,7 +6002,7 @@ class XpengVehicleCard extends HTMLElement{
  header(){
    const connection=this.val('connection'),status=xpConnText(connection);
    const stateClass=status==='Connected'?'xp-connected':status==='Connection error'?'xp-error':'xp-disconnected';
-   return `<header class="xp-header"><div class="xp-brand"><span>XPENG</span></div>
+   return `<header class="xp-header">
      <div class="xp-header-right"><div class="xp-meta-tools">
         ${this.xpUiEnabled()&&this._view!=='charging'&&!this._xpPanel?'<button type="button" class="xp-more-trigger" data-xp-more aria-label="אפשרויות נוספות" title="אפשרויות נוספות">'+xpIcon('settings',21)+'</button>':''}
        <button class="xp-wifi ${stateClass}" type="button" data-meta-toggle
@@ -6137,6 +6198,7 @@ class XpengVehicleCard extends HTMLElement{
   this._view=isCharging?'charging':'overview';
   if(isCharging)this._tireOpen=false;
   const onHome=!isCharging&&!this._tireOpen&&!this._xpPanel;
+  const homeSurface=!isCharging&&!this._tireOpen&&this.xpUiEnabled();
   const onChargeHome=isCharging&&!this._xpPanel;
   const chargeLayout=isCharging&&this.xpUiEnabled();
   const showDock=this.xpUiEnabled()&&(onHome||onChargeHome);
@@ -6144,7 +6206,7 @@ class XpengVehicleCard extends HTMLElement{
   const oldPanel=oldModal?.className||'';
   const oldScroll=oldModal?.scrollTop||0;
   const oldDiagnostics=oldModal?.querySelector?.('.xp-diagnostics-scroll')?.scrollTop||0;
-  const html=xpLocalizeMarkup(`<style>${XP_CSS}</style><ha-card><div class="xp-scene ${isCharging?'xp-charge':this._tireOpen?'xp-overview xp-tire-mode':'xp-overview'} ${this.xpUiEnabled()?'xp-has-controls':''} ${onHome&&this.xpUiEnabled()?'xp-home-navigation':''} ${chargeLayout?'xp-charge-navigation':''} ${xpIsEnglish(this._hass)?'xp-locale-en':''} ${this.paint()==='black_edition'?'xp-black-edition':''}">
+  const html=xpLocalizeMarkup(`<style>${XP_CSS}</style><ha-card><div class="xp-scene ${isCharging?'xp-charge':this._tireOpen?'xp-overview xp-tire-mode':'xp-overview'} ${this.xpUiEnabled()?'xp-has-controls':''} ${homeSurface?'xp-home-navigation':''} ${chargeLayout?'xp-charge-navigation':''} ${xpIsEnglish(this._hass)?'xp-locale-en':''} ${this.paint()==='black_edition'?'xp-black-edition':''}">
    ${this.sceneBackdrop()}${this.header()}${isCharging?this.charging():this._tireOpen?this.title()+this.tireScreen():this.overview()}${showDock?this.xpDock():""}${this.xpModal()}
    
    </div></ha-card>`,this._hass);
