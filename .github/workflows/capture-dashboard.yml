@@ -10,6 +10,7 @@ on:
       - refactor/g6-isolated-design-and-help-20261018
       - design/g6-v2-surface-redesign-20261018
       - fix/g6-beta19-final-stabilization-20261019
+      - release/v1.0.4-beta.21
     paths:
       - scripts/capture-dashboard.cjs
       - src/xpeng-vehicle-card.js
