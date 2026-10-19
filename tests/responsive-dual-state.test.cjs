@@ -71,8 +71,8 @@ test('native MDI glyphs replace ALL hand-drawn dashboard controls',()=>{
   assert.doesNotMatch(block,/mdi:window-open|mdi:window-open-variant/,'House-window symbols must not return');
  assert.doesNotMatch(block,/<(?:svg|ellipse|circle|path|rect)\b/,'No hand-drawn SVG for buttons');
  assert.match(block,/class="xp-mdi-icon" icon="'\+mdi\+'/);
- assert.match(block,/xp-trunk-symbol/);
- assert.match(block,/arrowSize/);
+ assert.doesNotMatch(block,/xp-trunk-symbol|arrowSize/,'Only one genuine rear car glyph, no composite arrow');
+ assert.match(block,/return glyph;/);
  assert.match(source,/\$\{xpIcon\('wifi',24\)\}/,'Connection indicator must also be native');
  assert.doesNotMatch(source,/\.xp-ux-(?:dock-action|cycle|climate-feature) svg/);
   assert.match(source,/xpBatteryGauge\(\)/,'Battery badge derives from live SOC and official MDI levels');
