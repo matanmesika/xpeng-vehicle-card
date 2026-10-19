@@ -2927,45 +2927,38 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  gap:clamp(7px,1.1cqw,12px)!important;
 }
 .xp-scene .xp-ux-modal-extras .xp-extra-tile{
- display:grid!important;
- grid-template-columns:26px minmax(0,1fr)!important;
- grid-template-rows:auto auto!important;
- align-content:center!important;
- align-items:center!important;
- justify-content:stretch!important;
- justify-items:start!important;
- column-gap:10px!important;
- row-gap:3px!important;
- min-height:86px!important;
- padding:9px 12px!important;
- border-radius:15px!important;
- background:rgba(13,44,63,.22)!important;
- border:1px solid var(--xp-v3-hairline)!important;
- box-shadow:none!important;
- transform:none!important;
- text-align:start!important;
+display:flex!important;flex-direction:column!important;
+ align-content:center!important;align-items:center!important;
+ justify-content:center!important;justify-items:center!important;
+ gap:5px!important;
+ min-height:102px!important;padding:6px 7px!important;
+ border-radius:0!important;border:0!important;
+ background:transparent!important;box-shadow:none!important;
+ transform:none!important;text-align:center!important;
 }
 .xp-scene .xp-ux-modal-extras .xp-extra-tile>.xp-mdi-icon{
- grid-column:1!important;grid-row:1/3!important;
- width:23px!important;height:23px!important;
- --xp-icon-size:23px!important;--mdc-icon-size:23px!important;
- color:#b7e8f3!important;
- filter:none!important;
+flex:0 0 48px!important;
+ width:48px!important;height:48px!important;
+ --xp-icon-size:21px!important;--mdc-icon-size:21px!important;
+ border:1px solid var(--xp-v3-control-edge)!important;
+ border-radius:50%!important;
+ background:rgba(13,43,64,.26)!important;
+ box-shadow:inset 0 1px rgba(245,254,255,.1)!important;
+ backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ color:#b7e8f3!important;filter:none!important;
 }
 .xp-scene .xp-ux-modal-extras .xp-extra-tile>b{
- grid-column:2!important;grid-row:1!important;
- font-size:clamp(12px,1.16cqw,15px)!important;
- line-height:1.15!important;
+font-size:clamp(12px,1.12cqw,14px)!important;
+ line-height:1.12!important;text-align:center!important;
 }
 .xp-scene .xp-ux-modal-extras .xp-extra-tile>small{
- grid-column:2!important;grid-row:2!important;
- font-size:clamp(10px,.95cqw,12px)!important;
- line-height:1.25!important;
+font-size:clamp(9px,.91cqw,11px)!important;
+ line-height:1.2!important;text-align:center!important;
 }
 .xp-scene .xp-ux-modal-extras .xp-extra-tile:not(:disabled):is(:hover,:focus-visible){
- background:rgba(24,78,97,.36)!important;
- border-color:rgba(101,222,223,.72)!important;
- box-shadow:none!important;
+background:transparent!important;
+ border:0!important;box-shadow:none!important;
  transform:none!important;
 }
 .xp-scene .xp-ux-modal-extras .xp-extra-heading{font-size:clamp(15px,1.5cqw,19px)!important}
@@ -2990,6 +2983,11 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 }
 .xp-scene .xp-ux-modal-extras .xp-extra-action{
  width:fit-content;max-width:100%;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile:not(:disabled):is(:hover,:focus-visible)>.xp-mdi-icon{
+ background:rgba(27,85,104,.39)!important;
+ border-color:rgba(102,225,226,.83)!important;
+ box-shadow:0 0 16px rgba(65,180,215,.12)!important;
 }
 /* Diagnostics: preserve independent scroll and full entity ID access.
    Small separated rows have no heavy tiles and never split sensor names. */
@@ -3046,15 +3044,27 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
   --xp-v3-control-height:42px;
  }
  .xp-scene .xp-ux-modal-extras .xp-extra-tile{
-  min-height:80px!important;
-  padding:8px!important;
-  column-gap:7px!important;
-  grid-template-columns:23px minmax(0,1fr)!important;
- }
+display:flex!important;flex-direction:column!important;
+ align-content:center!important;align-items:center!important;
+ justify-content:center!important;justify-items:center!important;
+ gap:5px!important;
+ min-height:102px!important;padding:6px 7px!important;
+ border-radius:0!important;border:0!important;
+ background:transparent!important;box-shadow:none!important;
+ transform:none!important;text-align:center!important;
+}
  .xp-scene .xp-ux-modal-extras .xp-extra-tile>.xp-mdi-icon{
-  width:21px!important;height:21px!important;
-  --xp-icon-size:21px!important;--mdc-icon-size:21px!important;
- }
+flex:0 0 48px!important;
+ width:48px!important;height:48px!important;
+ --xp-icon-size:21px!important;--mdc-icon-size:21px!important;
+ border:1px solid var(--xp-v3-control-edge)!important;
+ border-radius:50%!important;
+ background:rgba(13,43,64,.26)!important;
+ box-shadow:inset 0 1px rgba(245,254,255,.1)!important;
+ backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ color:#b7e8f3!important;filter:none!important;
+}
  .xp-scene .xp-ux-modal-climate .xp-ux-climate-feature{
   min-height:67px!important;padding:6px 4px!important;
  }
@@ -3078,24 +3088,35 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
   grid-template-columns:repeat(2,minmax(0,1fr))!important;
  }
  .xp-scene .xp-ux-modal-extras .xp-extra-tile{
-  display:flex!important;flex-direction:column!important;
-  align-items:center!important;justify-content:center!important;
-  text-align:center!important;gap:4px!important;
-  min-height:82px!important;padding:7px 5px!important;
- }
+display:flex!important;flex-direction:column!important;
+ align-content:center!important;align-items:center!important;
+ justify-content:center!important;justify-items:center!important;
+ gap:5px!important;
+ min-height:102px!important;padding:6px 7px!important;
+ border-radius:0!important;border:0!important;
+ background:transparent!important;box-shadow:none!important;
+ transform:none!important;text-align:center!important;
+}
  .xp-scene .xp-ux-modal-extras .xp-extra-tile>.xp-mdi-icon{
-  flex:0 0 auto!important;
-  width:21px!important;height:21px!important;
-  --xp-icon-size:21px!important;--mdc-icon-size:21px!important;
- }
+flex:0 0 48px!important;
+ width:48px!important;height:48px!important;
+ --xp-icon-size:21px!important;--mdc-icon-size:21px!important;
+ border:1px solid var(--xp-v3-control-edge)!important;
+ border-radius:50%!important;
+ background:rgba(13,43,64,.26)!important;
+ box-shadow:inset 0 1px rgba(245,254,255,.1)!important;
+ backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ color:#b7e8f3!important;filter:none!important;
+}
  .xp-scene .xp-ux-modal-extras .xp-extra-tile>b{
-  font-size:clamp(11px,3.2cqw,13px)!important;
-  line-height:1.15!important;
- }
+font-size:clamp(12px,1.12cqw,14px)!important;
+ line-height:1.12!important;text-align:center!important;
+}
  .xp-scene .xp-ux-modal-extras .xp-extra-tile>small{
-  font-size:clamp(9px,2.6cqw,11px)!important;
-  line-height:1.2!important;
- }
+font-size:clamp(9px,.91cqw,11px)!important;
+ line-height:1.2!important;text-align:center!important;
+}
  .xp-scene .xp-ux-modal-climate .xp-ux-climate-feature{
   min-height:64px!important;padding:5px 3px!important;
  }
@@ -3113,7 +3134,16 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 
 @media(prefers-reduced-motion:reduce){
  .xp-scene .xp-ux-dock-seven .xp-ux-dock-action,
- .xp-scene .xp-ux-modal-extras .xp-extra-tile{transition:none!important;transform:none!important}
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile{
+display:flex!important;flex-direction:column!important;
+ align-content:center!important;align-items:center!important;
+ justify-content:center!important;justify-items:center!important;
+ gap:5px!important;
+ min-height:102px!important;padding:6px 7px!important;
+ border-radius:0!important;border:0!important;
+ background:transparent!important;box-shadow:none!important;
+ transform:none!important;text-align:center!important;
+}
 }
 
 /* On Sections/iPhone widths reserve the original car-photo clearance. Larger
@@ -3543,12 +3573,19 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  box-shadow:none!important;
 }
 .xp-scene .xp-ux-modal-extras .xp-extra-tile{
- background:rgba(10,42,61,.28)!important;
- border:1px solid rgba(158,210,238,.23)!important;
- box-shadow:none!important;
+display:flex!important;flex-direction:column!important;
+ align-content:center!important;align-items:center!important;
+ justify-content:center!important;justify-items:center!important;
+ gap:5px!important;
+ min-height:102px!important;padding:6px 7px!important;
+ border-radius:0!important;border:0!important;
+ background:transparent!important;box-shadow:none!important;
+ transform:none!important;text-align:center!important;
 }
 .xp-scene .xp-ux-modal-extras .xp-extra-tile:not(:disabled):is(:hover,:focus-visible){
- background:rgba(23,80,101,.45)!important;
+background:transparent!important;
+ border:0!important;box-shadow:none!important;
+ transform:none!important;
 }
 .xp-scene button:focus-visible{outline:2px solid #92e9f4!important;outline-offset:3px}
 /* The ONE card remains adaptive in HA Sections, small iPhones and desktop. */

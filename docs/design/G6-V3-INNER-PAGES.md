@@ -9,8 +9,8 @@ Custom Functions (all seven launch tiles and X-Guard), Diagnostics, Map,
 Charging Limit/Schedule and associated modal actions. Native Home Assistant MDI
 icons remain source of truth; CSS changes only their displayed proportions.
 
-Sizing contracts: 19–23px MDI glyphs, 40–44px modal touch targets, maximum 86px
-functions tiles at wide widths / 82px on narrow cards. Cabin seat hotspots
+Sizing contracts: 19–23px MDI glyphs, 40–44px modal touch targets, 48px circular Custom Functions discs (44px on narrow cards), with
+transparent full-card hit targets and compact labels (no rectangular backing). Cabin seat hotspots
 remain at least 40×42px. The map and diagnostic list continue to scroll/fit
 independently. Buttons are disabled based on integration state as before.
 No action, sensor, routing or original vehicle artwork has been changed.
