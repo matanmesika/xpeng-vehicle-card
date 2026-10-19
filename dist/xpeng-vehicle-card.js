@@ -206,7 +206,7 @@ function xpIcon(name,size=22){
 function xpEsc(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
 
 /* Dual-language UI: Home Assistant's user locale controls labels; no separate dashboard. */
-const XP_EN_TRANSLATIONS=Object.freeze([["לחצי הצמיגים מתקבלים מחיישני הרכב דרך Home Assistant. ערך חסר נשאר לא זמין; יחידות הלחץ נקבעות בהגדרות הכרטיס.","Tire pressure comes from the vehicle sensors through Home Assistant. Missing values stay unavailable; units are configured in the card editor."],["חיישן unavailable אינו ניתן לתיקון באמצעות ציור הכרטיס. בדוק את מקור הנתון באינטגרציה. כפתורי פעולה מסוג button אינם מדווחים מצב רגיל.","An unavailable sensor cannot be fixed by the card. Check Xpengtk. Action buttons do not report a normal state."],["לא מוצגות פקודות פתיחת נעילה, פתיחת חלונות או תא מטען. פעולות רגישות דורשות אישור ויעברו דרך הרשאות Xpengtk.","Unlock/open actions are hidden. Sensitive commands require confirmation and Xpengtk permissions."],["Xpengtk מספקת חיישני תזמון טעינה לקריאה בלבד. אין כרגע פקודת שינוי תזמון טעינה מאומתת.","Xpengtk provides read-only charging schedules. Schedule changes are not supported."],["פתיחת תא המטען מחייבת הרשאת Access. אם החיישן לא מדווח מצב ברור, לא תישלח פקודה.","Opening the tailgate requires Access permission. No command is sent with unknown status."],["השינוי נשלח ל־Home Assistant רק אחרי בחירת ערך בסרגל. יש לוודא שהרכב קיבל אותו.","Changes are sent to Home Assistant only after selecting a slider value. Confirm the vehicle accepted it."],["עדיין לא זוהו ישויות Xpengtk. בדוק חיבור, קידומת VIN והרשאות Entity Registry.","No Xpengtk entities detected. Check the connection, VIN prefix and Entity Registry permissions."],["כיבוי חימום מושב הנוסע הקדמי אינו נתמך כרגע ב־Xpengtk. ניתן לכבות מתוך הרכב.","Turning off front passenger seat heating is not supported by Xpengtk. Use the vehicle controls."],["המפה אינה זמינה בתוך הכרטיס כרגע. אפשר לפתוח את פרטי המיקום דרך הכפתור למטה.","The map is unavailable in this card. Open the vehicle's location details below."],["נעילה ושחרור נעילה מתבצעים בלחיצה אחת, בהתאם למצב. שחרור מחייב הרשאת Access.","Lock/unlock uses a single tap according to state. Unlocking requires Access permission."],["המידע מגיע מ־Xpengtk. הפקודות פועלות לפי הרשאות Home Assistant והרכב בלבד.","Data comes from Xpengtk. Commands use Home Assistant and vehicle permissions."],["הערכים מתעדכנים לפי Home Assistant. מספר השלדה המלא אינו חשוף באינטגרציה.","Values are provided by Home Assistant. The full VIN is not exposed by the integration."],["תמונת פנים G6 בצבע שנבחר עדיין לא צורפה לפרויקט. לא מוצגת הדמיה חלופית.","The selected G6 interior photo is unavailable. No substitute illustration is displayed."],["לחיצה אחת הופכת את מצב הדלתית על סמך חיווי Xpengtk. אין שחרור כבל.","One tap toggles the charging flap according to Xpengtk status. No cable release."],["פתיחת חלונות דורשת הרשאת Access. אין פקודה כאשר מצבם אינו ידוע.","Opening windows requires Access permission. No command is sent with unknown status."],["אפשרויות נוספות לרכב — שבעת קיצורי הדרך נשארים במסך הבית בלבד.","Additional vehicle options. The seven shortcuts remain on the home screen."],["הפקודה נשלחה ל־Home Assistant. יש לוודא שהרכב אישר את הפעולה.","Command sent to Home Assistant. Verify that the vehicle confirmed the action."],["אין לוח תזמוני מיזוג זמין באינטגרציה. לא ניצור תזמון מדומה.","No climate schedule calendar is available through the integration; no schedule is simulated."],["בקרות V2L אינן זמינות בדגם או בהרשאות האינטגרציה.","V2L controls are not available for this model or permissions."],["המפה המובנית אינה זמינה בכרטיס זה כרגע.","The built-in map is currently unavailable in this card."],["דיווח Connected • חיבור הכבל אינו מאומת","Connected reported • Cable connection unverified"],["הגבלת הטעינה אינה זמינה כעת באינטגרציה.","Charging limit is currently unavailable through the integration."],["כיבוי חימום נוסע אינו מאומת באינטגרציה","Passenger heating off is not supported by the integration"],["לא נמצאו בקרות מושבים נתמכות לרכב זה.","No supported seat controls were found for this vehicle."],["לא נמצאו ישויות אבטחה זמינות לרכב זה.","No security entities are available for this vehicle."],["רמת החימום או האוורור אינה זמינה כעת.","Heating or ventilation level unavailable."],["אין כרגע פקודות זמינות באינטגרציה.","No commands are currently available through the integration."],["כבל מחובר • אין לסגור את הדלתית","Cable connected • Do not close the flap"],["תמונת פנים בעל הרכב · XPENG G6","Owner-provided G6 interior photograph"],["אין כרגע נתוני אנרגיה זמינים.","Energy data is currently unavailable."],["בקרת המיזוג אינה זמינה כרגע.","Climate controls are unavailable."],["פרטי תחזוקה ב־Home Assistant","Maintenance details in Home Assistant"],["תמונת פנים לא זמינה לדגם זה.","No interior image is available for this model."],["פרטי מיקום ב־Home Assistant","Location details in Home Assistant"],["טיימר לכיבוי אוטומטי (דקות)","Auto-off timer (minutes)"],["החלף כיוון זרימת אוויר אל ","Change airflow direction to "],["חיישנים, מצב ומזהי Xpengtk","Sensors, states and Xpengtk IDs"],["תמונת פנים לפי הגדרות הרכב","Interior photograph from vehicle settings"],["פעולות הרכב וקיצורי מסכים","Vehicle controls and shortcuts"],["תמונת פנים לפי הגדרת הצבע","Interior photo chosen by color"],["הפעלת מיזוג ומצב אוטומטי","Climate and automatic mode controls"],["לחץ אוויר בארבעת הצמיגים","Tire pressure · All four tires"],["שנת דגם (מהגדרות הכרטיס)","Model year (card settings)"],[" ישויות משויכות לרכב • "," vehicle entities • "],["אין שינוי בפעולות הרכב","No change to vehicle commands"],["הפעל עדכונים אוטומטיים","Enable automatic updates"],["צריכה והיסטוריית טעינה","Consumption and charging history"],["הדרגה אינה נתמכת כעת.","This level is currently unsupported."],["שגיאה בשליחת הפקודה: ","Error sending command: "],["כיוון זרימת אוויר אל ","Set airflow direction to "],["שנת דגם (מהאינטגרציה)","Model year (integration)"],["צריכה ממוצעת ב־7 ימים","7-day average consumption"],["אנרגיה בטעינה האחרונה","Last charge energy"],["כבה עדכונים אוטומטיים","Disable automatic updates"],["לשלוח את הפקודה לרכב?","Send this command to the vehicle?"],["מצב הדלתית אינו זמין","Flap status unavailable"],["הצג לוח תזמוני מיזוג","View climate schedules"],["אבטחה ורגישות השמירה","Security sensitivity"],[" זמינות או פעולות • "," available or actions • "],["רשימת ישויות Xpengtk","Xpengtk entity list"],["שירות HA אינו זמין.","Home Assistant service unavailable."],["פקודת המושב נכשלה: ","Seat command failed: "],["טמפרטורת תא הנוסעים","Cabin temperature"],["הצג תזמונים קיימים","View existing schedules"],["נדרשת הרשאת Access","Access permission required"],["צריכת אנרגיה בחניה","Parked energy consumption"],["משך הטעינה האחרונה","Last charge duration"],["שקע חשמל בתא המטען","Tailgate power outlet"],["פעיל • חיווי בלבד","On • Status only"],["כבוי • חיווי בלבד","Off • Status only"],["ק״מ שנותרו לטיפול","Kilometers until service"],["מספר שלדה (מוסתר)","Masked VIN"],["טווח שנוסף בטעינה","Range added during last charge"],["פתיחת תחזוקת הרכב","Open vehicle maintenance"],["יחידות לחץ צמיגים","Tire pressure unit"],["הפשרת שמשה קדמית","Windshield defrost"],["דרושה הרשאת גישה","Access permission required"],["דלתית שקע הטעינה","Charging port flap"],["תחזוקה ופרטי רכב","Maintenance and vehicle details"],["חזרה לחלון הקודם","Back to previous screen"],["חזרה לתצוגת הרכב","Back to vehicle view"],["טמפרטורה נוכחית","Current temperature"],["סגירת שקע טעינה","Close charging port"],["פתיחת שקע טעינה","Open charging port"],["אפשרויות נוספות","More options"],["שעת התחלת טעינה","Charging start time"],["תזמונים מוגדרים","Configured schedules"],["קילומטרים נותרו","Distance remaining"],["תצוגה מאוירת · ","Illustration · "],["פונקציות מיזוג","Climate functions"],["המצב אינו ידוע","Status unknown"],["מפת מיקום הרכב","Vehicle location map"],["שעת סיום טעינה","Charging end time"],["חשמל בתא המטען","Tailgate power"],["תזמונים קיימים","Existing schedules"],["חזרה למסך הבית","Back to dashboard"],["איור פנים רכב ","Vehicle cabin illustration "],["הורד חצי מעלה","Decrease by half a degree"],["העלה חצי מעלה","Increase by half a degree"],["מהירות מאוורר","Fan speed"],["סגירת תא מטען","Close Trunk"],["פתיחת תא מטען","Open Trunk"],["רגישות השמירה","Security sensitivity"],["הפעלת X-Guard","Enable X-Guard"],["פעולות זמינות","Available actions"],["צבע פנים הרכב","Vehicle interior color"],["טמפרטורת יעד","Target temperature"],["סגירת חלונות","Close windows"],["פתיחת חלונות","Open windows"],["סגור תא מטען","Close Trunk"],["הפעל שקע V2L","Enable V2L outlet"],["עדכוני תוכנה","Software updates"],["הפעל X-Guard","Enable X-Guard"],["נתוני אנרגיה","Energy data"],["אבחון ישויות","Entity diagnostics"],["הפעלת מיזוג","Climate power"],["כיוון אוויר","Airflow direction"],["חימום מראות","Mirror heating"],["מצב אוטומטי","Automatic mode"],["שחרור נעילה","Unlock vehicle"],["פתח תא מטען","Open Trunk"],["סגור חלונות","Close windows"],["מצב לא ידוע","Status unknown"],["תחזוקת הרכב","Vehicle maintenance"],["הגבלת טעינה","Charge limit"],["תזמון טעינה","Charge schedule"],["מצב נוכחי: ","Current status: "],["דלתית פתוחה","Flap open"],["דלתית סגורה","Flap closed"],["מיזוג אוויר","Climate control"],["פעיל / פתוח","On / Open"],["כבוי / סגור","Off / Closed"],["כפתור פעולה","Action button"],["הבהוב אורות","Flash lights"],["תאריך טיפול","Service date"],["בקרות טעינה","Charging controls"],["נסועה כוללת","Total distance"],["כבה שקע V2L","Disable V2L outlet"],["כבה X-Guard","Disable X-Guard"],["נעילת דלתות","Lock doors"],["רמת מאוורר","Fan level"],["בקרת אקלים","Climate controls"],["מצב AUTO: ","AUTO mode: "],["נעילת הרכב","Lock vehicle"],["פתח חלונות","Open windows"],["מיקום הרכב","Vehicle location"],["אחורי שמאל","Rear left"],["אחורי ימין","Rear right"],["קילומטראז׳","Odometer"],["הטיפול הבא","Next service"],["עצור טעינה","Stop charging"],["הפסק טעינה","Stop charging"],["הפעל תזמון","Enable schedule"],["השבת תזמון","Disable schedule"],["ימים נותרו","Days remaining"],[" לא זמינות"," unavailable"],["חיווי בלבד","Status only"],["פתח נעילה","Unlock"],["נעילת רכב","Vehicle locking"],["קדמי שמאל","Front left"],["קדמי ימין","Front right"],["חימום הגה","Heated steering wheel"],["שקע טעינה","Charging port"],["טוען מפה…","Loading map…"],["XOS ו־OTA","XOS and OTA"],["פנים רכב ","Vehicle interior "],["סגור שקע","Close port"],["דלת נוסע","Passenger door"],["גרסת XOS","XOS version"],["פתח שקע","Open port"],["דלת נהג","Driver door"],["תא מטען","Tailgate"],["לא זמין","Unavailable"],["לא ידוע","Unknown"],["לא נעול","Unlocked"],["שנת דגם","Model year"],["נסה שוב","Try again"],["חלונות","Windows"],["תחזוקה","Maintenance"],["פתוחים","Open"],["סגורים","Closed"],["נמצאו ","Found "],[" בצבע "," in "],["אוורור","Ventilation"],["מיזוג","Climate"],["נעילה","Lock"],["דלתות","Doors"],["מיקום","Location"],["פתוחה","Open"],["סגורה","Closed"],["הבהוב","Flash lights"],["צפירה","Honk horn"],["תזמון","Schedule"],["דרגה ","Level "],["שגיאה","Error"],["חימום","Heating"],["פתוח","Open"],["סגור","Closed"],["פעיל","On"],["כבוי","Off"],["חסרה","Missing"],["נעול","Locked"],["נועל","Locking"],["פותח","Unlocking"],["צופר","Horn"],["יצרן","Manufacturer"],["נוסע","Passenger"],["דגם","Model"],["נהג","Driver"],["הגה","Steering wheel"],["טמפרטורה","Temperature"],["אינו זמין","Unavailable"],["תא המטען","The tailgate"],["פרטי עדכון","Update details"],["תזמון מיזוג","Schedule climate"],["אין נתוני גרסה או עדכונים זמינים.","No update data available."]]);
+const XP_EN_TRANSLATIONS=Object.freeze([["נתוני הצמיגים מתקבלים מ־Home Assistant, והיחידות נקבעות בהגדרות הכרטיס.","Tire data is provided by Home Assistant; units are configured in the card settings."],["אין כרגע נתוני טיפול זמינים באינטגרציה.","No upcoming service data is currently available from the integration."],["נתוני הרכב אינם זמינים כרגע.","Vehicle details are currently unavailable."],["נתוני טיפול אמיתיים","Live vehicle service data"],["מספר שלדה מוסתר","Masked VIN"],["פרטי הרכב","Vehicle details"],["לחצי הצמיגים מתקבלים מחיישני הרכב דרך Home Assistant. ערך חסר נשאר לא זמין; יחידות הלחץ נקבעות בהגדרות הכרטיס.","Tire pressure comes from the vehicle sensors through Home Assistant. Missing values stay unavailable; units are configured in the card editor."],["חיישן unavailable אינו ניתן לתיקון באמצעות ציור הכרטיס. בדוק את מקור הנתון באינטגרציה. כפתורי פעולה מסוג button אינם מדווחים מצב רגיל.","An unavailable sensor cannot be fixed by the card. Check Xpengtk. Action buttons do not report a normal state."],["לא מוצגות פקודות פתיחת נעילה, פתיחת חלונות או תא מטען. פעולות רגישות דורשות אישור ויעברו דרך הרשאות Xpengtk.","Unlock/open actions are hidden. Sensitive commands require confirmation and Xpengtk permissions."],["Xpengtk מספקת חיישני תזמון טעינה לקריאה בלבד. אין כרגע פקודת שינוי תזמון טעינה מאומתת.","Xpengtk provides read-only charging schedules. Schedule changes are not supported."],["פתיחת תא המטען מחייבת הרשאת Access. אם החיישן לא מדווח מצב ברור, לא תישלח פקודה.","Opening the tailgate requires Access permission. No command is sent with unknown status."],["השינוי נשלח ל־Home Assistant רק אחרי בחירת ערך בסרגל. יש לוודא שהרכב קיבל אותו.","Changes are sent to Home Assistant only after selecting a slider value. Confirm the vehicle accepted it."],["עדיין לא זוהו ישויות Xpengtk. בדוק חיבור, קידומת VIN והרשאות Entity Registry.","No Xpengtk entities detected. Check the connection, VIN prefix and Entity Registry permissions."],["כיבוי חימום מושב הנוסע הקדמי אינו נתמך כרגע ב־Xpengtk. ניתן לכבות מתוך הרכב.","Turning off front passenger seat heating is not supported by Xpengtk. Use the vehicle controls."],["המפה אינה זמינה בתוך הכרטיס כרגע. אפשר לפתוח את פרטי המיקום דרך הכפתור למטה.","The map is unavailable in this card. Open the vehicle's location details below."],["נעילה ושחרור נעילה מתבצעים בלחיצה אחת, בהתאם למצב. שחרור מחייב הרשאת Access.","Lock/unlock uses a single tap according to state. Unlocking requires Access permission."],["המידע מגיע מ־Xpengtk. הפקודות פועלות לפי הרשאות Home Assistant והרכב בלבד.","Data comes from Xpengtk. Commands use Home Assistant and vehicle permissions."],["הערכים מתעדכנים לפי Home Assistant. מספר השלדה המלא אינו חשוף באינטגרציה.","Values are provided by Home Assistant. The full VIN is not exposed by the integration."],["תמונת פנים G6 בצבע שנבחר עדיין לא צורפה לפרויקט. לא מוצגת הדמיה חלופית.","The selected G6 interior photo is unavailable. No substitute illustration is displayed."],["לחיצה אחת הופכת את מצב הדלתית על סמך חיווי Xpengtk. אין שחרור כבל.","One tap toggles the charging flap according to Xpengtk status. No cable release."],["פתיחת חלונות דורשת הרשאת Access. אין פקודה כאשר מצבם אינו ידוע.","Opening windows requires Access permission. No command is sent with unknown status."],["אפשרויות נוספות לרכב — שבעת קיצורי הדרך נשארים במסך הבית בלבד.","Additional vehicle options. The seven shortcuts remain on the home screen."],["הפקודה נשלחה ל־Home Assistant. יש לוודא שהרכב אישר את הפעולה.","Command sent to Home Assistant. Verify that the vehicle confirmed the action."],["אין לוח תזמוני מיזוג זמין באינטגרציה. לא ניצור תזמון מדומה.","No climate schedule calendar is available through the integration; no schedule is simulated."],["בקרות V2L אינן זמינות בדגם או בהרשאות האינטגרציה.","V2L controls are not available for this model or permissions."],["המפה המובנית אינה זמינה בכרטיס זה כרגע.","The built-in map is currently unavailable in this card."],["דיווח Connected • חיבור הכבל אינו מאומת","Connected reported • Cable connection unverified"],["הגבלת הטעינה אינה זמינה כעת באינטגרציה.","Charging limit is currently unavailable through the integration."],["כיבוי חימום נוסע אינו מאומת באינטגרציה","Passenger heating off is not supported by the integration"],["לא נמצאו בקרות מושבים נתמכות לרכב זה.","No supported seat controls were found for this vehicle."],["לא נמצאו ישויות אבטחה זמינות לרכב זה.","No security entities are available for this vehicle."],["רמת החימום או האוורור אינה זמינה כעת.","Heating or ventilation level unavailable."],["אין כרגע פקודות זמינות באינטגרציה.","No commands are currently available through the integration."],["כבל מחובר • אין לסגור את הדלתית","Cable connected • Do not close the flap"],["תמונת פנים בעל הרכב · XPENG G6","Owner-provided G6 interior photograph"],["אין כרגע נתוני אנרגיה זמינים.","Energy data is currently unavailable."],["בקרת המיזוג אינה זמינה כרגע.","Climate controls are unavailable."],["פרטי תחזוקה ב־Home Assistant","Maintenance details in Home Assistant"],["תמונת פנים לא זמינה לדגם זה.","No interior image is available for this model."],["פרטי מיקום ב־Home Assistant","Location details in Home Assistant"],["טיימר לכיבוי אוטומטי (דקות)","Auto-off timer (minutes)"],["החלף כיוון זרימת אוויר אל ","Change airflow direction to "],["חיישנים, מצב ומזהי Xpengtk","Sensors, states and Xpengtk IDs"],["תמונת פנים לפי הגדרות הרכב","Interior photograph from vehicle settings"],["פעולות הרכב וקיצורי מסכים","Vehicle controls and shortcuts"],["תמונת פנים לפי הגדרת הצבע","Interior photo chosen by color"],["הפעלת מיזוג ומצב אוטומטי","Climate and automatic mode controls"],["לחץ אוויר בארבעת הצמיגים","Tire pressure · All four tires"],["שנת דגם (מהגדרות הכרטיס)","Model year (card settings)"],[" ישויות משויכות לרכב • "," vehicle entities • "],["אין שינוי בפעולות הרכב","No change to vehicle commands"],["הפעל עדכונים אוטומטיים","Enable automatic updates"],["צריכה והיסטוריית טעינה","Consumption and charging history"],["הדרגה אינה נתמכת כעת.","This level is currently unsupported."],["שגיאה בשליחת הפקודה: ","Error sending command: "],["כיוון זרימת אוויר אל ","Set airflow direction to "],["שנת דגם (מהאינטגרציה)","Model year (integration)"],["צריכה ממוצעת ב־7 ימים","7-day average consumption"],["אנרגיה בטעינה האחרונה","Last charge energy"],["כבה עדכונים אוטומטיים","Disable automatic updates"],["לשלוח את הפקודה לרכב?","Send this command to the vehicle?"],["מצב הדלתית אינו זמין","Flap status unavailable"],["הצג לוח תזמוני מיזוג","View climate schedules"],["אבטחה ורגישות השמירה","Security sensitivity"],[" זמינות או פעולות • "," available or actions • "],["רשימת ישויות Xpengtk","Xpengtk entity list"],["שירות HA אינו זמין.","Home Assistant service unavailable."],["פקודת המושב נכשלה: ","Seat command failed: "],["טמפרטורת תא הנוסעים","Cabin temperature"],["הצג תזמונים קיימים","View existing schedules"],["נדרשת הרשאת Access","Access permission required"],["צריכת אנרגיה בחניה","Parked energy consumption"],["משך הטעינה האחרונה","Last charge duration"],["שקע חשמל בתא המטען","Tailgate power outlet"],["פעיל • חיווי בלבד","On • Status only"],["כבוי • חיווי בלבד","Off • Status only"],["ק״מ שנותרו לטיפול","Kilometers until service"],["מספר שלדה (מוסתר)","Masked VIN"],["טווח שנוסף בטעינה","Range added during last charge"],["פתיחת תחזוקת הרכב","Open vehicle maintenance"],["יחידות לחץ צמיגים","Tire pressure unit"],["הפשרת שמשה קדמית","Windshield defrost"],["דרושה הרשאת גישה","Access permission required"],["דלתית שקע הטעינה","Charging port flap"],["תחזוקה ופרטי רכב","Maintenance and vehicle details"],["חזרה לחלון הקודם","Back to previous screen"],["חזרה לתצוגת הרכב","Back to vehicle view"],["טמפרטורה נוכחית","Current temperature"],["סגירת שקע טעינה","Close charging port"],["פתיחת שקע טעינה","Open charging port"],["אפשרויות נוספות","More options"],["שעת התחלת טעינה","Charging start time"],["תזמונים מוגדרים","Configured schedules"],["קילומטרים נותרו","Distance remaining"],["תצוגה מאוירת · ","Illustration · "],["פונקציות מיזוג","Climate functions"],["המצב אינו ידוע","Status unknown"],["מפת מיקום הרכב","Vehicle location map"],["שעת סיום טעינה","Charging end time"],["חשמל בתא המטען","Tailgate power"],["תזמונים קיימים","Existing schedules"],["חזרה למסך הבית","Back to dashboard"],["איור פנים רכב ","Vehicle cabin illustration "],["הורד חצי מעלה","Decrease by half a degree"],["העלה חצי מעלה","Increase by half a degree"],["מהירות מאוורר","Fan speed"],["סגירת תא מטען","Close Trunk"],["פתיחת תא מטען","Open Trunk"],["רגישות השמירה","Security sensitivity"],["הפעלת X-Guard","Enable X-Guard"],["פעולות זמינות","Available actions"],["צבע פנים הרכב","Vehicle interior color"],["טמפרטורת יעד","Target temperature"],["סגירת חלונות","Close windows"],["פתיחת חלונות","Open windows"],["סגור תא מטען","Close Trunk"],["הפעל שקע V2L","Enable V2L outlet"],["עדכוני תוכנה","Software updates"],["הפעל X-Guard","Enable X-Guard"],["נתוני אנרגיה","Energy data"],["אבחון ישויות","Entity diagnostics"],["הפעלת מיזוג","Climate power"],["כיוון אוויר","Airflow direction"],["חימום מראות","Mirror heating"],["מצב אוטומטי","Automatic mode"],["שחרור נעילה","Unlock vehicle"],["פתח תא מטען","Open Trunk"],["סגור חלונות","Close windows"],["מצב לא ידוע","Status unknown"],["תחזוקת הרכב","Vehicle maintenance"],["הגבלת טעינה","Charge limit"],["תזמון טעינה","Charge schedule"],["מצב נוכחי: ","Current status: "],["דלתית פתוחה","Flap open"],["דלתית סגורה","Flap closed"],["מיזוג אוויר","Climate control"],["פעיל / פתוח","On / Open"],["כבוי / סגור","Off / Closed"],["כפתור פעולה","Action button"],["הבהוב אורות","Flash lights"],["תאריך טיפול","Service date"],["בקרות טעינה","Charging controls"],["נסועה כוללת","Total distance"],["כבה שקע V2L","Disable V2L outlet"],["כבה X-Guard","Disable X-Guard"],["נעילת דלתות","Lock doors"],["רמת מאוורר","Fan level"],["בקרת אקלים","Climate controls"],["מצב AUTO: ","AUTO mode: "],["נעילת הרכב","Lock vehicle"],["פתח חלונות","Open windows"],["מיקום הרכב","Vehicle location"],["אחורי שמאל","Rear left"],["אחורי ימין","Rear right"],["קילומטראז׳","Odometer"],["הטיפול הבא","Next service"],["עצור טעינה","Stop charging"],["הפסק טעינה","Stop charging"],["הפעל תזמון","Enable schedule"],["השבת תזמון","Disable schedule"],["ימים נותרו","Days remaining"],[" לא זמינות"," unavailable"],["חיווי בלבד","Status only"],["פתח נעילה","Unlock"],["נעילת רכב","Vehicle locking"],["קדמי שמאל","Front left"],["קדמי ימין","Front right"],["חימום הגה","Heated steering wheel"],["שקע טעינה","Charging port"],["טוען מפה…","Loading map…"],["XOS ו־OTA","XOS and OTA"],["פנים רכב ","Vehicle interior "],["סגור שקע","Close port"],["דלת נוסע","Passenger door"],["גרסת XOS","XOS version"],["פתח שקע","Open port"],["דלת נהג","Driver door"],["תא מטען","Tailgate"],["לא זמין","Unavailable"],["לא ידוע","Unknown"],["לא נעול","Unlocked"],["שנת דגם","Model year"],["נסה שוב","Try again"],["חלונות","Windows"],["תחזוקה","Maintenance"],["פתוחים","Open"],["סגורים","Closed"],["נמצאו ","Found "],[" בצבע "," in "],["אוורור","Ventilation"],["מיזוג","Climate"],["נעילה","Lock"],["דלתות","Doors"],["מיקום","Location"],["פתוחה","Open"],["סגורה","Closed"],["הבהוב","Flash lights"],["צפירה","Honk horn"],["תזמון","Schedule"],["דרגה ","Level "],["שגיאה","Error"],["חימום","Heating"],["פתוח","Open"],["סגור","Closed"],["פעיל","On"],["כבוי","Off"],["חסרה","Missing"],["נעול","Locked"],["נועל","Locking"],["פותח","Unlocking"],["צופר","Horn"],["יצרן","Manufacturer"],["נוסע","Passenger"],["דגם","Model"],["נהג","Driver"],["הגה","Steering wheel"],["טמפרטורה","Temperature"],["אינו זמין","Unavailable"],["תא המטען","The tailgate"],["פרטי עדכון","Update details"],["תזמון מיזוג","Schedule climate"],["אין נתוני גרסה או עדכונים זמינים.","No update data available."]]);
 function xpIsEnglish(hass){
  const lang=String(hass?.locale?.language||hass?.language||'he').toLowerCase();
  return !/^he(?:-|$)/.test(lang);
@@ -4303,6 +4303,100 @@ background:transparent!important;
  }
 }
 
+/* Beta 15 owner visual refinements. Presentation only. */
+@container xpeng-layout (min-width:851px){
+ .xp-scene{height:clamp(700px,calc(100dvh - 85px),980px)!important;
+  max-height:calc(100dvh - 55px)!important;aspect-ratio:auto!important}
+ .xp-scene .xp-ux-modal{max-height:calc(100% - 22px)!important}
+}
+.xp-scene .xp-header .xp-brand,
+.xp-scene .xp-header .xp-brand>span{
+ padding:0!important;margin:0!important;background:transparent!important;
+ border:0!important;border-radius:0!important;box-shadow:none!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon{
+ color:#e9f4ff!important;filter:none!important;
+ --xp-icon-size:25px!important;--mdc-icon-size:25px!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action[data-xp-open="climate"]{
+ background:transparent!important;box-shadow:none!important;color:inherit!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action[data-xp-open="climate"]::before{
+ background:rgba(13,47,64,.35)!important;border-color:rgba(134,217,236,.53)!important;
+ box-shadow:inset 0 1px rgba(243,254,255,.11)!important;
+}
+@container xpeng-layout (max-width:520px){
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon{
+  --xp-icon-size:22px!important;--mdc-icon-size:22px!important}
+}
+/* TPMS-only visual markers removed; actual sensor pressure boxes remain. */
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-v4 .xp-wheel-highlight{display:none!important}
+/* Responsive service details alongside four-wheel TPMS. */
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-page.xp-maintenance-v4{
+ display:block!important;max-width:none!important;width:100%!important;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-split{
+ display:grid!important;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)!important;
+ gap:clamp(12px,2cqw,26px);align-items:stretch;min-width:0;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-tires,
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-service{
+ min-width:0;display:flex;flex-direction:column;gap:8px;padding:12px;
+ border:1px solid rgba(135,208,229,.22);border-radius:18px;background:rgba(7,26,44,.27);
+}
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-v4 .xp-tire-screen{
+ position:relative!important;inset:auto!important;width:100%!important;
+ max-width:100%!important;height:clamp(310px,48dvh,470px)!important;
+ min-height:0!important;margin:auto 0!important;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-tires h3,
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-service h3{
+ margin:0 0 5px!important;color:#ecfbff;font-size:clamp(15px,1.45cqw,20px);
+}
+.xp-scene .xp-ux-modal-maintenance .xp-maint-service-group{
+ border:1px solid rgba(127,204,227,.18);border-radius:14px;
+ padding:10px 12px;background:rgba(7,28,46,.32);overflow-wrap:anywhere;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-maint-service-group h4{
+ margin:0 0 8px;color:#9fe8e9;font-size:13px;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-maint-service-row{
+ display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+ border-top:1px solid rgba(140,201,224,.13);padding:9px 0;
+ font-size:clamp(11px,1.1cqw,14px);
+}
+.xp-scene .xp-ux-modal-maintenance .xp-maint-service-row:first-of-type{border-top:0}
+.xp-scene .xp-ux-modal-maintenance .xp-maint-service-row>span{color:#bdd6e2;min-width:0}
+.xp-scene .xp-ux-modal-maintenance .xp-maint-service-row>b{color:#f3fdff;text-align:end;min-width:0}
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-v4 .xp-tire-reading[data-wheel="tire_fl"]>.xp-mdi-icon,
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-v4 .xp-tire-reading[data-wheel="tire_rl"]>.xp-mdi-icon{
+ order:2!important;margin-left:3px!important;
+}
+@container xpeng-layout (max-width:850px){
+ .xp-scene .xp-ux-modal-maintenance .xp-maintenance-split{
+  display:flex!important;flex-direction:column!important;gap:12px!important}
+ .xp-scene .xp-ux-modal-maintenance .xp-maintenance-v4 .xp-tire-screen{
+  height:clamp(270px,60cqw,410px)!important}
+}
+/* Refined fan control: no glowing blue surrounding pill. */
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-climate-fan-panel{
+ border:0!important;border-radius:0!important;background:transparent!important;
+ box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+ padding:10px 3px!important;margin:0!important;
+}
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-climate-fan-panel>span>.xp-mdi-icon{
+ color:#d6f2f8!important;filter:none!important;
+ --xp-icon-size:23px!important;--mdc-icon-size:23px!important;
+}
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-fan-bars i.xp-fan-bar-on{
+ background:#83e8e2!important;border-color:#83e8e2!important;box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-climate-fan-panel input[type="range"]{
+ height:4px!important;margin:14px 2px 10px!important;accent-color:#82e8e2!important;
+ border:0!important;box-shadow:none!important;
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -5057,7 +5151,7 @@ class XpengVehicleCard extends HTMLElement{
      if(this._xpPanel!=='map'||!this.shadowRoot?.contains?.(host)||
         this.xpLive('device_tracker','location')?.id!==gps.id)return;
      const map=helper.createCardElement({type:'map',entities:[{entity:gps.id}],
-       default_zoom:11,hours_to_show:0,theme_mode:'dark',aspect_ratio:'4:3'});
+       default_zoom:16,auto_fit:true,fit_zones:false,hours_to_show:0,theme_mode:'dark',aspect_ratio:'4:3'});
      map.hass=this._hass;
      this._xpMapElement=map;this._xpMapEntityId=gps.id;
      host.replaceChildren(map);
@@ -5094,12 +5188,33 @@ class XpengVehicleCard extends HTMLElement{
  }
 
  xpMaintenancePanel(){
-   // Owner's maintenance surface is tire pressure only. Never substitute
-   // stale service or vehicle-identity cards for live TPMS.
-   return '<div class="xp-maintenance-page xp-tpms-only">'+
-     '<h3>לחץ אוויר בארבעת הצמיגים</h3>'+this.tireScreen(false)+
-     '<p class="xp-ux-note xp-tire-source-note">לחצי הצמיגים מתקבלים מחיישני הרכב דרך Home Assistant. ערך חסר נשאר לא זמין; יחידות הלחץ נקבעות בהגדרות הכרטיס.</p>'+
-     '</div>';
+   // Display only real mapped Home Assistant vehicle values.
+   const maintenance=this.xpLive('sensor','maintenance');
+   const odometer=this.xpLive('sensor','odometer');
+   const identity=this.xpLive('sensor','vehicle_identity');
+   const attrs=maintenance?.state?.attributes||{};
+   const info=identity?.state?.attributes||{};
+   const line=(label,value,unit='')=>{
+     if(value===null||value===undefined||!String(value).trim()||XP_INVALID.has(String(value).toLowerCase()))return '';
+     return '<div class="xp-maint-service-row"><span>'+xpEsc(label)+'</span><b dir="auto">'+xpEsc(value)+(unit?' <small>'+xpEsc(unit)+'</small>':'')+'</b></div>';
+   };
+   const service=line('הטיפול הבא',maintenance?.state?.state)
+       +line('תאריך טיפול',attrs.next_date)
+       +line('ימים נותרו',attrs.days_remaining)
+       +line('קילומטרים נותרו',attrs.km_remaining,'km');
+   const details=line('נסועה כוללת',odometer?.state?.state,odometer?.state?.attributes?.unit_of_measurement||'')
+       +line('דגם',info.model_family||info.vehicle_type_name)
+       +line('שנת דגם',info.model_year)
+       +line('מספר שלדה מוסתר',info.vin_masked);
+   return '<div class="xp-maintenance-page xp-tpms-only xp-maintenance-v4"><div class="xp-maintenance-split">'+
+    '<section class="xp-maintenance-tires"><h3>לחץ אוויר בארבעת הצמיגים</h3>'+this.tireScreen(false)+
+    '<p class="xp-ux-note xp-tire-source-note">נתוני הצמיגים מתקבלים מ־Home Assistant, והיחידות נקבעות בהגדרות הכרטיס.</p></section>'+
+    '<section class="xp-maintenance-service" aria-label="נתוני טיפול אמיתיים">'+
+     '<h3>תחזוקת הרכב</h3><div class="xp-maint-service-group"><h4>הטיפול הבא</h4>'+
+       (service||'<p class="xp-ux-note">אין כרגע נתוני טיפול זמינים באינטגרציה.</p>')+'</div>'+
+     '<div class="xp-maint-service-group"><h4>פרטי הרכב</h4>'+
+       (details||'<p class="xp-ux-note">נתוני הרכב אינם זמינים כרגע.</p>')+'</div>'+
+    '</section></div></div>';
  }
 
  xpChargeLimitPanel(){
@@ -5224,7 +5339,7 @@ class XpengVehicleCard extends HTMLElement{
        }
        out+='<button type="button" class="xp-extra-action" data-xp-extra-detail="maintenance">פרטי תחזוקה ב־Home Assistant</button>';
      }
-     return this.xpMaintenancePanel()+(out?'<div class="xp-maint-additional">'+out+'</div>':'');
+     return this.xpMaintenancePanel();
    }
    if(section==='updates'){
      let out=this.xpExtraLine('גרסת XOS','sensor','xos_version');
@@ -5308,7 +5423,7 @@ class XpengVehicleCard extends HTMLElement{
      climate:['Climate controls','Climate power, AUTO, target temperature and fan settings operate only with mapped Home Assistant entities. Seat and steering-wheel controls cycle the supported levels directly on the cabin image.','Fan and temperature limits depend on the available entities.'],
      charge_controls:['Charge limit','Sets the target maximum battery percentage for charging. A lower limit stops at a lower target SOC; a higher limit allows a higher target SOC.','Changes are sent to Home Assistant and should be confirmed in the vehicle.'],
      charge_schedule:['Charging schedule','Displays the charging start and end times published by Xpengtk. This page does not invent an unsupported schedule editing action.','Read-only start and end times; no editable numeric limits.'],
-     maintenance:['Tire pressure','Live TPMS readings are shown directly beside the four wheels of the existing vehicle image. Additional tire temperature or air-life values appear only if their own tire sensor publishes them.','Recommended tire pressure comes from the actual vehicle placard; no universal minimum or maximum is assumed.'],
+     maintenance:['Tire pressure and vehicle maintenance','Four live TPMS values appear around the original vehicle image. The next-service, odometer and vehicle details are displayed only when their Home Assistant entities report them.','Tire pressure units come from card settings; no universal minimum or maximum is assumed. Service dates and mileage are never invented.'],
      port:['Charge port','Opens or closes the charge port when the vehicle reports a known state and the corresponding command exists.','Do not close the port while a cable is connected.'],
      doors:['Door locks','The action changes with the live state: Unlock when locked and Lock when unlocked. If the state is unknown, the action is unavailable.','Access permission may be required for unlocking.'],
      windows:['Windows','Shows the currently available open/close action for the vehicle windows. The command depends on a known sensor state.','No intermediate opening percentage is assumed unless the integration exposes one.'],

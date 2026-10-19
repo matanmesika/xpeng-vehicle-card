@@ -1,0 +1,130 @@
+name: Publish XPENG G6 V3 beta.15
+
+on:
+  push:
+    branches:
+      - release/v1.0.4-beta.15
+    paths:
+      - .github/workflows/publish-g6-v3-beta15.yml
+      - docs/releases/v1.0.4-beta.15.md
+  pull_request:
+    branches:
+      - release/v1.0.4-beta.14
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-g6-v3-beta15
+  cancel-in-progress: false
+
+jobs:
+  validate-and-publish:
+    name: Full QA, real-browser captures, HACS Beta 15 prerelease
+    runs-on: ubuntu-latest
+    timeout-minutes: 24
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate JavaScript, generated bundle, HACS and artwork metadata
+        run: |
+          set -euo pipefail
+          node --check src/xpeng-vehicle-card.js
+          node --check dist/xpeng-vehicle-card.js
+          node --check scripts/capture-dashboard.cjs
+          cmp src/xpeng-vehicle-card.js dist/xpeng-vehicle-card.js
+          node tools/build_vehicle_card.mjs --check
+          python -m json.tool hacs.json >/dev/null
+          python -m json.tool data/model-artwork.json >/dev/null
+          python -m json.tool data/vehicle-art-inventory.json >/dev/null
+          python tools/sync_vehicle_artwork.py --check
+          python tools/export_vehicle_artwork_backlog.py --check
+          python tools/sync_year_palettes.py --check
+          python tools/sync_master_view_queue.py --check
+          node tools/render_artwork_status.mjs --check
+          python tools/check_photo_candidates.py
+          python tools/audit_vehicle_provenance.py
+      - name: Regression suites and design approvals
+        env:
+          G6_REVIEW_BASE: origin/release/v1.0.4-beta.10
+        run: |
+          set -euo pipefail
+          node --test \
+            tests/vehicle-artwork-mapping.test.cjs \
+            tests/charging-cable-static.test.cjs \
+            tests/xpeng-controls-smoke.test.cjs \
+            tests/responsive-dual-state.test.cjs \
+            tests/release-documentation.test.cjs \
+            tests/g6-isolated-design-help.test.cjs \
+            tests/g6-design-agents.test.cjs \
+            tests/g6-approved-glass-design.test.cjs \
+            tests/g6-v3-canonical-style.test.cjs \
+            tests/g6-v3-inner-pages.test.cjs \
+            tests/g6-v3-owner-reference.test.cjs \
+            tests/g6-v3-visual-acceptance.test.cjs
+      - name: Install real Chromium and official MDI previews
+        run: |
+          set -euo pipefail
+          npm install --prefix /tmp/xpeng-g6-beta15-qa --no-audit --no-fund playwright@1.56.1 @mdi/js@7.4.47
+          /tmp/xpeng-g6-beta15-qa/node_modules/.bin/playwright install --with-deps chromium
+      - name: Capture desktop, iPhone-sized, Sections and charging scenes
+        env:
+          PLAYWRIGHT_MODULE: /tmp/xpeng-g6-beta15-qa/node_modules/playwright
+        run: timeout 180s node scripts/capture-dashboard.cjs
+      - name: Verify fourteen real-browser screenshots and preview asset integrity
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import struct
+          root=Path('docs/screenshots')
+          names=['home-desktop','home-mobile','charging-desktop','charging-mobile',
+            'climate-desktop','climate-mobile','maintenance-desktop','maintenance-mobile',
+            'map-desktop','map-mobile','charge-controls-mobile','diagnostics-mobile',
+            'functions-desktop','functions-mobile']
+          expected={n+'.png' for n in names}
+          actual={p.name for p in root.iterdir() if p.suffix.lower()=='.png'}
+          assert expected==actual,(expected-actual,actual-expected)
+          for n in names:
+            data=(root/(n+'.png')).read_bytes()
+            assert data.startswith(b'\x89PNG\r\n\x1a\n') and len(data)>10000, n
+            w,h=struct.unpack('>II',data[16:24])
+            assert ((w>=1100 and h>=620) if n.endswith('-desktop') else (300<=w<=500 and h>=700)),(n,w,h)
+            print('PASS',n,w,h,len(data))
+          PY
+      - name: Bundle the fourteen verified screenshots
+        run: zip -q -j xpeng-g6-beta15-screenshots.zip docs/screenshots/*.png
+      - name: Save preview gallery even if publication fails
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xpeng-g6-beta15-screenshots
+          path: docs/screenshots/*.png
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Publish opt-in Beta 15 prerelease (never merge main)
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view v1.0.4-beta.15 >/dev/null 2>&1; then
+            echo "v1.0.4-beta.15 already exists. Refusing to move an existing tag."
+            gh release view v1.0.4-beta.15 --json url,tagName,isPrerelease
+            exit 0
+          fi
+          gh release create v1.0.4-beta.15 \
+            src/xpeng-vehicle-card.js \
+            xpeng-g6-beta15-screenshots.zip \
+            --target "$GITHUB_SHA" \
+            --title "XPENG Vehicle Card v1.0.4-beta.15 | G6 V3 Owner Preview" \
+            --notes-file docs/releases/v1.0.4-beta.15.md \
+            --prerelease
+          gh release view v1.0.4-beta.15 --json url,tagName,isPrerelease,targetCommitish

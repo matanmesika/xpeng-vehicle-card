@@ -3972,3 +3972,97 @@ background:transparent!important;
   min-height:62px!important;max-height:62px!important;
  }
 }
+
+/* Beta 15 owner visual refinements. Presentation only. */
+@container xpeng-layout (min-width:851px){
+ .xp-scene{height:clamp(700px,calc(100dvh - 85px),980px)!important;
+  max-height:calc(100dvh - 55px)!important;aspect-ratio:auto!important}
+ .xp-scene .xp-ux-modal{max-height:calc(100% - 22px)!important}
+}
+.xp-scene .xp-header .xp-brand,
+.xp-scene .xp-header .xp-brand>span{
+ padding:0!important;margin:0!important;background:transparent!important;
+ border:0!important;border-radius:0!important;box-shadow:none!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon{
+ color:#e9f4ff!important;filter:none!important;
+ --xp-icon-size:25px!important;--mdc-icon-size:25px!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action[data-xp-open="climate"]{
+ background:transparent!important;box-shadow:none!important;color:inherit!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action[data-xp-open="climate"]::before{
+ background:rgba(13,47,64,.35)!important;border-color:rgba(134,217,236,.53)!important;
+ box-shadow:inset 0 1px rgba(243,254,255,.11)!important;
+}
+@container xpeng-layout (max-width:520px){
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon{
+  --xp-icon-size:22px!important;--mdc-icon-size:22px!important}
+}
+/* TPMS-only visual markers removed; actual sensor pressure boxes remain. */
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-v4 .xp-wheel-highlight{display:none!important}
+/* Responsive service details alongside four-wheel TPMS. */
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-page.xp-maintenance-v4{
+ display:block!important;max-width:none!important;width:100%!important;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-split{
+ display:grid!important;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)!important;
+ gap:clamp(12px,2cqw,26px);align-items:stretch;min-width:0;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-tires,
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-service{
+ min-width:0;display:flex;flex-direction:column;gap:8px;padding:12px;
+ border:1px solid rgba(135,208,229,.22);border-radius:18px;background:rgba(7,26,44,.27);
+}
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-v4 .xp-tire-screen{
+ position:relative!important;inset:auto!important;width:100%!important;
+ max-width:100%!important;height:clamp(310px,48dvh,470px)!important;
+ min-height:0!important;margin:auto 0!important;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-tires h3,
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-service h3{
+ margin:0 0 5px!important;color:#ecfbff;font-size:clamp(15px,1.45cqw,20px);
+}
+.xp-scene .xp-ux-modal-maintenance .xp-maint-service-group{
+ border:1px solid rgba(127,204,227,.18);border-radius:14px;
+ padding:10px 12px;background:rgba(7,28,46,.32);overflow-wrap:anywhere;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-maint-service-group h4{
+ margin:0 0 8px;color:#9fe8e9;font-size:13px;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-maint-service-row{
+ display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+ border-top:1px solid rgba(140,201,224,.13);padding:9px 0;
+ font-size:clamp(11px,1.1cqw,14px);
+}
+.xp-scene .xp-ux-modal-maintenance .xp-maint-service-row:first-of-type{border-top:0}
+.xp-scene .xp-ux-modal-maintenance .xp-maint-service-row>span{color:#bdd6e2;min-width:0}
+.xp-scene .xp-ux-modal-maintenance .xp-maint-service-row>b{color:#f3fdff;text-align:end;min-width:0}
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-v4 .xp-tire-reading[data-wheel="tire_fl"]>.xp-mdi-icon,
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-v4 .xp-tire-reading[data-wheel="tire_rl"]>.xp-mdi-icon{
+ order:2!important;margin-left:3px!important;
+}
+@container xpeng-layout (max-width:850px){
+ .xp-scene .xp-ux-modal-maintenance .xp-maintenance-split{
+  display:flex!important;flex-direction:column!important;gap:12px!important}
+ .xp-scene .xp-ux-modal-maintenance .xp-maintenance-v4 .xp-tire-screen{
+  height:clamp(270px,60cqw,410px)!important}
+}
+/* Refined fan control: no glowing blue surrounding pill. */
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-climate-fan-panel{
+ border:0!important;border-radius:0!important;background:transparent!important;
+ box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+ padding:10px 3px!important;margin:0!important;
+}
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-climate-fan-panel>span>.xp-mdi-icon{
+ color:#d6f2f8!important;filter:none!important;
+ --xp-icon-size:23px!important;--mdc-icon-size:23px!important;
+}
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-fan-bars i.xp-fan-bar-on{
+ background:#83e8e2!important;border-color:#83e8e2!important;box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-climate-fan-panel input[type="range"]{
+ height:4px!important;margin:14px 2px 10px!important;accent-color:#82e8e2!important;
+ border:0!important;box-shadow:none!important;
+}

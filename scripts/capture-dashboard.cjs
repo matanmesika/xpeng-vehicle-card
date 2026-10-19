@@ -299,6 +299,21 @@ async function main(){
   return {tiles,note};
  });
  assert.equal(tpmsDesktop.tiles.length,4);
+ const maintenanceDesktop=await car.evaluate(el=>{
+  const root=el.shadowRoot,modal=root.querySelector('.xp-ux-modal-maintenance');
+  const tire=modal.querySelector('.xp-maintenance-tires').getBoundingClientRect();
+  const service=modal.querySelector('.xp-maintenance-service').getBoundingClientRect();
+  const markers=[...modal.querySelectorAll('.xp-wheel-highlight')].map(m=>getComputedStyle(m).display);
+  return {tire:tire.toJSON(),service:service.toJSON(),markers,
+    serviceText:modal.querySelector('.xp-maintenance-service')?.textContent};
+ });
+ assert.ok(maintenanceDesktop.tire.right<=maintenanceDesktop.service.left+2
+  ||maintenanceDesktop.service.right<=maintenanceDesktop.tire.left+2,
+  'Maintenance must show two side-by-side panels on desktop: '+JSON.stringify(maintenanceDesktop));
+ assert.ok(maintenanceDesktop.markers.every(x=>x==='none'),
+  'Unrequested tire highlight halos must stay hidden');
+ assert.ok(maintenanceDesktop.serviceText.includes('2027-01-10'),
+  'Real example maintenance date should be visible');
  assert.ok(tpmsDesktop.tiles.every(item=>item.rect.height>=48&&item.rect.height<=85),
    'Desktop wheel badges must remain compact, not stretch to legacy stage height: '+JSON.stringify(tpmsDesktop));
  assert.ok(tpmsDesktop.note&&tpmsDesktop.tiles.every(item=>item.rect.bottom<=tpmsDesktop.note.top+1),
@@ -603,7 +618,7 @@ async function main(){
  assert.ok(desktopMap.stageWidth>900&&desktopMap.stageHeight>=350,JSON.stringify(desktopMap));
  assert.deepEqual(desktopMap.config,{
    type:'map',entities:[{entity:'device_tracker.my_xpeng_location'}],
-   default_zoom:11,hours_to_show:0,theme_mode:'dark',aspect_ratio:'4:3'
+   default_zoom:16,auto_fit:true,fit_zones:false,hours_to_show:0,theme_mode:'dark',aspect_ratio:'4:3'
  },'Native dark map must use the real vehicle tracker entity');
  await reviewShot('location-desktop');
  const mapStable=await car.evaluate(el=>{
@@ -687,12 +702,12 @@ async function main(){
    const root=el.shadowRoot;
    return {tires:root.querySelectorAll('.xp-ux-modal-maintenance .xp-tire-reading').length,
      source:root.querySelector('.xp-ux-modal-maintenance .xp-tire-source-note')?.innerText||'',
-     additionalDetails:root.querySelectorAll('.xp-ux-modal-maintenance .xp-maint-info').length};
+     servicePresent:!!root.querySelector('.xp-ux-modal-maintenance .xp-maintenance-service')};
  });
  assert.equal(maintenanceFromGear.tires,4);
- assert.match(maintenanceFromGear.source,/חיישני הרכב דרך Home Assistant/);
- assert.equal(maintenanceFromGear.additionalDetails,0,
-   'Owner requires only TPMS readouts on Maintenance, not unrelated vehicle data');
+ assert.match(maintenanceFromGear.source,/נתוני הצמיגים מתקבלים מ־Home Assistant/);
+ assert.equal(maintenanceFromGear.servicePresent,true,
+   'Owner-approved Maintenance must include genuine service details alongside TPMS');
  await car.locator('button[data-xp-close]').click();
  assert.equal(await car.locator('.xp-ux-modal-extras').count(),1,'Maintenance Back must return to Gear options');
  const mobileFunctionTiles=await car.evaluate(el=>[...el.shadowRoot.querySelectorAll('button.xp-extra-tile')].map(button=>{
