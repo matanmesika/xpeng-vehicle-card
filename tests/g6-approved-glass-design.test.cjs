@@ -15,7 +15,8 @@ test('Glass Cascade Agent | approved rules are LAST and override old dark rectan
  assert.ok(css.indexOf(marker)>0 && css.indexOf(marker)===css.lastIndexOf(marker));
  assert.match(v3,/\.xp-scene \.xp-ux-dock-seven\{[\s\S]*?background:transparent!important/);
  assert.match(v3,/\.xp-scene \.xp-ux-dock-seven \.xp-ux-dock-action\{[\s\S]*?border:0!important;[\s\S]*?background:transparent!important/);
- assert.match(v3,/\.xp-scene \.xp-ux-dock-seven \.xp-ux-dock-action>\.xp-mdi-icon,[\s\S]*?border-radius:50%!important/);
+ assert.match(v3,/\.xp-scene \.xp-ux-dock-seven \.xp-ux-dock-action::before\{[\s\S]*?border-radius:50%/);
+ assert.match(v3,/\.xp-scene \.xp-ux-dock-seven \.xp-ux-dock-action>\.xp-mdi-icon\{[\s\S]*?background:transparent!important/);
  assert.match(v3,/\.xp-scene \.xp-ux-dock-seven \.xp-ux-dock-action>\.xp-trunk-symbol/);
  assert.match(v3,/\.xp-scene\.xp-overview\.xp-home-navigation \.xp-overview-stat\{[\s\S]*?background:transparent!important/);
  assert.match(v3,/\.xp-scene\.xp-charge \.xp-charge-panel-actions button\{[\s\S]*?background:transparent!important/);

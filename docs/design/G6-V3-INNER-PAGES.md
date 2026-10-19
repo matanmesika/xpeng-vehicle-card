@@ -26,3 +26,5 @@ without modifying the functional runtime.
 Chromium also captures Functions desktop/phone, verifies all seven launchers, 48px/44px circular MDI badges, 21px/19px glyphs and transparent outer buttons. Fourteen screenshots form the curated acceptance gallery.
 
 The CSS badge is a `button::before` glass circle, **not** a border drawn on `ha-icon`. This keeps the actual vector glyph small: 21px inside 48px on desktop and 19px inside 44px on iPhone. Browser visual QA checks both physical dimensions, transparent outer buttons, and a 2:1 minimum ring-to-glyph ratio.
+
+Home and Charging now use the identical separated-disc principle as Custom Functions: Home = 48px ring/22px MDI glyph (44px/20px on phones); Charging = 46px ring/21px MDI glyph (42px/19px on phones). Real Chromium QA checks both physical dimensions, all seven Home actions, and all three charging controls. The functional JS/runtime is untouched.

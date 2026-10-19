@@ -252,6 +252,15 @@ async function main(){
  // Compact owner-review JPEG: GitHub's binary API cannot preview large PNGs.
  // Keep the existing full-resolution PNG too.
  // Curated gallery uses a single full-resolution PNG per view.
+ const chargingDiscMetrics=await car.evaluate(el=>[...el.shadowRoot.querySelectorAll('.xp-charge-panel-actions button')].map(b=>{
+  const mdi=b.querySelector('ha-icon.xp-mdi-icon');
+  return {glyph:mdi?.getBoundingClientRect().width,ring:parseFloat(getComputedStyle(b,'::before').width),
+    circle:getComputedStyle(b,'::before').borderRadius};
+ }));
+ assert.ok(chargingDiscMetrics.length===3&&chargingDiscMetrics.every(x=>
+   x.glyph>=19&&x.glyph<=24&&x.ring>=42&&x.ring<=48&&
+   x.ring/x.glyph>=1.8&&x.circle==='50%'),
+   'Charging buttons must be compact 46px glass rings holding actual 21px MDI glyphs: '+JSON.stringify(chargingDiscMetrics));
  const chargingDesktop=await car.evaluate(el=>{
    const root=el.shadowRoot,find=q=>root.querySelector(q)?.getBoundingClientRect().toJSON();
    return {actions:[...root.querySelectorAll('.xp-ux-dock-seven .xp-ux-dock-action')].map(n=>n.dataset.xpToggle||n.dataset.xpOpen),
@@ -392,6 +401,7 @@ async function main(){
        return {car:rect('.xp-overview .xp-car')?.toJSON(),
          battery:rect('.xp-overview-stat')?.toJSON(),
          icon:rect('.xp-ux-dock-seven .xp-ux-dock-action ha-icon')?.toJSON(),
+         circle:parseFloat(getComputedStyle(root.querySelector('.xp-ux-dock-seven .xp-ux-dock-action'),'::before').width),
          actions:[...root.querySelectorAll('.xp-ux-dock-seven .xp-ux-dock-action')]
            .map(e=>e.getBoundingClientRect().toJSON())};
      });
@@ -399,10 +409,10 @@ async function main(){
        'Mobile vehicle object was not proportionally sized: '+JSON.stringify(sized));
      assert.ok(sized.battery?.height<=171&&sized.battery.height>=80,
        'Mobile battery card was not compacted: '+JSON.stringify(sized));
-     // V3 draws a 46–63px transparent glass TOUCH DISC around a 27px MDI glyph.
-     // The old <=25px assertion mistook the button circle for the glyph.
-     assert.ok(sized.icon?.width>=45&&sized.icon.width<=64,
-       'Mobile transparent dock circles did not scale with card: '+JSON.stringify(sized));
+     // The circle and the MDI glyph have independent physical sizes.
+     assert.ok(sized.icon?.width>=19&&sized.icon.width<=24&&
+       sized.circle>=43&&sized.circle<=49&&sized.circle/sized.icon.width>=1.8,
+       'Mobile quick-action symbols must remain proportional inside compact glass circles: '+JSON.stringify(sized));
      assert.ok(sized.actions.length===7&&sized.actions.every(r=>r.height>=48),
        'Mobile dock has clipped/untappable actions: '+JSON.stringify(sized));
      assert.ok(sized.battery.bottom<=sized.car.top+3,
@@ -446,6 +456,16 @@ async function main(){
  });
  assert.ok(homeIconQuality.length===7&&homeIconQuality.every(i=>i.mdi?.startsWith('mdi:')&&i.within),
    'All seven actions must have genuine, centered native MDI icons: '+JSON.stringify(homeIconQuality));
+ const dockProportions=await car.evaluate(el=>[...el.shadowRoot.querySelectorAll('.xp-ux-dock-action')].map(button=>{
+   const glyph=button.querySelector('ha-icon.xp-mdi-icon');
+   const size=glyph?.getBoundingClientRect().width;
+   const circle=parseFloat(getComputedStyle(button,'::before').width);
+   return {icon:glyph?.getAttribute('icon'),glyph:size,circle,background:getComputedStyle(button).backgroundColor};
+ }));
+ assert.ok(dockProportions.length===7&&dockProportions.every(x=>
+   x.glyph>=19&&x.glyph<=24&&x.circle>=44&&x.circle<=50&&x.circle/x.glyph>=1.8&&
+   x.background==='rgba(0, 0, 0, 0)'),
+   'Home action MDI glyphs must be physically smaller than their floating glass circles: '+JSON.stringify(dockProportions));
  console.log('Desktop official MDI icons and bounding-box alignment verified:',JSON.stringify(homeIconQuality));
 
  // Beta 7: rendered Home Assistant header geometry and actual dock icon colors.

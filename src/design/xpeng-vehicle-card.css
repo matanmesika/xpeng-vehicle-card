@@ -3360,6 +3360,110 @@ background:transparent!important;
  }
 }
 
+
+/* V3 proportional icon control system – reuse true-size official MDI glyphs.
+   A standalone pseudo-element draws the glass disc, never the ha-icon host.
+   Home, charging and subpages now share the same 20-22px glyph proportions. */
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action{
+ --xp-ring-size:48px;--xp-glyph-size:22px;
+ position:relative!important;isolation:isolate;
+ padding:12px 0 0!important;
+ gap:15px!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action::before{
+ content:"";
+ position:absolute;top:0;left:50%;transform:translateX(-50%);
+ width:var(--xp-ring-size);height:var(--xp-ring-size);
+ border-radius:50%;
+ border:1px solid var(--xp-v3-edge);
+ box-sizing:border-box;background:var(--xp-v3-glass);
+ box-shadow:0 4px 18px rgba(0,3,13,.17),inset 0 1px rgba(245,254,255,.12);
+ backdrop-filter:blur(11px);-webkit-backdrop-filter:blur(11px);
+ pointer-events:none;z-index:0;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon{
+ flex:0 0 var(--xp-glyph-size)!important;
+ width:var(--xp-glyph-size)!important;height:var(--xp-glyph-size)!important;
+ --xp-icon-size:var(--xp-glyph-size)!important;
+ --mdc-icon-size:var(--xp-glyph-size)!important;
+ margin:0!important;position:relative;z-index:1;
+ border:0!important;border-radius:0!important;
+ background:transparent!important;box-shadow:none!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-trunk-symbol{
+ --xp-trunk-size:21px!important;
+ flex:0 0 22px!important;
+ width:32px!important;height:22px!important;
+ margin:0!important;position:relative;z-index:1;
+ border:0!important;border-radius:0!important;
+ background:transparent!important;box-shadow:none!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-trunk-symbol>.xp-mdi-icon{
+ width:21px!important;height:21px!important;
+ --xp-icon-size:21px!important;--mdc-icon-size:21px!important;
+ flex:0 0 21px!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-trunk-symbol>.xp-trunk-arrow{
+ width:9px!important;height:9px!important;
+ --xp-icon-size:9px!important;--mdc-icon-size:9px!important;
+ flex:0 0 9px!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action:not(:disabled):is(:hover,:focus-visible)::before{
+ border-color:rgba(102,233,231,.85);
+ background:rgba(20,88,117,.49);
+ box-shadow:0 0 22px var(--xp-v3-halo);
+}
+.xp-scene.xp-charge .xp-charge-panel-actions button{
+ --xp-ring-size:46px;--xp-glyph-size:21px;
+ position:relative!important;isolation:isolate;
+ padding:11px 2px 0!important;
+ gap:14px!important;min-height:76px!important;
+}
+.xp-scene.xp-charge .xp-charge-panel-actions button::before{
+ content:"";
+ position:absolute;top:0;left:50%;transform:translateX(-50%);
+ width:var(--xp-ring-size);height:var(--xp-ring-size);
+ border-radius:50%;box-sizing:border-box;
+ border:1px solid var(--xp-v3-edge);
+ background:rgba(13,44,64,.3);
+ backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+ pointer-events:none;z-index:0;
+}
+.xp-scene.xp-charge .xp-charge-panel-actions button>.xp-mdi-icon{
+ flex:0 0 var(--xp-glyph-size)!important;
+ width:var(--xp-glyph-size)!important;height:var(--xp-glyph-size)!important;
+ --xp-icon-size:var(--xp-glyph-size)!important;
+ --mdc-icon-size:var(--xp-glyph-size)!important;
+ position:relative;z-index:1;
+ background:transparent!important;border:0!important;
+ border-radius:0!important;box-shadow:none!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+.xp-scene.xp-charge .xp-charge-panel-actions button:not(:disabled):is(:hover,:focus-visible)::before{
+ border-color:rgba(102,233,231,.85);
+ background:rgba(20,88,117,.49);
+}
+@container xpeng-layout (max-width:850px){
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action{
+  --xp-ring-size:46px;--xp-glyph-size:21px
+ }
+ .xp-scene.xp-charge .xp-charge-panel-actions button{
+  --xp-ring-size:44px;--xp-glyph-size:20px
+ }
+}
+@container xpeng-layout (max-width:520px){
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action{
+  --xp-ring-size:44px;--xp-glyph-size:20px;
+  padding-top:11px!important;gap:14px!important
+ }
+ .xp-scene.xp-charge .xp-charge-panel-actions button{
+  --xp-ring-size:42px;--xp-glyph-size:19px;
+  padding-top:10px!important;gap:12px!important;min-height:73px!important
+ }
+}
+
 @media(prefers-reduced-motion:reduce){
  .xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon,
  .xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-trunk-symbol{transition:none!important}
