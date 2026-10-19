@@ -620,10 +620,10 @@ async function main(){
  await reviewShot('controls-desktop');
  const readActions=async()=>car.locator('.xp-ux-dock-action').allTextContents();
  let quickLabels=(await readActions()).join(' ');
- assert.match(quickLabels,/פתח נעילה/);
- assert.match(quickLabels,/פתח חלונות/);
- assert.match(quickLabels,/פתח שקע/);
- assert.match(quickLabels,/פתח תא מטען/);
+ assert.match(quickLabels,/Unlock/);
+ assert.match(quickLabels,/Open windows/);
+ assert.match(quickLabels,/Open port/);
+ assert.match(quickLabels,/Open Trunk/);
  await page.evaluate(()=>{
    const card=document.querySelector('xpeng-vehicle-card'),h=card.hass;
    const states={...h.states};
@@ -635,10 +635,10 @@ async function main(){
    card.hass={...h,states};
  });
  quickLabels=(await readActions()).join(' ');
- assert.match(quickLabels,/נעל/);
- assert.match(quickLabels,/סגור חלונות/);
- assert.match(quickLabels,/סגור שקע/);
- assert.match(quickLabels,/סגור תא מטען/);
+ assert.match(quickLabels,/Lock/);
+ assert.match(quickLabels,/Close windows/);
+ assert.match(quickLabels,/Close port/);
+ assert.match(quickLabels,/Close Trunk/);
  await reviewShot('home-close-actions-desktop');
  // Restore reference states; this mock does not issue any vehicle commands.
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
@@ -654,7 +654,7 @@ async function main(){
        const el=document.createElement('hui-map-card');
        el.dataset.qaNativeMap='true';
        el.style.cssText='display:flex;width:100%;min-height:410px;align-items:center;justify-content:center;text-align:center;color:#d6e7f6;background:#0b253d;border:1px solid #3f698c;border-radius:14px;';
-       el.textContent='מפה במצב בדיקה • אריחי מפה חיים זמינים רק ב־Home Assistant';
+       el.textContent='Preview map: live tiles require Home Assistant';
        return el;
      }
    });
@@ -716,7 +716,7 @@ async function main(){
  }
  assert.equal(await car.locator('.xp-ux-hotspot-zone button[data-xp-cycle="left_rear_seat_heat_select"]').count(),1,'Missing rear left heater on cabin photo');
   assert.equal(await car.locator('.xp-seat-summary-action').count(),0,'No seat actions allowed outside cabin hotspots');
- assert.equal(await car.locator('[role="status"][aria-label="מצב AUTO: פעיל"]').count(),1,'Real AUTO feedback missing');
+ assert.equal(await car.locator('[role="status"][aria-label="AUTO mode: On"]').count(),1,'Real AUTO feedback missing');
  assert.equal(await car.locator('[data-xp-hvac-mode="auto"]').count(),0,'Do not invent executable AUTO');
  assert.equal(await car.locator('[data-xp-swing-mode]').count(),0,'Do not invent remote airflow');
  assert.equal(await car.locator('.xp-ux-hotspot-zone button[data-xp-cycle="right_rear_seat_heat_select"]').count(),1,'Missing rear right heater on cabin photo');
@@ -774,7 +774,7 @@ async function main(){
      servicePresent:!!root.querySelector('.xp-ux-modal-maintenance .xp-maintenance-service')};
  });
  assert.equal(maintenanceFromGear.tires,4);
- assert.match(maintenanceFromGear.source,/נתוני הצמיגים מתקבלים מ־Home Assistant/);
+ assert.match(maintenanceFromGear.source,/Tire data is provided by Home Assistant/);
  assert.equal(maintenanceFromGear.servicePresent,true,
    'Owner-approved Maintenance must include genuine service details alongside TPMS');
  await car.locator('button[data-xp-close]').click();
@@ -828,7 +828,7 @@ async function main(){
    states['binary_sensor.my_xpeng_trunk']={...states['binary_sensor.my_xpeng_trunk'],state:'on'};
    card.hass={...h,states};
  });
- assert.match((await readActions()).join(' '),/סגור חלונות/);
+ assert.match((await readActions()).join(' '),/Close windows/);
  await reviewShot('home-close-actions-mobile');
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
  // The first-tap actions use real states; demo contains no backend car connection.
@@ -846,9 +846,9 @@ async function main(){
      return {aria:button.getAttribute('aria-label'),icon:icon?.getAttribute('icon'),
        text:button.textContent.trim(),size:button.getBoundingClientRect().width};
    });
-   assert.equal(arrow.icon,'mdi:arrow-right','Hebrew Back arrow must be the official RTL MDI');
+   assert.equal(arrow.icon,'mdi:arrow-left','Back arrow must always point left');
    assert.equal(arrow.text,'','Back arrow button must not show any visible text');
-   assert.ok(arrow.aria?.includes('חזרה')&&arrow.size>=43,
+   assert.ok(arrow.aria?.includes('Back')&&arrow.size>=43,
      'Icon-only Back must remain accessible and touch-sized: '+JSON.stringify(arrow));
    if(action==='map'){
      assert.equal(await car.locator('button[data-xp-map-action="honk_horn"]').count(),1);
@@ -924,7 +924,7 @@ async function main(){
      const scrollBefore=await car.locator('.xp-ux-modal-climate').evaluate(el=>el.scrollTop);
      await scheduleButton.click();
      assert.equal(await car.locator('.xp-ux-modal-extras').count(),1,'Nested schedule page missing');
-     assert.match(await car.locator('.xp-ux-modal-head button').getAttribute('aria-label'),/חלון הקודם/);
+     assert.match(await car.locator('.xp-ux-modal-head button').getAttribute('aria-label'),/previous screen/);
      await car.locator('button[data-xp-close]').click();
      assert.equal(await car.locator('.xp-ux-modal-climate').count(),1,
        'Back from schedule must return to Climate, not to Home');
@@ -973,7 +973,7 @@ async function main(){
  assert.equal(await car.locator('.xp-ux-dock-action').count(),7,'Closing charge limit must restore vehicle shortcuts');
  await car.locator('button[data-xp-open="charge_schedule"]').click();
  assert.ok(await car.locator('.xp-charge-compact-modal.xp-ux-modal-charge_schedule').count(),'Compact schedule overlay missing');
- assert.match(await car.locator('.xp-ux-modal-charge_schedule').innerText(),/קריאה בלבד/,'Never fake executable charge schedule');
+ assert.match(await car.locator('.xp-ux-modal-charge_schedule').innerText(),/read-only/,'Never fake executable charge schedule');
  await reviewShot('charge-schedule-mobile');
  await car.locator('button[data-xp-close]').click();
  assert.equal(await car.locator('.xp-charge').count(),1,'Closing charge overlay must stay in automatic Charging');
@@ -1088,7 +1088,7 @@ async function main(){
      // only translate/assert the XPENG card's own UI, never Home Assistant-owned map content.
      const nativeStub=el.shadowRoot.querySelector('[data-xp-map-host] hui-map-card[data-qa-native-map]');
      const html=nativeStub?el.shadowRoot.innerHTML.replace(nativeStub.outerHTML,''):el.shadowRoot.innerHTML;
-     const matches=[...new Set((html.match(/[\u0590-\u05ff][\u0590-\u05ff\s.,•·־״׳()]+/g)||[]).map(x=>x.trim()))];
+     const matches=[...new Set((html.match(/[\u0590-\u05ff]+/g)||[]).map(x=>x.trim()))];
      if(matches.length)untranslated.push({page:page||'Home',matches:matches.slice(0,12)});
    }
    el._xpPanel='maintenance';el.render();
@@ -1099,16 +1099,16 @@ async function main(){
    const reused=helpers===el.xpWarmMapHelpers();
    el.hass={...h,locale:{...(h.locale||{}),language:'he'}};
    el._xpPanel='maintenance';el.render();
-   const hebrewBack=el.shadowRoot.querySelector('[data-xp-close] ha-icon')?.getAttribute('icon');
+   const localeBack=el.shadowRoot.querySelector('[data-xp-close] ha-icon')?.getAttribute('icon');
    el._xpPanel=null;el.render();
-   return {untranslated,englishBack,englishDock,hebrewBack,reused};
+   return {untranslated,englishBack,englishDock,localeBack,reused};
  });
  assert.deepEqual(localeBrowserQA.untranslated,[],'English panels leave Hebrew text in browser: '+JSON.stringify(localeBrowserQA));
  assert.equal(localeBrowserQA.englishBack,'mdi:arrow-left','English mode needs standard LTR Back arrow');
  assert.equal(localeBrowserQA.englishDock,'ltr','English shortcut labels should be LTR');
- assert.equal(localeBrowserQA.hebrewBack,'mdi:arrow-right','Hebrew RTL arrow must be preserved');
+ assert.equal(localeBrowserQA.localeBack,'mdi:arrow-left','Back stays left even with Hebrew Home Assistant');
  assert.equal(localeBrowserQA.reused,true,'Native map helper preload must use same shared promise');
- console.log('PASS bilingual Home Assistant locale and native map warm-up:',JSON.stringify(localeBrowserQA));
+ console.log('PASS English-only Home Assistant locale and native map warm-up:',JSON.stringify(localeBrowserQA));
 
  // Audit every functional overlay at desktop, phone and HA Sections widths.
  // Diagnostics keeps its own sensor scroller; guided pages scroll the modal when needed.
