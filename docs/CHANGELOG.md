@@ -1,5 +1,37 @@
 # XPENG Dashboard changelog
 
+## v1.0.4 — Stable (2026-10-19)
+
+- Rebuilt one charging-information component for desktop, phone and narrow Sections cards, with true MDI icons and centered icon+label groups.
+- Preserved the original G6 scenery, charging pedestal, green cable, vehicle and interior images and all existing supported Xpengtk controls.
+- Re-captured the 14-image canonical Chromium gallery, with simulated Home Assistant data, for the GitHub and HACS README.
+- Updated English HACS, installation and release documentation; removed obsolete beta publishing workflows, duplicate screenshots and redundant asset placeholders.
+- Kept historical releases and artwork provenance records; automated tests cannot replace real vehicle command, GPS and iPhone Safari acceptance.
+
+---
+
+
+## Unreleased — October 18 owner screenshot fixes
+
+- Replaced ambiguous trunk glyph with official `mdi:car-hatchback`; English action reads **Open Trunk** exactly.
+- Responsive maintenance data remains below car/TPMS diagram; iPhone climate panels fit available width without horizontal clipping.
+- Seat/wheel heat/vent buttons use transparent backgrounds at real photo positions; touch targets remain functional.
+- Dynamic official MDI battery fill/charging icon and red/amber/mint colors reflect live SOC instead of a fixed small icon.
+- Diagnostics entity rows fit on single centered pills in scroll area; important explanation stays visible.
+- Added missing English Update details translation, removed generic successful-command notice, and reserved room for Home Assistant's host chrome.
+- Black Edition selects dark cabin treatment but lacks approved dedicated black exterior/cabin photography; still an **open release blocker** for full authenticity.
+- Not yet tagged/released/merged: automated Chromium simulation must be reviewed in real iPhone and Home Assistant first.
+
+## Unreleased — G6 release-readiness, documentation and gallery (2026-10-18)
+
+- Removed the caption over the G6 interior photo in Climate, preserving accessible image alt text and the actual seat/wheel control hotspot labels.
+- Refreshed the English/Hebrew README, visual gallery and G6 installation/release-readiness docs to accurately describe Beta 9's no-dashboard-scroll sizing, Wi-Fi centering, location map, diagnostics and supported English UI.
+- Re-captured the existing 12 curated desktop and mobile screenshots from the running card in Chromium with synthetic Xpengtk data; standalone native map tiles remain a marked stub.
+- Removed discontinued pre-v1 regression tests and obsolete alpha/prerelease publishing workflows. Preserved current frontend tests, HACS build/QA, historical release tags, all vehicle image assets, generation mapping data and artwork/provenance queues.
+- Completed **G6 functional UI/entity mapping** (pending real-vehicle acceptance), with a separate outstanding **G6 artwork gap of 3 out of 33 camera views**. Next art characterization priority: remaining XPENG model families, generations, colors and views. No fabricated completeness claims for other vehicles.
+- This is **unreleased branch work**. Stable HACS remains `v1.0.3`; the latest published beta is `v1.0.4-beta.9`. No main merge.
+
+
 ## Unreleased — full model/year-group catalog
 
 - Added `data/vehicle-catalog.json` as the canonical model, year-group, trim-title and exterior-colour catalog.

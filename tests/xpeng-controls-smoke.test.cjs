@@ -51,6 +51,66 @@ function createCard(options = {}) {
 }
 
 test('source and HACS distribution remain identical', () => {assert.equal(src, dist);});
+test('maintenance from Extras routes to one correctly styled maintenance modal and Back returns to Extras',()=>{
+ const {card}=createCard();
+ card.xpNavigatePanel('extras');
+ card.xpNavigatePanel('maintenance');
+ assert.equal(card._xpPanel,'maintenance');
+ assert.match(card.xpModal(),/xp-ux-modal-maintenance/);
+ assert.match(card.xpModal(),/data-wheel="tire_fl"/);
+ card.xpBackPanel();
+ assert.equal(card._xpPanel,'extras');
+ assert.equal(card._xpExtraSection,null);
+ assert.match(card.xpExtrasPanel(),/data-xp-extra-page="maintenance"/);
+ assert.match(src,/if\(page==='maintenance'\)\{this\.xpNavigatePanel\('maintenance'\);return;\}/);
+});
+test('Maintenance restores real service/identity beside four tire readings without fake data',()=>{
+ const {card}=createCard({year:'2025'});
+ card._xpengByKey['sensor.vehicle_identity']='sensor.owner_vehicle_identity';
+ card._xpengByKey['sensor.maintenance']='sensor.owner_maintenance';
+ card._xpengByKey['sensor.odometer']='sensor.owner_odometer';
+ card._hass.states['sensor.owner_vehicle_identity']={state:'ok',attributes:{model_year:'2024',vin_masked:'L1N******123'}};
+ card._hass.states['sensor.owner_maintenance']={state:'20 days',attributes:{next_date:'2027-01-10',km_remaining:2450}};
+ card._hass.states['sensor.owner_odometer']={state:'15284',attributes:{unit_of_measurement:'km'}};
+ const html=card.xpMaintenancePanel();
+ assert.match(html,/xp-maintenance-split/);
+ for(const wheel of ['tire_fl','tire_fr','tire_rl','tire_rr'])assert.ok(html.includes('data-wheel="'+wheel+'"'));
+ assert.match(html,/2027-01-10/);
+ assert.match(html,/15284/);
+ assert.match(html,/2024/);
+ assert.match(html,/L1N\*\*\*\*\*\*123/);
+ assert.match(html,/Next service/);
+ assert.doesNotMatch(html,/NaN/);
+});
+test('native map reuses one unchanged Map card on repeated Xpengtk hass updates',async()=>{
+ const {card,sandbox}=createCard();
+ card._xpengRegistryLoaded=true;
+ card._xpengByKey['device_tracker.location']='device_tracker.user_gps';
+ card._hass.states['device_tracker.user_gps']={state:'not_home',attributes:{latitude:32,longitude:34}};
+ card._xpPanel='map';
+ card._xpLastActualCharging=true;
+ let count=0,child=null;
+ const host={replaceChildren(x){child=x},contains(x){return child===x}};
+ card.shadowRoot.querySelector=key=>key==='[data-xp-map-host]'?host:null;
+ card.shadowRoot.contains=x=>x===host;
+ sandbox.window.loadCardHelpers=async()=>({createCardElement(){count++;return {hass:null}}});
+ await card.xpMountMap();
+ assert.equal(count,1);
+ const before=card._xpMapElement;
+ card.hass={...card._hass,states:{...card._hass.states,'sensor.user_named_battery':{state:'71',attributes:{}}}};
+ assert.equal(card._xpMapElement,before);
+ assert.notEqual(card._xpMapElement.hass,card._hass);
+ assert.equal(card._xpMapElement.hass.states['device_tracker.user_gps'].attributes.icon,'mdi:car-back');
+ assert.equal(count,1);
+ await card.xpMountMap();
+ assert.equal(count,1,'Map initialization must not repeat');
+});
+test('mobile scroll and diagnostics have one scrolling parent and original model year is explicit',()=>{
+ assert.match(src,/diagnostics\.scrollTop=oldDiagnostics/);
+ assert.match(src,/\.xp-ux-modal\.xp-ux-modal-extras \.xp-diagnostics-scroll/);
+ assert.match(src,/max-height:none!important;height:auto!important;overflow:visible!important/);
+ assert.match(src,/\.xp-header \.xp-wifi \.xp-mdi-icon/);
+});
 test('renamed entity IDs resolve from Xpengtk stable unique IDs', () => {
   const {card} = createCard();
   assert.equal(card.xpengEntity('sensor', 'battery_soc'), 'sensor.user_named_battery');
@@ -136,7 +196,7 @@ test('charge flap panel has one state-driven action and clear cable disclaimer',
   card._hass.states['button.close_flap']={state:'unknown',attributes:{}};
   assert.match(card.xpPortPanel(), /data-xp-toggle="port"/);
   assert.match(card.xpPortPanel(), /data-xp-toggle="port"/);
-  assert.match(card.xpPortPanel(), /אין שחרור כבל/);
+  assert.match(card.xpPortPanel(), /No cable release/);
   card._xpPanel='port';card.render();
   assert.match(card.shadowRoot.innerHTML, /data-xp-toggle="port"/);
   assert.doesNotMatch(card.shadowRoot.innerHTML, /data-xp-page="seats"/);
@@ -159,7 +219,7 @@ test('photo files must be committed before releasing this draft', {
 });
 
 
-test('home screen presents eight compact controls including charging, maintenance and map', () => {
+test('home screen presents seven compact controls with auto charging mode', () => {
   const {card}=createCard();
   for(const [key,domain,suffix,state] of [
     ['port','button','open_charge_port','button.open_flap'],
@@ -170,12 +230,12 @@ test('home screen presents eight compact controls including charging, maintenanc
     card._hass.states[state] ??= {state:domain==='button'?'unknown':'locked',attributes:{}};
   }
   const nav=card.xpDock();
-  assert.equal((nav.match(/data-xp-(?:open|toggle)=/g)||[]).length,8);
+  assert.equal((nav.match(/data-xp-(?:open|toggle)=/g)||[]).length,7);
   for(const key of ['port','doors','windows'])assert.match(nav,new RegExp('data-xp-toggle="'+key+'"'));
   assert.match(nav,/data-xp-open="climate"/);
-  for(const key of ['charging','maintenance','map'])assert.match(nav,new RegExp('data-xp-open="'+key+'"'));
+  for(const key of ['maintenance','map'])assert.match(nav,new RegExp('data-xp-open="'+key+'"'));
  assert.match(nav,/data-xp-toggle="trunk"/);
-  assert.doesNotMatch(nav,/data-xp-open="seats"/);
+  assert.doesNotMatch(nav,/data-xp-open="seats"|data-xp-open="charging"/);
 });
 test('seat controls stay on cabin image and do not open a second sheet',()=>{
   const {card}=createCard();
@@ -221,8 +281,8 @@ test('map contains only horn and flash buttons, each resolved through Xpengtk',a
 test('charging never labels Stop charging as cable release',()=>{
   const {card}=createCard();
   const charge=card.xpChargeControls();
-  assert.match(charge,/הפסק טעינה/);
-  assert.doesNotMatch(charge,/שחרר.*כבל/);
+  assert.match(charge,/Stop charging/);
+  assert.doesNotMatch(charge,/Release.*cable/);
   assert.equal((charge.match(/data-xp-command="stop_charge"/g)||[]).length,1);
 });
 
@@ -259,7 +319,7 @@ test('passenger heat Off is never sent when upstream does not support it',async(
   for(let i=0;i<4;i++)await card.xpCycleSeat('passenger_seat_heat_select');
   assert.deepEqual(JSON.parse(JSON.stringify(commands.map(c=>c.data.option))),
     ['Heat 1','Heat 2','Heat 3']);
-  assert.match(card._xpNotice,/אינו נתמך/);
+  assert.match(card._xpNotice,/not supported/);
 });
 test('rapid repeated taps serialize native HA commands by entity',async()=>{
   const {card,commands}=createCard();
@@ -289,14 +349,15 @@ test('unknown or missing HA select options never trigger an invented seat comman
 });
 
 
-test('extras menu has six categories and home preserves eight actions',()=>{
+test('extras menu has seven categories and home preserves seven actions',()=>{
   const {card}=createCard();
   assert.match(card.header(),/data-xp-more/);
   card._xpPanel='extras';
-  assert.doesNotMatch(card.header(),/data-xp-more/,'subpages must expose only Back');
-  assert.equal((card.xpExtrasPanel().match(/data-xp-extra-page=/g)||[]).length,6);
-  assert.equal((card.xpDock().match(/data-xp-(?:open|toggle)=/g)||[]).length,8);
-  for(const key of ['security','energy','schedule','power','maintenance','updates']){
+  assert.match(card.header(),/data-xp-more/,'Gear stays visible in all subpages');
+ assert.match(card.header(),/data-meta-toggle/,'Wi-Fi stays visible in all subpages');
+  assert.equal((card.xpExtrasPanel().match(/data-xp-extra-page=/g)||[]).length,7);
+  assert.equal((card.xpDock().match(/data-xp-(?:open|toggle)=/g)||[]).length,7);
+  for(const key of ['security','energy','schedule','power','maintenance','updates','diagnostics']){
     card._xpExtraSection=key;
     assert.match(card.xpModal(),/xp-extra-details/);
   }
@@ -381,8 +442,8 @@ test('screenshot functions wired only when upstream Xpengtk offers native entity
   card._hass.states['switch.real_defrost']={state:'off',attributes:{}};
   card._hass.states['calendar.real_schedule']={state:'off',attributes:{}};
   const html=card.xpClimateFeatures();
-  assert.equal((html.match(/class="xp-ux-climate-feature(?: |")/g)||[]).length,3);
-  assert.match(html,/data-xp-climate="off"/);
+  assert.equal((html.match(/class="xp-ux-climate-feature(?: |")/g)||[]).length,2);
+  assert.match(card.xpClimatePrimaryControls(),/data-xp-climate="off"/);
   assert.match(html,/data-xp-switch="defrost_switch"/);
   assert.match(html,/data-xp-extra-page="schedule"/);
   for(const fake of ['pet_mode','sterilisation','ac_cleaning','rear_defrost','quick_heat','quick_cool'])
@@ -467,25 +528,36 @@ test('missing XPENG target and cabin telemetry must not be rendered as zero degr
 test('G6 home controls default visible but still allow explicit hiding',()=>{
  const {card}=createCard({show_controls:undefined});
  assert.equal(card.xpUiEnabled(),true);
- assert.equal((card.xpDock().match(/data-xp-(?:open|toggle)=/g)||[]).length,8);
+ assert.equal((card.xpDock().match(/data-xp-(?:open|toggle)=/g)||[]).length,7);
  assert.equal(card.xpAccessAllowed(),false);
  card.setConfig({type:'custom:xpeng-vehicle-card',model:'G6',year:'2026',prefix:'xpeng_g6',show_controls:false});
  assert.equal(card.xpUiEnabled(),false);
 });
-test('G6 charging preserves original panel layout with approved front-oriented car',()=>{
+test('G6 charging keeps original photo, all seven Home controls and three scoped charging actions',()=>{
  const {card}=createCard({show_controls:undefined});
  card._view='charging';
- assert.match(card.assetSpec().src,/\/g6\/2026\/[^/]+\/front\.webp$/);
+ assert.match(card.assetSpec().src,/\/g6\/2026\/graphite_gray\/charging\.webp$/);
  card.render();
  const h=card.shadowRoot.innerHTML;
+ const dock=(h.match(/class="xp-ux-dock-action"/g)||[]).length;
+ assert.equal(dock,7,'Charging must have the full Home dock');
+ assert.match(h,/xp-charge-navigation/);
  assert.match(h,/data-xp-open="charge_controls"/);
  assert.match(h,/data-xp-open="charge_schedule"/);
+ assert.match(h,/data-xp-command="stop_charge"/);
  assert.doesNotMatch(h,/class="xp-ux-charge-actions"/);
- assert.doesNotMatch(h,/class="xp-ux-dock /);
- assert.doesNotMatch(h,/class="xp-more-trigger"/);
+ assert.doesNotMatch(h,/data-xp-home/,'Charging scene is always sensor-driven, not a manual page');
+ assert.doesNotMatch(h,/data-xp-open="charging"/);
  card._xpPanel='charge_controls';
- assert.match(card.xpModal(),/data-xp-command="stop_charge"/);
- assert.match(card.xpModal(),/data-xp-toggle="port"/);
+ const modal=card.xpModal();
+ assert.match(modal,/xp-charge-compact-modal/);
+ assert.match(modal,/data-xp-range="charge_limit_control"/);
+ assert.doesNotMatch(modal,/data-xp-command="stop_charge"|data-xp-toggle="port"/,
+   'Charge Limit overlay must contain only the supported HA number setting');
+ card._xpPanel='charge_schedule';
+ const schedule=card.xpModal();
+ assert.match(schedule,/xp-charge-compact-modal/);
+ assert.match(schedule,/read-only/,'Schedule is Xpengtk read-only');
 });
 
 test('all G6 generations use the same owner-photo slots',()=>{
@@ -608,12 +680,12 @@ test('rear heating controls render on the cabin only when matching G6 integratio
  assert.doesNotMatch(both,/data-xp-cycle="left_rear_seat_ventilation_select"/);
 });
 
-test('one navigation bar on Home, single Back and no dock on all subpages',()=>{
+test('identical one-dock actions on both automatic Home/Charging; subpages are overlays',()=>{
  const {card}=createCard({enable_access_controls:true});
  card._hass.states['binary_sensor.is_charging'].state='off';
  const h=card.shadowRoot;
  card.render();
- assert.equal((h.innerHTML.match(/class="xp-ux-dock-action"/g)||[]).length,8);
+ assert.equal((h.innerHTML.match(/class="xp-ux-dock-action"/g)||[]).length,7);
  assert.doesNotMatch(h.innerHTML,/data-xp-home/);
  for(const page of ['climate','maintenance','map','port','windows','doors','trunk']){
    card._xpPanel=page;card.render();
@@ -622,22 +694,142 @@ test('one navigation bar on Home, single Back and no dock on all subpages',()=>{
    assert.doesNotMatch(h.innerHTML,/class="xp-ux-dock-action"/);
    assert.doesNotMatch(h.innerHTML,/data-xp-home/);
  }
- card._xpPanel=null;card._xpManualCharging=true;card.render();
- assert.match(h.innerHTML,/data-xp-home/);
- assert.doesNotMatch(h.innerHTML,/class="xp-ux-dock-action"/);
- card._xpPanel='charge_schedule';card.render();
- assert.match(h.innerHTML,/data-xp-close/);
+ card._xpPanel=null;card._hass.states['binary_sensor.is_charging'].state='on';card.render();
+ assert.equal((h.innerHTML.match(/class="xp-ux-dock-action"/g)||[]).length,7,
+   'Charging includes identical 7 actions');
+ assert.match(h.innerHTML,/xp-charge-navigation/);
  assert.doesNotMatch(h.innerHTML,/data-xp-home/);
- assert.doesNotMatch(h.innerHTML,/class="xp-ux-dock-action"/);
+ for(const page of ['charge_controls','charge_schedule','climate','maintenance','map']){
+   card._xpPanel=page;card.render();
+   assert.match(h.innerHTML,new RegExp('xp-ux-modal-'+page));
+   assert.match(h.innerHTML,/data-xp-close/);
+   assert.doesNotMatch(h.innerHTML,/class="xp-ux-dock-action"/);
+   assert.doesNotMatch(h.innerHTML,/data-xp-home/);
+ }
+ card._xpPanel=null;card.render();
+ assert.equal((h.innerHTML.match(/class="xp-ux-dock-action"/g)||[]).length,7);
 });
-test('charging view can be opened manually and return to Home while charging stays live',()=>{
+test('subpages hide duplicate model name, preserving model identification on Home',()=>{
  const {card}=createCard();
- card._xpManualCharging=true;card.render();
- assert.match(card.shadowRoot.innerHTML,/data-xp-home/);
- card._xpManualCharging=false;card._xpChargingDismissed=true;card.render();
- assert.match(card.shadowRoot.innerHTML,/class="xp-ux-dock-action"/);
- assert.doesNotMatch(card.shadowRoot.innerHTML,/data-xp-home/);
- card._xpChargingDismissed=false;
+ card._hass.states['binary_sensor.is_charging'].state='off';
+ card.render();
+ assert.match(card.shadowRoot.innerHTML, /<h1>XPENG <em>G6<\/em><\/h1>/);
+ for(const page of ['climate','maintenance','map','charge_controls','charge_schedule','extras']){
+   card._xpPanel=page;card.render();
+   const modal=card.xpModal();
+   const header=modal.match(/<header class="xp-ux-modal-head">[\s\S]*?<\/header>/)?.[0];
+   assert.ok(header,'Missing page header '+page);
+   assert.doesNotMatch(header, /G6|<span>/, 'No redundant G6 label within '+page+' title');
+   assert.match(header, /<h2>/);
+ }
+});
+test('nested Climate -> HVAC schedule returns to the same Climate window',()=>{
+ const {card}=createCard();
+ card._hass.states['binary_sensor.is_charging'].state='off';
+ card.render();
+ card.xpNavigatePanel('climate');
+ assert.match(card.xpModal(),/xp-ux-modal-climate/);
+ card.xpNavigatePanel('extras','schedule');
+ assert.equal(card._xpNavStack.length,1);
+ assert.match(card.xpModal(),/xp-ux-modal-extras/);
+ assert.match(card.xpModal(),/Back to previous screen/);
+ card.xpBackPanel();
+ assert.equal(card._xpPanel,'climate');
+ assert.equal(card._xpNavStack.length,0);
+ assert.match(card.xpModal(),/xp-ux-modal-climate/);
+ card.xpBackPanel();
+ assert.equal(card._xpPanel,null);
+ assert.equal(card._xpExtraSection,null);
+ assert.equal(card._xpNavStack.length,0);
+});
+test('Extras -> Diagnostics returns first to Extras, then to Home',()=>{
+ const {card}=createCard();
+ card.xpNavigatePanel('extras');
+ card.xpNavigatePanel('extras','diagnostics');
+ assert.equal(card._xpNavStack.length,1);
+ assert.match(card.xpExtrasPanel(),/xp-entity-diagnostics|No Xpengtk entities/);
+ card.xpBackPanel();
+ assert.equal(card._xpPanel,'extras');
+ assert.equal(card._xpExtraSection,null);
+ assert.match(card.xpExtrasPanel(),/data-xp-extra-page="diagnostics"/);
+ card.xpBackPanel();
+ assert.equal(card._xpPanel,null);
+ assert.equal(card._xpNavStack.length,0);
+});
+test('multi-hop modal Back stack clears on charge transition or vehicle switch',()=>{
+ const {card}=createCard();
+ card.xpNavigatePanel('climate');
+ card.xpNavigatePanel('extras','schedule');
+ card.xpNavigatePanel('maintenance');
+ assert.equal(card._xpNavStack.length,2);
+ card.xpBackPanel();
+ assert.equal(card._xpPanel,'extras');
+ assert.equal(card._xpExtraSection,'schedule');
+ card.xpBackPanel();
+ assert.equal(card._xpPanel,'climate');
+ card.xpNavigatePanel('extras','schedule');
+ card._xpengRegistryLoaded=true;
+ card._xpLastActualCharging=false;
+ card.hass={...card._hass,states:{...card._hass.states,'binary_sensor.is_charging':{state:'off',attributes:{}},'binary_sensor.cable_present':{state:'off',attributes:{}}}};
+ card.xpNavigatePanel('extras','diagnostics');
+ card.setConfig({type:'custom:xpeng-vehicle-card',model:'G9',year:'2026',prefix:'xpeng_g9'});
+ assert.equal(card._xpPanel,null);
+ assert.equal(card._xpNavStack.length,0);
+ card.xpNavigatePanel('climate');
+ card.xpNavigatePanel('extras','schedule');
+ card._xpLastActualCharging=false;
+ card.hass={...card._hass,states:{...card._hass.states,'binary_sensor.is_charging':{state:'on',attributes:{}},'binary_sensor.cable_present':{state:'on',attributes:{}}}};
+ assert.equal(card._xpPanel,null,'New active charging scene invalidates the old subpage stack');
+ assert.equal(card._xpNavStack.length,0);
+});
+test('changing interior colour in editor does not collapse nested Climate navigation',()=>{
+ const {card}=createCard({interior:'light_gray'});
+ card._hass.states['binary_sensor.is_charging'].state='off';
+ card.xpNavigatePanel('climate');
+ card.xpNavigatePanel('extras','schedule');
+ assert.equal(card._xpNavStack.length,1);
+ card.setConfig({type:'custom:xpeng-vehicle-card',model:'G6',year:'2026',prefix:'xpeng_g6',interior:'dark_gray',show_controls:true});
+ assert.equal(card._xpPanel,'extras');
+ assert.equal(card._xpNavStack.length,1);
+ card.xpBackPanel();
+ assert.equal(card._xpPanel,'climate');
+ assert.match(card.xpModal(),/interior_dark_gray/);
+});
+test('unavailable stop-charge command stays visible but disabled; no invented API call',()=>{
+ const {card}=createCard();
+ delete card._hass.states['button.stop_vehicle_charging'];
+ card.render();
+ const h=card.shadowRoot.innerHTML;
+ assert.match(h,/data-xp-command="stop_charge" disabled/);
+ assert.match(h,/data-xp-open="charge_controls"/);
+ assert.match(h,/data-xp-open="charge_schedule"/);
+});
+test('charging overlays close automatically when charging ends, returning to normal dashboard',()=>{
+ const {card}=createCard({show_controls:true});
+ card._xpengRegistryLoaded=true;
+ card._xpPanel='charge_schedule';
+ card._xpLastActualCharging=true;
+ const states={...card._hass.states,'binary_sensor.is_charging':{state:'off',attributes:{}},
+   'binary_sensor.cable_present':{state:'off',attributes:{}}};
+ card.hass={...card._hass,states};
+ assert.equal(card._xpPanel,null);
+ assert.match(card.shadowRoot.innerHTML,/xp-overview/);
+ assert.doesNotMatch(card.shadowRoot.innerHTML.split('</style>')[1]||'',/class="xp-ux-modal[^\"]*xp-ux-modal-charge_schedule/);
+ assert.equal((card.shadowRoot.innerHTML.match(/class="xp-ux-dock-action"/g)||[]).length,7);
+});
+test('only sensor state triggers charging; confirmed charge renders green cable',()=>{
+ const {card}=createCard();
+ card._hass.states['binary_sensor.is_charging'].state='off';
+ card.render();
+ assert.doesNotMatch(card.xpDock(),/data-xp-open="charging"/);
+ card._hass.states['binary_sensor.is_charging'].state='on';
+ card._hass.states['binary_sensor.cable_present'].state='on';
+ card.render();
+ assert.match(card.shadowRoot.innerHTML,/class="xp-charge-card(?: xp-charge-unified)?"/);
+ assert.match(card.shadowRoot.innerHTML,/data-xp-cable="desktop"/);
+ assert.match(card.shadowRoot.innerHTML,/data-xp-cable="mobile"/);
+ card._hass.states['binary_sensor.is_charging'].state='off';card.render();
+ assert.doesNotMatch(card.shadowRoot.innerHTML,/data-xp-cable="desktop"|data-xp-cable="mobile"/);
 });
 
 test('one-tap controls alter visible action labels, icons, and avoid duplicate confirms',async()=>{
@@ -658,9 +850,9 @@ test('one-tap controls alter visible action labels, icons, and avoid duplicate c
    'button.real_open_port':{state:'unknown',attributes:{}},
    'button.real_close_port':{state:'unknown',attributes:{}}});
  let nav=card.xpDock();
- assert.match(nav,/פתח נעילה/);
- assert.match(nav,/פתח חלונות/);
- assert.match(nav,/פתח שקע/);
+ assert.match(nav,/Unlock/);
+ assert.match(nav,/Open windows/);
+ assert.match(nav,/Open port/);
  assert.match(nav,/data-xp-toggle="windows"/);
  assert.match(nav,/data-xp-toggle="port"/);
  assert.match(nav,/data-xp-toggle="doors"/);
@@ -671,12 +863,18 @@ test('one-tap controls alter visible action labels, icons, and avoid duplicate c
  st['lock.real'].state='unlocked';
  st['binary_sensor.real_windows'].state='on';
  st['sensor.real_port'].state='Open';
+ // Action state should not bounce immediately on stale sensor updates.
+ for(const action of ['doors','windows','port']){
+   assert.match(card.xpDock(),new RegExp('data-xp-toggle="'+action+'"[^>]*aria-busy="true"'));
+   card._xpTogglePending[action].at-=2000;
+   assert.equal(card.xpPendingToggle(action),null,'A confirmed action clears its pending state');
+ }
  nav=card.xpDock();
- assert.match(nav,/נעל/);
- assert.match(nav,/סגור חלונות/);
- assert.match(nav,/סגור שקע/);
+ assert.match(nav,/Lock/);
+ assert.match(nav,/Close windows/);
+ assert.match(nav,/Close port/);
  st['sensor.real_port'].state='Connected';
- assert.doesNotMatch(card.xpDock(),/data-xp-toggle="port"[^>]*>[^]*?<small>סגור שקע/);
+ assert.doesNotMatch(card.xpDock(),/data-xp-toggle="port"[^>]*>[^]*?<small>Close port/);
  const c=commands.length;card.xpToggle('port');
  assert.equal(commands.length,c,'cannot close charge flap when cable is connected');
  // Stop charging is always separately confirmed; the bypass is not general.
@@ -686,12 +884,13 @@ test('one-tap controls alter visible action labels, icons, and avoid duplicate c
 test('native AUTO and airflow buttons only render and execute when advertised by HA',async()=>{
  const {card,commands}=createCard();
  let html=card.xpClimateFeatures();
- assert.doesNotMatch(html,/data-xp-hvac-mode|data-xp-swing-mode/);
+ assert.doesNotMatch(card.xpClimatePrimaryControls(),/data-xp-hvac-mode/);
+ assert.doesNotMatch(html,/data-xp-swing-mode/);
  card._hass.states['climate.renamed_hvac'].attributes.hvac_modes=['off','heat_cool','auto'];
  card._hass.states['climate.renamed_hvac'].attributes.swing_modes=['off','vertical'];
  card._hass.states['climate.renamed_hvac'].attributes.swing_mode='off';
  html=card.xpClimateFeatures();
- assert.match(html,/data-xp-hvac-mode="auto"/);
+ assert.match(card.xpClimatePrimaryControls(),/data-xp-hvac-mode="auto"/);
  assert.match(html,/data-xp-swing-mode="vertical"/);
  await card.xpSend('climate','set_hvac_mode','cabin_climate','auto');
  await card.xpSend('climate','set_swing_mode','cabin_climate','vertical');
@@ -720,14 +919,16 @@ test('tailgate cycles open and close in one verified tap; Access and unknown sta
  st['button.real_open_trunk']={state:'unknown',attributes:{}};
  st['button.real_close_trunk']={state:'unknown',attributes:{}};
  assert.equal(card.xpToggleTarget('trunk').suffix,'open_trunk');
- assert.match(card.xpDock(),/פתח תא מטען/);
+ assert.match(card.xpDock(),/Open Trunk/);
  assert.match(card.xpTrunkPanel(),/data-xp-toggle="trunk"/);
  card.xpToggle('trunk');await new Promise(resolve=>setImmediate(resolve));
  assert.equal(commands.at(-1).data.entity_id,'button.real_open_trunk');
  assert.equal(confirms,0);
  st['binary_sensor.real_trunk'].state='on';
  assert.equal(card.xpToggleTarget('trunk').suffix,'close_trunk');
- assert.match(card.xpDock(),/סגור תא מטען/);
+ assert.match(card.xpDock(),/aria-busy="true"/);
+ card._xpTogglePending.trunk.at-=2000;card.xpPendingToggle('trunk');
+ assert.match(card.xpDock(),/Close Trunk/);
  card.xpToggle('trunk');await new Promise(resolve=>setImmediate(resolve));
  assert.equal(commands.at(-1).data.entity_id,'button.real_close_trunk');
  st['binary_sensor.real_trunk'].state='unavailable';
@@ -745,8 +946,8 @@ test('finder uses real horn and light commands, correct Hebrew, map and Back',()
  let html=card.xpMapPanel();
  assert.match(html,/data-xp-map-action="honk_horn" disabled/);
  assert.match(html,/data-xp-map-action="flash_lights" disabled/);
- assert.match(html,/צופר/);
- assert.match(html,/הבהוב/);
+ assert.match(html,/Horn/);
+ assert.match(html,/Flash lights/);
  card._xpengByKey['button.honk_horn']='button.real_horn';
  card._xpengByKey['button.flash_lights']='button.real_flash';
  card._hass.states['button.real_horn']={state:'unknown',attributes:{}};
@@ -755,7 +956,7 @@ test('finder uses real horn and light commands, correct Hebrew, map and Back',()
  assert.doesNotMatch(html,/data-xp-map-action="honk_horn" disabled/);
  assert.doesNotMatch(html,/data-xp-map-action="flash_lights" disabled/);
  card._xpPanel='map';card.render();
- assert.match(card.shadowRoot.innerHTML,/data-xp-close aria-label="חזרה לבית"/);
+ assert.match(card.shadowRoot.innerHTML,/data-xp-close aria-label="Back to dashboard"/);
  assert.doesNotMatch(card.shadowRoot.innerHTML,/class="xp-ux-dock-action"/);
 });
 test('real Xpengtk AUTO status is read only; executable AUTO needs advertised climate mode',()=>{
@@ -764,17 +965,17 @@ test('real Xpengtk AUTO status is read only; executable AUTO needs advertised cl
  card._xpengByKey['binary_sensor.mirror_heating']='binary_sensor.real_mirror';
  card._hass.states['binary_sensor.real_auto']={state:'on',attributes:{}};
  card._hass.states['binary_sensor.real_mirror']={state:'off',attributes:{}};
- let html=card.xpClimateFeatures();
+ let html=card.xpClimatePrimaryControls();
  assert.match(html,/xp-ux-climate-readonly/);
  assert.match(html,/AUTO/);
- assert.match(html,/חיווי בלבד/);
+ assert.match(html,/Status only/);
  assert.doesNotMatch(html,/data-xp-hvac-mode/);
- assert.doesNotMatch(html,/data-xp-swing-mode/);
+ assert.doesNotMatch(card.xpClimateFeatures(),/data-xp-swing-mode/);
  const attrs=card._hass.states['climate.renamed_hvac'].attributes;
  attrs.hvac_modes=['off','heat_cool','auto'];attrs.swing_modes=['off','vertical'];attrs.swing_mode='off';
- html=card.xpClimateFeatures();
+ html=card.xpClimatePrimaryControls();
  assert.match(html,/data-xp-hvac-mode="auto"/);
- assert.match(html,/data-xp-swing-mode="vertical"/);
+ assert.match(card.xpClimateFeatures(),/data-xp-swing-mode="vertical"/);
 });
 test('charging remains original scene with exactly two visible action shortcuts',()=>{
  const {card}=createCard();
@@ -793,21 +994,23 @@ test('Location requests HA native GPS map with dark mode and zoom 11, not a fabr
    state:'not_home',attributes:{latitude:32.0,longitude:34.8,gps_accuracy:15}
  };
  card._xpPanel='map';
- const host={textContent:'טוען מפה…',replaceChildren(view){attached=view}};
+ const host={textContent:'Loading map…',replaceChildren(view){attached=view}};
  card.shadowRoot.querySelector=selector=>selector==='[data-xp-map-host]'?host:null;
  card.shadowRoot.contains=x=>x===host;
  sandbox.window.loadCardHelpers=async()=>({createCardElement(config){captured=config;return {hass:null}}});
  await card.xpMountMap();
  assert.deepEqual(JSON.parse(JSON.stringify(captured)),{
-   type:'map',entities:[{entity:'device_tracker.real_vehicle'}],
-   default_zoom:11,hours_to_show:0,dark_mode:true
+   type:'map',entities:[{entity:'device_tracker.real_vehicle',label_mode:'icon',focus:true}],
+   default_zoom:16,auto_fit:true,fit_zones:false,hours_to_show:0,theme_mode:'dark',aspect_ratio:'4:3'
  });
- assert.equal(attached.hass,card._hass);
+ assert.notEqual(attached.hass,card._hass);
+ assert.equal(attached.hass.states['device_tracker.real_vehicle'].attributes.icon,'mdi:car-back');
+ assert.equal(card._hass.states['device_tracker.real_vehicle'].attributes.icon,undefined);
  card._xpPanel=null;captured=null;
  await card.xpMountMap();
  assert.equal(captured,null);
 });
-test('G6 multilingual text and icon contract covers all new user-facing actions',()=>{
+test('G6 English text and icon contract',()=>{
  const {card}=createCard({enable_access_controls:true});
  Object.assign(card._xpengByKey,{
    'binary_sensor.trunk':'binary_sensor.trunk_for_translation',
@@ -821,18 +1024,663 @@ test('G6 multilingual text and icon contract covers all new user-facing actions'
  card._xpengByKey['button.open_windows']='button.open_windows_translation';
  card._hass.states['binary_sensor.window_for_translation']={state:'off',attributes:{}};
  card._hass.states['button.open_windows_translation']={state:'unknown',attributes:{}};
- for(const name of ['מיזוג','טעינה','תחזוקה','מיקום','חלונות','פתח תא מטען'])
-   assert.ok(card.xpDock().includes(name),'Missing correct Hebrew action: '+name);
- assert.match(card.xpTrunkPanel(),/תא המטען/);
- assert.match(card.xpMapPanel(),/צופר/);
- assert.match(card.xpMapPanel(),/הבהוב/);
- assert.match(card.xpChargeSchedulesPanel(),/שעת התחלת טעינה/);
- assert.match(card.xpChargeSchedulesPanel(),/שעת סיום טעינה/);
+ for(const name of ['Climate','Maintenance','Location','Open windows','Open Trunk'])
+   assert.ok(card.xpDock().includes(name),'Missing English action: '+name);
+ assert.match(card.xpTrunkPanel(),/The tailgate/);
+ assert.match(card.xpMapPanel(),/Horn/);
+ assert.match(card.xpMapPanel(),/Flash lights/);
+ assert.match(card.xpChargeSchedulesPanel(),/Charging start time/);
+ assert.match(card.xpChargeSchedulesPanel(),/Charging end time/);
  assert.match(card.charging(),/Charging information/);
  assert.match(card.charging(),/data-xp-open="charge_controls"/);
  assert.match(card.charging(),/data-xp-open="charge_schedule"/);
- assert.match(src,/auto:'<path/);
- assert.match(src,/horn:'<path/);
- assert.match(src,/flash:'<path/);
- assert.match(src,/windscreen:'<path/);
+ assert.match(src,/auto:'mdi:autorenew'/);
+ assert.match(src,/horn:'mdi:bullhorn-outline'/);
+ assert.match(src,/flash:'mdi:car-light-high'/);
+ assert.match(src,/windscreen:'mdi:car-defrost-front'/);
+});
+
+test('every action is a native modern MDI glyph, including battery and charge station',()=>{
+ const {card}=createCard();
+ card._hass.states['binary_sensor.is_charging'].state='off';
+ card.render();
+ const home=card.overview();
+ const charging=card.charging();
+ const dock=card.xpDock();
+ const icons=[...dock.matchAll(/<ha-icon class="xp-mdi-icon" icon="([^"]+)"/g)].map(m=>m[1]);
+ assert.equal(icons.length,6,'Six standard controls retain genuine native MDI icons');
+ assert.ok(icons.every(icon=>icon.startsWith('mdi:')));
+ assert.match(dock,/class="xp-mdi-icon xp-tailgate-icon"/,
+   'Seventh Open Trunk action uses the owner-requested rear hatch vector');
+ assert.match(home,/data-xp-battery-icon[^>]*><ha-icon[^>]*icon="mdi:battery-(?:[0-9]+|unknown|outline)"/,
+   'Battery pictogram must be official MDI, not a custom drawn icon');
+ assert.doesNotMatch(home,/class="xp-batt-fill"/);
+ assert.match(charging,/xp-station-xpeng19[^>]*>[\s\S]*?xp-xpeng-pedestal/,
+   'G6 uses approved XPENG-branded charger on all viewports');
+ assert.match(charging,/xp-station-display[^>]*>.*?icon="mdi:ev-station"/,
+   'Original official MDI fallback remains in the DOM');
+ assert.doesNotMatch(card.header(),/✕/,'No improvised decorative X brand icon');
+});
+test('every modal Back is a single accessible RTL MDI arrow with no visible Back text',()=>{
+ const {card}=createCard();
+ for(const page of ['climate','maintenance','map','charge_controls','charge_schedule','extras','doors','windows','trunk','port']){
+   card._xpPanel=page;
+   const modal=card.xpModal();
+   const button=modal.match(/<button type="button" data-xp-close[^>]*>[\s\S]*?<\/button>/)?.[0];
+   assert.ok(button,'Missing Back button: '+page);
+   assert.match(button,/aria-label="Back to dashboard"/);
+   assert.match(button,/icon="mdi:arrow-right"/);
+   assert.doesNotMatch(button,/<span>|Back to vehicle/,
+     'No redundant Back words in visual button: '+page);
+ }
+ const tire=card.tireScreen(true);
+ const back=tire.match(/<button type="button" data-tire-toggle[^>]*>[\s\S]*?<\/button>/)?.[0];
+ assert.ok(back);
+ assert.match(back,/aria-label="Back to vehicle view"/);
+ assert.match(back,/icon="mdi:arrow-right"/);
+ assert.doesNotMatch(back,/>\s*Back to vehicle/);
+ card._xpPanel='climate';
+ card.xpNavigatePanel('extras','schedule');
+ assert.match(card.xpModal(),/aria-label="Back to previous screen"/,
+   'Nested navigation remains correctly announced for screen-readers');
+});
+test('upstream Xpengtk unique IDs resolve without guessed windows/port names',()=>{
+ const {card}=createCard({enable_access_controls:true}),st=card._hass.states;
+ Object.assign(card._xpengByKey,{
+  'binary_sensor.any_window_open':'binary_sensor.real_any_window_open',
+  'binary_sensor.locked':'binary_sensor.real_locked',
+  'sensor.slow_charge_port':'sensor.real_slow_charge_port',
+  'binary_sensor.driver_door':'binary_sensor.real_driver_door',
+  'binary_sensor.passenger_door':'binary_sensor.real_passenger_door'
+ });
+ Object.assign(st,{
+  'binary_sensor.real_any_window_open':{state:'on',attributes:{}},
+  'binary_sensor.real_locked':{state:'off',attributes:{}},
+  'sensor.real_slow_charge_port':{state:'Open',attributes:{}},
+  'binary_sensor.real_driver_door':{state:'on',attributes:{}},
+  'binary_sensor.real_passenger_door':{state:'off',attributes:{}}
+ });
+ assert.equal(card.xpengEntity('binary_sensor','windows'),'binary_sensor.real_any_window_open');
+ assert.equal(card.xpActionState('windows'),'open');
+ assert.equal(card.xpActionState('port'),'open');
+ assert.match(card.xpDoorsPanel(),/Driver door/);
+ assert.match(card.xpDoorsPanel(),/Passenger door/);
+ delete card._xpengByKey['lock.door_lock'];delete st['lock.user_lock'];
+ assert.equal(card.xpActionState('doors'),'closed','Xpengtk locked binary ON means unlocked');
+ st['sensor.real_slow_charge_port'].state='Connected';
+ assert.equal(card.xpToggleTarget('port'),null,'connected cable blocks flap close');
+ st['sensor.real_slow_charge_port'].state='unavailable';
+ assert.equal(card.xpActionState('port'),null);
+});
+test('upstream Xpengtk prefixed HA entity IDs work without registry access',()=>{
+ const {card}=createCard(),st=card._hass.states;
+ card._xpengByKey={};
+ st['binary_sensor.xpeng_g6_any_window_open']={state:'off',attributes:{}};
+ st['sensor.xpeng_g6_slow_charge_port']={state:'Closed',attributes:{}};
+ st['lock.xpeng_g6_door_lock']={state:'locked',attributes:{}};
+ assert.equal(card.xpActionState('windows'),'closed');
+ assert.equal(card.xpActionState('port'),'closed');
+ assert.equal(card.xpActionState('doors'),'closed');
+ st['binary_sensor.xpeng_g6_any_window_open'].state='unavailable';
+ st['binary_sensor.xpeng_g6_windows']={state:'on',attributes:{}};
+ assert.equal(card.xpActionState('windows'),'open');
+});
+
+test('Xpengtk one-car VIN prefix resolves all core live data when user leaves old default prefix',()=>{
+ const {card}=createCard({prefix:'my_xpeng'});
+ card._xpengByKey={};
+ Object.assign(card._hass.states,{
+  'device_tracker.xpeng_abcdef_location':{state:'not_home',attributes:{latitude:30,longitude:31}},
+  'sensor.xpeng_abcdef_battery':{state:'62',attributes:{unit_of_measurement:'%'}},
+  'binary_sensor.xpeng_abcdef_charging':{state:'on',attributes:{}},
+  'binary_sensor.xpeng_abcdef_plugged_in':{state:'on',attributes:{}},
+  'binary_sensor.xpeng_abcdef_windows':{state:'on',attributes:{}},
+  'binary_sensor.xpeng_abcdef_lock':{state:'off',attributes:{}},
+  'sensor.xpeng_abcdef_slow_charge_port':{state:'Connected',attributes:{}},
+  'sensor.xpeng_abcdef_tyre_pressure_front_left':{state:'250',attributes:{unit_of_measurement:'kPa'}}
+ });
+ assert.equal(card.xpAutoVehiclePrefix(),'xpeng_abcdef');
+ assert.equal(card.val('soc'),'62');
+ assert.equal(card.xpChargingActive(),true);
+ assert.equal(card.xpActionState('windows'),'open');
+ assert.equal(card.xpActionState('doors'),'closed');
+ assert.equal(card.xpActionState('port'),null,'do not close the connected port');
+ assert.equal(card.tirePressureBar('tire_fl'),2.5);
+});
+test('ambiguous multi-vehicle Xpengtk prefixes must not select a random car',()=>{
+ const {card}=createCard({prefix:'my_xpeng'});card._xpengByKey={};
+ Object.assign(card._hass.states,{
+ 'device_tracker.xpeng_abcdef_location':{state:'not_home',attributes:{}},
+ 'device_tracker.xpeng_ghijkl_location':{state:'not_home',attributes:{}},
+ 'sensor.xpeng_abcdef_battery':{state:'85',attributes:{}},
+ 'sensor.xpeng_ghijkl_battery':{state:'18',attributes:{}}
+ });
+ assert.equal(card.xpAutoVehiclePrefix(),null);
+ assert.equal(card.val('soc'),null);
+});
+test('tyre unit setting is editor-only, persisted, and converts bar, PSI and kPa',()=>{
+ const {card}=createCard({tire_pressure_unit:'psi'});
+ card._hass.states['sensor.xpeng_g6_tire_pressure_front_left_kpa']={state:'250',attributes:{unit_of_measurement:'kPa'}};
+ assert.equal(card.tirePressureBar('tire_fl'),2.5);
+ assert.equal(card.tirePressureDisplay('tire_fl').value,'36');
+ assert.match(card.tireScreen(false),/PSI/);
+ assert.doesNotMatch(card.tireScreen(false),/<select|data-xp-tire-unit/);
+ card.setConfig({type:'custom:xpeng-vehicle-card',model:'G6',year:'2026',
+   prefix:'xpeng_g6',show_controls:true,tire_pressure_unit:'kpa'});
+ assert.equal(card.tirePressureDisplay('tire_fl').value,'250');
+ card.setConfig({type:'custom:xpeng-vehicle-card',model:'G6',year:'2026',
+   prefix:'xpeng_g6',show_controls:true,tire_pressure_unit:'bar'});
+ assert.equal(card.tirePressureDisplay('tire_fl').value,'2.5');
+ assert.doesNotMatch(card.xpMaintenancePanel(),/data-xp-tire-unit/);
+});
+test('charging preview ignores generic front image, respects dedicated image override and uses rear graphite',()=>{
+ const {card}=createCard({color:'arctic_white',image:'/local/test-front.png'});
+ card._view='charging';
+ assert.match(card.assetSpec().src,/\/g6\/2026\/graphite_gray\/charging\.webp$/);
+ card._view='overview';
+ assert.equal(card.assetSpec().src,'/local/test-front.png');
+ card.setConfig({type:'custom:xpeng-vehicle-card',model:'G6',year:'2026',color:'arctic_white',
+  prefix:'xpeng_g6',charging_image:'/local/owner-rear.png'});
+ card._view='charging';
+ assert.equal(card.assetSpec().src,'/local/owner-rear.png');
+});
+test('charging cable uses approved dedicated charging image and separate full-length native overlays',()=>{
+ const {card}=createCard({show_controls:true});
+ card._view='charging';
+ assert.match(card.assetSpec().src,/charging\.webp$/);
+ const html=card.charging();
+ assert.match(html,/data-xp-cable="desktop"/);
+ assert.match(html,/data-xp-cable="mobile"/);
+ assert.match(html,/M171 489.*343 487/);
+ assert.match(html,/M935 460.*1284 465/);
+ card._hass.states['binary_sensor.is_charging'].state='off';
+ assert.doesNotMatch(card.charging(),/data-xp-cable/);
+});
+
+test('diagnostics list real one-car HA entities, show unavailable and never expose a second car',()=>{
+ const {card}=createCard({prefix:'my_xpeng'});
+ card._xpengByKey={};
+ card._xpengEntities=[];
+ Object.assign(card._hass.states,{
+  'device_tracker.xpeng_abcdef_location':{state:'not_home',attributes:{}},
+  'sensor.xpeng_abcdef_battery':{state:'81',attributes:{}},
+  'binary_sensor.xpeng_abcdef_any_window_open':{state:'unavailable',attributes:{}},
+  'button.xpeng_abcdef_stop_charging':{state:'unknown',attributes:{}},
+  'sensor.xpeng_ghijkl_battery':{state:'40',attributes:{}}
+ });
+ const html=card.xpSensorDiagnosticsPanel();
+ assert.match(html,/sensor\.xpeng_abcdef_battery/);
+ assert.match(html,/binary_sensor\.xpeng_abcdef_any_window_open/);
+ assert.match(html,/Unavailable/);
+ assert.match(html,/Action button/);
+ assert.doesNotMatch(html,/xpeng_ghijkl/);
+ assert.match(card.xpExtrasPanel(),/Entity diagnostics/);
+ card._xpengEntities=[{entity_id:'sensor.user_named_battery'},{entity_id:'binary_sensor.cable_present'}];
+ const renamed=card.xpSensorDiagnosticsPanel();
+ assert.match(renamed,/sensor\.user_named_battery/);
+ assert.doesNotMatch(renamed,/sensor\.xpeng_abcdef_battery/);
+});
+
+test('maintenance details appear only after pressing the Maintenance button, never in Home summary',()=>{
+ const {card}=createCard({show_controls:true});
+ const home=card.overview();
+ assert.doesNotMatch(home,/Vehicle maintenance|data-xp-open="maintenance"/);
+ assert.doesNotMatch(home,/xp-status-panel|xp-location-row|Location|data-xp-open="map"/);
+ assert.match(card.xpDock(),/data-xp-open="map"/);
+ const dock=card.xpDock();
+ assert.equal((dock.match(/data-xp-open="maintenance"/g)||[]).length,1);
+ card._xpPanel='maintenance';
+ const page=card.xpModal();
+ assert.match(page,/xp-ux-modal-maintenance/);
+ assert.match(page,/Vehicle maintenance/);
+ assert.match(page,/data-xp-close/);
+});
+test('status-only legacy cards still show one simple Maintenance button, without Home maintenance stats',()=>{
+ const {card}=createCard({show_controls:false});
+ const home=card.overview();
+ assert.equal((home.match(/data-xp-open="maintenance"/g)||[]).length,1);
+ assert.match(home,/xp-maintenance-home-button/);
+ assert.doesNotMatch(home,/Tire pressure and vehicle maintenance/);
+ assert.equal(card.xpDock(),'');
+ card._xpPanel='maintenance';
+ assert.match(card.xpModal(),/xp-ux-modal-maintenance/);
+});
+
+test('Home dock toggles doors windows trunk and port directly; only actual pages navigate',()=>{
+ const {card}=createCard({show_controls:true,enable_access_controls:true});
+ const home=card.overview(),dock=card.xpDock();
+ assert.doesNotMatch(home,/xp-status-panel|xp-location-row|Location/);
+ assert.equal((dock.match(/data-xp-toggle="(?:doors|windows|trunk|port)"/g)||[]).length,4);
+ for(const action of ['doors','windows','trunk','port']){
+   assert.doesNotMatch(dock,new RegExp('data-xp-open="'+action+'"'),'Must not launch '+action+' modal');
+ }
+ for(const page of ['climate','maintenance','map'])
+   assert.match(dock,new RegExp('data-xp-open="'+page+'"'));
+ assert.match(card.shadowRoot.innerHTML,/data-xp-toggle="doors"/);
+ assert.match(card.shadowRoot.innerHTML,/data-xp-toggle="windows"/);
+ assert.match(card.shadowRoot.innerHTML,/data-xp-toggle="trunk"/);
+});
+
+test('charging information sits in one real left-side panel with native controls',()=>{
+ const {card}=createCard({show_controls:true});
+ const html=card.charging();
+ assert.equal((html.match(/data-xp-open="charge_controls"/g)||[]).length,1);
+ assert.equal((html.match(/data-xp-open="charge_schedule"/g)||[]).length,1);
+ assert.match(html,/xp-charge-panel-actions/);
+ assert.match(html,/Charging power|Time remaining|Charge limit/);
+ assert.match(html,/mdi:clock-outline/);
+ assert.doesNotMatch(html,/xp-charge-shortcuts/);
+ assert.doesNotMatch(html,/data-xp-open="charging"/);
+});
+test('TPMS labels stay directly beside the matching wheel at desktop and phone widths',()=>{
+ const {card}=createCard({tire_pressure_unit:'bar'});
+ const html=card.tireScreen(false);
+ for(const key of ['tire_fl','tire_fr','tire_rl','tire_rr'])
+   assert.match(html,new RegExp('data-wheel="'+key+'"'));
+ assert.match(html,/mdi:tire/);
+ assert.match(html,/xp-tire-reading-body/);
+ assert.doesNotMatch(html,/<select|data-xp-tire-unit/);
+});
+test('HVAC reference panel draws only real fan levels and working seat controls',()=>{
+ const {card}=createCard({show_controls:true});
+ // This test intentionally injects ONLY the supported entities for this car.
+ card._xpengByKey['number.fan_speed_control']='number.real_fan';
+ card._hass.states['number.real_fan']={state:'3',attributes:{min:1,max:8,step:1}};
+ card._xpengByKey['select.left_rear_seat_heat_select']='select.left_rear_heat';
+ card._hass.states['select.left_rear_heat']={state:'Heat 1',attributes:{options:['Off','Heat 1','Heat 2','Heat 3']}};
+ card._xpengByKey['binary_sensor.climate_auto']='binary_sensor.real_auto';
+ card._hass.states['binary_sensor.real_auto']={state:'on',attributes:{}};
+ card._xpPanel='climate';
+ const panel=card.xpModal();
+ assert.match(panel,/xp-climate-primary-controls/);
+ assert.match(panel,/xp-climate-thermometers/);
+ assert.match(panel,/xp-fan-bars/);
+ assert.doesNotMatch(panel,/xp-climate-seat-overview|xp-seat-summary-action/);
+ assert.equal((panel.match(/data-xp-cycle="driver_seat_heat_select"/g)||[]).length,1);
+ assert.match(panel,/xp-ux-hotspot-zone xp-ux-driver/);
+ assert.match(panel,/mdi:car-seat-heater/);
+ assert.match(panel,/mdi:steering/);
+ assert.match(panel,/data-xp-cycle="driver_seat_heat_select"/);
+ assert.match(panel,/data-xp-cycle="left_rear_seat_heat_select"/);
+ assert.doesNotMatch(panel,/data-xp-cycle="left_rear_seat_ventilation_select"/);
+ assert.match(card.xpFanControl(),/3 \/ 8/);
+ assert.equal((card.xpFanControl().match(/<i class=/g)||[]).length,8,'show HA 8 levels, not an invented 10');
+ assert.doesNotMatch(panel,/data-xp-hvac-mode="auto"/,'AUTO is feedback only when HA lacks AUTO command');
+ assert.match(panel,/role="status" aria-label="AUTO mode: On"/);
+});
+
+
+test('only actual photo hotspots control every seat function and steering heat',async()=>{
+ const {card,commands}=createCard();
+ card._xpengByKey['select.driver_seat_ventilation_select']='select.driver_vent';
+ card._hass.states['select.driver_vent']={state:'Off',attributes:{options:['Off','Ventilation 1','Ventilation 2','Ventilation 3']}};
+ card._xpengByKey['select.passenger_seat_heat_select']='select.passenger_heat';
+ card._hass.states['select.passenger_heat']={state:'Heat 1',attributes:{options:['Off','Heat 1','Heat 2','Heat 3']}};
+ card._xpPanel='climate';
+ let modal=card.xpModal();
+ assert.doesNotMatch(modal,/xpSeatOverview|xp-climate-seat-overview|xp-seat-summary/);
+ for(const zone of ['driver','passenger','wheel'])
+   assert.match(modal,new RegExp('class="xp-ux-hotspot-zone xp-ux-'+zone+'"'));
+ for(const key of ['driver_seat_heat_select','driver_seat_ventilation_select','passenger_seat_heat_select','steering_wheel_heat_select'])
+   assert.equal((modal.match(new RegExp('data-xp-cycle="'+key+'"','g'))||[]).length,1,'Control only once on corresponding photo');
+ assert.match(modal,/mdi:car-seat-heater/);
+ assert.match(modal,/mdi:car-seat-cooler/);
+ assert.match(modal,/mdi:steering/);
+ await card.xpCycleSeat('driver_seat_ventilation_select');
+ assert.ok(commands.some(x=>x.domain==='select'&&x.service==='select_option'&&x.data.entity_id==='select.driver_vent'));
+ delete card._xpengByKey['select.driver_seat_ventilation_select'];
+ delete card._hass.states['select.driver_vent'];
+ modal=card.xpModal();
+ assert.doesNotMatch(modal,/data-xp-cycle="driver_seat_ventilation_select"/);
+});
+
+
+test('mobile lock feedback is stable under jitter, and a rapid second tap never repeats the command',async()=>{
+ const {card,commands}=createCard({enable_access_controls:true});
+ card._xpengByKey['lock.door_lock']='lock.real_door_lock';
+ card._hass.states['lock.real_door_lock']={state:'locked',attributes:{}};
+ card.xpToggle('doors');
+ assert.equal(commands.length,1,'Exactly one real lock/unlock service call');
+ const marker=card._xpTogglePending.doors;
+ assert.ok(marker,'Button must have an in-flight state');
+ const pending=card.xpDock();
+ assert.match(pending,/data-xp-toggle="doors"[^>]*aria-busy="true"[^>]*disabled/);
+ // Race between the optimistic UI and successive Xpengtk state reports.
+ for(const state of ['unlocked','locked','unlocked','locked','unlocked']){
+   card._hass.states['lock.real_door_lock'].state=state;
+   card.render();
+   assert.equal(card._xpTogglePending.doors,marker,'Do not oscillate the button on a stale sensor update');
+   card.xpToggle('doors');
+ }
+ assert.equal(commands.length,1,'No second click while pending, including after sensor jitter');
+ card._hass.states['lock.real_door_lock'].state='unlocked';
+ marker.at-=1900;
+ assert.equal(card.xpPendingToggle('doors'),null,'Confirmed update releases the busy state');
+ assert.doesNotMatch(card.xpDock(),/data-xp-toggle="doors"[^>]*aria-busy="true"/);
+});
+test('failed direct car command clears busy state without inventing a successful sensor state',async()=>{
+ const {card}=createCard({enable_access_controls:true});
+ card._xpengByKey['lock.door_lock']='lock.failed_vehicle';
+ card._hass.states['lock.failed_vehicle']={state:'locked',attributes:{}};
+ card._hass.callService=async()=>{throw Error('connection unavailable')};
+ card.xpToggle('doors');
+ await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(card._xpTogglePending.doors,undefined);
+ assert.equal(card.xpActionState('doors'),'closed');
+ assert.match(card._xpNotice,/connection unavailable/);
+});
+test('mobile renders preserve DOM nodes when template DOM APIs exist, and map offers HA native detail fallback',()=>{
+ const {card}=createCard();
+ assert.match(src,/xpReconcileChildren\(this\.shadowRoot,template\.content\)/);
+ assert.match(src,/existing\.contains\(this\._xpMapElement\)/);
+ assert.match(src,/touch-action:pan-y/);
+ assert.match(card.xpMapPanel(),/data-xp-map-details/);
+});
+
+test('beta.6 automotive window and trunk icons are official MDI, never a house-window icon or a drawn trunk',()=>{
+  const {card}=createCard({enable_access_controls:true});
+  const iconSection=src.match(/const XP_ICONS = Object\.freeze\(\{([\s\S]*?)\}\);/)?.[1];
+  assert.ok(iconSection,'The central XP_ICONS dictionary is required');
+  assert.match(iconSection,/windows:'mdi:car-door'/);
+  assert.match(iconSection,/windows_open:'mdi:car-door'/);
+  assert.match(iconSection,/trunk:'mdi:car-back'/);
+  assert.match(iconSection,/trunk_open:'mdi:car-back'/);
+  assert.match(iconSection,/trunk_close:'mdi:car-back'/);
+  assert.match(iconSection,/trunk_lift:'mdi:arrow-up-bold'/);
+  assert.match(iconSection,/trunk_lower:'mdi:arrow-down-bold'/);
+  assert.match(iconSection,/lock:'mdi:car-door-lock'/);
+  assert.match(iconSection,/unlock:'mdi:car-door-lock-open'/);
+  assert.doesNotMatch(iconSection,/mdi:window-open|mdi:window-open-variant/);
+  card._xpengByKey['binary_sensor.windows']='binary_sensor.windows_car';
+  card._xpengByKey['binary_sensor.trunk']='binary_sensor.trunk_car';
+  card._xpengByKey['button.open_windows']='button.car_windows_open';
+  card._xpengByKey['button.close_windows']='button.car_windows_close';
+  card._xpengByKey['button.open_trunk']='button.car_trunk_open';
+  card._xpengByKey['button.close_trunk']='button.car_trunk_close';
+  for(const id of ['button.car_windows_open','button.car_windows_close','button.car_trunk_open','button.car_trunk_close'])
+    card._hass.states[id]={state:'unknown',attributes:{}};
+  for(const state of ['off','on']){
+    card._hass.states['binary_sensor.windows_car']={state,attributes:{}};
+    card._hass.states['binary_sensor.trunk_car']={state,attributes:{}};
+    const dock=card.xpDock();
+    const windows=dock.match(/<button[^>]*data-xp-toggle="windows"[\s\S]*?<\/button>/)?.[0];
+    const trunk=dock.match(/<button[^>]*data-xp-toggle="trunk"[\s\S]*?<\/button>/)?.[0];
+    assert.ok(windows&&trunk,'Both dock shortcuts must remain');
+    assert.match(windows,/icon="mdi:car-door"/);
+    assert.match(trunk,/class="xp-mdi-icon xp-tailgate-icon"/);
+    // The next action follows the live state, not an invented composite hatch arrow.
+    assert.doesNotMatch(trunk,/xp-trunk-arrow/);
+    assert.doesNotMatch(card.xpToggleButton('trunk'),/xp-trunk-arrow/);
+    assert.match(card.xpToggleButton('windows'),/icon="mdi:car-door"/);
+    assert.match(card.xpToggleButton('trunk'),/class="xp-mdi-icon xp-tailgate-icon"/);
+    assert.match(card.xpWindowsPanel(),/icon="mdi:car-door"/);
+    assert.match(card.xpTrunkPanel(),/class="xp-mdi-icon xp-tailgate-icon"/);
+    const expected=state==='off'?'Open':'Close';
+    assert.match(windows,new RegExp(expected+' windows','i'));
+    assert.match(trunk,new RegExp(expected+' Trunk','i'));
+  }
+  assert.match(src,/xpIcon\(ico,27\)/,'Dock must render through ha-icon/Mdi helper');
+  assert.equal(src,dist,'Source and HACS bundle must remain byte-identical');
+});
+
+test('Card UI is always English regardless of Home Assistant locale',()=>{
+ const {card}=createCard({enable_access_controls:true});
+ card._hass.locale.language='en';
+ card._hass.states['sensor.user_named_battery'].state='76';
+ // Expose actual supported action entities so labels can truthfully say Open.
+ card._xpengByKey['binary_sensor.windows']='binary_sensor.test_windows';
+ card._xpengByKey['button.open_windows']='button.test_open_windows';
+ card._hass.states['binary_sensor.test_windows']={state:'off',attributes:{}};
+ card._hass.states['button.test_open_windows']={state:'unknown',attributes:{}};
+ card._xpengByKey['sensor.slow_charge_port']='sensor.test_slow_charge_port';
+ card._hass.states['sensor.test_slow_charge_port']={state:'Closed',attributes:{}};
+ const pages=['climate','maintenance','map','port','windows','doors','trunk','extras','charge_controls','charge_schedule'];
+ const untranslated=[];
+ for(const page of [null,...pages]){
+   card._xpPanel=page;
+   card.render();
+   const html=card.shadowRoot.innerHTML;
+   const leftovers=[...new Set((html.match(/[\u0590-\u05ff][\u0590-\u05ff\s.,•·\u05be\u05f4\u05f3()]+/g)||[]).map(t=>t.trim()))];
+   if(leftovers.length)untranslated.push({page:page||'Home',leftovers:leftovers.slice(0,25)});
+   if(page)assert.match(html,/dir="ltr"/,'English subpage must use LTR direction: '+page);
+ }
+ assert.equal(untranslated.length,0,JSON.stringify(untranslated));
+ card._xpPanel=null;
+ card.render();
+ const home=card.shadowRoot.innerHTML;
+ assert.match(home,/Vehicle controls and shortcuts/);
+ assert.match(home,/Open windows/);
+ assert.match(home,/Open charging port/);
+ assert.match(home,/icon="mdi:car-door"/);
+ assert.match(home,/class="xp-mdi-icon xp-tailgate-icon"/);
+ card._xpPanel='maintenance';card.render();
+ assert.match(card.shadowRoot.innerHTML,/icon="mdi:arrow-left"/,'English Back arrow must point left');
+ card._hass.locale.language='he';card.render();
+ assert.match(card.shadowRoot.innerHTML,/Vehicle maintenance/,'Hebrew Home Assistant locale keeps the original language');
+ assert.match(card.shadowRoot.innerHTML,/icon="mdi:arrow-left"/,'Back remains left with Hebrew HA language');
+});
+test('Card editor is always English regardless of Home Assistant locale',()=>{
+ const isolatedSandbox={HTMLElement:FakeElement,
+   window:{customCards:[],confirm:()=>true,location:{origin:'http://localhost'}},
+   customElements:{get(){return true},define(){}},document:{documentElement:{}},URL,console};
+ const Editor=vm.runInNewContext(src+'\nXpengVehicleCardEditor;',isolatedSandbox);
+ const editor=new Editor();
+ editor._hass={states:{},locale:{language:'en'}};
+ editor.setConfig({model:'G6',year:'2026',color:'graphite_gray',interior:'light_gray'});
+ assert.doesNotMatch(editor.shadowRoot.innerHTML,/[\u0590-\u05ff]/,'Editor English interface has no leftover Hebrew');
+ assert.match(editor.shadowRoot.innerHTML,/Tire pressure unit/);
+ assert.match(editor.shadowRoot.innerHTML,/Vehicle interior color/);
+ editor._hass.locale.language='he';editor.render();
+ assert.match(editor.shadowRoot.innerHTML,/Vehicle interior color/);
+});
+test('beta.8 first Location open reuses proactively warmed HA map helpers',async()=>{
+ const {card,sandbox,commands}=createCard();
+ card._xpengRegistryLoaded=true;
+ card._xpengByKey['device_tracker.location']='device_tracker.user_gps';
+ card._hass.states['device_tracker.user_gps']={state:'not_home',attributes:{latitude:32.08,longitude:34.77}};
+ let loads=0,created=0,child=null;
+ sandbox.window.loadCardHelpers=async()=>{
+   loads++;
+   return {createCardElement(cfg){created++;return {config:cfg,hass:null}}};
+ };
+ const hass={...card._hass,locale:{language:'en'}};
+ card.hass=hass; // The native map bundle warms without Location being opened.
+ assert.equal(card._xpPanel,null);
+ await card.xpWarmMapHelpers();
+ assert.equal(loads,1,'HA helpers should be preloaded once before first tap');
+ assert.equal(created,0,'Do not instantiate a live map or fetch tiles in the background');
+ const host={replaceChildren(x){child=x},contains(x){return child===x}};
+ card.shadowRoot.querySelector=selector=>selector==='[data-xp-map-host]'?host:null;
+ card.shadowRoot.contains=x=>x===host;
+ card._xpPanel='map';
+ await card.xpMountMap();
+ assert.equal(loads,1,'Opening Location must not trigger a second bundle load');
+ assert.equal(created,1,'One native HA map card is created');
+ assert.notEqual(child.hass,card._hass);
+ assert.equal(child.hass.states['device_tracker.user_gps'].attributes.icon,'mdi:car-back');
+ assert.equal(child.config.entities[0].entity,'device_tracker.user_gps');
+ assert.equal(commands.length,0,'Preloading never issues vehicle commands');
+});
+
+test('cabin photograph and model fallback show no over-image captions in Climate',()=>{
+ const {card}=createCard({interior:'light_gray'});
+ const light=card.xpCabinView();
+ assert.match(light,/data-cabin-art/);
+ assert.match(light,/alt="G6 /,'Cabin image keeps accessible alt text');
+ assert.doesNotMatch(light,/<small class="xp-ux-cabin-disclaimer"|xp-ux-cabin-disclaimer|Owner-provided G6 interior/,
+   'No caption may overlap the cabin photo or heated seat buttons');
+ card.setConfig({type:'custom:xpeng-vehicle-card',model:'G6',year:'2026',prefix:'my_xpeng',interior:'dark_gray'});
+ assert.doesNotMatch(card.xpCabinView(),/xp-ux-cabin-disclaimer/);
+ assert.doesNotMatch(src,/xp-ux-cabin-disclaimer/,
+   'Remove unused overlay-caption CSS and markup rather than merely hiding it');
+});
+
+test('owner fixes: exact Open Trunk, real SOC icon levels, silent successful calls and English update detail',async()=>{
+ const {card,commands}=createCard({enable_access_controls:true});
+ card._hass.locale.language='en';
+ card._xpengByKey['binary_sensor.trunk']='binary_sensor.car_trunk';
+ card._xpengByKey['button.open_trunk']='button.car_open_trunk';
+ card._hass.states['binary_sensor.car_trunk']={state:'off',attributes:{}};
+ card._hass.states['button.car_open_trunk']={state:'unknown',attributes:{}};
+ card.render();
+ assert.match(card.shadowRoot.innerHTML,/Open Trunk/);
+ assert.match(card.shadowRoot.innerHTML,/xp-tailgate-icon/);
+ assert.equal(card.xpToggleTarget('trunk').suffix,'open_trunk');
+ const originalNumber=card.number.bind(card);
+ let fakeSoc=14;
+ card.number=key=>key==='soc'?fakeSoc:originalNumber(key);
+ const empty=card.xpBatteryGauge();
+ assert.match(empty,/mdi:battery-(?:charging-)?(?:10|20)/);
+ assert.match(empty,/data-level="low"/);
+ fakeSoc=65;
+ assert.match(card.xpBatteryGauge(),/mdi:battery-(?:charging-)?(?:60|70)/);
+ assert.match(card.xpBatteryGauge(),/data-level="good"/);
+ fakeSoc=null;
+ assert.match(card.xpBatteryGauge(),/mdi:battery-unknown/);
+ const ok=await card.xpSend('button','press','open_trunk',undefined,true);
+ assert.equal(ok,true);
+ assert.equal(card._xpNotice,'','successful command acknowledgement should not show toast');
+ card._xpExtraSection='updates';card._xpPanel='extras';card.render();
+ assert.doesNotMatch(card.shadowRoot.innerHTML,/Update details/);
+});
+
+test('Black Edition G6 uses a dark cabin and never borrows another exterior paint view',()=>{
+ const {card}=createCard({model:'G6',year:'2026',color:'black_edition',interior:'light_gray'});
+ assert.equal(card.paint(),'black_edition');
+ assert.equal(card.xpCabinFinish(),'dark_gray','Black Edition must use the black/dark interior');
+ assert.match(card.xpCabinView(),/interior_dark_gray\.webp/);
+ card.render();
+ assert.match(card.shadowRoot.innerHTML,/xp-black-edition/);
+ const asset=card.assetSpec();
+ assert.equal(asset.view_status,'image_pending','Unapproved Black Edition artwork must be reported missing');
+ assert.doesNotMatch(asset.src,/\/graphite_gray\//,'Black Edition must never borrow Graphite Gray artwork');
+ card._view='charging';
+ const charging=card.assetSpec();
+ assert.equal(charging.view_status,'image_pending','Black Edition charging photo must remain visibly pending');
+ assert.doesNotMatch(charging.src,/\/graphite_gray\//,'Black Edition charging must not borrow the gray charging photo');
+ assert.match(src,/\.xp-scene\.xp-black-edition \.xp-ux-cabin-picture/);
+});
+
+test('owner screenshot regression: diagnostic names remain inspectable without wrapping',()=>{
+ const {card}=createCard();
+ card._hass.states['sensor.xpeng_g6_very_long_vehicle_diagnostics_entity']={state:'on',attributes:{}};
+ const html=card.xpSensorDiagnosticsPanel();
+ assert.match(html,/title="sensor\.xpeng_g6_very_long_vehicle_diagnostics_entity"/);
+ assert.match(html,/aria-label="sensor\.xpeng_g6_very_long_vehicle_diagnostics_entity"/);
+ assert.match(html,/tabindex="0"/);
+ assert.match(src,/\.xp-entity-diagnostic>span\{[\s\S]*?overflow-x:auto;overflow-y:hidden;text-overflow:clip/);
+ assert.match(src,/\.xp-ux-modal-maintenance \.xp-tire-stage\{[\s\S]*?isolation:isolate;overflow:clip!important/);
+ assert.match(src,/\.xp-ux-modal-climate \.xp-climate-target \.xp-ux-temp-line button\{[\s\S]*?min-width:26px/);
+});
+
+test('Beta 19 returns from any nested page straight to Home on backdrop, but preserves Back stack',()=>{
+ const {card}=createCard();
+ card.xpNavigatePanel('extras');
+ card.xpNavigatePanel('extras','updates');
+ card.xpNavigatePanel('maintenance');
+ assert.equal(card._xpPanel,'maintenance');
+ assert.equal(card._xpNavStack.length,2);
+ card.xpBackPanel();
+ assert.equal(card._xpPanel,'extras');
+ assert.equal(card._xpExtraSection,'updates');
+ card.xpBackToHome();
+ assert.equal(card._xpPanel,null);
+ assert.equal(card._xpNavStack.length,0);
+ assert.match(src,/ev\.composedPath\(\)\.includes\(modal\)/);
+ assert.match(src,/outside&&\!b/);
+});
+
+test('Beta 19 OTA screen never disguises entity details as an update-check command',()=>{
+ const {card}=createCard();
+ card._xpengByKey['switch.auto_upgrade_switch']='switch.ota_auto';
+ card._xpengByKey['sensor.ota_upgrade']='sensor.ota';
+ card._xpengByKey['sensor.xos_version']='sensor.xos';
+ card._hass.states['switch.ota_auto']={state:'on',attributes:{}};
+ card._hass.states['sensor.ota']={state:'Up to date',attributes:{}};
+ card._hass.states['sensor.xos']={state:'5.9.5.8910',attributes:{}};
+ const html=card.xpExtraSectionContent('updates');
+ assert.match(html,/xp-ota-actions/);
+ assert.match(html,/data-xp-extra-action="ota_off"/);
+ assert.match(html,/5\.9\.5\.8910/);
+ assert.doesNotMatch(html,/data-xp-extra-detail="ota"|data-xp-extra-action="check_updates"/);
+ assert.match(card.header(),/data-xp-more/);
+ card._xpPanel='map';
+ assert.match(card.header(),/data-xp-more/);
+});
+
+test('Beta 19 Honk and Flash send directly without confirmation; repeated in-flight taps are ignored',async()=>{
+ const {card,commands,sandbox}=createCard();
+ card._xpengByKey['button.honk_horn']='button.real_horn';
+ card._xpengByKey['button.flash_lights']='button.real_flash';
+ card._hass.states['button.real_horn']={state:'unknown',attributes:{}};
+ card._hass.states['button.real_flash']={state:'unknown',attributes:{}};
+ let pendingResolve;
+ const pending=new Promise(resolve=>{pendingResolve=resolve});
+ card._hass.callService=async(domain,service,data)=>{
+  commands.push({domain,service,data});
+  await pending;
+ };
+ sandbox.window.confirm=()=>{throw Error('No confirm dialog allowed on direct map buttons')};
+ const first=card.xpMapDirectAction('honk_horn');
+ assert.equal(await card.xpMapDirectAction('honk_horn'),false);
+ assert.equal(commands.length,1);
+ pendingResolve();
+ await first;
+ await card.xpMapDirectAction('flash_lights');
+ assert.deepEqual(JSON.parse(JSON.stringify(commands)),[
+  {domain:'button',service:'press',data:{entity_id:'button.real_horn'}},
+  {domain:'button',service:'press',data:{entity_id:'button.real_flash'}}
+ ]);
+});
+
+test('Owner-photo station and cable exist in both scene sizes',()=>{
+ const {card}=createCard();
+ const charging=card.charging();
+ assert.equal((charging.match(/class="xp-xpeng-pedestal"/g)||[]).length,1);
+ assert.match(charging,/data-xp-cable="desktop"/);
+ assert.match(charging,/data-xp-cable="mobile"/);
+ assert.match(charging,/M935 460[\s\S]*?1284 465/);
+ assert.match(charging,/M171 489[\s\S]*?343 487/);
+ assert.match(src,/\.xp-scene\.xp-charge \.xp-station\.xp-station-v3\.xp-station-xpeng19/);
+});
+
+test('Reopened native Location camera centers using the actual GPS with zoom 16',()=>{
+ const {card,sandbox}=createCard();
+ const centered=[];
+ const surface={getBoundingClientRect:()=>({width:390}),setView:(coords,zoom)=>centered.push({coords,zoom})};
+ const map={shadowRoot:{querySelector:()=>surface}};
+ card.shadowRoot.querySelector=key=>key==='[data-xp-map-host]'?{contains:x=>x===map,getBoundingClientRect:()=>({width:390})}:null;
+ card._xpPanel='map';card._xpMapElement=map;card._xpMapNeedsCenter=true;
+ sandbox.window.requestAnimationFrame=callback=>callback();
+ card.xpCenterMapOnVehicle(map,{state:{attributes:{latitude:31.9,longitude:34.82}}});
+ assert.deepEqual(JSON.parse(JSON.stringify(centered)),[{coords:[31.9,34.82],zoom:16}]);
+ assert.equal(card._xpMapNeedsCenter,false);
+ card._xpMapNeedsCenter=true;
+ card.xpCenterMapOnVehicle(map,{state:{attributes:{latitude:32.01,longitude:34.83}}});
+ assert.deepEqual(JSON.parse(JSON.stringify(centered[1])),{coords:[32.01,34.83],zoom:16});
+ assert.match(src,/if\(this\._xpMapNeedsCenter\)this\.xpCenterMapOnVehicle\(this\._xpMapElement,gps\)/);
+ assert.match(src,/if\(panel==='map'\)this\._xpMapNeedsCenter=true/);
+});
+test('OTA explanation remains visible in English for Hebrew Home Assistant',()=>{
+ const {card}=createCard();
+ card._xpPanel='extras';card._xpExtraSection='updates';card._hass.locale.language='he';
+ const html=card.xpExtrasPanel();
+ assert.match(html,/Software updates/);
+ assert.match(html,/XOS version identifies/);
+ assert.match(html,/No verified Check for Updates command/);
+ assert.doesNotMatch(html,/[\u0590-\u05ff]/);
+});
+
+test('Beta 21 replaces the drawn pedestal with self-contained photographic artwork',()=>{
+ assert.match(src,/data-xp-station-art="photo"/);
+ assert.match(src,/XP_STATION_PHOTO/);
+ assert.doesNotMatch(src,/xp19-case|xp19-panel|xp19-reflection/);
+});
+
+test('Owner charging composition stays layered and phone panel compact',()=>{
+ assert.match(src,/Owner-annotated charging composition/);
+ assert.match(src,/\.xp-car\{z-index:7!important\}/);
+ assert.match(src,/\.xp-charge-cable\{[\s\S]*?z-index:11!important/);
+ assert.match(src,/\.xp-charge-card\{z-index:12!important\}/);
+ assert.match(src,/top:142px!important/);
 });

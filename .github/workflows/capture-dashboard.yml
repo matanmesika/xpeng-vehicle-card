@@ -1,14 +1,22 @@
-name: Capture actual XPENG dashboard views
+name: Capture curated XPENG dashboard gallery
 
 on:
   push:
     branches:
-      - fix/appearance-generations-dashboard-gallery
-      - feat/g6-responsive-container-layout-20261017
-      - feat/g6-cabin-owner-photos-20261017
+      - fix/g6-mobile-sensors-charging-20261017
+      - chore/g6-readme-gallery-cleanup-20261018
+      - fix/g6-visual-live-feedback-20261018
+      - design/g6-premium-visual-pass-20261018
+      - refactor/g6-isolated-design-and-help-20261018
+      - design/g6-v2-surface-redesign-20261018
+      - fix/g6-beta19-final-stabilization-20261019
+      - release/v1.0.4-beta.21
+      - release/v1.0.4
+      - fix/g6-charging-station-alignment-20261019
     paths:
       - scripts/capture-dashboard.cjs
       - src/xpeng-vehicle-card.js
+      - .github/workflows/capture-dashboard.yml
   workflow_dispatch:
 
 permissions:
@@ -33,7 +41,7 @@ jobs:
 
       - name: Install pinned Playwright and headless Chromium
         run: |
-          npm install --prefix /tmp/xpeng-capture --no-audit --no-fund playwright@1.56.1
+          npm install --prefix /tmp/xpeng-capture --no-audit --no-fund playwright@1.56.1 @mdi/js@7.4.47
           /tmp/xpeng-capture/node_modules/.bin/playwright install --with-deps chromium
 
       - name: Capture genuine card screenshots with DEMO sensor states
@@ -41,36 +49,61 @@ jobs:
           PLAYWRIGHT_MODULE: /tmp/xpeng-capture/node_modules/playwright
         run: timeout 150s node scripts/capture-dashboard.cjs
 
-      - name: Verify three independent screenshots
+      - name: Verify the curated screenshot gallery
         run: |
           python - <<'PY'
           from pathlib import Path
           import struct
-          names = ['vehicle-status','charging','maintenance-desktop',
-                   'mobile-vehicle-status','mobile-charging',
-                   'small-mobile-vehicle-status','small-mobile-charging',
-                   'sections-vehicle-status','location-desktop','controls-desktop','home-close-actions-desktop','climate-desktop','climate-dark-desktop',
-                   'controls-mobile','home-close-actions-mobile','maintenance-mobile','trunk-mobile','location-mobile',
-                   'climate-mobile','climate-dark-mobile','charging-reference-mobile','charging-actions-mobile','charge-schedule-mobile']
+          root=Path('docs/screenshots')
+          names=[
+            'home-desktop','home-mobile',
+            'charging-desktop','charging-mobile',
+            'climate-desktop','climate-mobile',
+            'maintenance-desktop','maintenance-mobile',
+            'map-desktop','map-mobile',
+            'charge-controls-mobile','diagnostics-mobile','functions-desktop','functions-mobile'
+          ]
+          actual={p.name for p in root.iterdir() if p.suffix.lower() in ('.png','.jpg','.jpeg','.webp')}
+          required={name+'.png' for name in names}
+          assert actual == required, f'Expected only the 14 curated captures; missing={required-actual}, extra={actual-required}'
           for name in names:
-              p = Path('docs/screenshots/g6-2026-' + name + '.png')
-              b = p.read_bytes()
-              assert b[:8] == b'\x89PNG\r\n\x1a\n', p
-              w,h = struct.unpack('>II',b[16:24])
-              if name in ['vehicle-status','charging','maintenance-desktop','location-desktop','controls-desktop','home-close-actions-desktop','climate-desktop','climate-dark-desktop']:
-                  assert w >= 1100 and h >= 620 and len(b) > 80_000, (p,w,h,len(b))
+              p=root/(name+'.png')
+              b=p.read_bytes()
+              assert b[:8] == bytes([137,80,78,71,13,10,26,10]),(p,len(b))
+              w,h=struct.unpack('>II',b[16:24])
+              if name.endswith('-desktop'):
+                  assert w>=1100 and h>=620 and len(b)>80_000,(p,w,h,len(b))
               else:
-                  assert 300 <= w <= 500 and h >= 700 and len(b) > 10_000, (p,w,h,len(b))
+                  assert 300<=w<=500 and h>=700 and len(b)>10_000,(p,w,h,len(b))
               print('verified',p,w,h,len(b))
           PY
+
+      - name: Upload genuine Chromium screenshots for owner review
+        uses: actions/upload-artifact@v4
+        with:
+          name: xpeng-g6-v104-browser-screenshots
+          path: docs/screenshots/*.png
+          retention-days: 30
+          if-no-files-found: error
 
       - name: Commit browser captures to the screenshot gallery
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/screenshots/*.png
+          git add -A docs/screenshots
           if ! git diff --staged --quiet; then
-            git commit -m "docs: add actual rendered XPENG card screenshots"
-            git push origin "HEAD:${GITHUB_REF_NAME}"
+            git commit -m "docs(g6): replace old captures with 14 current dashboard screenshots"
+            # Work safely with concurrent changes to this PR branch.
+            # Never force-push or discard updates made after checkout.
+            for attempt in 1 2 3; do
+              if git push origin "HEAD:${GITHUB_REF_NAME}"; then
+                echo "Screenshots published to ${GITHUB_REF_NAME}"
+                exit 0
+              fi
+              git fetch origin "refs/heads/${GITHUB_REF_NAME}:refs/remotes/origin/${GITHUB_REF_NAME}"
+              git rebase "origin/${GITHUB_REF_NAME}" || { git rebase --abort || true; exit 1; }
+            done
+            echo "::error::Could not publish updated screenshots after three safe retries"
+            exit 1
           fi

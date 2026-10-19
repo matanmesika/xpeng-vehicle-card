@@ -4,6 +4,13 @@ on:
   push:
     branches:
       - feat/g6-cabin-owner-photos-20261017
+      - fix/g6-mobile-sensors-charging-20261017
+      - chore/g6-readme-gallery-cleanup-20261018
+      - fix/g6-visual-live-feedback-20261018
+      - design/g6-premium-visual-pass-20261018
+      - refactor/g6-isolated-design-and-help-20261018
+      - design/g6-v2-surface-redesign-20261018
+      - fix/g6-owner-photo-round-20261018
   workflow_dispatch:
 
 permissions:
@@ -36,6 +43,7 @@ jobs:
           node --check dist/xpeng-vehicle-card.js
           node --check scripts/capture-dashboard.cjs
           cmp src/xpeng-vehicle-card.js dist/xpeng-vehicle-card.js
+          node tools/build_vehicle_card.mjs --check
           python -m json.tool hacs.json >/dev/null
           python -m json.tool data/model-artwork.json >/dev/null
           python -m json.tool data/vehicle-art-inventory.json >/dev/null
@@ -58,7 +66,9 @@ jobs:
             tests/vehicle-artwork-mapping.test.cjs \
             tests/charging-cable-static.test.cjs \
             tests/xpeng-controls-smoke.test.cjs \
-            tests/responsive-dual-state.test.cjs
+            tests/responsive-dual-state.test.cjs \
+            tests/release-documentation.test.cjs \
+            tests/g6-isolated-design-help.test.cjs
 
       - name: Verify owner interior photos and scene assets
         run: |
@@ -82,7 +92,7 @@ jobs:
 
       - name: Install pinned real Chromium / Playwright
         run: |
-          npm install --prefix /tmp/xpeng-g6-qa --no-audit --no-fund playwright@1.56.1
+          npm install --prefix /tmp/xpeng-g6-qa --no-audit --no-fund playwright@1.56.1 @mdi/js@7.4.47
           /tmp/xpeng-g6-qa/node_modules/.bin/playwright install --with-deps chromium
 
       - name: Full end-to-end browser capture (desktop, mobile, Sections, charge, cabin, one-tap and Back)
@@ -92,40 +102,38 @@ jobs:
           set -euo pipefail
           timeout 150s node scripts/capture-dashboard.cjs | tee /tmp/xpeng-g6-browser.log
 
-      - name: Validate screenshots and responsive evidence
+      - name: Validate the clean 14-image screenshot gallery and responsive evidence
         run: |
           python - <<'PY'
           from pathlib import Path
           import struct
+          root=Path('docs/screenshots')
           names=[
-            'vehicle-status','charging','maintenance-desktop','location-desktop',
-            'mobile-vehicle-status','mobile-charging',
-            'small-mobile-vehicle-status','small-mobile-charging','sections-vehicle-status',
-            'controls-desktop','home-close-actions-desktop','climate-desktop','climate-dark-desktop',
-            'controls-mobile','home-close-actions-mobile','maintenance-mobile','trunk-mobile','location-mobile',
-            'climate-mobile','climate-dark-mobile','charging-reference-mobile',
-            'charging-actions-mobile','charge-schedule-mobile','back-home-mobile'
+            'home-desktop','home-mobile','charging-desktop','charging-mobile',
+            'climate-desktop','climate-mobile','maintenance-desktop','maintenance-mobile',
+            'map-desktop','map-mobile','charge-controls-mobile','diagnostics-mobile','functions-desktop','functions-mobile'
           ]
+          expected={name+'.png' for name in names}
+          actual={p.name for p in root.iterdir() if p.suffix.lower() in ('.png','.jpg','.jpeg','.webp')}
+          assert actual==expected, f'Unexpected gallery files: missing={expected-actual} extra={actual-expected}'
           for name in names:
-            f=Path('docs/screenshots/g6-2026-'+name+'.png')
+            f=root/(name+'.png')
             b=f.read_bytes()
-            assert b[:8]==b'\x89PNG\r\n\x1a\n' and len(b)>10000,(name,len(b))
+            assert b[:8]==bytes([137,80,78,71,13,10,26,10]) and len(b)>10000,(name,len(b))
             w,h=struct.unpack('>II',b[16:24])
-            if name in {'vehicle-status','charging','maintenance-desktop','location-desktop',
-                        'controls-desktop','home-close-actions-desktop',
-                        'climate-desktop','climate-dark-desktop'}:
+            if name.endswith('-desktop'):
               assert w>=1100 and h>=620,(name,w,h)
             else:
               assert 300<=w<=500 and h>=700,(name,w,h)
             print('PASS screenshot',name,w,h)
-          print('PASS: all 24 browser captures valid')
+          print('PASS: all 14 current real-browser captures valid; no legacy screenshots')
           PY
 
-      - name: Upload all G6 acceptance screenshots
+      - name: Upload the 14 current G6 acceptance screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: G6-pre-merge-acceptance-${{ github.sha }}
-          path: docs/screenshots/g6-2026-*.png
+          path: docs/screenshots/*.png
           retention-days: 14
           if-no-files-found: warn

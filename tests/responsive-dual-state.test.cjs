@@ -14,23 +14,172 @@ test('HA card width drives responsive changes, not just viewport width',()=>{
    assert.ok(css.includes('@container xpeng-layout (max-width:'+width+'px)'),width+'px rule missing');
  assert.match(css,/@media\(max-width:850px\)/,'keep viewport fallback');
 });
-test('on phone status information becomes two columns with final location spanning both',()=>{
- assert.match(css,/\.xp-status-panel\{[^}]*grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
- assert.match(css,/\.xp-info-row:last-child\{grid-column:1\/-1/);
+test('Home keeps its battery/range content and no location overlay at every breakpoint',()=>{
+ const body=source.slice(source.indexOf(' overview(){'),source.indexOf('\n charging(){'));
+ assert.doesNotMatch(body,/xp-status-panel|xp-location-row|Location|this\.locationText\(\)/);
+ assert.match(body,/xp-overview-stat/);
+ assert.match(body,/xp-maintenance-home-button/);
  assert.match(css,/\.xp-charge-card\{left:4%;width:92%;top:206px/);
 });
 test('original desktop composition, vehicle artwork and automatic charge logic stay intact',()=>{
  assert.match(css,/\.xp-scene\{position:relative;width:100%;min-height:620px;aspect-ratio:16\/9/);
  assert.match(source,/xp-night-photo/);
  assert.match(source,/const actualCharging=this\.xpChargingActive\(\);/);
- assert.match(source,/this\._xpManualCharging\|\|\(actualCharging&&/);
+ assert.match(source,/const isCharging=actualCharging&&!this\._xpChargingDismissed/);
  assert.match(source,/this\._view=isCharging\?'charging':'overview'/);
  assert.match(source,/isCharging\?this\.charging\(\)/);
  assert.match(source,/interior:'dark_gray'/);
 });
 
-test('existing charge view keeps its own model artwork and no overview dock',()=>{
- assert.match(source,/this\.xpUiEnabled\(\)&&!isCharging\?'xp-has-controls':''/);
- assert.match(source,/xp-charge-heading-action/);
+test('original charging art uses the same seven-button dashboard dock',()=>{
+ assert.match(source,/this\.xpUiEnabled\(\)\?'xp-has-controls':''/);
+ assert.match(source,/const showDock=this\.xpUiEnabled\(\)&&\(onHome\|\|onChargeHome\)/);
+ assert.match(source,/xp-charge-navigation/);
+ assert.match(source,/xp-charge-panel-actions/);
  assert.match(source,/view==='rear'\?'charging':'front'/);
+ assert.match(css,/\.xp-charge-navigation \.xp-ux-dock-seven/);
+ assert.match(css,/\.xp-scene\.xp-charge\.xp-charge-navigation \.xp-car/);
+});
+
+test('phone subpages remain touch scrollable and tire readings stay beside wheels',()=>{
+ // Canonical V3 keeps the mobile scroll declarations in two complementary
+ // .xp-ux-modal rules instead of the previous single duplicated rule.
+ assert.match(css,/\.xp-ux-modal\{overflow-x:hidden;/);
+ assert.match(css,/\.xp-ux-modal\{[\s\S]*?overflow-y:auto;-webkit-overflow-scrolling:touch;/);
+ assert.match(css,/touch-action:pan-y/);
+ // The current owner-approved TPMS view uses positioned wheel indicators,
+ // rather than the obsolete full-width stacked grid.
+ assert.match(css,/\.xp-ux-modal-maintenance \.xp-tire-stage\{[\s\S]*?display:block!important;position:relative/);
+});
+test('original charging art is restored and green cable only exists during charging',()=>{
+ assert.match(source,/ownerCharging=a\.model==='G6'/);
+ assert.match(source,/chargingAppearance=ownerCharging/);
+ assert.match(source,/this\.model\(\)==='G6'&&this\.xpChargingActive\(\)/);
+ assert.match(css,/\.xp-charge-cable-live \.xp-charge-cable-halo\{stroke:#00df90;stroke-width:5\.2/);
+ assert.doesNotMatch(source,/\['charging','bolt','Charging'\]/);
+});
+
+
+test('native MDI glyphs replace ALL hand-drawn dashboard controls',()=>{
+ const block=source.slice(source.indexOf('const XP_ICONS = Object.freeze('),source.indexOf('function xpEsc(v)'));
+ assert.match(block,/fan:'mdi:fan'/);
+ for(const icon of ['mdi:home-outline','mdi:car-door-lock','mdi:car-door-lock-open',
+    'mdi:car-door','mdi:car-back','mdi:map-marker-outline',
+    'mdi:arrow-right','mdi:cog-outline','mdi:wrench-outline','mdi:battery-outline',
+    'mdi:ev-station','mdi:car-seat-heater','mdi:car-seat-cooler','mdi:steering','mdi:wifi'])
+   assert.ok(block.includes(icon),'Native MDI mapping missing: '+icon);
+  assert.doesNotMatch(block,/mdi:window-open|mdi:window-open-variant/,'House-window symbols must not return');
+ assert.match(block,/class="xp-mdi-icon xp-tailgate-icon"/,'Owner requested true side-profile open-tailgate vector');
+ assert.doesNotMatch(block,/<ellipse\b/,'No unrelated icon drawings');
+ assert.match(block,/class="xp-mdi-icon" icon="'\+mdi\+'/);
+ assert.doesNotMatch(block,/xp-trunk-symbol|arrowSize/,'No old composite trunk arrow');
+ assert.match(block,/return glyph;/);
+ assert.match(source,/\$\{xpIcon\('wifi',24\)\}/,'Connection indicator must also be native');
+ assert.doesNotMatch(source,/\.xp-ux-(?:dock-action|cycle|climate-feature) svg/);
+  assert.match(source,/xpBatteryGauge\(\)/,'Battery badge derives from live SOC and official MDI levels');
+ assert.match(source,/\${xpIcon\('station',24\)\}/,'Charging-station pictogram must use native MDI');
+ assert.doesNotMatch(source,/<span class="xp-x-mark">✕<\/span>/,'Do not pretend a typographic X is the XPENG logo');
+ assert.match(css,/\.xp-mdi-icon\{display:inline-flex/);
+});
+
+test('desktop and mobile charging overlays use separate viewBox geometry',()=>{
+ assert.match(source,/viewBox="0 0 1400 788"/);
+ assert.match(source,/viewBox="0 0 390 780"/);
+ assert.match(css,/\.xp-charge-cable\.xp-cable-mobile\{display:none\}/);
+ assert.match(css,/\.xp-charge-cable\.xp-cable-desktop\{display:none\}/);
+});
+test('tyre pressure units exist only in card editor and never in vehicle screens',()=>{
+ assert.match(source,/select\('tire_pressure_unit'/);
+ assert.doesNotMatch(source,/data-xp-tire-unit|_xpTireUnit|xp-tire-units/);
+ assert.match(source,/this\.vehicle\(\)\?\.tire_pressure_unit/);
+});
+
+test('the Home screen hides maintenance summaries but preserves a single dedicated shortcut',()=>{
+ assert.doesNotMatch(source.slice(source.indexOf(' overview(){'),source.indexOf('\n charging(){')),/xp-status-panel|Location/);
+ assert.doesNotMatch(source,/const rows=\[\['settings','Vehicle maintenance'/);
+ assert.match(source,/xp-maintenance-home-button/);
+ assert.match(source,/\['maintenance','maintenance','Maintenance'\]/);
+ assert.match(source,/page==='maintenance'\)body=this\.xpMaintenancePanel\(\)/);
+ assert.match(source,/xp-maintenance-home-button/);
+});
+
+test('modern glass design uses official Material Design action icons without changing vehicle actions',()=>{
+ assert.match(source,/maintenance:'mdi:wrench-outline'/);
+ assert.match(source,/settings:'mdi:cog-outline'/);
+ assert.match(source,/xpIcon\(ico,27\)/);
+ assert.match(css,/Modern Glass UI v2/);
+ assert.match(css,/\.xp-home-navigation \.xp-overview-stat\{[^}]*backdrop-filter:blur\(20px\)/);
+ assert.match(css,/\.xp-home-navigation \.xp-ux-dock-seven \.xp-ux-dock-action ha-icon\{/);
+ assert.match(css,/\.xp-scene\.xp-overview\.xp-home-navigation \.xp-car\{/);
+ assert.match(css,/\.xp-home-navigation \.xp-ux-dock-seven \.xp-ux-dock-action ha-icon,/,'Unified official MDI action styling must cover Climate too');
+ assert.match(css,/@container xpeng-layout \(max-width:850px\)/);
+ assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
+ assert.doesNotMatch(source.slice(source.indexOf(' overview(){'),source.indexOf('\n charging(){')),/Location|xp-status-panel/);
+ assert.ok(source.includes("['doors','windows','port','trunk'].includes(action)"));
+ assert.match(source,/data-xp-toggle/);
+ assert.match(source,/verifiedDirectTap/);
+});
+
+test('shared premium styling spans actual pages without introducing vehicle-action pages',()=>{
+ assert.match(css,/Shared XPENG glass design language for real pages and action buttons/);
+ for(const cls of ['xp-ux-modal-climate','xp-ux-modal-maintenance','xp-ux-modal-map','xp-charge-card','xp-tire-reading','xp-ux-climate-feature','xp-ux-port-action']){
+   assert.ok(css.includes('.'+cls),'Unstyled interface category '+cls);
+ }
+ assert.match(css,/\.xp-ux-climate-feature ha-icon\{/);
+ assert.match(css,/\.xp-charge-heading ha-icon\{/);
+ assert.match(css,/\.xp-ux-modal-map \.xp-ux-map-panel/);
+ assert.match(css,/\.xp-ux-cycle-heat\.xp-ux-cycle-on/);
+ assert.match(css,/\.xp-ux-cycle-vent\.xp-ux-cycle-on/);
+ assert.match(css,/@container xpeng-layout \(max-width:520px\)/);
+ const dock=source.slice(source.indexOf(' xpDock(){'),source.indexOf('\n xpCabinView(){'));
+ assert.match(dock,/data-xp-toggle/);
+ assert.match(dock,/data-xp-open/);
+ assert.match(dock,/\['doors','windows','port','trunk'\]\.includes\(action\)/);
+ for(const key of ['doors','windows','port','trunk']){
+   assert.match(source,new RegExp('xpToggleButton'),'Vehicle toggle buttons must stay directly addressable: '+key);
+ }
+});
+
+test('there is only one control location for heated and ventilated seats in cabin photo',()=>{
+ assert.doesNotMatch(source,/xpSeatOverview\(/);
+ assert.doesNotMatch(source,/xp-climate-seat-overview|xp-seat-summary-action/);
+ assert.match(source,/seat_heat:'mdi:car-seat-heater'/);
+ assert.match(source,/seat_vent:'mdi:car-seat-cooler'/);
+ assert.match(source,/wheel_heat:'mdi:steering'/);
+ assert.match(css,/Physical seat\/steering location is the ONLY controls surface/);
+});
+
+test('beta.7: desktop cog/communication separation, Wi-Fi alignment and uniform vehicle action colors',()=>{
+  const beta7=css.slice(css.indexOf('/* Beta 7: consistent icon color'));
+  assert.ok(beta7.startsWith('/* Beta 7: consistent icon color'),'Final CSS overrides must load last');
+  assert.match(beta7,/\.xp-header \.xp-meta-tools\{gap:14px\}/,
+    'Desktop header buttons must have a distinct 14px gap');
+  assert.match(beta7,/@container xpeng-layout \(max-width:850px\)\{[\s\S]*?\.xp-header \.xp-meta-tools\{gap:8px\}/,
+    'Narrow HA Sections/phone retains comfortable 8px header spacing');
+  assert.match(beta7,/@container xpeng-layout \(min-width:851px\)\{[\s\S]*?\.xp-header \.xp-wifi \.xp-mdi-icon\{transform:translateY\(-4px\)\}/,
+    'Beta 7 historical Wi-Fi offset remains in prior rules; beta 9 must override to exact center');
+  assert.match(beta7,/\.xp-home-navigation \.xp-ux-dock-seven \.xp-ux-dock-action ha-icon,[\s\S]*?\.xp-charge-navigation \.xp-ux-dock-seven \.xp-ux-dock-action ha-icon\{\s*color:#e9f4ff;/,
+    'Home and Charging must have the identical neutral action icon palette');
+  assert.doesNotMatch(css,/\.xp-(?:home|charge)-navigation \.xp-ux-dock-action\[data-xp-(?:open|toggle)="(?:map|climate|port|doors)"\] ha-icon\{color:/,
+    'No category-by-category permanent random colors on shortcuts');
+  assert.match(css,/\.xp-ux-dock-action:disabled\{opacity:/,'Unavailable buttons remain visibly disabled');
+  assert.match(css,/\.xp-wifi\.xp-error\{color:#ffb16a/,'Real connection error keeps semantic warning color');
+  assert.match(css,/\.xp-batt-glyph>\.xp-mdi-icon\{[\s\S]*?color:#6dfdc1/,'Battery indication remains green');
+});
+
+test('beta.9: HA Sections grid auto-height, map bounds, nested diagnostics scrolling and centered Wi-Fi',()=>{
+ assert.match(source,/getGridOptions\(\)\{return \{columns:12,min_columns:12,rows:'auto'\};\}/);
+ assert.match(css,/\.xp-ux-modal-map \.xp-ux-map-panel\{[\s\S]*?grid-template-rows:minmax\(0,1fr\) auto/);
+ assert.match(css,/\.xp-scene \.xp-ux-modal\{[\s\S]*?overflow:hidden!important/);
+ assert.match(css,/\.xp-ux-modal-extras \.xp-extra-diagnostics-layout \.xp-diagnostics-scroll\{[\s\S]*?overflow-y:auto!important/);
+ assert.match(source,/xp-extra-diagnostics-layout/);
+ assert.match(css,/\.xp-header \.xp-wifi \.xp-mdi-icon\{[\s\S]*?transform:none!important/);
+ assert.match(css,/@container xpeng-layout \(max-width:600px\)\{[\s\S]*?\.xp-scene\{height:clamp\(630px,calc\(100dvh - 84px\),780px\)/);
+});
+
+test('owner photo breakpoints retain safe topbar spacing and real MDI trunk glyph',()=>{
+ assert.match(source,/trunk:'mdi:car-back'/);
+ assert.match(css,/\.xp-scene\{height:clamp\(600px,calc\(100dvh - 140px\),740px\)/);
+ assert.match(css,/\.xp-scene\{height:clamp\(570px,calc\(100dvh - 144px\),710px\)/);
+ assert.match(css,/\.xp-ux-modal-climate \.xp-climate-thermometers\{[\s\S]*?grid-template-columns:minmax\(0,1fr\) minmax\(0,1.4fr\)/);
 });

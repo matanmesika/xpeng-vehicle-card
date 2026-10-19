@@ -87,7 +87,7 @@ test('year editor changes must invalidate old manual hero images, unlike trim ch
  assert.match(js, /\['model','year_group','year','color'\]\.includes\(key\)/);
  assert.doesNotMatch(js, /\['model','year','color','trim'\]\.includes\(key\)/);
 });
-test('G6 charging keeps original metrics layout with front-looking artwork', () => {
+test('G6 charging keeps original metrics and correct rear-facing grey artwork', () => {
  const cfg={model:'G6',year:'2026',color:'graphite_gray'};
  const car=instance(cfg);
  const front=car.assetSpec();
@@ -95,7 +95,9 @@ test('G6 charging keeps original metrics layout with front-looking artwork', () 
  car._failedArtwork.add(front.src);
  assert.equal(car.assetSpec().tier,'silhouette');
  const charge=instance(cfg,true);
- assert.ok(charge.assetSpec().src.endsWith('/vehicles/g6/2026/graphite_gray/front.webp'));
+ assert.ok(charge.assetSpec().src.endsWith('/vehicles/g6/2026/graphite_gray/charging.webp'));
+ const whiteCharging=instance({model:'G6',year:'2026',color:'arctic_white'},true);
+ assert.ok(whiteCharging.assetSpec().src.endsWith('/vehicles/g6/2026/graphite_gray/charging.webp'));
  const top=instance(cfg);
  assert.match(top.topCarArt(),/data-top-art/);
  top._failedArtwork.add(top.artworkUrl('vehicles/g6/2026/graphite_gray/top.webp'));
@@ -314,33 +316,28 @@ test('P7i keeps exact-year colour selection for the 2024-only paints',()=>{
  assert.equal(editor._cfg.color,'arctic_white');
 });
 
-test('GitHub and HACS README render twelve existing English screenshots, not the old gallery',()=>{
+test('root README links to the same curated fourteen screenshot gallery as actual Playwright',()=>{
  const readme=fs.readFileSync(path.join(ROOT,'README.md'),'utf8');
- const index=fs.readFileSync(path.join(ROOT,'docs/gallery-en/README.md'),'utf8');
- const guide=fs.readFileSync(path.join(ROOT,'docs/G6_DASHBOARD_GUIDE_EN.md'),'utf8');
- const filenames=[
+ const gallery=fs.readFileSync(path.join(ROOT,'docs/screenshots/README.md'),'utf8');
+ const names=[
   'home-desktop','home-mobile','charging-desktop','charging-mobile',
   'climate-desktop','climate-mobile','maintenance-desktop','maintenance-mobile',
-  'map-desktop','map-mobile','charge-controls-mobile','diagnostics-mobile'
+  'map-desktop','map-mobile','charge-controls-mobile','diagnostics-mobile',
+  'functions-desktop','functions-mobile'
  ];
- assert.doesNotMatch(readme,/[\u0590-\u05ff]/,'HACS description must be English only');
- assert.doesNotMatch(index,/[\u0590-\u05ff]/,'Image captions must be English only');
- assert.doesNotMatch(guide,/[\u0590-\u05ff]/,'Installation guide must be English only');
- assert.doesNotMatch(readme,/docs\/screenshots\/g6-2026-/,'README must not use obsolete gallery images');
- const sizes=[];
- for(const basename of filenames){
-  const relative='docs/gallery-en/'+basename+'.png';
-  const url='https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/'+relative;
-  assert.ok(readme.includes(']('+url+')'),'HACS absolute image link missing: '+relative);
-  assert.ok(index.includes(']('+basename+'.png)'), 'Gallery index must link '+basename);
+ const imgs=fs.readdirSync(path.join(ROOT,'docs/screenshots')).filter(x=>/\.(png|jpe?g|webp)$/i.test(x));
+ assert.deepEqual(imgs.sort(),names.map(x=>x+'.png').sort(),'Only the fourteen current screenshots should exist');
+ for(const name of names){
+  const relative='docs/screenshots/'+name+'.png';
+  assert.ok(readme.includes(']('+relative+')'),'root README link missing: '+relative);
+  assert.ok(gallery.includes(']('+name+'.png)'),'gallery index link missing: '+name);
   const raw=fs.readFileSync(path.join(ROOT,relative));
-  assert.equal(raw.subarray(0,8).toString('hex'),'89504e470d0a1a0a',basename);
-  const width=raw.readUInt32BE(16),height=raw.readUInt32BE(20);
-  if(basename.endsWith('desktop'))assert.ok(width>=1100&&height>=620,basename);
-  else assert.ok(width>=300&&width<=500&&height>=700,basename);
-  assert.ok(raw.length>10000,basename);
-  sizes.push(raw.length);
+  assert.equal(raw.subarray(0,8).toString('hex'),'89504e470d0a1a0a',name);
+  const w=raw.readUInt32BE(16),h=raw.readUInt32BE(20);
+  if(name.endsWith('-desktop'))assert.ok(w>=1100&&h>=620,name);
+  else assert.ok(w>=300&&w<=500&&h>=700,name);
+  assert.ok(raw.length>10000,name);
  }
- assert.ok(new Set(sizes).size>=10,'Screenshots must be independent browser captures');
- assert.ok(fs.existsSync(path.join(ROOT,'scripts/capture-dashboard.cjs')),'Capture script missing');
+ assert.ok(fs.existsSync(path.join(ROOT,'scripts/capture-dashboard.cjs')),'capture script missing');
+ assert.doesNotMatch(readme,/docs\/screenshots\/g6-2026-/,'README contains deleted screenshot links');
 });

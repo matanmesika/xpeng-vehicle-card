@@ -6,7 +6,7 @@ This is the **XPENG Vehicle Card** frontend for Home Assistant. It depends on th
 
 1. Open **Home Assistant → HACS → Custom repositories**.
 2. Add `https://github.com/matanmesika/xpeng-vehicle-card`, category **Dashboard**.
-3. Install **XPENG Vehicle Card**. The latest stable release is `v1.0.3`.
+3. Install **XPENG Vehicle Card**. The current stable release is `v1.0.4`.
 4. Edit a Lovelace dashboard and add a **Manual** card with type `custom:xpeng-vehicle-card`.
 5. Select the model/year/exterior/cabin colours in the card editor. The G6 night-lakeside composition is preserved.
 6. Set your Xpengtk entity prefix or use the card's mapping interface, then verify actual entity IDs in **Developer Tools → States**.
@@ -28,11 +28,11 @@ grid_options:
   rows: auto
 ```
 
-## Try the updated visual beta
+## Stable update and rollback
 
-HACS → XPENG Vehicle Card → **⋮ → Redownload → Need a different version?** → **v1.0.4-beta.10**. Reload the dashboard. To roll back, redownload stable **v1.0.3** the same way.
+HACS → XPENG Vehicle Card → **⋮ → Redownload** to install stable `v1.0.4`. To roll back, select `v1.0.3` under **Need a different version?**. Refresh Home Assistant's frontend after the change.
 
-Beta.10 is intended for layout review. It is not a change to the Xpengtk integration and does not add undocumented car commands.
+The stable edition includes one shared desktop/mobile charging data panel and the approved XPENG charging-station design.
 
 ## G6 feature overview
 
@@ -67,7 +67,7 @@ A successful Home Assistant `callService` call does **not** confirm the car exec
 
 ## Screenshots and release information
 
-The [English gallery](gallery-en/README.md) contains 12 rendered screenshots with simulated data. The [Beta 10 GitHub release](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.4-beta.10) includes release notes and the tested frontend JavaScript.
+The [canonical English gallery](screenshots/README.md) contains 14 real Chromium screenshots with simulated data. [v1.0.4 stable notes](releases/v1.0.4.md) describe the release and safety scope.
 
 Black Edition approved all-black exterior/interior photography remains unavailable; an appearance filter is not an authentic replacement.
 

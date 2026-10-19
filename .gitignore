@@ -4,3 +4,7 @@ __pycache__/
 .DS_Store
 .playwright/
 node_modules/
+
+# Generated visual regression artifacts
+/docs/qa/
+*.zip

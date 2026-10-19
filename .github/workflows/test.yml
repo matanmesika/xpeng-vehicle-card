@@ -36,6 +36,9 @@ jobs:
             python -m json.tool profiles/year-profiles.json >/dev/null
           fi
 
+      - name: Enforce English-only maintained text
+        run: node tools/check_english_text.mjs
+
       - name: Verify full model/year/colour artwork map and trim invariance
         run: |
           python tools/sync_vehicle_artwork.py --check
@@ -44,12 +47,14 @@ jobs:
           python tools/sync_master_view_queue.py --check
           node tools/render_artwork_status.mjs --check
           # These are the maintained v1.0.2 frontend regression suites.
-          # The archived tests/all-profiles.test.cjs and dashboard-v010.test.cjs
-          # target the discontinued pre-v1 view API and old catalog paths.
+          # Retired pre-v1 suites were removed during G6 release-readiness cleanup.
+          # Keep the maintained current-interface and catalogue regressions below.
           node --test tests/vehicle-artwork-mapping.test.cjs
           node --test tests/charging-cable-static.test.cjs
           node --test tests/xpeng-controls-smoke.test.cjs
           node --test tests/responsive-dual-state.test.cjs
+          node --test tests/g6-mobile-charging-icons.test.cjs
+          node --test tests/release-documentation.test.cjs
           python tools/check_photo_candidates.py
           python tools/audit_vehicle_provenance.py
 

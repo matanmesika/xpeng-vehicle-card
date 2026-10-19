@@ -1,57 +1,12 @@
-# XPENG G6 — מדריך הדשבורד המעודכן, v1.0.3
+# G6 dashboard guide — English compatibility page
 
-הכרטיס מתאים אוטומטית את אותה תצוגה למחשב, לטלפון ול־Home Assistant Sections. המקרא מתאר את **הכרטיס**, ולא שינוי באינטגרציית הרכב עצמה.
+The current XPENG card is a single automatically responsive Home Assistant Lovelace card with automatic Charging and Overview scenes. Use the [main English README](../README.md) for installation, [current gallery](screenshots/README.md) for screen views and [final acceptance](G6_FINAL_STABILIZATION.md) for release readiness.
 
-## צילומים מתוך בדיקות הדפדפן
+## Current controls
+- Seven main shortcuts for climate, door locks, windows, charging flap, trunk, maintenance and location.
+- Live charging controls and schedules only where Xpengtk entities support them; charging appears automatically.
+- Climate panel with the owner's cabin art and entity-supported front/rear seats, wheel, fan and temperature.
+- Maintenance displays four TPMS readings and available service data; units follow card settings.
+- Location uses the Home Assistant native tracker map with available Honk/Flash buttons.
 
-| חלון | מחשב | טלפון |
-| --- | --- | --- |
-| בית | ![מחשב](screenshots/g6-2026-controls-desktop.png) | ![טלפון](screenshots/g6-2026-controls-mobile.png) |
-| טעינה | ![טעינה במחשב](screenshots/g6-2026-charging.png) | ![טעינה בטלפון](screenshots/g6-2026-mobile-charging.png) |
-| מיזוג — פנים בהיר | ![מיזוג מחשב](screenshots/g6-2026-climate-desktop.png) | ![מיזוג טלפון](screenshots/g6-2026-climate-mobile.png) |
-| מיזוג — פנים כהה | ![מיזוג כהה מחשב](screenshots/g6-2026-climate-dark-desktop.png) | ![מיזוג כהה טלפון](screenshots/g6-2026-climate-dark-mobile.png) |
-| מיקום | ![מפה במחשב - הדמיית רכיב מפה לבדיקה](screenshots/g6-2026-location-desktop.png) | ![מפה בטלפון - הדמיית רכיב מפה לבדיקה](screenshots/g6-2026-location-mobile.png) |
-| תחזוקה | ![תחזוקה במחשב](screenshots/g6-2026-maintenance-desktop.png) | ![תחזוקה בטלפון](screenshots/g6-2026-maintenance-mobile.png) |
-
-אלה צילומי Chromium של **הקוד האמיתי** עם נתוני דוגמה. לא מדובר בתמונות מדשבורד הרכב החי. באזור המפה מוצג רכיב מדומה משום שהבדיקה העצמאית אינה מפעילה את רכיב המפה של Home Assistant.
-
-## שמונת הכפתורים בדף הבית
-
-| כפתור | מה עושה |
-| --- | --- |
-| מיזוג | מציג מיזוג, טמפרטורה, מהירות מאוורר, חימום/אוורור המושבים וחימום ההגה |
-| טעינה | נתוני טעינה, הגבלת טעינה ותזמוני טעינה לקריאה |
-| נעילה | לחיצה אחת לנעילה/פתיחה לפי מצב חיישן הנעילה |
-| חלונות | לחיצה אחת לפתיחה/סגירה לפי מצב החיישן |
-| שקע טעינה | פתיחה/סגירה בהתאם למצב השקע, ללא סגירה כאשר הכבל מחובר |
-| תא מטען | פתיחה/סגירה לפי חיישן מצב תא המטען |
-| תחזוקה | לחץ ארבעת הצמיגים, קילומטראז׳, הטיפול הבא ומספר שלדה מוסתר |
-| מיקום | מפה כהה עם מיקום הרכב, שני כפתורים — צופר והבהוב |
-
-במסכי המשנה קיים רק לחצן חזרה לבית; התפריט של דף הבית מוסתר.
-
-## מיזוג אוויר
-
-תמונות פנים הרכב המקוריות נמצאות בנתיבים:
-- assets/vehicles/g6/interior_light_gray.webp
-- assets/vehicles/g6/interior_dark_gray.webp
-
-צבע הפנים נקבע בהגדרות הכרטיס. רק ישויות שקיימות באינטגרציה יוצגו ויפעלו. בשני המושבים הקדמיים יש חימום ואוורור לפי התמיכה ברכב; בשני המושבים האחוריים חימום עצמאי; בהגה חימום.
-
-**AUTO** מוצג כחיווי בלבד כאשר האינטגרציה מפרסמת רק חיישן AUTO ולא פקודה עצמאית. בורר מהירות המאוורר מציג את הטווח שחיישן Home Assistant מדווח, ולכן לא קובעים מראש 8 או 10 דרגות. לא תוצג בקרה מזויפת לכיוון אוויר או להפשרה אחורית.
-
-## טעינה ומיקום
-
-שמרנו על פריסת הנתונים של הטעינה. הוספנו שני קיצורים בלבד: **הגבלת טעינה** ו**תזמונים**. עריכת תזמונים אינה נתמכת כרגע על ידי פקודת אינטגרציה מאומתת.
-
-מסך המיקום נפתח גם במחשב וגם בטלפון. הוא מבקש את רכיב המפה המובנה של HA, במצב כהה וברמת זום 11, עם מיקום הרכב. שני הכפתורים **צופר** ו**הבהוב** דורשים פעולה יזומה ואישור. יש לאמת את המפה החיה רק לאחר התקנה בסביבת Home Assistant.
-
-## איך להתקין
-
-1. Home Assistant → HACS → מאגר מותאם אישית מסוג Dashboard: https://github.com/matanmesika/xpeng-vehicle-card.
-2. עדכן XPENG Vehicle Card ל־v1.0.3 ורענן את האפליקציה/הדפדפן.
-3. בעריכת הכרטיס בחר G6, שנת הרכב, צבע חיצוני וצבע פנים. ודא שה־prefix זהה לשמות הישויות שלך. לדוגמה: xpeng_g6.
-4. רק אם תרצה לאפשר פתיחת חלונות, שחרור נעילה ופתיחת תא מטען, הגדר enable_access_controls: true ואשר Access גם באינטגרציה.
-5. ודא בדשבורד האמיתי שהמפה, הצופר, ההבהוב, חימום המושבים, שקע הטעינה ותא המטען עובדים. בדיקות הדפדפן אינן שולחות פקודות לרכב.
-
-גרסת המקור הראשית: [XPENG Vehicle Card](https://github.com/matanmesika/xpeng-vehicle-card) · [הערות שחרור](releases/v1.0.3.md).
+UI and editor text are English even if Home Assistant uses another language. Do not assume unsupported vehicle capabilities or manual OTA checks.
