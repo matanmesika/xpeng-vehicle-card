@@ -489,17 +489,17 @@ async function main(){
  const homeIconQuality=await car.evaluate(el=>{
    const root=el.shadowRoot;
    return [...root.querySelectorAll('.xp-ux-dock-action')].map(button=>{
-     const icon=button.querySelector('ha-icon');
+     const icon=button.querySelector('ha-icon,svg.xp-tailgate-icon');
      const r=icon?.getBoundingClientRect(),b=button.getBoundingClientRect();
-     return {mdi:icon?.getAttribute('icon'),width:r?.width,height:r?.height,
+     return {mdi:icon?.getAttribute('icon'),tailgate:icon?.classList?.contains('xp-tailgate-icon'),width:r?.width,height:r?.height,
        within:!!r&&r.width>0&&r.height>0&&
          r.left>=b.left-1&&r.right<=b.right+1&&r.top>=b.top-1&&r.bottom<=b.bottom+1};
    });
  });
- assert.ok(homeIconQuality.length===7&&homeIconQuality.every(i=>i.mdi?.startsWith('mdi:')&&i.within),
-   'All seven actions must have genuine, centered native MDI icons: '+JSON.stringify(homeIconQuality));
+ assert.ok(homeIconQuality.length===7&&homeIconQuality.every(i=>(i.mdi?.startsWith('mdi:')||i.tailgate)&&i.within),
+   'All seven actions must have centered MDI icons or the approved raised tailgate SVG: '+JSON.stringify(homeIconQuality));
  const dockProportions=await car.evaluate(el=>[...el.shadowRoot.querySelectorAll('.xp-ux-dock-action')].map(button=>{
-   const glyph=button.querySelector('ha-icon.xp-mdi-icon');
+   const glyph=button.querySelector('.xp-mdi-icon');
    const size=glyph?.getBoundingClientRect().width;
    const circle=parseFloat(getComputedStyle(button,'::before').width);
    return {icon:glyph?.getAttribute('icon'),glyph:size,circle,background:getComputedStyle(button).backgroundColor};
@@ -507,7 +507,7 @@ async function main(){
  assert.ok(dockProportions.length===7&&dockProportions.every(x=>
    x.glyph>=28&&x.glyph<=33&&x.circle>=66&&x.circle<=70&&x.circle/x.glyph>=1.8&&
    x.background==='rgba(0, 0, 0, 0)'),
-   'Home action MDI glyphs must be physically smaller than their floating glass circles: '+JSON.stringify(dockProportions));
+   'Home pictograms must be smaller than their circular glass surfaces: '+JSON.stringify(dockProportions));
  console.log('Desktop official MDI icons and bounding-box alignment verified:',JSON.stringify(homeIconQuality));
 
  // Beta 7: rendered Home Assistant header geometry and actual dock icon colors.
