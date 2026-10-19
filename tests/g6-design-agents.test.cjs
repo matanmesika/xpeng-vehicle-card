@@ -114,7 +114,7 @@ test('Behavior Guardian: JS and vehicle assets do not change from the accepted b
   }
   v=v.replace('     this.xpCenterMapOnVehicle(map,gps);\n','');
   // Beta 17 rendering-only changes; preserve protected service and command handlers.
-  v=v.replace("const homeSurface=!isCharging&&!this._tireOpen&&this.xpUiEnabled();\n",'');
+  v=v.replace("  const homeSurface=!isCharging&&!this._tireOpen&&this.xpUiEnabled();"+String.fromCharCode(10),'');
   v=v.replace("${homeSurface?'xp-home-navigation':''}","${onHome&&this.xpUiEnabled()?'xp-home-navigation':''}");
   v=v.replace("<h1><em>${xpEsc(this.model())}</em></h1>","<h1>XPENG <em>${xpEsc(this.model())}</em></h1>");
   v=v.replace('return `<header class="xp-header">'+String.fromCharCode(10),
