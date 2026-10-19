@@ -130,3 +130,41 @@ jobs:
           path: docs/screenshots/*.png
           if-no-files-found: warn
           retention-days: 14
+
+  approved-glass-cascade-agent:
+    name: Glass Cascade Agent | approved button geometry and zero opaque dock tiles
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Owner-approved transparency rules beat all V2 important selectors
+        run: node --test --test-name-pattern="Glass Cascade Agent" tests/g6-approved-glass-design.test.cjs
+
+  approved-responsive-glass-agent:
+    name: Responsive UX Agent | one card on desktop iPhone and Sections
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: One card, circle icons, focus and disabled states
+        run: node --test --test-name-pattern="Responsive Glass UX Agent" tests/g6-approved-glass-design.test.cjs
+
+  approved-behavior-parity-agent:
+    name: Behavior Parity Agent | no vehicle wiring changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Design-only runtime parity and compiled HACS bundles
+        run: |
+          node tools/build_vehicle_card.mjs --check
+          node --test --test-name-pattern="Behavior Guardian" tests/g6-approved-glass-design.test.cjs

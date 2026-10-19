@@ -2707,3 +2707,364 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 
 /* The primary SUV trunk glyph shares the neutral dock palette; only its smaller
    real MDI lift/lower arrow is allowed a state-specific accent. */
+
+/* G6 V3 - OWNER APPROVED FLOATING GLASS DESIGN. DO NOT OVERRIDE BELOW.
+   Scope: PRESENTATION ONLY. Native MDI icons, all seven original shortcuts,
+   real HA status, seat hotspots, charging scene art/cable and commands survive.
+   Replaces V2's opaque tile and modal cascade using last-in-file specificity.
+   Battery level arc is decorative; real live SOC is the number and progress bar.
+   ========================================================================== */
+.xp-scene{
+ --xp-v3-glass:rgba(9,29,49,.23);
+ --xp-v3-edge:rgba(174,223,249,.39);
+ --xp-v3-halo:rgba(69,180,246,.16);
+ --xp-v3-text:#f1f8ff;
+ --xp-v3-secondary:#b4cadc;
+}
+.xp-scene .xp-title h1{font-weight:730;letter-spacing:.045em;text-shadow:0 2px 18px rgba(0,12,28,.75)}
+.xp-scene .xp-title h1 em{color:#6ec4ff}
+.xp-scene .xp-subtitle{color:#becfe2;letter-spacing:.14em;text-shadow:0 2px 10px rgba(0,0,0,.68)}
+.xp-scene .xp-header{
+ border:0!important;
+ background:transparent!important;
+ box-shadow:none!important;
+ backdrop-filter:none!important;
+}
+.xp-scene .xp-brand{
+ border:1px solid rgba(167,208,232,.18);
+ border-radius:999px;
+ background:rgba(4,18,32,.27);
+ backdrop-filter:blur(12px);
+ padding:7px clamp(12px,1.8cqw,24px);
+ font-weight:620;
+}
+.xp-scene .xp-header .xp-wifi,
+.xp-scene .xp-header .xp-more-trigger{
+ border:1px solid var(--xp-v3-edge)!important;
+ border-radius:50%!important;
+ background:rgba(16,45,70,.25)!important;
+ box-shadow:inset 0 1px rgba(248,255,255,.12)!important;
+ backdrop-filter:blur(10px);
+}
+/* SOC stays live; the ring frames an official live battery MDI pictogram.
+   A fake fixed-percent SVG/arc must never replace its real numeric value. */
+.xp-scene.xp-overview.xp-home-navigation .xp-overview-stat{
+ background:transparent!important;
+ border:0!important;
+ border-radius:0!important;
+ box-shadow:none!important;
+ backdrop-filter:none!important;
+ padding:clamp(8px,1.15cqw,16px)!important;
+ text-shadow:0 2px 18px rgba(0,9,21,.92);
+}
+.xp-scene.xp-overview.xp-home-navigation .xp-batt-glyph{
+ width:clamp(76px,8.5cqw,124px)!important;
+ min-width:clamp(76px,8.5cqw,124px)!important;
+ height:clamp(76px,8.5cqw,124px)!important;
+ border:2px solid rgba(23,230,185,.85)!important;
+ border-radius:50%!important;
+ padding:0!important;
+ display:grid!important;
+ place-items:center!important;
+ background:radial-gradient(circle,rgba(3,57,62,.42),rgba(4,23,38,.1) 69%)!important;
+ box-shadow:0 0 18px rgba(0,239,193,.2),inset 0 0 16px rgba(6,216,183,.12)!important;
+}
+.xp-scene.xp-overview.xp-home-navigation .xp-batt-glyph:before{display:none!important}
+.xp-scene.xp-overview.xp-home-navigation .xp-batt-glyph .xp-battery-level-icon{
+ width:clamp(45px,4.4cqw,64px)!important;
+ height:clamp(45px,4.4cqw,64px)!important;
+ --xp-icon-size:clamp(45px,4.4cqw,64px)!important;
+ --mdc-icon-size:clamp(45px,4.4cqw,64px)!important;
+}
+.xp-scene.xp-overview.xp-home-navigation .xp-batt-line{gap:clamp(12px,1.5cqw,23px);min-height:0!important}
+.xp-scene.xp-overview.xp-home-navigation .xp-overview-range{
+ background:transparent!important;border-top:1px solid rgba(174,215,231,.35)!important;
+}
+.xp-scene.xp-overview.xp-home-navigation .xp-overview-stat .xp-progress{
+ height:9px;border-radius:99px;background:rgba(6,21,37,.58)!important;
+}
+.xp-scene .xp-ux-dock-seven{
+ display:flex;
+ align-items:flex-start;
+ justify-content:space-evenly;
+ gap:clamp(8px,1.4cqw,24px)!important;
+ left:50%;
+ width:min(1050px,94%)!important;
+ max-width:94%!important;
+ padding:0!important;
+ border:0!important;
+ border-radius:0!important;
+ background:transparent!important;
+ box-shadow:none!important;
+ backdrop-filter:none!important;
+ overflow:visible;
+}
+/* Button element is HIT TARGET + label; ONLY its actual icon is a glass disc.
+   This removes both the large dock rectangle and seven rectangular tiles. */
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action{
+ flex:1 1 0;
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:center!important;
+ justify-content:flex-start!important;
+ gap:7px!important;
+ width:auto!important;
+ min-width:0!important;
+ max-width:none!important;
+ min-height:94px!important;
+ padding:0 2px!important;
+ border:0!important;
+ border-radius:0!important;
+ background:transparent!important;
+ box-shadow:none!important;
+ backdrop-filter:none!important;
+ transform:none;
+ color:var(--xp-v3-text);
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon,
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-trunk-symbol{
+ flex:0 0 auto!important;
+ width:clamp(61px,6.2cqw,85px)!important;
+ height:clamp(61px,6.2cqw,85px)!important;
+ border:1px solid var(--xp-v3-edge)!important;
+ border-radius:50%!important;
+ background:var(--xp-v3-glass)!important;
+ box-shadow:0 4px 18px rgba(0,3,13,.17),inset 0 1px rgba(245,254,255,.12)!important;
+ backdrop-filter:blur(11px);
+ -webkit-backdrop-filter:blur(11px);
+ display:flex!important;
+ align-items:center!important;
+ justify-content:center!important;
+ transition:background .17s,border-color .17s,box-shadow .17s;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon{
+ --xp-icon-size:27px!important;--mdc-icon-size:27px!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-trunk-symbol{
+ --xp-trunk-size:27px!important;
+ flex-direction:row-reverse!important;
+ gap:1px;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-trunk-symbol>.xp-mdi-icon{
+ --mdc-icon-size:27px!important;--xp-icon-size:27px!important;
+ width:27px!important;height:27px!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-trunk-symbol>.xp-trunk-arrow{
+ width:10px!important;height:10px!important;
+ --mdc-icon-size:10px!important;--xp-icon-size:10px!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action small{
+ display:block;
+ margin:0!important;padding:0!important;
+ font-size:clamp(10px,1.04cqw,13px)!important;
+ font-weight:530!important;
+ line-height:1.2!important;
+ color:#e8f4ff!important;
+ text-align:center!important;
+ white-space:normal!important;
+ overflow-wrap:normal;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action:not(:disabled):is(:hover,:focus-visible){
+ background:transparent!important;transform:none!important;border:0!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action:not(:disabled):is(:hover,:focus-visible)>.xp-mdi-icon,
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action:not(:disabled):is(:hover,:focus-visible)>.xp-trunk-symbol{
+ background:rgba(20,88,117,.49)!important;
+ border-color:rgba(102,233,231,.85)!important;
+ box-shadow:0 0 22px var(--xp-v3-halo)!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action:disabled{
+ opacity:.46!important;
+ cursor:not-allowed;
+ filter:saturate(.58);
+}
+/* Charging: keep the approved separate rear-vehicle scene and green cable;
+   change surfaces and controls, not image, geometry or trigger. */
+.xp-scene.xp-charge .xp-charge-card{
+ background:rgba(4,19,35,.30)!important;
+ border:1px solid rgba(154,211,237,.17)!important;
+ border-radius:23px!important;
+ box-shadow:none!important;
+ backdrop-filter:blur(12px);
+ -webkit-backdrop-filter:blur(12px);
+}
+.xp-scene.xp-charge .xp-charge-heading{color:#57eac7}
+.xp-scene.xp-charge .xp-charge-card .xp-progress{height:10px}
+.xp-scene.xp-charge .xp-charge-meta{border-top-color:rgba(156,204,225,.26)}
+.xp-scene.xp-charge .xp-charge-panel-actions{
+ border:0!important;
+ background:transparent!important;
+ box-shadow:none!important;
+ padding:0!important;
+ gap:clamp(8px,1.8cqw,23px);
+}
+.xp-scene.xp-charge .xp-charge-panel-actions button{
+ border:0!important;
+ border-radius:0!important;
+ background:transparent!important;
+ box-shadow:none!important;
+ color:#eaf6ff;
+ display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+ gap:6px;padding:3px!important;min-height:79px;
+}
+.xp-scene.xp-charge .xp-charge-panel-actions button>.xp-mdi-icon{
+ width:clamp(45px,4.5cqw,62px)!important;
+ height:clamp(45px,4.5cqw,62px)!important;
+ --xp-icon-size:23px!important;--mdc-icon-size:23px!important;
+ display:grid;place-items:center;
+ border:1px solid var(--xp-v3-edge);border-radius:50%;
+ background:rgba(13,44,64,.3);backdrop-filter:blur(10px);
+}
+.xp-scene.xp-charge .xp-charge-panel-actions button span{
+ font-size:clamp(10px,.92cqw,13px);
+ white-space:normal;text-align:center;line-height:1.2;
+}
+.xp-scene.xp-charge .xp-charge-panel-actions button:disabled{opacity:.44;cursor:not-allowed}
+/* Subpages: airy glass surfaces, not an opaque wall of nested cards.
+   All help, commands, numbers, dialogs and real touch hotspots remain. */
+.xp-scene .xp-ux-modal{
+ background:linear-gradient(145deg,rgba(4,17,32,.82),rgba(5,24,42,.76))!important;
+ border:1px solid rgba(139,207,232,.18)!important;
+ box-shadow:0 17px 48px rgba(0,0,0,.27)!important;
+ backdrop-filter:blur(17px);
+ -webkit-backdrop-filter:blur(17px);
+}
+.xp-scene .xp-ux-modal-head button{
+ width:46px;min-width:46px;height:46px;min-height:46px;
+ border-radius:50%!important;
+ background:rgba(11,42,65,.31)!important;
+ border:1px solid var(--xp-v3-edge)!important;
+ box-shadow:none!important;
+}
+.xp-scene .xp-help-intro{
+ border:1px solid rgba(148,210,230,.21)!important;
+ border-radius:15px!important;
+ background:rgba(16,49,66,.18)!important;
+ box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-primary,
+.xp-scene .xp-ux-modal-climate .xp-climate-temp-panel,
+.xp-scene .xp-ux-modal-climate .xp-climate-fan-panel,
+.xp-scene .xp-ux-modal-climate .xp-ux-climate-feature{
+ background:rgba(14,44,64,.21)!important;
+ border:1px solid rgba(125,207,235,.2)!important;
+ box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-temp-line button{
+ border-radius:50%!important;
+ border:1px solid var(--xp-v3-edge)!important;
+ background:rgba(21,63,85,.31)!important;
+ box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-climate-feature{
+ border-radius:999px!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-cycle{
+ background:rgba(17,43,63,.31)!important;
+ border:1px solid rgba(174,217,244,.43)!important;
+ backdrop-filter:blur(8px);
+}
+/* Tire data: transparent round gauges around the original physical top-view. */
+.xp-scene .xp-ux-modal-maintenance .xp-tire-reading{
+ border:1px solid rgba(107,222,238,.58)!important;
+ border-radius:50%!important;
+ background:rgba(11,43,61,.29)!important;
+ box-shadow:0 0 14px rgba(45,201,223,.08)!important;
+ aspect-ratio:1;
+ width:min(100%,150px);
+ justify-self:center;
+ justify-content:center;
+ align-items:center;
+ backdrop-filter:blur(8px);
+}
+.xp-scene .xp-ux-modal-maintenance .xp-maint-info .xp-extra-line{
+ background:rgba(11,39,57,.23)!important;
+ border:1px solid rgba(159,213,238,.17)!important;
+ box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile{
+ background:rgba(10,42,61,.28)!important;
+ border:1px solid rgba(158,210,238,.23)!important;
+ box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile:not(:disabled):is(:hover,:focus-visible){
+ background:rgba(23,80,101,.45)!important;
+}
+.xp-scene button:focus-visible{outline:2px solid #92e9f4!important;outline-offset:3px}
+/* The ONE card remains adaptive in HA Sections, small iPhones and desktop. */
+@container xpeng-layout (max-width:850px){
+ .xp-scene .xp-ux-dock-seven{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  width:96%!important;max-width:96%!important;
+  gap:5px 3px!important;
+  left:50%;bottom:12px;
+ }
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action{
+  width:100%!important;min-height:77px!important;
+  gap:4px!important;
+ }
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon,
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-trunk-symbol{
+  width:clamp(47px,13cqw,63px)!important;
+  height:clamp(47px,13cqw,63px)!important;
+ }
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action small{
+  font-size:clamp(8px,2.5cqw,11px)!important;
+ }
+ .xp-scene.xp-overview.xp-home-navigation .xp-overview-stat{
+  top:clamp(153px,38cqw,203px);
+  left:4%;width:91%;max-width:none;
+  padding:10px!important;
+ }
+ .xp-scene.xp-overview.xp-home-navigation .xp-batt-glyph{
+  width:clamp(49px,13cqw,70px)!important;
+  min-width:clamp(49px,13cqw,70px)!important;
+  height:clamp(49px,13cqw,70px)!important;
+ }
+ .xp-scene.xp-overview.xp-home-navigation .xp-batt-glyph .xp-battery-level-icon{
+  width:35px!important;height:35px!important;
+  --xp-icon-size:35px!important;--mdc-icon-size:35px!important;
+ }
+ .xp-scene.xp-overview.xp-home-navigation .xp-overview-stat .xp-soc{font-size:clamp(29px,8cqw,43px)}
+ .xp-scene.xp-overview.xp-home-navigation .xp-overview-range{
+  margin-top:6px!important;padding-top:6px!important;
+ }
+ .xp-scene.xp-charge .xp-charge-card{
+  border-color:rgba(152,202,224,.16)!important;
+  background:rgba(5,20,37,.49)!important;
+ }
+ .xp-scene .xp-ux-modal-maintenance .xp-tire-reading{
+  width:min(100%,94px);padding:5px!important;
+ }
+ .xp-scene .xp-ux-modal-maintenance .xp-tire-reading strong{
+  font-size:clamp(14px,4cqw,22px)!important;
+ }
+}
+@container xpeng-layout (max-width:520px){
+ .xp-scene .xp-ux-dock-seven{
+  gap:3px 1px!important;
+  bottom:11px!important;
+ }
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action{
+  min-height:73px!important;padding:0!important;
+ }
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon,
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-trunk-symbol{
+  width:clamp(46px,13.7cqw,57px)!important;
+  height:clamp(46px,13.7cqw,57px)!important;
+ }
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action small{
+  font-size:clamp(8px,2.35cqw,10px)!important;
+ }
+ .xp-scene.xp-charge .xp-charge-panel-actions button>.xp-mdi-icon{
+  width:44px!important;height:44px!important;
+ }
+ .xp-scene .xp-ux-modal{
+  border-radius:18px!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon,
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-trunk-symbol{transition:none!important}
+}
