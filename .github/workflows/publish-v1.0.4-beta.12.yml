@@ -1,0 +1,224 @@
+name: G6 beta.12 full QA and prerelease
+on:
+  push:
+    branches:
+      - release/v1.0.4-beta.12
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: g6-beta12-publish
+  cancel-in-progress: false
+
+jobs:
+  test-and-publish:
+    name: Validate and publish v1.0.4-beta.12
+    if: github.ref == 'refs/heads/release/v1.0.4-beta.12'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      TAG: v1.0.4-beta.12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Gate existing G6 controls, design/core isolation and live-panel help
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s docs/releases/v1.0.4-beta.4.md
+          test -s docs/releases/v1.0.4-beta.8.md
+          test -s docs/G6_BETA_LIVE_ACCEPTANCE_HE.md
+          test -s docs/G6_ICON_AUDIT_HE.md
+          test -s tests/fixtures/xpengtk-g6-simulator.cjs
+          test -s tests/xpeng-simulation.test.cjs
+          grep -Fq 'XP_ICONS' src/xpeng-vehicle-card.js
+          grep -Fq 'xpReconcileChildren' src/xpeng-vehicle-card.js
+          grep -Fq 'xpPendingToggle' src/xpeng-vehicle-card.js
+          grep -Fq 'data-xp-map-details' src/xpeng-vehicle-card.js
+          grep -Fq 'lockStress' scripts/capture-dashboard.cjs
+          grep -Fq 'mobileMapStable' scripts/capture-dashboard.cjs
+          grep -Fq 'getGridOptions()' src/xpeng-vehicle-card.js
+          grep -Fq 'xp-extra-diagnostics-layout' src/xpeng-vehicle-card.js
+          grep -Fq "const XP_EN_TRANSLATIONS=" src/xpeng-vehicle-card.js
+          grep -Fq "function xpLocalizeMarkup(" src/xpeng-vehicle-card.js
+          grep -Fq "xpWarmMapHelpers()" src/xpeng-vehicle-card.js
+          grep -Fq "PASS bilingual Home Assistant locale and native map warm-up" scripts/capture-dashboard.cjs
+          grep -Fq "beta.8 Home Assistant locale switches" tests/xpeng-controls-smoke.test.cjs
+          test -s docs/releases/v1.0.4-beta.12.md
+          # Strict new betas must preserve the two maintained sources and
+          # show functional help only INSIDE actual destination pages.
+          test -s src/design/xpeng-vehicle-card.css
+          test -s src/core/xpeng-vehicle-card.runtime.js
+          test -s tools/build_vehicle_card.mjs
+          test -s tests/g6-isolated-design-help.test.cjs
+          test -s docs/ISOLATED_DESIGN_ARCHITECTURE.md
+          grep -Fq "xpModalGuide(page)" src/core/xpeng-vehicle-card.runtime.js
+          grep -Fq "xpExtraSectionGuide(section[0])" src/core/xpeng-vehicle-card.runtime.js
+          grep -Fq "const XP_CSS = \"__XPENG_STYLES_FROM_THEME__\";" src/core/xpeng-vehicle-card.runtime.js
+          grep -Fq "xp-help-intro" src/design/xpeng-vehicle-card.css
+          test -s docs/G6_OWNER_SCREENSHOT_FIXES_20261018_HE.md
+          grep -Fq "trunk:'mdi:car-estate'" dist/xpeng-vehicle-card.js
+          grep -Fq "Open Trunk" dist/xpeng-vehicle-card.js
+          grep -Fq "overflow-x:auto;overflow-y:hidden;text-overflow:clip" dist/xpeng-vehicle-card.js
+          grep -Fq 'calc(100dvh - 144px)' dist/xpeng-vehicle-card.js
+
+          grep -Fq 'PASS desktop cog/Wi-Fi spacing and uniform action icon palette' scripts/capture-dashboard.cjs
+          grep -Fq 'beta.7: desktop cog/communication separation' tests/responsive-dual-state.test.cjs
+          grep -Fq 'Beta 7: consistent icon color' src/xpeng-vehicle-card.js
+          grep -Fq '.xp-header .xp-meta-tools{gap:14px}' src/xpeng-vehicle-card.js
+          test -s docs/releases/v1.0.4-beta.12.md
+
+          grep -Fq "windows:'mdi:car-door'" src/xpeng-vehicle-card.js
+          grep -Fq "windows_open:'mdi:car-door'" src/xpeng-vehicle-card.js
+          grep -Fq "trunk:'mdi:car-estate'" src/xpeng-vehicle-card.js
+          grep -Fq "trunk_open:'mdi:car-estate'" src/xpeng-vehicle-card.js
+          if grep -Eq "mdi:(window-open|window-open-variant|car-hatchback)" src/xpeng-vehicle-card.js; then
+            echo "::error::Legacy non-automotive icons still present in beta.12 card"
+            exit 1
+          fi
+
+
+      - name: JavaScript, metadata and distribution integrity
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check src/xpeng-vehicle-card.js
+          node --check dist/xpeng-vehicle-card.js
+          node --check scripts/capture-dashboard.cjs
+          node --check tests/fixtures/xpengtk-g6-simulator.cjs
+          cmp src/xpeng-vehicle-card.js dist/xpeng-vehicle-card.js
+          node tools/build_vehicle_card.mjs --check
+          node --check src/core/xpeng-vehicle-card.runtime.js
+          node --check tools/build_vehicle_card.mjs
+          python -m json.tool hacs.json >/dev/null
+          python -m json.tool data/model-artwork.json >/dev/null
+          python -m json.tool data/vehicle-art-inventory.json >/dev/null
+
+      - name: Validate vehicle artwork, catalogue and provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/sync_vehicle_artwork.py --check
+          python tools/export_vehicle_artwork_backlog.py --check
+          python tools/sync_year_palettes.py --check
+          python tools/sync_master_view_queue.py --check
+          node tools/render_artwork_status.mjs --check
+          python tools/check_photo_candidates.py
+          python tools/audit_vehicle_provenance.py
+
+      - name: Full maintained JavaScript regression suite including Xpengtk simulation
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --test \
+            tests/vehicle-artwork-mapping.test.cjs \
+            tests/charging-cable-static.test.cjs \
+            tests/xpeng-controls-smoke.test.cjs \
+            tests/responsive-dual-state.test.cjs \
+            tests/xpeng-simulation.test.cjs \
+            tests/g6-isolated-design-help.test.cjs \
+            tests/release-documentation.test.cjs
+
+      - name: Validate HACS integration package
+        uses: hacs/action@main
+        with:
+          category: plugin
+          ignore: images
+
+      - name: Install pinned Playwright Chromium and official Material Design icons
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --prefix /tmp/xpeng-beta12-qa --no-audit --no-fund playwright@1.56.1 @mdi/js@7.4.47
+          /tmp/xpeng-beta12-qa/node_modules/.bin/playwright install --with-deps chromium
+
+      - name: Browser acceptance - desktop, iPhone width, Sections, scroll, lock, GPS
+        env:
+          PLAYWRIGHT_MODULE: /tmp/xpeng-beta12-qa/node_modules/playwright
+        shell: bash
+        run: |
+          set -euo pipefail
+          timeout 150s node scripts/capture-dashboard.cjs | tee /tmp/xpeng-beta12-qa.log
+          grep -F 'PASS iPhone telemetry stress / scroll / lock / map' /tmp/xpeng-beta12-qa.log
+          grep -F 'PASS bilingual Home Assistant locale and native map warm-up' /tmp/xpeng-beta12-qa.log
+          grep -F 'PASS Sections/mobile/desktop modal containment, centered Wi-Fi and sticky diagnostics note' /tmp/xpeng-beta12-qa.log
+
+      - name: Check the 12 latest browser screenshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import struct
+          root = Path('docs/screenshots')
+          names = [
+            'home-desktop', 'home-mobile',
+            'charging-desktop', 'charging-mobile',
+            'climate-desktop', 'climate-mobile',
+            'maintenance-desktop', 'maintenance-mobile',
+            'map-desktop', 'map-mobile',
+            'charge-controls-mobile', 'diagnostics-mobile',
+          ]
+          expected={name+'.png' for name in names}
+          actual={p.name for p in root.iterdir() if p.suffix.lower() in ('.png','.jpg','.jpeg','.webp')}
+          assert actual == expected, f'Gallery mismatch: {actual ^ expected}'
+          for name in names:
+              p = root/(name+'.png')
+              data=p.read_bytes()
+              assert data[:8] == bytes([137,80,78,71,13,10,26,10]) and len(data)>10_000,(name,len(data))
+              width,height=struct.unpack('>II',data[16:24])
+              assert (width>=1100 and height>=620) if name.endswith('-desktop') else (300<=width<=500 and height>=700), (name,width,height)
+              print('PASS screenshot:',name,width,height)
+          print('PASS all 12 current browser screenshots')
+          PY
+
+      - name: Preserve beta.12 screenshot evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: G6-beta12-verified-screenshots
+          path: docs/screenshots/*.png
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Guard against replacing an existing release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "::error::Release $TAG already exists, refusing to overwrite"
+            exit 1
+          fi
+          if git show-ref --verify --quiet "refs/tags/$TAG"; then
+            echo "::error::Tag $TAG already exists, refusing to overwrite"
+            exit 1
+          fi
+
+      - name: Publish verified GitHub prerelease and attach installable JS bundle
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh release create "$TAG" \
+            dist/xpeng-vehicle-card.js \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title "XPENG Vehicle Card $TAG" \
+            --notes-file docs/releases/v1.0.4-beta.12.md \
+            --prerelease
+          gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json tagName,isPrerelease,url,assets
