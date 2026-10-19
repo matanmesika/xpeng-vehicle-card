@@ -41,10 +41,15 @@ test('original charging art uses the same seven-button dashboard dock',()=>{
  assert.match(css,/\.xp-scene\.xp-charge\.xp-charge-navigation \.xp-car/);
 });
 
-test('phone subpages are touch scrollable and maintenance grid stacks rows',()=>{
- assert.match(css,/\.xp-ux-modal\{overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch/);
+test('phone subpages remain touch scrollable and tire readings stay beside wheels',()=>{
+ // Canonical V3 keeps the mobile scroll declarations in two complementary
+ // .xp-ux-modal rules instead of the previous single duplicated rule.
+ assert.match(css,/\.xp-ux-modal\{overflow-x:hidden;/);
+ assert.match(css,/\.xp-ux-modal\{[\s\S]*?overflow-y:auto;-webkit-overflow-scrolling:touch;/);
  assert.match(css,/touch-action:pan-y/);
- assert.match(css,/\.xp-ux-modal-maintenance \.xp-tire-stage\{display:grid;width:100%;height:auto/);
+ // The current owner-approved TPMS view uses positioned wheel indicators,
+ // rather than the obsolete full-width stacked grid.
+ assert.match(css,/\.xp-ux-modal-maintenance \.xp-tire-stage\{[\s\S]*?display:block!important;position:relative/);
 });
 test('original charging art is restored and green cable only exists during charging',()=>{
  assert.match(source,/ownerCharging=a\.model==='G6'/);
@@ -58,14 +63,16 @@ test('original charging art is restored and green cable only exists during charg
 test('native MDI glyphs replace ALL hand-drawn dashboard controls',()=>{
  const block=source.slice(source.indexOf('const XP_ICONS = Object.freeze('),source.indexOf('function xpEsc(v)'));
  assert.match(block,/fan:'mdi:fan'/);
- for(const icon of ['mdi:home-outline','mdi:lock-outline','mdi:lock-open-variant-outline',
-    'mdi:car-door','mdi:car-back','mdi:map-marker-outline',
+ for(const icon of ['mdi:home-outline','mdi:car-door-lock','mdi:car-door-lock-open',
+    'mdi:car-door','mdi:car-estate','mdi:map-marker-outline',
     'mdi:arrow-right','mdi:cog-outline','mdi:wrench-outline','mdi:battery-outline',
     'mdi:ev-station','mdi:car-seat-heater','mdi:car-seat-cooler','mdi:steering','mdi:wifi'])
    assert.ok(block.includes(icon),'Native MDI mapping missing: '+icon);
   assert.doesNotMatch(block,/mdi:window-open|mdi:window-open-variant/,'House-window symbols must not return');
  assert.doesNotMatch(block,/<(?:svg|ellipse|circle|path|rect)\b/,'No hand-drawn SVG for buttons');
- assert.match(block,/<ha-icon class="xp-mdi-icon" icon="\$\{mdi\}"/);
+ assert.match(block,/class="xp-mdi-icon" icon="'\+mdi\+'/);
+ assert.match(block,/xp-trunk-symbol/);
+ assert.match(block,/arrowSize/);
  assert.match(source,/\$\{xpIcon\('wifi',24\)\}/,'Connection indicator must also be native');
  assert.doesNotMatch(source,/\.xp-ux-(?:dock-action|cycle|climate-feature) svg/);
   assert.match(source,/xpBatteryGauge\(\)/,'Battery badge derives from live SOC and official MDI levels');
@@ -170,7 +177,7 @@ test('beta.9: HA Sections grid auto-height, map bounds, nested diagnostics scrol
 });
 
 test('owner photo breakpoints retain safe topbar spacing and real MDI trunk glyph',()=>{
- assert.match(source,/trunk:'mdi:car-back'/);
+ assert.match(source,/trunk:'mdi:car-estate'/);
  assert.match(css,/\.xp-scene\{height:clamp\(600px,calc\(100dvh - 140px\),740px\)/);
  assert.match(css,/\.xp-scene\{height:clamp\(570px,calc\(100dvh - 144px\),710px\)/);
  assert.match(css,/\.xp-ux-modal-climate \.xp-climate-thermometers\{[\s\S]*?grid-template-columns:minmax\(0,1fr\) minmax\(0,1.4fr\)/);

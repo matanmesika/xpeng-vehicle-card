@@ -13,6 +13,7 @@
 | מיזוג ומושבים | ![מיזוג מחשב](screenshots/climate-desktop.png) | ![מיזוג טלפון](screenshots/climate-mobile.png) |
 | תחזוקה ולחצי צמיגים | ![תחזוקה מחשב](screenshots/maintenance-desktop.png) | ![תחזוקה טלפון](screenshots/maintenance-mobile.png) |
 | מיקום | ![מיקום מחשב](screenshots/map-desktop.png) | ![מיקום טלפון](screenshots/map-mobile.png) |
+| פונקציות נוספות | ![פונקציות מחשב](screenshots/functions-desktop.png) | ![פונקציות טלפון](screenshots/functions-mobile.png) |
 
 [בקרת טעינה](screenshots/charge-controls-mobile.png) · [אבחון כל הישויות](screenshots/diagnostics-mobile.png) · [כל הגלריה](screenshots/README.md).
 

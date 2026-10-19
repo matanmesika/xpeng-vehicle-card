@@ -1,4 +1,4 @@
-# XPENG G6 — גלריית 12 מסכי הדשבורד
+# XPENG G6 — גלריית 14 מסכי הדשבורד
 
 **צילומי מסך של כרטיס Home Assistant עצמו**, מתוך Chromium/Playwright עם חיישני Xpengtk מדומים — לא עיצוב שנוצר במחולל תמונות ולא צילום מתוך הרכב האמיתי. צילומי המפה משתמשים ברכיב מיקום מדומה: אריחי מפה אמיתיים זמינים רק בהתקנת Home Assistant.
 
@@ -9,6 +9,7 @@
 | מיזוג, חימום, אוורור והגה — צילום הפנים ללא כיתוב | [מיזוג מחשב](climate-desktop.png) | [מיזוג טלפון](climate-mobile.png) |
 | תחזוקה, צמיגים ופרטי רכב | [תחזוקה מחשב](maintenance-desktop.png) | [תחזוקה טלפון](maintenance-mobile.png) |
 | מיקום, צופר והבהוב | [מפה מחשב (דמה)](map-desktop.png) | [מפה טלפון (דמה)](map-mobile.png) |
+| פונקציות מתקדמות — אייקונים קטנים בתוך כפתורי זכוכית עגולים | [פונקציות מחשב](functions-desktop.png) | [פונקציות טלפון](functions-mobile.png) |
 
 **תוספות רלוונטיות:** [בקרות טעינה](charge-controls-mobile.png) ו־[רשימת אבחון חיישנים](diagnostics-mobile.png) עם חלון גלילה עצמאי והערות גלויות.
 
@@ -16,7 +17,7 @@
 
 ## חידוש הגלריה וניהול קבצים
 
-הפקה אוטומטית: [`scripts/capture-dashboard.cjs`](../../scripts/capture-dashboard.cjs) עם `@mdi/js` רשמי ו־Playwright Chromium. תהליך [צילום הגלריה](../../.github/workflows/capture-dashboard.yml) מחליף את **12 קובצי ה־PNG בתיקייה זו בלבד**, ומוחק צילומי מסך עודפים. הוא **לא מוחק** תמונות רכב, צבעים, מושבים או רקע מ־`assets/`.
+הפקה אוטומטית: [`scripts/capture-dashboard.cjs`](../../scripts/capture-dashboard.cjs) עם `@mdi/js` רשמי ו־Playwright Chromium. תהליך [צילום הגלריה](../../.github/workflows/capture-dashboard.yml) מחליף את **14 קובצי ה־PNG בתיקייה זו בלבד**, ומוחק צילומי מסך עודפים. הוא **לא מוחק** תמונות רכב, צבעים, מושבים או רקע מ־`assets/`.
 
 נבדקים גדלי מחשב, iPhone, כרטיס צר ב־Home Assistant Sections, מפה מותאמת לגובה, מרכוז Wi-Fi, עברית/אנגלית וגלילה רק בחלון אבחון הישויות. יש להשוות מול רכב ומכשירי HA אמיתיים לפני גרסה יציבה.
 

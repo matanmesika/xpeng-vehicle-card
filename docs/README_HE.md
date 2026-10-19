@@ -13,8 +13,9 @@
 | מיזוג ומושבים — צילום הפנים ללא כיתוב מעליו | ![מיזוג מחשב](screenshots/climate-desktop.png) | ![מיזוג טלפון](screenshots/climate-mobile.png) |
 | תחזוקה ולחץ בצמיגים | ![תחזוקה מחשב](screenshots/maintenance-desktop.png) | ![תחזוקה טלפון](screenshots/maintenance-mobile.png) |
 | מיקום הרכב | ![מפה מחשב](screenshots/map-desktop.png) | ![מפה טלפון](screenshots/map-mobile.png) |
+| פונקציות נוספות — סמלי MDI קטנים, עיגולי זכוכית ללא אריח מלבני | ![פונקציות מחשב](screenshots/functions-desktop.png) | ![פונקציות טלפון](screenshots/functions-mobile.png) |
 
-[בקרות טעינה](screenshots/charge-controls-mobile.png) · [אבחון חיישנים](screenshots/diagnostics-mobile.png) · [כל 12 צילומי המסכים](screenshots/README.md).
+[בקרות טעינה](screenshots/charge-controls-mobile.png) · [אבחון חיישנים](screenshots/diagnostics-mobile.png) · [כל 14 צילומי המסכים](screenshots/README.md).
 
 התמונות מצולמות בדפדפן Chromium מתוך הקוד האמיתי של הכרטיס אך עם **חיישנים מדומים**. המפה בתמונות אינה מכילה אריחי מפה חיים; יש לבדוק אותה בתוך Home Assistant אמיתי. פעולות כמו פתיחת חלונות ותא מטען הן לחצני פעולה ולא מסכי ניווט קבועים.
 

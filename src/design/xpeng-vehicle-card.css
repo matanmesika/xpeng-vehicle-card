@@ -1,5 +1,5 @@
-
-:host{display:block;color:#fff;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;--xp-mint:#00efbe;--xp-sky:#6aaaff}
+/* XPENG G6 canonical V3 stylesheet: structural layout and owner-approved floating glass design. */
+:host{display:block;color:#fff;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;}
 *{box-sizing:border-box}
 ha-card{display:block;width:100%;container-type:inline-size;container-name:xpeng-layout;background:transparent!important;border:0!important;box-shadow:none!important;overflow:visible!important}
 button{font:inherit;color:inherit;cursor:pointer}
@@ -29,9 +29,9 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-car.xp-paint-stellar_purple{filter:drop-shadow(0 20px 20px #000b) brightness(.84) sepia(.13) hue-rotate(190deg)}
 .xp-overview-stat{position:absolute;left:5.3%;top:42%;z-index:5;width:18%;max-width:290px;display:flex;flex-direction:column;gap:4px}
 .xp-batt-line{display:flex;align-items:center;gap:18px}
-.xp-batt-glyph{width:62px;height:90px;border:3px solid #cad7e7;border-radius:11px;position:relative;padding:7px;flex:none;display:flex;align-items:flex-end}
-.xp-batt-glyph:before{content:"";position:absolute;width:22px;height:8px;border:3px solid #cad7e7;border-bottom:0;top:-10px;left:calc(50% - 11px);border-radius:4px 4px 0 0}
-.xp-batt-fill{width:100%;background:linear-gradient(180deg,#7cefb1,#00ba84);border-radius:4px;min-height:0;box-shadow:0 0 12px #00e4a941}
+.xp-batt-glyph{width:62px;height:90px;}
+.xp-batt-glyph:before{position:absolute;width:22px;height:8px;border:3px solid #cad7e7;border-bottom:0;top:-10px;left:calc(50% - 11px);border-radius:4px 4px 0 0}
+
 .xp-stat-label{font-size:clamp(13px,1.3vw,21px);color:#b0c1dd}
 .xp-soc{font-size:clamp(42px,5vw,76px);line-height:1.08;font-weight:730;white-space:nowrap}
 .xp-unit{font-size:.55em}
@@ -48,21 +48,21 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-info-copy small{font-size:clamp(10px,.99vw,15px);color:#c8d5e7}
 .xp-info-copy b{font-size:clamp(12px,1.1vw,18px);font-weight:450;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .xp-status-panel .xp-chevron{color:#dceeff;opacity:.75}
-.xp-charge-card{position:absolute;z-index:6;left:2.8%;top:33.5%;width:40.8%;border:1px solid #2089ce88;border-radius:22px;background:linear-gradient(130deg,#041422e8,#06162acb);backdrop-filter:blur(14px);box-shadow:0 10px 55px #0007;padding:clamp(16px,2.4vw,36px) clamp(17px,2.7vw,43px)}
-.xp-charge-heading{display:flex;align-items:center;gap:17px;color:var(--xp-mint);font-weight:630;font-size:clamp(17px,2.6vw,40px);margin:0 0 22px}
+.xp-charge-card{position:absolute;z-index:6;backdrop-filter:blur(14px);}
+.xp-charge-heading{display:flex;align-items:center;font-weight:630;margin:0 0 22px}
 .xp-charge-heading ha-icon{flex:none;width:clamp(26px,3.6vw,56px);height:clamp(26px,3.6vw,56px);--mdc-icon-size:clamp(26px,3.6vw,56px)}
-.xp-charge-card .xp-progress{height:20px}
-.xp-charge-main{display:flex;align-items:center;gap:18px;justify-content:space-between;margin-top:23px}
-.xp-charge-main .xp-soc{font-size:clamp(40px,5.4vw,86px)}
+
+.xp-charge-main{display:flex;align-items:center;justify-content:space-between;}
+
 .xp-charge-divider{height:65px;border-left:1px solid #56708a88}
 .xp-charge-range{flex:1;min-width:0}
-.xp-charge-range b{display:block;font-size:clamp(22px,2.1vw,36px);margin-top:8px;white-space:nowrap}
-.xp-charge-meta{border-top:1px solid #4268878a;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:25px;padding-top:22px}
-.xp-charge-meta>div{min-width:0;display:flex;flex-direction:column;gap:8px;padding:0 13px;border-right:1px solid #52719066}
+.xp-charge-range b{margin-top:8px;white-space:nowrap}
+.xp-charge-meta{border-top:1px solid #4268878a;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));}
+.xp-charge-meta>div{min-width:0;display:flex;flex-direction:column;border-right:1px solid #52719066}
 .xp-charge-meta>div:first-child{padding-left:0}
 .xp-charge-meta>div:last-child{padding-right:0;border-right:0}
-.xp-charge-meta small{font-size:clamp(10px,1vw,16px);color:#9eb3d0;white-space:nowrap}
-.xp-charge-meta b{font-size:clamp(12px,1.5vw,25px);font-weight:560;white-space:nowrap}
+.xp-charge-meta small{color:#9eb3d0;white-space:nowrap}
+.xp-charge-meta b{font-weight:560;white-space:nowrap}
 .xp-charge .xp-car{width:52%;left:41%;bottom:12%;height:auto;max-height:70%;z-index:7}
 .xp-charge .xp-title{left:5.3%;top:17%}
 .xp-station{position:absolute;z-index:2;right:3%;bottom:30%;width:5.3%;height:23%;min-width:45px;border:2px solid #55c8fb;border-radius:13px 13px 6px 6px;background:linear-gradient(90deg,#013861,#041b32 55%,#0b3150);box-shadow:0 0 18px #00c6ff85,inset 0 0 13px #08cafa74;display:grid;place-items:start center;padding-top:25px;font-size:26px;color:#e1f7ff}
@@ -73,7 +73,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-scene{min-height:800px;aspect-ratio:auto}
 .xp-header{top:16px;left:4%;right:4%}
 .xp-brand{font-size:13px;letter-spacing:.12em}
-.xp-header-right{gap:9px}
+
 .xp-title{left:5%;top:89px}
 .xp-title h1{font-size:34px}
 .xp-subtitle{font-size:18px}
@@ -126,10 +126,10 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-tire-stage{width:min(900px,100%);flex:1;min-height:0;align-self:center;display:grid;grid-template-columns:minmax(92px,1fr) minmax(170px,43%) minmax(92px,1fr);grid-template-rows:1fr 1fr;gap:10px;align-items:center}
 .xp-tire-center{grid-area:1/2/3/3;min-height:0;height:100%;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 16px 20px #0009)}
 .xp-top-car,.xp-top-cutout{width:100%;max-width:325px;height:100%;max-height:100%;object-fit:contain}
-.xp-tire-reading{background:linear-gradient(125deg,#091a2bda,#051020eb);border:1px solid #6782a058;backdrop-filter:blur(17px);border-radius:20px;padding:14px 9px;text-align:center;display:flex;flex-direction:column;gap:4px;min-width:0}
+.xp-tire-reading{backdrop-filter:blur(17px);padding:14px 9px;text-align:center;display:flex;flex-direction:column;gap:4px;min-width:0}
 .xp-tire-reading small{color:#c8d5e7;font-size:clamp(10px,1.15vw,15px)}
-.xp-tire-reading strong{font-size:clamp(24px,3vw,45px);color:#fff;line-height:1.1}
-.xp-tire-reading span{color:#75f4c5;font-size:clamp(11px,1.2vw,17px)}
+.xp-tire-reading strong{font-size:clamp(24px,3vw,45px);line-height:1.1}
+.xp-tire-reading span{font-size:clamp(11px,1.2vw,17px)}
 .xp-tire-reading[data-wheel="tire_fl"]{grid-area:1/1}.xp-tire-reading[data-wheel="tire_fr"]{grid-area:1/3}
 .xp-tire-reading[data-wheel="tire_rl"]{grid-area:2/1}.xp-tire-reading[data-wheel="tire_rr"]{grid-area:2/3}
 .xp-tire-disclaimer{text-align:center;font-size:10px;color:#b9c9d8;padding-bottom:5px}
@@ -147,15 +147,15 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 
 /* Opt-in XPENG controls. Keep all existing hero and charging artwork unchanged. */
 .xp-ux-dock{position:absolute;z-index:12;bottom:2.5%;left:50%;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;gap:10px;padding:8px 12px;border:1px solid #6598b45c;border-radius:40px;background:#06162acb;backdrop-filter:blur(18px);max-width:96%}
-.xp-ux-dock-action{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:60px;min-height:58px;border:1px solid #78a1b84b;background:#132b4587;border-radius:24px;color:#effbff}
+.xp-ux-dock-action{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:60px;min-height:58px;color:#effbff}
 .xp-ux-dock-action ha-icon{color:#99caff}
 .xp-ux-dock-action small{font-size:10px;white-space:nowrap}
 .xp-ux-dock-action:hover,.xp-ux-dock-action:focus-visible{border-color:#1debca;background:#124965}
-.xp-ux-modal{position:absolute;z-index:35;inset:2% 2.5%;padding:16px 20px 25px;overflow:auto;overscroll-behavior:contain;border:1px solid #5e91b078;border-radius:23px;background:linear-gradient(165deg,#060d19f8,#081e34fa);box-shadow:0 28px 75px #000d;backdrop-filter:blur(22px);direction:rtl}
+.xp-ux-modal{position:absolute;z-index:35;inset:2% 2.5%;padding:16px 20px 25px;overflow:auto;overscroll-behavior:contain;direction:rtl}
 .xp-ux-modal-head{display:flex;align-items:center;gap:15px}
-.xp-ux-modal-head h2{margin:0;flex:1;font-size:clamp(18px,2.1vw,29px)}
+.xp-ux-modal-head h2{margin:0;flex:1;}
 .xp-ux-modal-head span{color:#b4c8df;font-size:13px}
-.xp-ux-modal-head button{border:1px solid #60849d82;background:#12334d;border-radius:12px;padding:8px;display:grid;place-items:center;min-width:43px;min-height:43px}
+.xp-ux-modal-head button{border:1px solid #60849d82;border-radius:12px;padding:8px;display:grid;place-items:center;min-width:43px;min-height:43px}
 .xp-ux-tabs{display:flex;gap:10px;margin:13px 0}
 .xp-ux-tabs button{border:1px solid #557b9f88;border-radius:18px;padding:10px 19px;background:#1b2b42;color:#bdcee0}
 .xp-ux-selected{background:#124c86!important;color:#fff!important;border-color:#54b9ff!important;box-shadow:0 0 0 1px #54b9ff3a inset}
@@ -169,7 +169,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-ux-climate-caption span{font-size:12px;color:#afc7e2}
 .xp-ux-temp-line{display:flex;gap:18px;align-items:center;justify-content:center;margin:12px auto}
 .xp-ux-temp-line b{font-size:clamp(29px,3vw,43px);min-width:115px;text-align:center}
-.xp-ux-temp-line button{border:1px solid #668ab3;background:#1d344d;width:45px;height:45px;border-radius:50%;font-size:26px}
+.xp-ux-temp-line button{border:1px solid #668ab3;background:#1d344d;font-size:26px}
 .xp-ux-pill-row{display:flex;flex-wrap:wrap;gap:10px}
 .xp-ux-pill-row button,.xp-ux-nav-seats{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid #5783a5;border-radius:14px;padding:10px 16px;background:#1b334c}
 .xp-ux-range-row{display:flex;flex-direction:column;gap:10px;margin-top:10px}
@@ -191,7 +191,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-ux-charge-limit input{height:17px}
 @media(max-width:850px){
  .xp-overview .xp-ux-dock{bottom:133px;gap:5px;padding:5px 7px}
- .xp-ux-dock-action{min-width:49px;min-height:51px;border-radius:18px;gap:2px}
+ .xp-ux-dock-action{min-width:49px;min-height:51px;gap:2px}
  .xp-ux-dock-action small{font-size:9px}
  .xp-ux-modal{inset:1.5% 2%;padding:13px}
  .xp-ux-cabin{max-height:290px}
@@ -214,7 +214,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 @media(pointer:coarse){.xp-ux-seat-options button,.xp-ux-dock-action,.xp-ux-pill-row button{min-height:44px}}
 
 /* Matching G6 cabin image hotspot alignment, consistent across both palettes. */
-.xp-ux-cabin-art{aspect-ratio:8/5;max-height:none!important}
+.xp-ux-cabin-art{max-height:none!important}
 .xp-ux-cabin-art{aspect-ratio:8/5}
 .xp-ux-cabin-art .xp-ux-cabin-picture{display:block;max-height:none!important;width:100%;height:100%;object-fit:contain}
 .xp-ux-cabin-art .xp-ux-hotspot{z-index:2;transform:translate(-50%,-50%);width:38px;height:38px}
@@ -232,7 +232,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 @supports (container-type:inline-size){.xp-scene.xp-has-controls{container-name:xpeng-card;container-type:inline-size}}
 @container xpeng-card (max-width:650px){
  .xp-ux-dock{bottom:127px;gap:5px;padding:5px 7px;max-width:94%}
- .xp-ux-dock-action{min-width:49px;min-height:50px;border-radius:18px;gap:2px}
+ .xp-ux-dock-action{min-width:49px;min-height:50px;gap:2px}
  .xp-ux-dock-action small{font-size:9px}
  .xp-ux-modal{inset:1.5% 2%;padding:13px}
  .xp-ux-seats-grid,.xp-ux-vehicle-statuses,.xp-ux-vehicle-buttons{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -291,17 +291,17 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-ux-access-buttons{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
 .xp-ux-access-buttons button{border:1px solid #467e9a;background:#12445a;padding:12px 16px;border-radius:14px;display:inline-flex;align-items:center;gap:8px;min-height:48px;flex:1}
 .xp-ux-access-buttons button:disabled{opacity:.4;cursor:not-allowed}
-.xp-ux-map-stage{min-height:260px;border-radius:14px;overflow:hidden;background:#0c2237;display:flex;align-items:center;justify-content:center}
+.xp-ux-map-stage{min-height:260px;background:#0c2237;display:flex;align-items:center;justify-content:center}
 .xp-ux-map-stage hui-map-card{display:block;width:100%;min-height:300px}
-.xp-ux-modal-map .xp-ux-map-panel{width:100%;margin:12px auto 0}
-.xp-ux-modal-map .xp-ux-map-stage{min-height:clamp(350px,51vh,520px)}
-.xp-ux-modal-map .xp-ux-map-stage hui-map-card{display:block;align-self:stretch;width:100%;min-height:clamp(350px,51vh,520px)}
+
+
+.xp-ux-modal-map .xp-ux-map-stage hui-map-card{align-self:stretch;}
 @container xpeng-layout (max-width:600px){
- .xp-ux-modal-map .xp-ux-map-stage{min-height:260px}
+ 
  .xp-ux-modal-map .xp-ux-map-stage hui-map-card{min-height:260px}
 }
 .xp-ux-map-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0 7px}
-.xp-ux-map-actions button{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;border:1px solid #4d89ae;background:#133b5b;border-radius:14px;min-height:48px}
+.xp-ux-map-actions button{padding:14px;border:1px solid #4d89ae;background:#133b5b;border-radius:14px;}
 .xp-ux-map-actions button:disabled{opacity:.4;cursor:not-allowed}
 @media(max-width:600px){
  .xp-ux-access-panel{padding:8px 0}
@@ -315,10 +315,10 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  */
 .xp-ux-cabin-art .xp-ux-hotspot-zone{position:absolute;z-index:4;display:flex;align-items:center;justify-content:center;gap:4px;transform:translate(-50%,-50%);width:auto;height:auto;max-width:44%;background:transparent;box-shadow:none}
 .xp-ux-cycle{border:1px solid #608ead;background:#0c243fdc;color:#ebf6ff;width:42px;height:44px;min-width:42px;min-height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:3px;box-shadow:0 3px 15px #06111e70;cursor:pointer;touch-action:manipulation}
-.xp-ux-cycle ha-icon{width:17px;height:17px;--mdc-icon-size:17px}
+
 .xp-ux-cycle .xp-ux-level{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;min-width:8px}
-.xp-ux-cycle-heat.xp-ux-cycle-on{background:#963746ed;border-color:#ff8b8b;color:#fff;box-shadow:0 0 12px #ff5b5780}
-.xp-ux-cycle-vent.xp-ux-cycle-on{background:#145b9de9;border-color:#6cd3ff;color:#fff;box-shadow:0 0 12px #47aeff80}
+.xp-ux-cycle-heat.xp-ux-cycle-on{color:#fff;}
+.xp-ux-cycle-vent.xp-ux-cycle-on{color:#fff;}
 .xp-ux-cycle-busy{outline:1px dotted #dce9f2;outline-offset:2px}
 .xp-ux-cycle:focus-visible{outline:3px solid #fff;outline-offset:3px}
 .xp-ux-cabin-fallback .xp-ux-wheel{top:21%;left:26%}
@@ -387,9 +387,8 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 /* Verified Xpengtk A/C actions, intentionally excluding unsupported app tiles. */
 .xp-ux-climate-features{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin:13px 0 8px}
 .xp-ux-climate-feature{display:flex;flex-direction:column;align-items:center;justify-content:center;
- gap:9px;min-height:105px;padding:12px 8px;border:1px solid #658cab80;border-radius:16px;
- background:#0f2942dd;color:#f0f8ff;cursor:pointer;text-align:center}
-.xp-ux-climate-feature ha-icon{color:#bbdbfa}
+ gap:9px;padding:12px 8px;border-radius:16px;color:#f0f8ff;cursor:pointer;text-align:center}
+
 .xp-ux-climate-feature span{font-size:14px;font-weight:650}
 .xp-ux-climate-feature small{font-size:11px;color:#b0c9db}
 .xp-ux-climate-feature:focus-visible{outline:2px solid #9ddaff;outline-offset:2px}
@@ -411,10 +410,10 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 /* Automatic card-width adaptation even when Home Assistant Sections renders a narrow
    card on a wide desktop monitor. Legacy viewport media rules above remain as fallback. */
 @container xpeng-layout (max-width:850px){
-.xp-scene{min-height:800px;aspect-ratio:auto}
+
 .xp-header{top:16px;left:4%;right:4%}
 .xp-brand{font-size:13px;letter-spacing:.12em}
-.xp-header-right{gap:9px}
+
 .xp-title{left:5%;top:89px}
 .xp-title h1{font-size:34px}
 .xp-subtitle{font-size:18px}
@@ -436,16 +435,16 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-info-copy b{font-size:12px;white-space:normal;overflow-wrap:anywhere}
 .xp-status-panel .xp-chevron{display:none}
 .xp-charge .xp-title{left:5%;top:83px}
-.xp-charge-card{top:225px;left:5%;width:90%;padding:18px}
-.xp-charge-heading{font-size:22px;margin-bottom:15px}
+
+
 .xp-charge-card .xp-progress{height:13px}
-.xp-charge-main{margin-top:13px}
-.xp-charge-main .xp-soc{font-size:42px}
-.xp-charge-range b{font-size:20px}
+
+
+
 .xp-charge-divider{height:45px}
-.xp-charge-meta{margin-top:15px;padding-top:15px}
-.xp-charge-meta small{font-size:10px;white-space:normal}
-.xp-charge-meta b{font-size:14px}
+
+.xp-charge-meta small{white-space:normal}
+
 .xp-charge .xp-car{width:96%;left:2%;bottom:9%;max-height:36%}
 .xp-station{right:5%;bottom:22%;height:13%;min-width:40px;font-size:16px}
 }
@@ -459,7 +458,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 @container xpeng-layout (max-width:400px){.xp-charge-meta>div{padding:0 7px}.xp-charge-heading{font-size:19px}.xp-charge-meta b{font-size:12px}.xp-overview-stat{top:219px}.xp-status-panel{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @container xpeng-layout (max-width:850px){
  .xp-overview .xp-ux-dock{bottom:133px;gap:5px;padding:5px 7px}
- .xp-ux-dock-action{min-width:49px;min-height:51px;border-radius:18px;gap:2px}
+ .xp-ux-dock-action{min-width:49px;min-height:51px;gap:2px}
  .xp-ux-dock-action small{font-size:9px}
  .xp-ux-modal{inset:1.5% 2%;padding:13px}
  .xp-ux-cabin{max-height:290px}
@@ -510,7 +509,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-extra-schedule-line .xp-extra-line{flex-basis:100%}
  .xp-extra-schedule-toggle{width:100%}}
 @container xpeng-layout (max-width:520px){
- .xp-scene{min-height:780px}
+ 
  .xp-title{top:84px}
  .xp-title h1{font-size:30px}
  .xp-overview-stat{left:5%;top:207px;width:53%;max-width:none}
@@ -546,10 +545,10 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-ux-modal-charge_controls .xp-ux-port-panel{margin-top:15px}
 .xp-maintenance-page{max-width:940px;margin:0 auto}
 .xp-maintenance-page h3{font-size:17px;margin:15px 0 8px;color:#d8f5fa}
-.xp-ux-modal-maintenance .xp-tire-screen{position:relative;inset:auto;display:block;height:300px;min-height:260px;margin:0 auto 16px;width:100%}
-.xp-ux-modal-maintenance .xp-tire-stage{width:min(690px,100%);height:100%;min-height:0;grid-template-columns:minmax(60px,1fr) minmax(100px,43%) minmax(60px,1fr);grid-template-rows:1fr 1fr;gap:7px}
-.xp-ux-modal-maintenance .xp-tire-reading{padding:7px 4px;border-radius:12px}
-.xp-ux-modal-maintenance .xp-tire-reading strong{font-size:clamp(17px,2vw,27px)}
+.xp-ux-modal-maintenance .xp-tire-screen{display:block;}
+.xp-ux-modal-maintenance .xp-tire-stage{grid-template-columns:minmax(60px,1fr) minmax(100px,43%) minmax(60px,1fr);grid-template-rows:1fr 1fr;gap:7px}
+.xp-ux-modal-maintenance .xp-tire-reading{border-radius:12px}
+
 .xp-maint-info{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .xp-ux-modal-maintenance .xp-extra-line{overflow-wrap:anywhere;gap:9px}
 .xp-ux-charge-schedule{max-width:590px;margin:20px auto}
@@ -557,35 +556,35 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 @container xpeng-layout (max-width:520px){
  .xp-maint-info{grid-template-columns:1fr}
  .xp-ux-modal-maintenance .xp-tire-screen{height:250px;min-height:240px}
- .xp-ux-modal-maintenance .xp-tire-reading strong{font-size:18px}
+ 
 }
 
 /* The home dashboard owns the only navigation menu. Subpages show Back only. */
-.xp-ux-dock-seven{gap:clamp(4px,.6vw,10px);max-width:96%;padding:8px 10px;bottom:2.3%;border-radius:26px}
-.xp-ux-dock-seven .xp-ux-dock-action{flex:0 1 84px;min-width:66px;max-width:88px;min-height:63px;padding:6px 4px;border-radius:17px}
-.xp-ux-dock-seven .xp-ux-dock-action small{font-size:11px}
+.xp-ux-dock-seven{gap:clamp(4px,.6vw,10px);max-width:96%;padding:8px 10px;bottom:2.3%;}
+.xp-ux-dock-seven .xp-ux-dock-action{flex:0 1 84px;min-height:63px;padding:6px 4px;}
+
 .xp-page-back{position:absolute;z-index:22;top:10%;right:3.5%;min-height:44px;border:1px solid #6d9dbbba;border-radius:13px;background:#0b2c48e9;color:#effaff;display:flex;align-items:center;gap:9px;padding:8px 13px;cursor:pointer;direction:rtl}
 .xp-page-back:hover,.xp-page-back:focus-visible{background:#145371;border-color:#17dfcd}
-.xp-ux-modal-head{position:sticky;top:-16px;z-index:9;padding:8px 0 12px;background:linear-gradient(180deg,#071626 78%,#07162600)}
+
 @container xpeng-layout (max-width:850px){
- .xp-home-navigation .xp-ux-dock-seven{bottom:22px;left:50%;max-width:94%;width:min(550px,94%);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;padding:7px;border-radius:18px}
- .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{width:100%;min-width:0;max-width:none;min-height:53px;padding:4px;gap:3px}
- .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action small{font-size:10px;white-space:normal;line-height:1.15}
+ .xp-home-navigation .xp-ux-dock-seven{left:50%;}
+ 
+ .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action small{white-space:normal;line-height:1.15}
  .xp-page-back{top:22px;right:4%;padding:6px 10px}
 }
 @container xpeng-layout (max-width:360px){
- .xp-home-navigation .xp-ux-dock-seven{bottom:20px;gap:3px}
- .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{min-height:49px}
- .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action small{font-size:9px}
+ 
+ 
+ 
 }
 
 /* Home content parity: controls and status exist at every card width.
  * Scale rather than hide; width is the HA card container, not browser viewport.
  */
-.xp-home-navigation .xp-title h1{font-size:clamp(25px,3.25cqw,46px)}
-.xp-home-navigation .xp-subtitle{font-size:clamp(13px,1.35cqw,19px)}
+
+
 .xp-home-navigation .xp-overview .xp-car{width:50%;left:25%;bottom:18%;max-height:62%}
-.xp-home-navigation .xp-overview-stat{width:19%;top:38%;max-width:250px}
+
 .xp-home-navigation .xp-overview-stat .xp-batt-glyph{height:64px;width:44px}
 .xp-home-navigation .xp-overview-stat .xp-soc{font-size:clamp(32px,4cqw,59px)}
 .xp-home-navigation .xp-overview-stat .xp-range-num{font-size:clamp(21px,2.5cqw,34px)}
@@ -596,36 +595,36 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-home-navigation .xp-status-panel .xp-info-icon ha-icon{width:23px;height:23px;--mdc-icon-size:23px}
 .xp-home-navigation .xp-status-panel .xp-info-copy small{font-size:clamp(10px,.9cqw,13px)}
 .xp-home-navigation .xp-status-panel .xp-info-copy b{font-size:clamp(11px,1cqw,15px)}
-.xp-home-navigation .xp-ux-dock-seven{max-width:94%;width:max-content;gap:6px;padding:5px 8px;bottom:2.5%;border-radius:19px}
-.xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{flex:0 1 70px;min-width:61px;max-width:76px;min-height:54px;padding:4px 5px;border-radius:14px}
-.xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action small{font-size:10px;line-height:1.15}
+
+
+
 .xp-home-navigation .xp-ux-dock-seven ha-icon{width:19px;height:19px;--mdc-icon-size:19px!important;--xp-icon-size:19px!important}
 @container xpeng-layout (max-width:850px){
  .xp-home-navigation .xp-overview .xp-car{width:94%;left:3%;bottom:36%;max-height:31%}
- .xp-home-navigation .xp-overview-stat{top:205px;left:5%;width:52%;max-width:none}
- .xp-home-navigation .xp-status-panel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:92%;left:4%;right:4%;bottom:153px;padding:5px 8px}
- .xp-home-navigation .xp-status-panel .xp-info-row{display:flex;min-height:62px;padding:6px 8px;border-right:1px solid #56708a43;gap:4px}
+ 
+ .xp-home-navigation .xp-status-panel{grid-template-columns:repeat(3,minmax(0,1fr));}
+ .xp-home-navigation .xp-status-panel .xp-info-row{border-right:1px solid #56708a43;gap:4px}
  .xp-home-navigation .xp-status-panel .xp-info-row:last-child{border-right:0}
  .xp-home-navigation .xp-status-panel .xp-info-icon{display:none}
  .xp-home-navigation .xp-status-panel .xp-info-copy b{font-size:11px;white-space:normal}
- .xp-home-navigation .xp-ux-dock-seven{bottom:19px;width:min(550px,94%);gap:5px;padding:7px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
- .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{width:100%;min-width:0;max-width:none;min-height:53px;padding:4px;gap:3px}
+ 
+ 
 }
 @container xpeng-layout (max-width:520px){
  .xp-home-navigation .xp-overview .xp-car{left:0;width:100%;bottom:34%;max-height:23%}
- .xp-home-navigation .xp-overview-stat{top:201px;width:55%}
+ .xp-home-navigation .xp-overview-stat{width:55%}
  .xp-home-navigation .xp-status-panel{grid-template-columns:repeat(2,minmax(0,1fr));bottom:155px;padding:5px 9px}
  .xp-home-navigation .xp-status-panel .xp-info-row{min-height:51px;border-right:1px solid #56708a43;padding:5px 7px}
  .xp-home-navigation .xp-status-panel .xp-info-row:nth-child(2){border-right:0}
  .xp-home-navigation .xp-status-panel .xp-info-row:last-child{grid-column:1/-1;min-height:40px;border-right:0;border-top:1px solid #56708a43}
- .xp-home-navigation .xp-ux-dock-seven{bottom:18px}
+ 
 }
 @container xpeng-layout (max-width:360px){
  .xp-home-navigation .xp-overview .xp-car{bottom:35%;max-height:22%}
- .xp-home-navigation .xp-status-panel{bottom:144px}
- .xp-home-navigation .xp-ux-dock-seven{bottom:14px}
- .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{min-height:48px}
- .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action small{font-size:9px}
+ 
+ 
+ 
+ 
 }
 /* Maintenance is reached via one navigation button only: never render a Home
  * maintenance summary card. Keep the location status as a small independent row.
@@ -645,17 +644,17 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 }
 /* Desktop climate = cabin + controls side by side; mobile = one scrolling page.
    The two owner photos remain unchanged and preserve their proportions. */
-.xp-ux-modal-climate .xp-climate-layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(300px,.9fr);gap:clamp(14px,2.5vw,42px);align-items:start;max-width:1180px;margin:12px auto 0;direction:ltr}
-.xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{width:min(354px,100%);margin:0 auto;height:auto;max-height:none}
-.xp-ux-modal-climate .xp-climate-layout>.xp-ux-climate-bottom{margin:0;direction:rtl;min-width:0;display:flex;flex-direction:column;gap:10px}
+.xp-ux-modal-climate .xp-climate-layout{display:grid;margin:12px auto 0;}
+.xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{margin:0 auto;height:auto;}
+.xp-ux-modal-climate .xp-climate-layout>.xp-ux-climate-bottom{margin:0;display:flex;flex-direction:column;}
 .xp-ux-modal-climate .xp-climate-layout .xp-ux-climate-card,
 .xp-ux-modal-climate .xp-climate-layout .xp-ux-range-row{margin:0}
-.xp-ux-modal-climate .xp-climate-layout .xp-ux-climate-features{grid-template-columns:repeat(2,minmax(0,1fr));margin:0}
+.xp-ux-modal-climate .xp-climate-layout .xp-ux-climate-features{margin:0}
 .xp-ux-modal-climate .xp-climate-layout .xp-ux-climate-feature{min-height:89px}
 @container xpeng-layout (max-width:850px){
- .xp-ux-modal-climate .xp-climate-layout{display:flex;flex-direction:column;align-items:center;gap:8px;margin:6px auto 0}
- .xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{width:min(258px,100%);margin:0 auto}
- .xp-ux-modal-climate .xp-climate-layout>.xp-ux-climate-bottom{width:100%;max-width:530px;gap:8px}
+ .xp-ux-modal-climate .xp-climate-layout{margin:6px auto 0}
+ 
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-climate-bottom{gap:8px}
  .xp-ux-modal-climate .xp-climate-layout .xp-ux-climate-features{grid-template-columns:repeat(3,minmax(0,1fr))}
  .xp-ux-modal-climate .xp-climate-layout .xp-ux-climate-feature{min-height:82px}
 }
@@ -687,30 +686,27 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-entity-diagnostic b{font-size:12px;text-align:right}
 @container xpeng-layout (max-width:430px){.xp-entity-diagnostic{grid-template-columns:minmax(0,1fr)}.xp-entity-diagnostic b{text-align:left}}
 /* Mobile scroll: modal is an independent touch-scrolling surface inside the scene. */
-.xp-ux-modal{overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;
- touch-action:pan-y;overscroll-behavior-y:contain;max-height:96%;box-sizing:border-box}
+.xp-ux-modal{overflow-x:hidden;max-height:96%;box-sizing:border-box}
 .xp-ux-modal-head{position:sticky;top:-16px;z-index:5;padding:4px 2px 12px;
  background:linear-gradient(180deg,#07182b 80%,#07182b00)}
 @container xpeng-layout (max-width:600px){
- .xp-ux-modal{inset:1% 1%;height:auto;min-height:0;max-height:98%;
-   padding:11px 11px 38px;touch-action:pan-y}
+ .xp-ux-modal{inset:1% 1%;height:auto;min-height:0;max-height:98%;touch-action:pan-y}
  .xp-ux-modal-head{top:-11px}
- .xp-ux-modal-maintenance .xp-tire-screen{position:relative;inset:auto;
-    height:auto!important;min-height:0!important;margin:8px 0 22px;overflow:visible}
- .xp-ux-modal-maintenance .xp-tire-stage{display:grid;width:100%;height:auto;direction:ltr;
+ .xp-ux-modal-maintenance .xp-tire-screen{position:relative;inset:auto;overflow:visible}
+ .xp-ux-modal-maintenance .xp-tire-stage{display:grid;width:100%;direction:ltr;
     grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-    grid-template-rows:auto auto auto;gap:10px;align-items:stretch}
- .xp-ux-modal-maintenance .xp-tire-center{grid-area:1/1/2/3;height:195px;
+    grid-template-rows:auto auto auto;align-items:stretch}
+ .xp-ux-modal-maintenance .xp-tire-center{grid-area:1/1/2/3;
     width:100%;max-width:220px;justify-self:center;filter:none}
  .xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_fl"]{grid-area:2/1}
  .xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_fr"]{grid-area:2/2}
  .xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_rl"]{grid-area:3/1}
  .xp-ux-modal-maintenance .xp-tire-reading[data-wheel="tire_rr"]{grid-area:3/2}
- .xp-ux-modal-maintenance .xp-tire-reading{min-width:0;padding:12px 8px}
- .xp-ux-modal-maintenance .xp-tire-reading strong{font-size:clamp(21px,6vw,29px)}
- .xp-ux-modal-maintenance .xp-maint-info{grid-template-columns:minmax(0,1fr)}
+ .xp-ux-modal-maintenance .xp-tire-reading{min-width:0;}
+ 
+ 
  .xp-ux-modal-maintenance .xp-extra-line{min-width:0;overflow-wrap:anywhere}
- .xp-ux-modal-climate .xp-climate-layout{padding-bottom:55px}
+ 
 }
 .xp-charge-cable-live .xp-charge-cable-halo{stroke:#00df90;stroke-width:5.2;
  filter:drop-shadow(0 0 5px #00ed91)}
@@ -769,10 +765,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  -webkit-backdrop-filter:blur(20px) saturate(1.25);
 }
 .xp-home-navigation .xp-batt-line{gap:clamp(12px,1.3cqw,20px);align-items:center}
-.xp-home-navigation .xp-batt-glyph{
- width:clamp(36px,3.6cqw,53px);
- height:clamp(54px,5.1cqw,73px);
- padding:5px;border:2px solid #27f3b7;
+.xp-home-navigation .xp-batt-glyph{border:2px solid #27f3b7;
  border-radius:9px;
  box-shadow:0 0 18px #13e8a93b;
 }
@@ -810,21 +803,12 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-home-navigation .xp-ux-dock-seven{
  width:max-content;max-width:95%;gap:clamp(6px,.8cqw,12px);
  bottom:2.7%;padding:10px 12px;
- border-radius:27px;
- border:1px solid #6db7f3a1;
- background:linear-gradient(155deg,#0b2b4be8,#061a30f0);
- backdrop-filter:blur(24px) saturate(1.25);
- -webkit-backdrop-filter:blur(24px) saturate(1.25);
- box-shadow:0 13px 34px #000a,inset 0 1px 0 #dcf4ff31,0 0 20px #2797f723;
 }
 .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{
  position:relative;flex:0 1 110px;
  width:clamp(76px,7.3cqw,110px);
  max-width:110px;min-width:0;min-height:clamp(65px,6.8cqw,86px);
- padding:9px 7px;gap:8px;border-radius:21px;
- background:linear-gradient(165deg,#193d60ee,#08182eea);
- border:1px solid #77baf28c;
- box-shadow:inset 0 1px 0 #d7eeff26,0 3px 9px #0006;
+ padding:9px 7px;gap:8px;
  color:#f4f9ff;transition:background .18s,border-color .18s,transform .18s,box-shadow .18s;
 }
 .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action ha-icon{
@@ -858,7 +842,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  transition:border-color .16s,background .16s,box-shadow .16s;
 }
 .xp-ux-modal button:not(:disabled):hover{border-color:#45b7e7;box-shadow:0 0 12px #238ceb29}
-.xp-ux-modal-head h2{letter-spacing:-.015em;font-weight:750}
+
 .xp-ux-climate-card,.xp-ux-climate-feature,.xp-extra-tile,
 .xp-extra-line,.xp-tire-reading,.xp-ux-access-panel{
  border-radius:15px;
@@ -884,11 +868,11 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-home-navigation .xp-ux-dock-seven{
    bottom:17px;width:min(560px,94%);max-width:94%;
    display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
-   gap:6px;padding:8px;border-radius:22px;
+   gap:6px;padding:8px;
  }
  .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{
    width:100%;max-width:none;min-width:0;min-height:57px;
-   padding:6px 4px;gap:4px;border-radius:15px;
+   padding:6px 4px;gap:4px;
  }
  .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action ha-icon{
    width:25px!important;height:25px!important;
@@ -908,10 +892,10 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 @container xpeng-layout (max-width:360px){
  .xp-home-navigation .xp-overview-stat{top:178px;padding:11px 13px}
  .xp-home-navigation .xp-batt-glyph{height:42px;width:32px}
- .xp-home-navigation .xp-ux-dock-seven{bottom:13px;gap:4px;padding:6px}
- .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{min-height:51px;padding:5px 3px}
+ .xp-home-navigation .xp-ux-dock-seven{bottom:13px;}
+ .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{padding:5px 3px}
  .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action small{font-size:9px}
- .xp-scene.xp-overview.xp-home-navigation .xp-car{bottom:25%;max-height:29%}
+ .xp-scene.xp-overview.xp-home-navigation .xp-car{bottom:25%;}
 }
 @media(prefers-reduced-motion:reduce){
  .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{transition:none}
@@ -926,18 +910,15 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  border:1px solid var(--xp-stroke)!important;
  border-radius:clamp(18px,2.2cqw,28px);
  background:linear-gradient(155deg,#081e35f5,#041326f7 65%,#0b2640f4)!important;
- box-shadow:0 30px 55px #000b,inset 0 1px 0 #dff7ff24,0 0 21px #268ae72a;
  backdrop-filter:blur(20px) saturate(1.17);
  -webkit-backdrop-filter:blur(20px) saturate(1.17);
 }
 .xp-ux-modal-head{
- border-bottom:1px solid #79b9ee46;
  margin-bottom:14px;
 }
 .xp-ux-modal-head h2{
- color:#f3faff;letter-spacing:.01em;
- font-size:clamp(20px,2.25cqw,31px);
- font-weight:770;text-shadow:0 2px 14px #001020a9;
+ color:#f3faff;
+ font-size:clamp(20px,2.25cqw,31px);text-shadow:0 2px 14px #001020a9;
 }
 .xp-ux-modal-head button,.xp-page-back,
 .xp-ux-map-actions button{
@@ -1006,12 +987,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-ux-range-row input[type="range"],.xp-ux-modal input[type="range"]{
  accent-color:#20e9c7;
 }
-.xp-charge-card{
- border:1px solid #53a7e9a4!important;
- border-radius:25px;
- background:linear-gradient(145deg,#071d33ed,#061529e8)!important;
- box-shadow:0 20px 48px #0009,inset 0 1px 0 #dcf8ff1d,0 0 18px #2a9ce52c;
-}
+
 .xp-charge-heading{color:#36f0c3}
 .xp-charge-heading ha-icon{
  color:#24f5c7;filter:drop-shadow(0 0 7px #14e6a37c);
@@ -1119,7 +1095,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-charge-panel-actions button ha-icon{--mdc-icon-size:19px}
 }
 @container xpeng-layout (max-width:360px){
- .xp-charge-card{top:186px;padding:12px}
+ .xp-charge-card{padding:12px}
  .xp-charge-heading{margin-bottom:8px}
  .xp-charge-meta{margin-top:8px;padding-top:8px}
  .xp-charge-panel-actions button{min-height:52px}
@@ -1127,17 +1103,15 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 /* Owner reference: four live pressure badges immediately beside all four
  * wheels, not detached in outer side columns or stacked below the car.
  */
-.xp-ux-modal-maintenance .xp-tire-screen{
- position:relative;inset:auto;width:100%;height:auto;
- margin:0 auto;padding:0;
+.xp-ux-modal-maintenance .xp-tire-screen{inset:auto;padding:0;
 }
 .xp-ux-modal-maintenance .xp-tire-stage{
  display:block!important;position:relative;
- width:min(720px,100%);height:clamp(300px,41cqw,470px);
- margin:0 auto;min-height:0;overflow:visible;
+ width:min(720px,100%);
+ margin:0 auto;overflow:visible;
 }
 .xp-ux-modal-maintenance .xp-tire-center{
- position:absolute;left:33%;top:1%;width:34%;height:98%;
+ position:absolute;left:33%;top:1%;width:34%;
  display:flex;align-items:center;justify-content:center;
 }
 .xp-ux-modal-maintenance .xp-tire-center img,
@@ -1192,11 +1166,9 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  * photograph on the right. Every button uses existing verified HA services.
  */
 .xp-ux-modal-climate .xp-climate-layout{
- grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);gap:clamp(12px,1.6cqw,27px);
- max-width:1280px;align-items:start;direction:ltr;
+ grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);align-items:start;direction:ltr;
 }
-.xp-ux-modal-climate .xp-climate-layout>.xp-ux-climate-bottom{
- width:100%;max-width:none;direction:rtl;gap:11px;
+.xp-ux-modal-climate .xp-climate-layout>.xp-ux-climate-bottom{direction:rtl;
 }
 .xp-climate-primary-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .xp-climate-primary{
@@ -1242,11 +1214,9 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-ux-modal-climate .xp-climate-layout{
    display:flex;flex-direction:column;align-items:stretch;gap:10px;
  }
- .xp-ux-modal-climate .xp-climate-layout>.xp-ux-climate-bottom{
-   order:2;width:100%;max-width:none;
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-climate-bottom{width:100%;max-width:none;
  }
- .xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{
-   order:1;width:min(310px,100%);margin:0 auto;
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{width:min(310px,100%);margin:0 auto;
  }
  .xp-climate-primary{min-height:77px;padding:9px}
  .xp-climate-primary ha-icon{--mdc-icon-size:27px}
@@ -1269,27 +1239,24 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  * preserve aspect ratio and four rear/front zones, without cutting rear seats.
  */
 @container xpeng-layout (min-width:851px){
- .xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{
-  width:min(338px,100%);max-width:338px;height:auto;max-height:none;
-  margin:0 auto;
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{height:auto;max-height:none;
  }
 }
 /* Physical seat/steering location is the ONLY controls surface for heating and
  * ventilation: no duplicate buttons outside the photo.
  */
 .xp-ux-modal-climate .xp-ux-cabin-art{overflow:visible}
-.xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-hotspot-zone{z-index:8;gap:5px;white-space:nowrap}
+.xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-hotspot-zone{z-index:8;white-space:nowrap}
 .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-cycle{
  width:clamp(40px,4cqw,57px);min-width:40px;
  height:clamp(56px,5.1cqw,69px);min-height:56px;
  flex-direction:column;gap:3px;padding:5px 3px;border-radius:13px;
- box-shadow:0 3px 12px #0009,inset 0 1px 0 #d5f4ff23;
 }
 .xp-ux-modal-climate .xp-ux-cycle ha-icon{
  color:#e5f8ff;width:23px;height:23px;--xp-icon-size:23px;--mdc-icon-size:23px;
 }
-.xp-ux-modal-climate .xp-ux-cycle-heat.xp-ux-cycle-on ha-icon{color:#ffb2aa}
-.xp-ux-modal-climate .xp-ux-cycle-vent.xp-ux-cycle-on ha-icon{color:#8aeaff}
+
+
 .xp-ux-modal-climate .xp-cabin-action-label{font-size:9px;line-height:1;white-space:nowrap;font-weight:650}
 .xp-ux-modal-climate .xp-ux-cycle .xp-ux-level{font-size:12px;line-height:1}
 .xp-ux-modal-climate .xp-ux-cycle-busy{opacity:.65}
@@ -1330,10 +1297,10 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
   left:7%;width:86%;bottom:25%;max-height:28%;object-fit:contain;
  }
  .xp-home-navigation .xp-ux-dock-seven{
-  bottom:12px;width:94%;padding:6px;gap:5px;border-radius:17px;
+  bottom:12px;width:94%;padding:6px;gap:5px;
  }
  .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{
-  min-height:52px;padding:5px 3px;gap:3px;border-radius:12px;
+  min-height:52px;padding:5px 3px;gap:3px;
  }
  .xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action ha-icon{
   width:clamp(20px,5.7cqw,24px)!important;
@@ -1363,16 +1330,12 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-ux-modal{padding:clamp(8px,2.4cqw,12px) clamp(8px,2.5cqw,12px) 32px}
  .xp-ux-modal-head{padding-bottom:6px;margin-bottom:8px}
  .xp-ux-modal-head h2{font-size:clamp(18px,5cqw,21px)}
- .xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{
-  width:clamp(240px,70cqw,278px);max-width:100%;margin:0 auto;
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{max-width:100%;
  }
  .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-hotspot-zone{gap:2px}
  /* Reset legacy right:25% anchoring: with left:72% it squeezes the passenger flex pair into a 3%-wide column. */
  .xp-ux-modal-climate .xp-ux-cabin-portrait .xp-ux-passenger{right:auto;max-width:none}
- .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-cycle{
-  width:clamp(36px,10cqw,40px);min-width:0;
-  height:clamp(46px,12.3cqw,52px);min-height:0;
-  padding:3px 2px;gap:2px;border-radius:11px;
+ .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-cycle{border-radius:11px;
  }
  .xp-ux-modal-climate .xp-ux-cycle ha-icon{
   width:18px;height:18px;--xp-icon-size:18px;--mdc-icon-size:18px;
@@ -1385,7 +1348,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-fan-bars{height:23px}
  .xp-ux-modal-maintenance .xp-tire-stage{height:clamp(260px,73cqw,315px)}
  .xp-ux-modal-maintenance .xp-tire-reading{
-  width:28%;min-height:46px;padding:4px;gap:3px;
+  width:28%;min-height:46px;gap:3px;
  }
  .xp-ux-modal-maintenance .xp-tire-reading strong{font-size:clamp(13px,3.7cqw,17px)}
  .xp-ux-modal-maintenance .xp-tire-reading small{font-size:clamp(8px,2.2cqw,10px)}
@@ -1411,16 +1374,11 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  */
 .xp-charge-navigation .xp-ux-dock-seven{
  bottom:2%;left:50%;width:max-content;max-width:94%;
- gap:6px;padding:6px 9px;border-radius:21px;
- border:1px solid #6db7f3a1;
- background:linear-gradient(155deg,#0b2b4be8,#061a30f0);
- box-shadow:0 13px 34px #000a,inset 0 1px 0 #dcf4ff31;
+ gap:6px;padding:6px 9px;
 }
 .xp-charge-navigation .xp-ux-dock-seven .xp-ux-dock-action{
  min-width:61px;max-width:78px;min-height:58px;
- flex:0 1 78px;padding:5px 4px;gap:4px;border-radius:15px;
- background:linear-gradient(165deg,#193d60ee,#08182eea);
- border:1px solid #77baf28c;
+ flex:0 1 78px;padding:5px 4px;gap:4px;
 }
 .xp-charge-navigation .xp-ux-dock-seven .xp-ux-dock-action ha-icon{
  width:25px!important;height:25px!important;
@@ -1458,7 +1416,6 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-charge-navigation .xp-ux-dock-seven{
   width:min(560px,94%);max-width:94%;bottom:14px;display:grid;
   grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding:7px;
-  border-radius:19px;
  }
  .xp-charge-navigation .xp-ux-dock-seven .xp-ux-dock-action{
   width:100%;max-width:none;min-width:0;min-height:56px;padding:5px 3px;
@@ -1512,16 +1469,12 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 }
 .xp-ux-modal-extras .xp-extra-body{width:min(900px,100%);}
 .xp-ux-modal-map .xp-ux-map-stage{
- position:relative;isolation:isolate;overflow:hidden;
+ position:relative;isolation:isolate;
 }
-.xp-header .xp-wifi{
- display:flex;align-items:center;justify-content:center;
- padding:0;line-height:1;vertical-align:middle;
+.xp-header .xp-wifi{align-items:center;justify-content:center;line-height:1;vertical-align:middle;
 }
-.xp-header .xp-wifi .xp-mdi-icon{
- display:flex;align-items:center;justify-content:center;
+.xp-header .xp-wifi .xp-mdi-icon{align-items:center;justify-content:center;
  width:24px;height:24px;--xp-icon-size:24px;--mdc-icon-size:24px;
- margin:0;transform:translateY(-2px);
 }
 @container xpeng-layout (max-width:850px){
  .xp-header .xp-wifi .xp-mdi-icon{
@@ -1574,12 +1527,11 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 }
 .xp-tire-actions button[data-tire-toggle]{min-width:46px}
 .xp-batt-glyph{
- border:0!important;padding:0!important;border-radius:0!important;
+ border:0!important;border-radius:0!important;
  background:none!important;box-shadow:none!important;
  display:flex!important;align-items:center!important;justify-content:center!important;
- flex:none;color:#60f8ba;
 }
-.xp-batt-glyph:before{display:none!important;content:none!important}
+.xp-batt-glyph:before{content:none!important}
 .xp-batt-glyph>.xp-mdi-icon{
  width:100%!important;height:100%!important;
  --xp-icon-size:100%!important;--mdc-icon-size:100%!important;
@@ -1654,7 +1606,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  transform:none!important;
 }
 @container xpeng-layout (max-width:850px){
- .xp-scene{min-height:0;height:clamp(660px,calc(100dvh - 90px),800px);aspect-ratio:auto}
+ .xp-scene{aspect-ratio:auto}
 }
 @container xpeng-layout (max-width:600px){
  .xp-scene{height:clamp(630px,calc(100dvh - 84px),780px)}
@@ -1699,8 +1651,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 }
 /* The entity list, not the dashboard/modal, scrolls. Explanation stays visible. */
 .xp-ux-modal-extras .xp-extra-diagnostics-layout{
- display:flex;flex:1 1 auto;flex-direction:column;
- width:min(740px,100%);height:100%;min-height:0;
+ display:flex;flex:1 1 auto;flex-direction:column;height:100%;min-height:0;
  margin:0 auto!important;gap:7px;overflow:hidden
 }
 .xp-ux-modal-extras .xp-extra-diagnostics-layout .xp-extra-heading{flex:0 0 auto;margin:0}
@@ -1715,14 +1666,11 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-ux-modal-extras .xp-extra-diagnostics-layout .xp-entity-diagnostics>p[role="status"]{
  flex:0 0 auto;margin:2px 0 0
 }
-.xp-ux-modal-extras .xp-extra-diagnostics-layout .xp-diagnostics-scroll{
- flex:1 1 auto;display:grid!important;align-content:start;
- min-height:0!important;height:auto!important;
- max-height:min(292px,37dvh)!important;
+.xp-ux-modal-extras .xp-extra-diagnostics-layout .xp-diagnostics-scroll{align-content:start;
  overflow-y:auto!important;overflow-x:hidden!important;
  overscroll-behavior:contain;touch-action:pan-y!important;
  border:1px solid #618eb078;border-radius:12px;
- background:#071f35b3;padding:7px;gap:5px;scrollbar-gutter:stable
+ background:#071f35b3;padding:7px;scrollbar-gutter:stable
 }
 .xp-ux-modal-extras .xp-extra-diagnostics-layout .xp-entity-diagnostics>.xp-ux-note,
 .xp-ux-modal-extras .xp-extra-diagnostics-layout>.xp-ux-note{
@@ -1745,8 +1693,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-ux-modal-climate .xp-climate-layout{
    padding-bottom:0!important;gap:6px!important;margin:0 auto!important
  }
- .xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{
-   width:min(204px,53cqw)!important;margin:0 auto!important
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{margin:0 auto!important
  }
  .xp-ux-modal-climate .xp-climate-layout>.xp-ux-climate-bottom{gap:5px!important}
  .xp-ux-modal-climate .xp-climate-layout .xp-ux-climate-features{gap:4px!important}
@@ -1763,16 +1710,11 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-ux-modal-extras:has(.xp-extra-diagnostics-layout) .xp-ux-modal-content-inner{
  display:flex;flex:1 1 auto;flex-direction:column;min-height:0;height:100%
 }
-.xp-ux-modal-maintenance .xp-maint-info{
- grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(4px,.7cqw,8px)
-}
+
 .xp-ux-modal-maintenance .xp-maint-info .xp-extra-line{
- min-width:0;min-height:0;padding:clamp(5px,.55cqw,8px)!important;
  font-size:clamp(10px,1.1cqw,13px)
 }
-.xp-ux-modal-maintenance .xp-tire-screen{
- height:clamp(180px,28dvh,245px)!important;min-height:0!important;margin:0 auto 8px!important
-}
+
 @container xpeng-layout (max-width:600px){
  .xp-ux-modal-maintenance .xp-maint-info{grid-template-columns:repeat(2,minmax(0,1fr))}
  .xp-ux-modal-maintenance .xp-maint-info .xp-extra-line{padding:5px!important}
@@ -1782,10 +1724,10 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 /* G6 final visual review: use the screen's real available height, not 800px behind HA tabs. */
 .xp-scene{max-height:calc(100dvh - 96px)}
 @container xpeng-layout (max-width:850px){
- .xp-scene{height:clamp(610px,calc(100dvh - 116px),750px);min-height:0}
+ .xp-scene{min-height:0}
 }
 @container xpeng-layout (max-width:520px){
- .xp-scene{height:clamp(590px,calc(100dvh - 120px),725px);min-height:0}
+ .xp-scene{min-height:0}
 }
 /* Battery housing and inner fill are a single gauge driven by actual SOC. */
 .xp-batt-glyph{
@@ -1806,7 +1748,6 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-batt-glyph[data-level="medium"]{--xp-battery-color:#ffc44e}
 .xp-batt-glyph[data-level="good"]{--xp-battery-color:#24f2bd}
 .xp-home-navigation .xp-batt-glyph{
- width:39px!important;height:57px!important;min-width:39px;
  border-width:3px!important;padding:4px!important
 }
 .xp-home-navigation .xp-batt-line{min-height:57px}
@@ -1829,8 +1770,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  height:98%!important;max-height:98%!important
 }
 .xp-ux-modal-maintenance .xp-maint-info{
- display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
- position:relative;z-index:1;width:100%;min-width:0;gap:6px
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%;min-width:0;gap:6px
 }
 .xp-ux-modal-maintenance .xp-maint-info .xp-extra-line{
  min-width:0;min-height:39px;box-sizing:border-box;
@@ -1876,8 +1816,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 }
 .xp-ux-modal-extras .xp-diagnostics-scroll .xp-entity-diagnostic>span{
  display:block;min-width:0;flex:1 1 auto;
- overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
- font-size:clamp(10px,1.1cqw,13px);direction:ltr;text-align:start
+ overflow:hidden;direction:ltr;text-align:start
 }
 .xp-ux-modal-extras .xp-diagnostics-scroll .xp-entity-diagnostic>b{
  display:block;flex:0 0 auto;max-width:27%;
@@ -2015,22 +1954,13 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-scene{height:clamp(570px,calc(100dvh - 144px),710px)}
 }
 
-/* DESIGN-ONLY PREVIEW | premium G6 visual pass, no telemetry, control or
-   navigation logic changes. Preserve the original owner vehicle assets. */
+/* V3 structural compatibility for vehicle controls and responsive layouts. */
 .xp-scene{
  --xp-ui-cyan:#39d9f5;--xp-ui-line:#69baf17a;
  --xp-ui-glass:linear-gradient(145deg,#102e4ce9 0%,#06182fe9 100%);
 }
-.xp-ux-dock-seven{
- border:1px solid #68b5e277;
- background:linear-gradient(150deg,#071a31ee,#08243bcc);
- box-shadow:0 12px 32px #0008, inset 0 1px #ffffff12;
- backdrop-filter:blur(16px)
-}
+
 .xp-ux-dock-seven .xp-ux-dock-action{
- border:1px solid #5baee077;
- border-radius:16px;background:var(--xp-ui-glass);
- box-shadow:inset 0 1px #ffffff10,0 5px 15px #0005;
  transition:background-color .15s ease,border-color .15s ease,transform .15s ease
 }
 .xp-ux-dock-seven .xp-ux-dock-action:hover:not(:disabled),
@@ -2141,9 +2071,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 }
 /* Retain the exact same full-function single-card layout on phone / Sections. */
 @container xpeng-layout (max-width:850px){
- .xp-ux-dock-seven .xp-ux-dock-action{
-  border-radius:12px
- }
+ 
  .xp-ux-modal-climate .xp-climate-primary,
  .xp-ux-modal-climate .xp-climate-temp-panel,
  .xp-ux-modal-climate .xp-climate-fan-panel{
@@ -2230,5 +2158,1817 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  }
  .xp-ux-modal-extras:not(:has(.xp-extra-diagnostics-layout)) .xp-ux-modal-content-inner{
   height:auto!important
+ }
+}
+
+/* Canonical V3 structural rules: live vehicle layout and approved imagery. */
+.xp-scene{
+ --xp-v2-ink:#eef7ff;--xp-v2-muted:#a8c2d2;
+ --xp-v2-aqua:#69deef;--xp-v2-mint:#52e5b8;
+ --xp-v2-stroke:rgba(151,202,228,.25);
+ --xp-v2-stroke-strong:rgba(130,209,235,.53);
+ --xp-v2-surface:linear-gradient(144deg,rgba(18,41,58,.95),rgba(6,18,34,.94));
+ --xp-v2-soft:linear-gradient(155deg,rgba(18,48,66,.8),rgba(9,26,44,.88));
+ --xp-v2-elev:0 14px 36px rgba(0,4,14,.34),inset 0 1px 0 rgba(227,248,255,.11);
+ --xp-v2-radius:20px;
+ color:var(--xp-v2-ink);font-variant-numeric:tabular-nums;
+}
+/* Brand/tool rail: one compact, consistent control surface. */
+.xp-scene .xp-header{
+ top:2.4%;left:3.1%;right:3.1%;
+ min-height:60px;padding:9px clamp(12px,1.5cqw,22px);
+ border-radius:19px;-webkit-backdrop-filter:blur(20px);
+}
+.xp-scene .xp-brand{letter-spacing:.115em;
+ text-shadow:0 1px 12px rgba(10,28,44,.9);
+}
+.xp-scene .xp-header .xp-meta-tools{gap:14px}
+.xp-scene .xp-header .xp-wifi,
+.xp-scene .xp-header .xp-more-trigger{
+ transition:background .15s ease,border-color .15s ease;
+}
+.xp-scene .xp-header .xp-wifi:hover,
+.xp-scene .xp-header .xp-more-trigger:hover{
+ background:rgba(41,87,107,.9)!important;border-color:var(--xp-v2-aqua)!important;
+}
+/* Hero battery / range: establish a legible information hierarchy. */
+.xp-home-navigation .xp-overview-stat,
+.xp-charge-navigation .xp-overview-stat{
+ padding:clamp(14px,1.7cqw,26px)!important;
+ border:1px solid var(--xp-v2-stroke-strong)!important;
+ border-radius:24px!important;
+ background:linear-gradient(137deg,rgba(14,43,60,.94),rgba(4,21,38,.94))!important;
+ box-shadow:var(--xp-v2-elev),0 0 28px rgba(20,155,182,.08)!important;
+ backdrop-filter:blur(15px);
+}
+.xp-home-navigation .xp-batt-line,.xp-charge-navigation .xp-batt-line{
+ align-items:center;gap:clamp(9px,1.4cqw,19px)
+}
+.xp-home-navigation .xp-overview-stat .xp-soc,
+.xp-charge-navigation .xp-overview-stat .xp-soc{
+ font-weight:780;letter-spacing:-.05em;
+ text-shadow:0 2px 24px rgba(43,226,197,.18);
+}
+.xp-home-navigation .xp-overview-stat .xp-stat-label,
+.xp-charge-navigation .xp-overview-stat .xp-stat-label{
+ color:var(--xp-v2-muted)!important;font-weight:550;
+ letter-spacing:.025em
+}
+.xp-home-navigation .xp-overview-range,
+.xp-charge-navigation .xp-overview-range{
+ margin-top:clamp(10px,1.4cqw,23px);
+ padding-top:clamp(10px,1.25cqw,18px);
+ border-top:1px solid rgba(116,190,214,.23)
+}
+.xp-scene .xp-overview-stat .xp-progress{
+ height:9px;border:1px solid rgba(111,174,197,.26);
+ background:#04192b!important;box-shadow:inset 0 2px 7px rgba(0,0,0,.5)
+}
+.xp-scene .xp-overview-stat .xp-progress div{
+ background:linear-gradient(90deg,#34bfae,#61efd0)!important;
+ box-shadow:0 0 14px rgba(76,244,197,.32)
+}
+.xp-scene .xp-status-panel{
+ border:1px solid var(--xp-v2-stroke)!important;border-radius:22px!important;
+ background:var(--xp-v2-surface)!important;
+ box-shadow:var(--xp-v2-elev)!important;
+ backdrop-filter:blur(16px)
+}
+.xp-scene .xp-status-panel .xp-info-row{
+ border-bottom-color:rgba(155,205,235,.16)
+}
+.xp-scene .xp-info-icon{color:var(--xp-v2-aqua)}
+.xp-scene .xp-charge-meta{
+ border-top-color:rgba(131,209,225,.24)
+}
+/* Bottom dock — seven existing shortcuts, same bindings and order. */
+
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action{
+ transition:transform .17s ease,border-color .17s ease,background-color .17s ease
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action ha-icon{
+ color:#e9f4ff;
+ filter:drop-shadow(0 0 7px rgba(109,224,243,.14))
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action small{letter-spacing:.005em
+}
+
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action:not(:disabled):is(:hover,:focus-visible){border-color:rgba(109,230,245,.83)!important;
+}
+/* Functional modal architecture: legible header, consistent material surfaces. */
+.xp-scene .xp-ux-modal{
+ border-radius:23px!important;}
+.xp-scene .xp-ux-modal-head{
+ padding-bottom:clamp(9px,1.15cqw,15px);
+ border-bottom:1px solid rgba(142,201,223,.25);
+ gap:clamp(9px,1.1cqw,16px)
+}
+.xp-scene .xp-ux-modal-head h2{
+ font-weight:750;letter-spacing:-.023em;color:#f3fbff;
+ text-shadow:0 1px 10px rgba(0,0,0,.28)
+}
+.xp-scene .xp-ux-modal-head button{
+ color:var(--xp-v2-ink)
+}
+.xp-scene .xp-ux-modal-head button:is(:hover,:focus-visible){
+ background:#256c82!important;border-color:#7ee7ee!important
+}
+/* Help panel lives in each feature, but feels integrated rather than bolted on. */
+.xp-scene .xp-help-intro{
+ gap:7px;
+ border-left:3px solid var(--xp-v2-aqua)!important;padding:clamp(12px,1.3cqw,17px)!important;}
+.xp-scene .xp-help-intro strong{
+ font-weight:770;color:#f0fcff;letter-spacing:.012em
+}
+.xp-scene .xp-help-intro p{color:#d5e7f0;line-height:1.52}
+.xp-scene .xp-help-spec{
+ border-top:1px solid rgba(128,203,226,.25)!important;
+ color:#91edf3!important;font-weight:690
+}
+/* Large real controls are distinct from read-only measurements. */
+.xp-scene .xp-extra-action,
+.xp-scene .xp-ux-climate-feature,
+.xp-scene .xp-climate-primary,
+.xp-scene .xp-ux-charge-stop,
+.xp-scene .xp-ux-charge-limit{
+ border:1px solid rgba(137,202,226,.39)!important;
+ background:linear-gradient(150deg,rgba(23,55,73,.9),rgba(9,30,49,.93))!important;
+ border-radius:16px!important;box-shadow:inset 0 1px rgba(234,250,255,.1)!important;
+}
+.xp-scene .xp-extra-action:not(:disabled):is(:hover,:focus-visible),
+.xp-scene .xp-ux-climate-feature:not(:disabled):is(:hover,:focus-visible),
+.xp-scene .xp-climate-primary:not(:disabled):is(:hover,:focus-visible){
+ border-color:rgba(99,225,243,.84)!important;
+ background:linear-gradient(150deg,#19536b,#0c364f)!important
+}
+.xp-scene .xp-ux-selected{
+ border-color:rgba(92,234,217,.88)!important;
+ box-shadow:inset 0 1px rgba(234,250,255,.16),0 0 0 1px rgba(79,227,199,.25)!important
+}
+.xp-scene .xp-extra-action:disabled,
+.xp-scene .xp-ux-climate-feature:disabled{opacity:.48!important}
+/* Rebuilt Climate visual hierarchy: cabin stays on the original side and
+   touch hotspots stay positioned on original owner photo. */
+.xp-scene .xp-ux-modal-climate .xp-climate-layout{
+ column-gap:clamp(12px,1.7cqw,24px)!important;
+ row-gap:clamp(8px,1.2cqw,16px)!important
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-primary{
+ border-radius:17px!important;
+ box-shadow:inset 0 1px rgba(238,251,255,.11),0 6px 18px rgba(0,0,0,.2)!important
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-temp-panel,
+.xp-scene .xp-ux-modal-climate .xp-climate-fan-panel,
+.xp-scene .xp-ux-modal-climate .xp-ux-climate-feature{
+ background:linear-gradient(138deg,rgba(23,57,75,.9),rgba(7,28,45,.91))!important;
+ border:1px solid rgba(134,202,228,.38)!important;
+ box-shadow:inset 0 1px rgba(255,255,255,.09)!important;
+ border-radius:16px!important
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-primary b{font-weight:740}
+.xp-scene .xp-ux-modal-climate .xp-climate-thermometers b{
+ letter-spacing:-.04em;font-weight:730
+}
+
+.xp-scene .xp-ux-modal-climate .xp-ux-temp-line button:is(:hover,:focus-visible){
+ border-color:#70e5f1!important;background:#25647b!important
+}
+.xp-scene .xp-ux-modal-climate .xp-fan-bars i{
+ background:#09283e!important;border:1px solid rgba(156,210,232,.17)!important;
+ border-radius:6px
+}
+.xp-scene .xp-ux-modal-climate .xp-fan-bars i.xp-fan-bar-on{
+ background:linear-gradient(0deg,#2b92cd,#83e5ee)!important;
+ box-shadow:0 0 8px rgba(87,204,235,.35)
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-cabin-art.xp-ux-cabin-portrait{
+ border-radius:19px;filter:drop-shadow(0 10px 14px rgba(0,0,0,.29))
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-cycle-heat ha-icon{
+ color:#ffac70!important;filter:drop-shadow(0 0 4px rgba(255,149,85,.55))
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-cycle-vent ha-icon{
+ color:#63dcff!important;filter:drop-shadow(0 0 4px rgba(70,202,242,.44))
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-wheel ha-icon{
+ color:#ffc47e!important
+}
+/* Tire screen: clean TPMS data around ORIGINAL top-view image, details below. */
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-page>h3{
+ color:#eaf6ff;letter-spacing:-.016em;font-weight:740;
+ border-left:3px solid rgba(111,225,228,.8);padding-left:10px
+}
+
+.xp-scene .xp-ux-modal-maintenance .xp-tire-reading strong{
+ font-weight:750;letter-spacing:-.03em
+}
+.xp-scene .xp-ux-modal-maintenance .xp-maint-info .xp-extra-line{border-radius:12px!important;}
+/* Custom Functions: card collection reads like premium system controls, not
+   bright decorative tiles. All seven original destinations stay intact. */
+.xp-scene .xp-ux-modal-extras .xp-extra-grid{gap:clamp(8px,1.1cqw,15px)}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile{
+ border-radius:20px!important;
+ transition:border-color .17s,transform .17s,box-shadow .17s;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile ha-icon{
+ color:#83dfef!important;filter:drop-shadow(0 0 9px rgba(86,202,238,.2))
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile b{
+ color:#effaff;font-weight:735;letter-spacing:-.01em
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile small{
+ color:#b2ccdc;line-height:1.4
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile:is(:hover,:focus-visible){
+ border-color:#71e5ed!important;transform:translateY(-2px);
+ box-shadow:0 11px 23px rgba(0,6,17,.32),inset 0 1px rgba(255,255,255,.17)!important
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-heading strong{
+ font-weight:780;letter-spacing:-.018em
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-line,
+.xp-scene .xp-charge-compact-modal .xp-extra-line{
+ background:linear-gradient(120deg,rgba(17,48,66,.86),rgba(10,30,47,.9))!important;
+ border:1px solid rgba(142,199,224,.31)!important;
+ border-radius:13px!important
+}
+.xp-scene .xp-extra-line span{color:#b8d2e0}
+.xp-scene .xp-extra-line b{color:#f2fcff}
+.xp-scene input[type="range"]{accent-color:#66dce8}
+/* Compact phone and Sections: retain current content geometry and touch zones;
+   only adjust visual density and typographic contrast. */
+@container xpeng-layout (max-width:850px){
+ .xp-scene .xp-header .xp-meta-tools{gap:8px}
+ .xp-scene .xp-header{
+  top:1.2%;left:3%;right:3%;min-height:48px;
+  padding:6px 8px;border-radius:15px
+ }
+ .xp-scene .xp-brand{letter-spacing:.025em;font-size:clamp(11px,3cqw,14px)}
+ .xp-scene .xp-ux-modal{border-radius:17px!important}
+ .xp-scene .xp-ux-modal-head{padding-bottom:9px}
+ 
+ 
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile{border-radius:16px!important}
+ .xp-scene .xp-help-intro{border-radius:13px!important;padding:11px!important}
+ .xp-scene .xp-ux-modal-climate .xp-climate-layout{gap:8px!important}
+}
+@container xpeng-layout (max-width:390px){
+ .xp-scene .xp-header{padding:5px 7px}
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action small{
+  font-size:clamp(8px,2.45cqw,10px)!important
+ }
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile{min-height:112px}
+}
+@media(prefers-reduced-motion:reduce){
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action,
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile{transition:none!important;transform:none!important}
+}
+
+/* On Sections/iPhone widths reserve the original car-photo clearance. Larger
+   premium battery card proportions are desktop-only; no hero overlap. */
+@container xpeng-layout (max-width:850px){
+ .xp-home-navigation .xp-overview-stat,
+ .xp-charge-navigation .xp-overview-stat{
+  padding:5px 9px!important;border-radius:16px!important
+ }
+ .xp-home-navigation .xp-overview-range,
+ .xp-charge-navigation .xp-overview-range{
+  margin-top:6px!important;padding-top:6px!important
+ }
+}
+
+/* Retained responsive structural geometry for the owner-approved V3 design. */
+@container xpeng-layout (min-width:851px){
+ .xp-ux-modal-climate .xp-climate-layout{
+  display:grid!important;
+  grid-template-columns:minmax(295px,.82fr) minmax(0,1.18fr)!important;
+  align-items:center!important;
+  column-gap:clamp(20px,3cqw,44px)!important;
+  max-width:1220px!important;
+ }
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{
+  grid-column:1!important;grid-row:1!important;order:0!important;
+  justify-self:center;align-self:center!important;
+  width:min(326px,100%)!important;max-width:100%!important;
+  margin:0 auto!important;
+ }
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-climate-bottom{
+  grid-column:2!important;grid-row:1!important;order:1!important;
+  width:100%!important;max-width:650px!important;
+  align-self:center;justify-self:stretch;min-width:0;
+ }
+ .xp-ux-modal-climate .xp-help-intro{
+  display:grid!important;
+  grid-template-columns:minmax(200px,.34fr) minmax(0,1fr);
+  grid-template-rows:auto auto;
+  column-gap:clamp(14px,2.4cqw,32px);row-gap:5px;
+  align-items:start;
+ }
+ .xp-ux-modal-climate .xp-help-intro>strong{
+  grid-column:1;grid-row:1;
+ }
+ .xp-ux-modal-climate .xp-help-intro>p{
+  grid-column:2;grid-row:1;
+ }
+ .xp-ux-modal-climate .xp-help-intro>.xp-help-spec{
+  grid-column:1;grid-row:2;
+  border:0!important;padding-top:0!important;
+  font-size:12px
+ }
+ .xp-ux-modal-climate .xp-help-intro>small{
+  grid-column:2;grid-row:2;
+ }
+ .xp-ux-modal-extras .xp-extra-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  max-width:1080px;margin:0 auto;
+ }
+ .xp-ux-modal-extras .xp-extra-tile{
+  display:grid!important;
+  grid-template-columns:42px minmax(0,1fr)!important;
+  grid-template-rows:auto auto;
+  justify-items:start;text-align:left!important;
+  align-content:center;column-gap:14px;row-gap:3px;
+  min-height:120px;padding:15px 18px!important
+ }
+ .xp-ux-modal-extras .xp-extra-tile ha-icon{
+  grid-column:1;grid-row:1/3;
+  width:34px;height:34px;--mdc-icon-size:34px
+ }
+ .xp-ux-modal-extras .xp-extra-tile b{
+  grid-column:2;grid-row:1;font-size:17px!important
+ }
+ .xp-ux-modal-extras .xp-extra-tile small{
+  grid-column:2;grid-row:2;font-size:12px!important
+ }
+ .xp-ux-modal-maintenance .xp-tire-stage{
+  border:1px solid rgba(133,204,228,.3);
+  border-radius:20px;
+  background:linear-gradient(130deg,rgba(19,55,69,.25),rgba(10,29,46,.16));
+  box-shadow:inset 0 1px rgba(225,246,253,.06)
+ }
+ .xp-ux-modal-maintenance .xp-maint-info{
+  border-top:1px solid rgba(129,201,220,.18);
+  padding-top:8px
+ }
+}
+/* Small phones keep the owner-provided cabin stage above climate controls.
+   Extras become compact, centered 2-column tiles with all actions retained. */
+@container xpeng-layout (max-width:850px){
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-cabin-art.xp-ux-cabin-portrait{
+  grid-column:auto!important;grid-row:auto!important;order:0!important
+ }
+ .xp-ux-modal-climate .xp-climate-layout>.xp-ux-climate-bottom{
+  grid-column:auto!important;grid-row:auto!important;order:1!important
+ }
+ .xp-ux-modal-extras .xp-extra-tile{
+  display:flex!important;flex-direction:column!important;
+  justify-content:center!important;align-items:center!important;
+  text-align:center!important
+ }
+}
+
+/* Official MDI SUV rear hatch: actual car silhouette + separate small
+   up/down pictogram. Never obscure the vehicle's body or draw custom SVG. */
+.xp-trunk-symbol{
+ --xp-trunk-size:27px;
+ display:inline-flex!important;
+ align-items:center!important;justify-content:center!important;
+ direction:ltr!important; /* car faces right: the rear hatch is on the LEFT */
+ flex-direction:row-reverse!important; /* arrow sits by the actual rear */
+ gap:0;flex:0 0 auto;
+ width:calc(var(--xp-trunk-size) + 11px)!important;
+ height:var(--xp-trunk-size)!important;
+ position:relative;vertical-align:middle;
+ color:inherit
+}
+.xp-trunk-symbol>.xp-mdi-icon{
+ display:inline-flex!important;place-items:center;
+ flex:0 0 var(--xp-trunk-size)!important;
+ width:var(--xp-trunk-size)!important;
+ height:var(--xp-trunk-size)!important;
+ --mdc-icon-size:var(--xp-trunk-size)!important
+}
+.xp-trunk-symbol>.xp-trunk-arrow{
+ position:static!important;inset:auto!important;
+ display:inline-flex!important;place-items:center;
+ flex:0 0 10px!important;
+ width:10px!important;height:10px!important;
+ min-width:0!important;min-height:0!important;
+ margin-left:0!important;
+ --mdc-icon-size:10px!important;
+ --xp-icon-size:10px!important;
+ border:0!important;border-radius:0!important;
+ background:transparent!important;box-shadow:none!important;
+ color:#5decc3!important;transform:none!important
+}
+.xp-trunk-symbol-lower>.xp-trunk-arrow{color:#ffc17b!important}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action .xp-trunk-symbol{
+ align-self:center;margin:3px 0 0
+}
+@container xpeng-layout (max-width:520px){
+ .xp-trunk-symbol>.xp-trunk-arrow{
+  flex-basis:9px!important;
+  width:9px!important;height:9px!important;
+  --mdc-icon-size:9px!important;--xp-icon-size:9px!important
+ }
+}
+
+/* The primary SUV trunk glyph shares the neutral dock palette; only its smaller
+   real MDI lift/lower arrow is allowed a state-specific accent. */
+
+/* G6 V3 - OWNER APPROVED FLOATING GLASS DESIGN. DO NOT OVERRIDE BELOW.
+   Scope: PRESENTATION ONLY. Native MDI icons, all seven original shortcuts,
+   real HA status, seat hotspots, charging scene art/cable and commands survive.
+   Replaces V2's opaque tile and modal cascade using last-in-file specificity.
+   Battery level arc is decorative; real live SOC is the number and progress bar.
+   ========================================================================== */
+.xp-scene{
+ --xp-v3-glass:rgba(9,29,49,.23);
+ --xp-v3-edge:rgba(174,223,249,.39);
+ --xp-v3-halo:rgba(69,180,246,.16);
+ --xp-v3-text:#f1f8ff;
+ --xp-v3-secondary:#b4cadc;
+}
+.xp-scene .xp-title h1{font-weight:730;letter-spacing:.045em;text-shadow:0 2px 18px rgba(0,12,28,.75)}
+.xp-scene .xp-title h1 em{color:#6ec4ff}
+.xp-scene .xp-subtitle{color:#becfe2;letter-spacing:.14em;text-shadow:0 2px 10px rgba(0,0,0,.68)}
+.xp-scene .xp-header{
+ border:0!important;
+ background:transparent!important;
+ box-shadow:none!important;
+ backdrop-filter:none!important;
+}
+.xp-scene .xp-brand{
+ border:1px solid rgba(167,208,232,.18);
+ border-radius:999px;
+ background:rgba(4,18,32,.27);
+ backdrop-filter:blur(12px);
+ padding:7px clamp(12px,1.8cqw,24px);
+ font-weight:620;
+}
+.xp-scene .xp-header .xp-wifi,
+.xp-scene .xp-header .xp-more-trigger{
+ border:1px solid var(--xp-v3-edge)!important;
+ border-radius:50%!important;
+ background:rgba(16,45,70,.25)!important;
+ box-shadow:inset 0 1px rgba(248,255,255,.12)!important;
+ backdrop-filter:blur(10px);
+}
+/* SOC stays live; the ring frames an official live battery MDI pictogram.
+   A fake fixed-percent SVG/arc must never replace its real numeric value. */
+.xp-scene.xp-overview.xp-home-navigation .xp-overview-stat{
+ background:transparent!important;
+ border:0!important;
+ border-radius:0!important;
+ box-shadow:none!important;
+ backdrop-filter:none!important;
+ padding:clamp(8px,1.15cqw,16px)!important;
+ text-shadow:0 2px 18px rgba(0,9,21,.92);
+}
+.xp-scene.xp-overview.xp-home-navigation .xp-batt-glyph{
+ width:clamp(76px,8.5cqw,124px)!important;
+ min-width:clamp(76px,8.5cqw,124px)!important;
+ height:clamp(76px,8.5cqw,124px)!important;
+ border:2px solid rgba(23,230,185,.85)!important;
+ border-radius:50%!important;
+ padding:0!important;
+ display:grid!important;
+ place-items:center!important;
+ background:radial-gradient(circle,rgba(3,57,62,.42),rgba(4,23,38,.1) 69%)!important;
+ box-shadow:0 0 18px rgba(0,239,193,.2),inset 0 0 16px rgba(6,216,183,.12)!important;
+}
+.xp-scene.xp-overview.xp-home-navigation .xp-batt-glyph:before{display:none!important}
+.xp-scene.xp-overview.xp-home-navigation .xp-batt-glyph .xp-battery-level-icon{
+ width:clamp(45px,4.4cqw,64px)!important;
+ height:clamp(45px,4.4cqw,64px)!important;
+ --xp-icon-size:clamp(45px,4.4cqw,64px)!important;
+ --mdc-icon-size:clamp(45px,4.4cqw,64px)!important;
+}
+.xp-scene.xp-overview.xp-home-navigation .xp-batt-line{gap:clamp(12px,1.5cqw,23px);min-height:0!important}
+.xp-scene.xp-overview.xp-home-navigation .xp-overview-range{
+ background:transparent!important;border-top:1px solid rgba(174,215,231,.35)!important;
+}
+.xp-scene.xp-overview.xp-home-navigation .xp-overview-stat .xp-progress{
+ height:9px;border-radius:99px;background:rgba(6,21,37,.58)!important;
+}
+.xp-scene .xp-ux-dock-seven{
+ display:flex;
+ align-items:flex-start;
+ justify-content:space-evenly;
+ gap:clamp(8px,1.4cqw,24px)!important;
+ left:50%;
+ width:min(1050px,94%)!important;
+ max-width:94%!important;
+ padding:0!important;
+ border:0!important;
+ border-radius:0!important;
+ background:transparent!important;
+ box-shadow:none!important;
+ backdrop-filter:none!important;
+ overflow:visible;
+}
+/* Button element is HIT TARGET + label; ONLY its actual icon is a glass disc.
+   This removes both the large dock rectangle and seven rectangular tiles. */
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action{
+ flex:1 1 0;
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:center!important;
+ justify-content:flex-start!important;
+ gap:7px!important;
+ width:auto!important;
+ min-width:0!important;
+ max-width:none!important;
+ min-height:94px!important;
+ padding:0 2px!important;
+ border:0!important;
+ border-radius:0!important;
+ background:transparent!important;
+ box-shadow:none!important;
+ backdrop-filter:none!important;
+ transform:none;
+ color:var(--xp-v3-text);
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon,
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-trunk-symbol{
+ flex:0 0 auto!important;
+ width:clamp(56px,5.2cqw,72px)!important;
+ height:clamp(56px,5.2cqw,72px)!important;
+ border:1px solid var(--xp-v3-edge)!important;
+ border-radius:50%!important;
+ background:var(--xp-v3-glass)!important;
+ box-shadow:0 4px 18px rgba(0,3,13,.17),inset 0 1px rgba(245,254,255,.12)!important;
+ backdrop-filter:blur(11px);
+ -webkit-backdrop-filter:blur(11px);
+ display:flex!important;
+ align-items:center!important;
+ justify-content:center!important;
+ transition:background .17s,border-color .17s,box-shadow .17s;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon{
+ --xp-icon-size:27px!important;--mdc-icon-size:27px!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-trunk-symbol{
+ --xp-trunk-size:27px!important;
+ flex-direction:row-reverse!important;
+ gap:1px;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-trunk-symbol>.xp-mdi-icon{
+ --mdc-icon-size:27px!important;--xp-icon-size:27px!important;
+ width:27px!important;height:27px!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-trunk-symbol>.xp-trunk-arrow{
+ width:10px!important;height:10px!important;
+ --mdc-icon-size:10px!important;--xp-icon-size:10px!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action small{
+ display:block;
+ margin:0!important;padding:0!important;
+ font-size:clamp(10px,1.04cqw,13px)!important;
+ font-weight:530!important;
+ line-height:1.2!important;
+ color:#e8f4ff!important;
+ text-align:center!important;
+ white-space:normal!important;
+ overflow-wrap:normal;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action:not(:disabled):is(:hover,:focus-visible){
+ background:transparent!important;transform:none!important;border:0!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action:not(:disabled):is(:hover,:focus-visible)>.xp-mdi-icon,
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action:not(:disabled):is(:hover,:focus-visible)>.xp-trunk-symbol{
+ background:rgba(20,88,117,.49)!important;
+ border-color:rgba(102,233,231,.85)!important;
+ box-shadow:0 0 22px var(--xp-v3-halo)!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action:disabled{
+ opacity:.46!important;
+ cursor:not-allowed;
+ filter:saturate(.58);
+}
+/* Charging: keep the approved separate rear-vehicle scene and green cable;
+   change surfaces and controls, not image, geometry or trigger. */
+.xp-scene.xp-charge .xp-charge-card{
+ background:rgba(4,19,35,.30)!important;
+ border:1px solid rgba(154,211,237,.17)!important;
+ border-radius:23px!important;
+ box-shadow:none!important;
+ backdrop-filter:blur(12px);
+ -webkit-backdrop-filter:blur(12px);
+}
+.xp-scene.xp-charge .xp-charge-heading{color:#57eac7}
+.xp-scene.xp-charge .xp-charge-card .xp-progress{height:10px}
+.xp-scene.xp-charge .xp-charge-meta{border-top-color:rgba(156,204,225,.26)}
+.xp-scene.xp-charge .xp-charge-panel-actions{
+ border:0!important;
+ background:transparent!important;
+ box-shadow:none!important;
+ padding:0!important;
+ gap:clamp(8px,1.8cqw,23px);
+}
+.xp-scene.xp-charge .xp-charge-panel-actions button{
+ border:0!important;
+ border-radius:0!important;
+ background:transparent!important;
+ box-shadow:none!important;
+ color:#eaf6ff;
+ display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+ gap:6px;padding:3px!important;min-height:79px;
+}
+.xp-scene.xp-charge .xp-charge-panel-actions button>.xp-mdi-icon{
+ width:clamp(45px,4.5cqw,62px)!important;
+ height:clamp(45px,4.5cqw,62px)!important;
+ --xp-icon-size:23px!important;--mdc-icon-size:23px!important;
+ display:grid;place-items:center;
+ border:1px solid var(--xp-v3-edge);border-radius:50%;
+ background:rgba(13,44,64,.3);backdrop-filter:blur(10px);
+}
+.xp-scene.xp-charge .xp-charge-panel-actions button span{
+ font-size:clamp(10px,.92cqw,13px);
+ white-space:normal;text-align:center;line-height:1.2;
+}
+.xp-scene.xp-charge .xp-charge-panel-actions button:disabled{opacity:.44;cursor:not-allowed}
+/* Subpages: airy glass surfaces, not an opaque wall of nested cards.
+   All help, commands, numbers, dialogs and real touch hotspots remain. */
+.xp-scene .xp-ux-modal{
+ background:linear-gradient(145deg,rgba(4,17,32,.82),rgba(5,24,42,.76))!important;
+ border:1px solid rgba(139,207,232,.18)!important;
+ box-shadow:0 17px 48px rgba(0,0,0,.27)!important;
+ backdrop-filter:blur(17px);
+ -webkit-backdrop-filter:blur(17px);
+}
+.xp-scene .xp-ux-modal-head button{
+ width:46px;min-width:46px;height:46px;min-height:46px;
+ border-radius:50%!important;
+ background:rgba(11,42,65,.31)!important;
+ border:1px solid var(--xp-v3-edge)!important;
+ box-shadow:none!important;
+}
+.xp-scene .xp-help-intro{
+ border:1px solid rgba(148,210,230,.21)!important;
+ border-radius:15px!important;
+ background:rgba(16,49,66,.18)!important;
+ box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-primary,
+.xp-scene .xp-ux-modal-climate .xp-climate-temp-panel,
+.xp-scene .xp-ux-modal-climate .xp-climate-fan-panel,
+.xp-scene .xp-ux-modal-climate .xp-ux-climate-feature{
+ background:rgba(14,44,64,.21)!important;
+ border:1px solid rgba(125,207,235,.2)!important;
+ box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-temp-line button{
+ border-radius:50%!important;
+ border:1px solid var(--xp-v3-edge)!important;
+ background:rgba(21,63,85,.31)!important;
+ box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-climate-feature{
+ border-radius:999px!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-cycle{
+ background:rgba(17,43,63,.31)!important;
+ border:1px solid rgba(174,217,244,.43)!important;
+ backdrop-filter:blur(8px);
+}
+/* Tire data: transparent round gauges around the original physical top-view. */
+.xp-scene .xp-ux-modal-maintenance .xp-tire-reading{
+ border:1px solid rgba(107,222,238,.58)!important;
+ border-radius:50%!important;
+ background:rgba(11,43,61,.29)!important;
+ box-shadow:0 0 14px rgba(45,201,223,.08)!important;
+ aspect-ratio:1;
+ width:min(100%,150px);
+ justify-self:center;
+ justify-content:center;
+ align-items:center;
+ backdrop-filter:blur(8px);
+}
+.xp-scene .xp-ux-modal-maintenance .xp-maint-info .xp-extra-line{
+ background:rgba(11,39,57,.23)!important;
+ border:1px solid rgba(159,213,238,.17)!important;
+ box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile{
+ background:rgba(10,42,61,.28)!important;
+ border:1px solid rgba(158,210,238,.23)!important;
+ box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile:not(:disabled):is(:hover,:focus-visible){
+ background:rgba(23,80,101,.45)!important;
+}
+.xp-scene button:focus-visible{outline:2px solid #92e9f4!important;outline-offset:3px}
+/* The ONE card remains adaptive in HA Sections, small iPhones and desktop. */
+@container xpeng-layout (max-width:850px){
+ .xp-scene .xp-ux-dock-seven{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  width:96%!important;max-width:96%!important;
+  gap:5px 3px!important;
+  left:50%;bottom:12px;
+ }
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action{
+  width:100%!important;min-height:77px!important;
+  gap:4px!important;
+ }
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon,
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-trunk-symbol{
+  width:clamp(47px,13cqw,63px)!important;
+  height:clamp(47px,13cqw,63px)!important;
+ }
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action small{
+  font-size:clamp(8px,2.5cqw,11px)!important;
+ }
+ .xp-scene.xp-overview.xp-home-navigation .xp-overview-stat{
+  top:clamp(153px,38cqw,203px);
+  left:4%;width:91%;max-width:none;
+  padding:10px!important;
+ }
+ .xp-scene.xp-overview.xp-home-navigation .xp-batt-glyph{
+  width:clamp(49px,13cqw,70px)!important;
+  min-width:clamp(49px,13cqw,70px)!important;
+  height:clamp(49px,13cqw,70px)!important;
+ }
+ .xp-scene.xp-overview.xp-home-navigation .xp-batt-glyph .xp-battery-level-icon{
+  width:35px!important;height:35px!important;
+  --xp-icon-size:35px!important;--mdc-icon-size:35px!important;
+ }
+ .xp-scene.xp-overview.xp-home-navigation .xp-overview-stat .xp-soc{font-size:clamp(29px,8cqw,43px)}
+ .xp-scene.xp-overview.xp-home-navigation .xp-overview-range{
+  margin-top:6px!important;padding-top:6px!important;
+ }
+ .xp-scene.xp-charge .xp-charge-card{
+  border-color:rgba(152,202,224,.16)!important;
+  background:rgba(5,20,37,.49)!important;
+ }
+ .xp-scene .xp-ux-modal-maintenance .xp-tire-reading{
+  width:min(100%,94px);padding:5px!important;
+ }
+ .xp-scene .xp-ux-modal-maintenance .xp-tire-reading strong{
+  font-size:clamp(14px,4cqw,22px)!important;
+ }
+}
+@container xpeng-layout (max-width:520px){
+ .xp-scene .xp-ux-dock-seven{
+  gap:3px 1px!important;
+  bottom:11px!important;
+ }
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action{
+  min-height:73px!important;padding:0!important;
+ }
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon,
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-trunk-symbol{
+  width:clamp(46px,13.7cqw,57px)!important;
+  height:clamp(46px,13.7cqw,57px)!important;
+ }
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action small{
+  font-size:clamp(8px,2.35cqw,10px)!important;
+ }
+ .xp-scene.xp-charge .xp-charge-panel-actions button>.xp-mdi-icon{
+  width:44px!important;height:44px!important;
+ }
+ .xp-scene .xp-ux-modal{
+  border-radius:18px!important;
+ }
+}
+/* V3 COMPACT INNER-PAGE DESIGN | all seven actions remain; presentation only.
+   Compact MDI glyphs sit inside accessible 40-44px targets, never huge tiles.
+   These styles belong to V3 itself, not another V2 override system. */
+.xp-scene .xp-ux-modal{
+ --xp-v3-control-bg:rgba(13,43,64,.26);
+ --xp-v3-control-hover:rgba(29,86,106,.43);
+ --xp-v3-hairline:rgba(151,207,231,.25);
+ --xp-v3-control-edge:rgba(159,213,239,.37);
+ --xp-v3-glyph-size:21px;
+ --xp-v3-control-height:42px;
+ color:#eff9ff;
+}
+.xp-scene .xp-ux-modal-head{gap:clamp(8px,1.25cqw,15px)}
+.xp-scene .xp-ux-modal-head h2{font-size:clamp(17px,1.85cqw,25px)!important;line-height:1.2}
+.xp-scene .xp-ux-modal-head button{
+ width:44px!important;min-width:44px!important;
+ height:44px!important;min-height:44px!important;
+ padding:9px!important;
+ background:var(--xp-v3-control-bg)!important;
+}
+.xp-scene .xp-ux-modal-head button>.xp-mdi-icon{
+ width:20px!important;height:20px!important;
+ --xp-icon-size:20px!important;--mdc-icon-size:20px!important;
+}
+.xp-scene .xp-ux-tabs{gap:7px;flex-wrap:wrap}
+.xp-scene .xp-ux-tabs button{
+ min-height:40px;padding:7px 12px!important;
+ border-radius:999px!important;
+ border:1px solid var(--xp-v3-control-edge)!important;
+ background:var(--xp-v3-control-bg)!important;
+ box-shadow:none!important;
+ font-size:clamp(11px,1.04cqw,13px);
+}
+.xp-scene .xp-ux-selected{
+ background:rgba(40,135,157,.35)!important;
+ border-color:rgba(103,230,224,.8)!important;
+ box-shadow:inset 0 0 0 1px rgba(105,226,233,.12)!important;
+}
+.xp-scene .xp-help-intro{padding:clamp(9px,1.3cqw,15px)!important}
+.xp-scene .xp-help-intro p,.xp-scene .xp-ux-note{line-height:1.45}
+.xp-scene .xp-ux-modal :is(
+ .xp-extra-action,.xp-ux-vehicle-buttons button,
+ .xp-ux-access-buttons button,.xp-ux-port-actions button,
+ .xp-ux-charge-stop,.xp-ux-map-actions button,
+ .xp-ux-climate-feature,.xp-climate-primary
+){
+ border:1px solid var(--xp-v3-control-edge)!important;
+ background:var(--xp-v3-control-bg)!important;
+ box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal :is(
+ .xp-extra-action,.xp-ux-vehicle-buttons button,
+ .xp-ux-access-buttons button,.xp-ux-port-actions button,
+ .xp-ux-charge-stop,.xp-ux-map-actions button,
+ .xp-climate-primary
+){
+ min-height:var(--xp-v3-control-height)!important;
+ padding:7px 11px!important;
+ border-radius:13px!important;
+ font-size:clamp(11px,1.06cqw,14px);
+ line-height:1.25;
+}
+.xp-scene .xp-ux-modal :is(
+ .xp-extra-action,.xp-ux-vehicle-buttons button,
+ .xp-ux-access-buttons button,.xp-ux-port-actions button,
+ .xp-ux-charge-stop,.xp-ux-map-actions button,
+ .xp-ux-climate-primary
+):not(:disabled):is(:hover,:focus-visible){
+ border-color:rgba(105,226,229,.8)!important;
+ background:var(--xp-v3-control-hover)!important;
+}
+.xp-scene .xp-ux-modal :is(
+ .xp-ux-vehicle-buttons button,.xp-ux-access-buttons button,
+ .xp-ux-port-actions button,.xp-ux-map-actions button,
+ .xp-climate-primary
+)>.xp-mdi-icon{
+ width:20px!important;height:20px!important;
+ --xp-icon-size:20px!important;--mdc-icon-size:20px!important;
+ flex:0 0 20px!important;
+}
+.xp-scene .xp-ux-modal button:disabled{cursor:not-allowed;filter:saturate(.7)}
+/* HVAC: original cabin image and clickable seat positions remain untouched.
+   Resize the visual chrome, never remove a cabin hotspot or its level. */
+.xp-scene .xp-ux-modal-climate .xp-climate-primary{
+ border-radius:13px!important;
+ min-height:46px!important;
+ gap:7px!important;
+}
+.xp-scene .xp-ux-modal-climate :is(
+ .xp-climate-temp-panel,.xp-climate-fan-panel,.xp-ux-climate-feature
+){
+ background:rgba(11,40,62,.22)!important;
+ border-color:var(--xp-v3-hairline)!important;
+ box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal-climate :is(.xp-climate-temp-panel,.xp-climate-fan-panel){
+ padding:clamp(7px,1.05cqw,12px)!important;
+ border-radius:14px!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-climate-features{
+ gap:clamp(5px,.9cqw,10px)!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-climate-feature{
+ min-height:70px!important;
+ padding:7px 6px!important;
+ gap:4px!important;
+ border-radius:13px!important;
+ font-size:clamp(10px,.92cqw,13px);
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-climate-feature>.xp-mdi-icon{
+ width:22px!important;height:22px!important;
+ --xp-icon-size:22px!important;--mdc-icon-size:22px!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-climate-feature span{
+ font-size:clamp(10px,1.08cqw,13px)!important;
+ line-height:1.2;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-climate-feature small{
+ font-size:clamp(9px,.95cqw,11px)!important;
+ line-height:1.2;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-temp-line button{
+ min-width:40px!important;width:40px!important;
+ min-height:40px!important;height:40px!important;
+ padding:6px!important;
+ background:var(--xp-v3-control-bg)!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-temp-line button>.xp-mdi-icon{
+ width:20px!important;height:20px!important;
+ --xp-icon-size:20px!important;--mdc-icon-size:20px!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-cycle{
+ min-width:40px!important;width:40px!important;
+ min-height:42px!important;height:42px!important;
+ border-radius:14px!important;
+ box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-cycle>.xp-mdi-icon{
+ width:19px!important;height:19px!important;
+ --xp-icon-size:19px!important;--mdc-icon-size:19px!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-cycle .xp-ux-level{
+ font-size:11px!important;
+}
+/* Maintenance: only the TPMS gauges get circular glass, while optional
+   information stays in small, unobtrusive, legible rows. */
+.xp-scene .xp-ux-modal-maintenance .xp-tire-reading{
+ width:min(26%,116px)!important;
+ min-height:0!important;
+ padding:clamp(5px,.7cqw,9px)!important;
+ border:1px solid rgba(96,218,225,.43)!important;
+ background:rgba(10,42,60,.26)!important;
+ box-shadow:none!important;
+ gap:clamp(2px,.6cqw,6px)!important;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tire-reading>.xp-mdi-icon{
+ width:18px!important;height:18px!important;
+ --xp-icon-size:18px!important;--mdc-icon-size:18px!important;
+ flex:0 0 18px!important;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tire-reading strong{
+ font-size:clamp(15px,1.8cqw,25px)!important;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-maint-info{
+ gap:clamp(5px,.8cqw,9px)!important;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-maint-info .xp-extra-line{
+ min-height:34px!important;
+ padding:6px 10px!important;
+ border-radius:11px!important;
+}
+/* Custom Functions: compact tiles with official MDI (22px), not tall
+   opaque rectangles. Maintain every launcher and all seven destinations. */
+.xp-scene .xp-ux-modal-extras .xp-extra-grid{
+ gap:clamp(7px,1.1cqw,12px)!important;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile{
+ display:grid!important;
+ grid-template-columns:minmax(0,1fr)!important;
+ grid-template-rows:48px auto auto!important;
+ align-content:center!important;align-items:center!important;
+ justify-content:center!important;justify-items:center!important;
+ gap:3px!important;
+ min-height:102px!important;padding:6px 7px!important;
+ border-radius:0!important;border:0!important;
+ background:transparent!important;box-shadow:none!important;
+ transform:none!important;text-align:center!important;
+ position:relative!important;isolation:isolate;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile>.xp-mdi-icon{
+ grid-column:1!important;grid-row:1!important;
+ align-self:center!important;justify-self:center!important;
+ flex:none!important;position:relative!important;z-index:1;
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ width:21px!important;height:21px!important;
+ --xp-icon-size:21px!important;--mdc-icon-size:21px!important;
+ background:transparent!important;border:0!important;border-radius:0!important;
+ box-shadow:none!important;color:#b7e8f3!important;filter:none!important;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile>b{
+ grid-column:1!important;grid-row:2!important;
+ font-size:clamp(12px,1.12cqw,14px)!important;
+ line-height:1.12!important;text-align:center!important;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile>small{
+ grid-column:1!important;grid-row:3!important;
+ font-size:clamp(9px,.91cqw,11px)!important;
+ line-height:1.2!important;text-align:center!important;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile:not(:disabled):is(:hover,:focus-visible){
+background:transparent!important;
+ border:0!important;box-shadow:none!important;
+ transform:none!important;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-heading{font-size:clamp(15px,1.5cqw,19px)!important}
+.xp-scene .xp-ux-modal-extras :is(.xp-extra-range,.xp-extra-line),
+.xp-scene .xp-ux-modal-charge_controls .xp-ux-charge-limit,
+.xp-scene .xp-charge-compact-modal .xp-ux-charge-schedule .xp-extra-line{
+ border:1px solid var(--xp-v3-hairline)!important;
+ background:rgba(12,44,65,.22)!important;
+ box-shadow:none!important;
+ border-radius:12px!important;
+}
+.xp-scene .xp-ux-modal-extras :is(.xp-extra-range,.xp-extra-line){
+ min-height:34px!important;
+ padding:7px 10px!important;
+ gap:clamp(5px,.8cqw,10px)!important;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-line span{
+ font-size:clamp(10px,1.05cqw,13px)!important;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-line b{
+ font-size:clamp(11px,1.15cqw,14px)!important;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-action{
+ width:fit-content;max-width:100%;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile:not(:disabled):is(:hover,:focus-visible)>.xp-mdi-icon{
+ background:rgba(27,85,104,.39)!important;
+ border-color:rgba(102,225,226,.83)!important;
+ box-shadow:0 0 16px rgba(65,180,215,.12)!important;
+}
+/* A decorative pseudo-element is the circle; ha-icon stays its true 21px/19px size.
+   Putting a border on the ha-icon host previously enlarged the SVG to 48px. */
+.xp-scene .xp-ux-modal-extras .xp-extra-tile::before{
+ content:"";
+ grid-column:1;grid-row:1;align-self:center;justify-self:center;
+ display:block;
+ width:48px;height:48px;box-sizing:border-box;
+ border:1px solid var(--xp-v3-control-edge);
+ border-radius:50%;
+ background:rgba(13,43,64,.26);
+ box-shadow:inset 0 1px rgba(245,254,255,.1);
+ backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+ pointer-events:none;z-index:0;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile:not(:disabled):is(:hover,:focus-visible)::before{
+ background:rgba(27,85,104,.39);
+ border-color:rgba(102,225,226,.83);
+ box-shadow:0 0 16px rgba(65,180,215,.12);
+}
+/* Diagnostics: preserve independent scroll and full entity ID access.
+   Small separated rows have no heavy tiles and never split sensor names. */
+.xp-scene .xp-ux-modal-extras .xp-diagnostics-scroll .xp-entity-diagnostic{
+ min-height:33px!important;
+ padding:5px clamp(7px,1cqw,12px)!important;
+ border:1px solid rgba(147,203,228,.13)!important;
+ border-radius:9px!important;
+ background:rgba(11,36,54,.18)!important;
+ box-shadow:none!important;
+ gap:clamp(5px,.85cqw,10px)!important;
+}
+.xp-scene .xp-ux-modal-extras .xp-diagnostics-scroll .xp-entity-diagnostic>span{
+ font-size:clamp(10px,1.03cqw,12px)!important;
+ line-height:1.4;
+}
+.xp-scene .xp-ux-modal-extras .xp-diagnostics-scroll .xp-entity-diagnostic>b{
+ font-size:clamp(10px,1.02cqw,12px)!important;
+ line-height:1.3;
+}
+/* Map: shrink native MDI controls without touching the real location map. */
+.xp-scene .xp-ux-modal-map .xp-ux-map-actions{
+ gap:clamp(5px,.9cqw,9px)!important;
+}
+.xp-scene .xp-ux-modal-map .xp-ux-map-actions button{
+ min-height:42px!important;
+ padding:6px 9px!important;
+ border-radius:12px!important;
+ gap:6px!important;
+ font-size:clamp(10px,1.05cqw,13px)!important;
+}
+.xp-scene .xp-ux-modal-map .xp-ux-map-actions button>.xp-mdi-icon{
+ width:19px!important;height:19px!important;
+ --xp-icon-size:19px!important;--mdc-icon-size:19px!important;
+}
+.xp-scene .xp-ux-modal-map .xp-ux-map-actions .xp-map-native-details{
+ min-height:40px!important;background:rgba(10,38,57,.24)!important;
+}
+/* Charging settings and shared forms: match V3 instead of V2 solid blue. */
+.xp-scene .xp-charge-compact-modal :is(
+ .xp-ux-charge-limit,.xp-ux-charge-schedule,.xp-ux-charge-actions,
+ .xp-extra-line
+){
+ background:rgba(12,42,62,.22)!important;
+ border-color:var(--xp-v3-hairline)!important;
+ box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal :is(input[type=range],input[type=checkbox]){
+ accent-color:#51e3c8;
+}
+@container xpeng-layout (max-width:850px){
+ .xp-scene .xp-ux-modal{
+  --xp-v3-glyph-size:19px;
+  --xp-v3-control-height:42px;
+ }
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  grid-template-rows:48px auto auto!important;
+  align-content:center!important;align-items:center!important;
+  justify-content:center!important;justify-items:center!important;
+  gap:3px!important;
+  min-height:102px!important;padding:6px 7px!important;
+  border-radius:0!important;border:0!important;
+  background:transparent!important;box-shadow:none!important;
+  transform:none!important;text-align:center!important;
+  position:relative!important;isolation:isolate;
+ }
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile>.xp-mdi-icon{
+  grid-column:1!important;grid-row:1!important;
+  align-self:center!important;justify-self:center!important;
+  flex:none!important;position:relative!important;z-index:1;
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  width:21px!important;height:21px!important;
+  --xp-icon-size:21px!important;--mdc-icon-size:21px!important;
+  background:transparent!important;border:0!important;border-radius:0!important;
+  box-shadow:none!important;color:#b7e8f3!important;filter:none!important;
+ }
+ .xp-scene .xp-ux-modal-climate .xp-ux-climate-feature{
+  min-height:67px!important;padding:6px 4px!important;
+ }
+ .xp-scene .xp-ux-modal-climate .xp-ux-climate-feature>.xp-mdi-icon{
+  width:20px!important;height:20px!important;
+  --xp-icon-size:20px!important;--mdc-icon-size:20px!important;
+ }
+ .xp-scene .xp-ux-modal-maintenance .xp-tire-reading{
+  width:min(29%,90px)!important;padding:4px!important;
+ }
+ .xp-scene .xp-ux-modal-maintenance .xp-tire-reading strong{
+  font-size:clamp(13px,3.6cqw,19px)!important;
+ }
+}
+@container xpeng-layout (max-width:520px){
+ .xp-scene .xp-ux-modal-head button{
+  width:44px!important;min-width:44px!important;
+  height:44px!important;min-height:44px!important;
+ }
+ .xp-scene .xp-ux-modal-extras .xp-extra-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ }
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  grid-template-rows:48px auto auto!important;
+  align-content:center!important;align-items:center!important;
+  justify-content:center!important;justify-items:center!important;
+  gap:3px!important;
+  min-height:102px!important;padding:6px 7px!important;
+  border-radius:0!important;border:0!important;
+  background:transparent!important;box-shadow:none!important;
+  transform:none!important;text-align:center!important;
+  position:relative!important;isolation:isolate;
+ }
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile>.xp-mdi-icon{
+  grid-column:1!important;grid-row:1!important;
+  align-self:center!important;justify-self:center!important;
+  flex:none!important;position:relative!important;z-index:1;
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  width:21px!important;height:21px!important;
+  --xp-icon-size:21px!important;--mdc-icon-size:21px!important;
+  background:transparent!important;border:0!important;border-radius:0!important;
+  box-shadow:none!important;color:#b7e8f3!important;filter:none!important;
+ }
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile>b{
+  grid-column:1!important;grid-row:2!important;
+  font-size:clamp(12px,1.12cqw,14px)!important;
+  line-height:1.12!important;text-align:center!important;
+ }
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile>small{
+  grid-column:1!important;grid-row:3!important;
+  font-size:clamp(9px,.91cqw,11px)!important;
+  line-height:1.2!important;text-align:center!important;
+ }
+ .xp-scene .xp-ux-modal-climate .xp-ux-climate-feature{
+  min-height:64px!important;padding:5px 3px!important;
+ }
+ .xp-scene .xp-ux-modal-map .xp-ux-map-actions button{
+  min-height:42px!important;padding:5px 6px!important;
+  font-size:clamp(10px,2.5cqw,12px)!important;
+ }
+ .xp-scene .xp-ux-modal-extras .xp-diagnostics-scroll .xp-entity-diagnostic{
+  min-height:32px!important;padding:5px 7px!important;
+ }
+ .xp-scene .xp-ux-modal-maintenance .xp-tire-reading{
+  width:min(28%,76px)!important;
+ }
+}
+
+
+
+/* Subpage-only responsive sizing: touch ring and true glyph scale separately. */
+@container xpeng-layout (max-width:850px){
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile{min-height:96px!important;padding:5px 6px!important;grid-template-rows:46px auto auto!important}
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile::before{width:46px;height:46px}
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile>.xp-mdi-icon{
+  width:20px!important;height:20px!important;
+  --xp-icon-size:20px!important;--mdc-icon-size:20px!important
+ }
+}
+@container xpeng-layout (max-width:520px){
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile{min-height:93px!important;padding:5px!important;grid-template-rows:44px auto auto!important}
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile::before{width:44px;height:44px}
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile>.xp-mdi-icon{
+  width:19px!important;height:19px!important;
+  --xp-icon-size:19px!important;--mdc-icon-size:19px!important
+ }
+}
+
+
+/* V3 proportional icon control system – reuse true-size official MDI glyphs.
+   A standalone pseudo-element draws the glass disc, never the ha-icon host.
+   Home, charging and subpages now share the same 20-22px glyph proportions. */
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action{
+ --xp-ring-size:48px;--xp-glyph-size:22px;
+ position:relative!important;isolation:isolate;
+ padding:12px 0 0!important;
+ gap:15px!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action::before{
+ content:"";
+ position:absolute;top:0;left:50%;transform:translateX(-50%);
+ width:var(--xp-ring-size);height:var(--xp-ring-size);
+ border-radius:50%;
+ border:1px solid var(--xp-v3-edge);
+ box-sizing:border-box;background:var(--xp-v3-glass);
+ box-shadow:0 4px 18px rgba(0,3,13,.17),inset 0 1px rgba(245,254,255,.12);
+ backdrop-filter:blur(11px);-webkit-backdrop-filter:blur(11px);
+ pointer-events:none;z-index:0;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon{
+ flex:0 0 var(--xp-glyph-size)!important;
+ width:var(--xp-glyph-size)!important;height:var(--xp-glyph-size)!important;
+ --xp-icon-size:var(--xp-glyph-size)!important;
+ --mdc-icon-size:var(--xp-glyph-size)!important;
+ margin:0!important;position:relative;z-index:1;
+ border:0!important;border-radius:0!important;
+ background:transparent!important;box-shadow:none!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-trunk-symbol{
+ --xp-trunk-size:21px!important;
+ flex:0 0 22px!important;
+ width:32px!important;height:22px!important;
+ margin:0!important;position:relative;z-index:1;
+ border:0!important;border-radius:0!important;
+ background:transparent!important;box-shadow:none!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-trunk-symbol>.xp-mdi-icon{
+ width:21px!important;height:21px!important;
+ --xp-icon-size:21px!important;--mdc-icon-size:21px!important;
+ flex:0 0 21px!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-trunk-symbol>.xp-trunk-arrow{
+ width:9px!important;height:9px!important;
+ --xp-icon-size:9px!important;--mdc-icon-size:9px!important;
+ flex:0 0 9px!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action:not(:disabled):is(:hover,:focus-visible)::before{
+ border-color:rgba(102,233,231,.85);
+ background:rgba(20,88,117,.49);
+ box-shadow:0 0 22px var(--xp-v3-halo);
+}
+.xp-scene.xp-charge .xp-charge-panel-actions button{
+ --xp-ring-size:46px;--xp-glyph-size:21px;
+ position:relative!important;isolation:isolate;
+ padding:11px 2px 0!important;
+ gap:14px!important;min-height:76px!important;
+}
+.xp-scene.xp-charge .xp-charge-panel-actions button::before{
+ content:"";
+ position:absolute;top:0;left:50%;transform:translateX(-50%);
+ width:var(--xp-ring-size);height:var(--xp-ring-size);
+ border-radius:50%;box-sizing:border-box;
+ border:1px solid var(--xp-v3-edge);
+ background:rgba(13,44,64,.3);
+ backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+ pointer-events:none;z-index:0;
+}
+.xp-scene.xp-charge .xp-charge-panel-actions button>.xp-mdi-icon{
+ flex:0 0 var(--xp-glyph-size)!important;
+ width:var(--xp-glyph-size)!important;height:var(--xp-glyph-size)!important;
+ --xp-icon-size:var(--xp-glyph-size)!important;
+ --mdc-icon-size:var(--xp-glyph-size)!important;
+ position:relative;z-index:1;
+ background:transparent!important;border:0!important;
+ border-radius:0!important;box-shadow:none!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+.xp-scene.xp-charge .xp-charge-panel-actions button:not(:disabled):is(:hover,:focus-visible)::before{
+ border-color:rgba(102,233,231,.85);
+ background:rgba(20,88,117,.49);
+}
+@container xpeng-layout (max-width:850px){
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action{
+  --xp-ring-size:46px;--xp-glyph-size:21px
+ }
+ .xp-scene.xp-charge .xp-charge-panel-actions button{
+  --xp-ring-size:44px;--xp-glyph-size:20px
+ }
+}
+@container xpeng-layout (max-width:520px){
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action{
+  --xp-ring-size:44px;--xp-glyph-size:20px;
+  padding-top:11px!important;gap:14px!important
+ }
+ .xp-scene.xp-charge .xp-charge-panel-actions button{
+  --xp-ring-size:42px;--xp-glyph-size:19px;
+  padding-top:10px!important;gap:12px!important;min-height:73px!important
+ }
+}
+
+@media(prefers-reduced-motion:reduce){
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon,
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-trunk-symbol{transition:none!important}
+}
+
+
+/* G6 V3 · Owner-approved Reference Layout:  TPMS / HVAC console / Charging pedestal.
+ * Uses approved existing photos and live sensors; no replacement vehicle or cabin image.
+ * The isolated functional runtime owns entities; this isolated CSS owns all surfaces.
+ */
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-page.xp-tpms-only{
+ display:flex!important;flex-direction:column!important;
+ gap:clamp(8px,1.1cqw,13px)!important;
+ width:100%;max-width:100%;min-width:0;
+ align-items:stretch;justify-content:center;position:relative;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only>h3{
+ margin:0 0 4px!important;padding:0 4px!important;
+ font-size:clamp(15px,1.5cqw,20px)!important;
+ font-weight:650;letter-spacing:.01em;
+ color:#ebf8ff;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only>.xp-tire-screen{
+ position:relative!important;inset:auto!important;
+ height:clamp(300px,50dvh,450px)!important;
+ max-height:none!important;min-height:0!important;
+ width:100%!important;max-width:100%!important;
+ margin:0 auto!important;padding:0!important;
+ flex:0 0 auto!important;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-stage{
+ position:relative!important;display:block!important;
+ height:100%!important;min-height:0!important;max-height:100%!important;
+ width:min(920px,100%)!important;
+ max-width:100%!important;
+ margin:0 auto!important;
+ overflow:visible!important;
+ background:radial-gradient(ellipse at center,rgba(24,91,106,.16),rgba(5,23,38,0) 70%)!important;
+ border:0!important;border-radius:0!important;box-shadow:none!important;
+ isolation:isolate;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-center{
+ position:absolute!important;
+ left:34%!important;top:1%!important;width:32%!important;
+ height:97%!important;max-height:none!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ z-index:1;
+ filter:drop-shadow(0 9px 16px rgba(0,0,0,.48))!important;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-center .xp-top-car{
+ width:100%!important;height:100%!important;
+ max-width:none!important;max-height:100%!important;
+ object-fit:contain!important;position:relative;z-index:1;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-wheel-highlight{
+ position:absolute;z-index:2;pointer-events:none;display:block;
+ width:13%;height:18%;
+ border:1px solid rgba(84,246,215,.62);
+ border-radius:45% 45% 30% 30%;
+ background:linear-gradient(90deg,rgba(4,252,203,.06),rgba(25,246,210,.18),rgba(4,252,203,.06));
+ box-shadow:0 0 14px rgba(18,241,208,.23),inset 0 0 11px rgba(25,237,206,.16);
+ opacity:.8;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-wheel-fl{left:9%;top:17%}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-wheel-fr{right:9%;top:17%}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-wheel-rl{left:9%;bottom:18%}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-wheel-rr{right:9%;bottom:18%}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading{
+ position:absolute!important;z-index:3!important;
+ display:flex!important;flex-direction:row!important;
+ align-items:center!important;justify-content:center!important;
+ gap:8px!important;
+ box-sizing:border-box!important;
+ width:24%!important;max-width:none!important;
+ min-height:65px!important;height:auto!important;
+ padding:9px 10px!important;margin:0!important;
+ border:1px solid rgba(91,197,213,.34)!important;
+ border-radius:13px!important;
+ background:linear-gradient(140deg,rgba(7,31,47,.68),rgba(4,23,39,.38))!important;
+ box-shadow:inset 0 1px 0 rgba(222,251,255,.06),0 8px 22px rgba(0,0,0,.12)!important;
+ backdrop-filter:blur(12px)!important;
+ transform:none!important;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading[data-wheel="tire_fl"]{left:5%!important;top:18%!important}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading[data-wheel="tire_fr"]{right:5%!important;top:18%!important}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading[data-wheel="tire_rl"]{left:5%!important;top:68%!important}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading[data-wheel="tire_rr"]{right:5%!important;top:68%!important}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading>.xp-mdi-icon{
+ flex:0 0 18px!important;width:18px!important;height:18px!important;
+ --xp-icon-size:18px!important;--mdc-icon-size:18px!important;
+ color:#70f3dc!important;filter:none!important;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading-body{
+ flex:0 1 auto!important;min-width:0;
+ text-align:center!important;display:flex;flex-direction:column;gap:2px;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading small{
+ display:block;font-size:clamp(10px,1.02cqw,13px)!important;
+ line-height:1.2;color:#b6d5e4!important;white-space:nowrap;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading strong{
+ font-size:clamp(18px,2.25cqw,28px)!important;
+ line-height:1.05;letter-spacing:-.025em;
+ white-space:nowrap;tab-size:2;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading strong span{
+ font-size:.58em!important;font-weight:500;color:#bad2e0!important;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-extras{
+ display:flex;flex-wrap:wrap;justify-content:center;gap:3px 8px;
+ font-size:clamp(9px,.8cqw,11px);color:#85dfd7;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading::after{
+ content:"";position:absolute;top:50%!important;
+ width:24%!important;height:1px!important;
+ background:linear-gradient(90deg,rgba(103,241,218,.8),rgba(103,241,218,.07));
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading[data-wheel="tire_fl"]::after,
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading[data-wheel="tire_rl"]::after{right:-24%!important}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading[data-wheel="tire_fr"]::after,
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading[data-wheel="tire_rr"]::after{left:-24%!important;transform:rotate(180deg)}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-source-note{
+ margin:0!important;font-size:clamp(10px,.85cqw,12px)!important;
+ text-align:center;color:#a8c9da!important;line-height:1.4!important;
+}
+/* Cabin portrait + all hotspot coordinates are intentionally not styled here.
+ * Only the console on the other side gets new visual hierarchy. */
+.xp-scene .xp-ux-modal-climate .xp-climate-layout>.xp-ux-climate-bottom{
+ direction:ltr!important;
+ gap:clamp(9px,1.12cqw,15px)!important;
+ justify-content:center!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-temp-panel{
+ order:0!important;
+ border:0!important;border-radius:0!important;
+ background:transparent!important;box-shadow:none!important;
+ padding:4px 4px 6px!important;margin:0!important;overflow:visible!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-temp-panel .xp-ux-climate-caption{
+ font-size:clamp(11px,.95cqw,14px)!important;
+ color:#a8d5e9;font-weight:600;letter-spacing:.025em;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-thermometers{
+ grid-template-columns:minmax(0,1fr)!important;
+ grid-auto-flow:row!important;gap:0!important;
+ direction:ltr!important;text-align:center!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-target{grid-row:1!important;direction:ltr!important}
+.xp-scene .xp-ux-modal-climate .xp-climate-inside{
+ grid-row:2!important;
+ padding:3px 0!important;margin-top:1px!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-thermometers>div+div{
+ border:0!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-inside small{
+ font-size:clamp(9px,.78cqw,11px)!important;margin:0!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-inside b{
+ font-size:clamp(12px,1.06cqw,15px)!important;margin:0!important;
+ color:#b7dfea!important;font-weight:600;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-target>small{
+ font-size:clamp(11px,.94cqw,13px)!important;margin:0!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-target .xp-ux-temp-line{
+ margin:5px auto!important;display:flex!important;
+ justify-content:space-between!important;
+ align-items:center!important;gap:12px!important;
+ direction:ltr!important;width:100%;max-width:380px!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-target .xp-ux-temp-line b{
+ font-size:clamp(30px,3.35cqw,47px)!important;white-space:nowrap;
+ font-weight:650;line-height:1.05;letter-spacing:-.035em;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-target .xp-ux-temp-line button{
+ flex:0 0 43px!important;width:43px!important;min-width:43px!important;
+ height:43px!important;min-height:43px!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ border:1px solid rgba(135,207,231,.32)!important;
+ border-radius:50%!important;
+ background:rgba(11,50,69,.24)!important;
+ box-shadow:inset 0 1px rgba(221,248,255,.07)!important;
+ font-size:25px!important;font-weight:350;color:#effbff;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-primary-controls{
+ order:1!important;
+ display:flex!important;justify-content:center!important;gap:clamp(8px,1.2cqw,17px)!important;
+ grid-template-columns:none!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-primary{
+ display:flex!important;flex-direction:column!important;
+ align-items:center!important;justify-content:center!important;
+ min-width:0!important;max-width:130px!important;
+ width:clamp(86px,11cqw,130px)!important;
+ min-height:83px!important;height:83px!important;
+ padding:6px 4px!important;gap:3px!important;
+ border:0!important;border-radius:0!important;
+ background:transparent!important;box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-primary>.xp-mdi-icon{
+ width:40px!important;height:40px!important;
+ flex:0 0 40px!important;
+ --xp-icon-size:22px!important;--mdc-icon-size:22px!important;
+ padding:8px!important;box-sizing:border-box!important;
+ border:1px solid rgba(117,198,222,.5)!important;
+ border-radius:50%!important;
+ background:rgba(11,47,68,.34)!important;
+ color:#bdeaf2!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-primary.xp-ux-selected>.xp-mdi-icon{
+ border-color:rgba(77,244,216,.78)!important;
+ background:rgba(17,107,112,.32)!important;
+ color:#7cf2d5!important;
+ box-shadow:0 0 13px rgba(31,225,199,.2)!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-primary b{
+ font-size:clamp(11px,.9cqw,13px)!important;line-height:1.15;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-primary small{
+ font-size:clamp(9px,.74cqw,11px)!important;color:#a7c8d6!important;line-height:1.15;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-fan-panel{
+ order:2!important;
+ border:1px solid rgba(125,203,220,.22)!important;
+ border-radius:999px!important;
+ background:rgba(9,44,66,.32)!important;
+ box-shadow:none!important;
+ padding:11px 16px!important;margin:0!important;
+ overflow:visible!important;direction:ltr!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-fan-panel>span{
+ display:flex!important;justify-content:space-between!important;align-items:center!important;
+ gap:8px!important;
+ font-size:clamp(11px,1.05cqw,14px)!important;color:#e2f8ff;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-fan-panel>span>.xp-mdi-icon{
+ width:20px!important;height:20px!important;
+ --xp-icon-size:20px!important;--mdc-icon-size:20px!important;
+ color:#8bf2e7!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-fan-bars{
+ display:flex!important;flex-direction:row!important;
+ align-items:center!important;justify-content:center!important;
+ gap:clamp(6px,.82cqw,11px)!important;
+ height:15px!important;min-height:15px!important;
+ width:100%!important;direction:ltr!important;overflow:visible!important;
+ margin:7px 0 3px!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-fan-bars i{
+ display:block!important;flex:1 1 auto!important;
+ width:auto!important;max-width:8px!important;min-width:3px!important;
+ height:7px!important;min-height:7px!important;
+ margin:0!important;border:1px solid rgba(127,178,192,.29)!important;
+ border-radius:50%!important;
+ background:rgba(105,150,174,.38)!important;box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-fan-bars i.xp-fan-bar-on{
+ background:#55e9e0!important;border-color:#55e9e0!important;
+ box-shadow:0 0 9px rgba(41,229,220,.55)!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-fan-panel input[type="range"]{
+ width:100%!important;margin:5px 0 0!important;
+ height:18px!important;accent-color:#69f1dd;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-climate-features{
+ order:3!important;display:flex!important;flex-direction:row!important;
+ flex-wrap:wrap!important;justify-content:center!important;
+ gap:clamp(8px,1.2cqw,16px)!important;
+ grid-template-columns:none!important;margin:0!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-climate-feature{
+ display:flex!important;flex-direction:column!important;
+ align-items:center!important;justify-content:center!important;
+ flex:0 1 120px!important;width:clamp(78px,9.6cqw,120px)!important;
+ min-height:88px!important;height:auto!important;
+ gap:4px!important;padding:6px 4px!important;
+ border:0!important;border-radius:0!important;
+ background:transparent!important;box-shadow:none!important;
+ text-align:center!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-climate-feature>.xp-mdi-icon{
+ width:40px!important;height:40px!important;min-height:40px!important;
+ --xp-icon-size:22px!important;--mdc-icon-size:22px!important;
+ border-radius:50%!important;
+ border:1px solid rgba(117,198,222,.5)!important;
+ padding:8px!important;box-sizing:border-box!important;
+ background:rgba(11,47,68,.34)!important;
+ color:#c6ecf4!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-climate-feature.xp-ux-selected>.xp-mdi-icon{
+ border-color:#60edcf!important;
+ background:rgba(23,105,114,.33)!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-climate-feature span{
+ font-size:clamp(10px,.94cqw,13px)!important;line-height:1.1!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-climate-feature small{
+ font-size:clamp(9px,.72cqw,10px)!important;line-height:1.15!important;
+}
+/* A CSS-built pedestal surface, not an invented or substituted vehicle photo.
+ * The original cable routes, grounded connector and charging art stay intact. */
+.xp-scene.xp-charge .xp-station.xp-station-v3{
+ display:flex!important;flex-direction:column!important;
+ align-items:center!important;justify-content:flex-start!important;
+ gap:0!important;
+ position:absolute!important;
+ right:3%!important;bottom:27%!important;
+ width:7%!important;min-width:57px!important;max-width:98px!important;
+ height:30%!important;min-height:112px!important;max-height:246px!important;
+ padding:13px 5px 8px!important;
+ border-radius:18px 18px 8px 8px!important;
+ border:1px solid rgba(88,204,248,.65)!important;
+ background:linear-gradient(96deg,#0b273f,#07152a 35%,#15334e 78%,#081625)!important;
+ box-shadow:0 0 23px rgba(0,194,243,.23),inset 0 0 16px rgba(79,189,230,.14),10px 14px 17px rgba(0,0,0,.2)!important;
+ box-sizing:border-box!important;
+ overflow:visible!important;z-index:2!important;
+}
+.xp-scene.xp-charge .xp-station.xp-station-v3::before{
+ content:"";position:absolute;left:-8%;right:-8%;bottom:-7px;
+ width:auto;height:8px;transform:perspective(20px) rotateX(18deg);
+ border:1px solid rgba(96,170,198,.38);
+ border-radius:3px;background:#06192a;
+ box-shadow:0 7px 8px rgba(0,0,0,.4);
+}
+.xp-scene.xp-charge .xp-station.xp-station-v3::after{
+ content:"";position:absolute;right:5px;top:8px;bottom:8px;width:3px;
+ border-radius:99px;background:linear-gradient(#4ad9ee,#1c6d93,#54ddea);
+ box-shadow:0 0 9px rgba(63,220,244,.32);opacity:.7;
+}
+.xp-scene.xp-charge .xp-station-v3 .xp-station-display{
+ position:relative;z-index:1;
+ display:grid;place-items:center;
+ width:82%;max-width:75px;aspect-ratio:1 / 1.1;
+ margin:14px auto 0;
+ border-radius:13px;
+ background:radial-gradient(circle at 50% 30%,rgba(29,192,223,.2),rgba(4,15,35,.89) 73%);
+ border:1px solid rgba(94,201,245,.66);
+ box-shadow:0 0 15px rgba(0,185,247,.25),inset 0 0 12px rgba(4,160,207,.24);
+}
+.xp-scene.xp-charge .xp-station-v3 .xp-station-display .xp-mdi-icon{
+ width:clamp(19px,2.2cqw,27px)!important;height:clamp(19px,2.2cqw,27px)!important;
+ --xp-icon-size:24px!important;--mdc-icon-size:24px!important;
+ color:#7be7fa!important;
+ filter:drop-shadow(0 0 6px rgba(69,216,243,.65));
+}
+.xp-scene.xp-charge .xp-station-v3 .xp-station-charge-light{
+ display:block;width:43%;height:5px;border-radius:99px;
+ margin:clamp(11px,2.1cqw,28px) auto 0;
+ background:#27e6b3;box-shadow:0 0 9px rgba(36,235,180,.78);
+ opacity:1;
+}
+.xp-scene.xp-charge .xp-station-v3 .xp-station-side-light{
+ display:block;position:absolute;left:7px;top:20%;bottom:10%;width:2px;
+ border-radius:99px;background:rgba(56,206,239,.45);
+ box-shadow:0 0 9px rgba(56,206,239,.4);
+}
+@container xpeng-layout (max-width:850px){
+ .xp-scene .xp-ux-modal-maintenance .xp-tpms-only>.xp-tire-screen{
+  height:clamp(270px,54dvh,395px)!important
+ }
+ .xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading{
+  width:29%!important;min-height:56px!important;padding:6px 4px!important;gap:3px!important;
+ }
+ .xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading>.xp-mdi-icon{
+  width:15px!important;height:15px!important;flex-basis:15px!important;
+  --xp-icon-size:15px!important;--mdc-icon-size:15px!important
+ }
+ .xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading small{
+  font-size:clamp(9px,2cqw,11px)!important
+ }
+ .xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading strong{
+  font-size:clamp(15px,3.3cqw,21px)!important
+ }
+ .xp-scene .xp-ux-modal-climate .xp-climate-target .xp-ux-temp-line b{
+  font-size:clamp(27px,6.5cqw,36px)!important
+ }
+ .xp-scene .xp-ux-modal-climate .xp-climate-primary{
+  min-height:75px!important;height:75px!important
+ }
+ .xp-scene .xp-ux-modal-climate .xp-climate-fan-panel{
+  padding:8px 11px!important
+ }
+ .xp-scene.xp-charge .xp-station.xp-station-v3{
+  right:3%!important;bottom:29%!important;
+  width:9%!important;min-width:34px!important;
+  max-width:57px!important;height:18%!important;
+  min-height:82px!important;max-height:135px!important;
+  border-radius:11px 11px 5px 5px!important;
+  padding:7px 3px!important
+ }
+ .xp-scene.xp-charge .xp-station-v3 .xp-station-display{
+  margin:4px auto 0;border-radius:7px
+ }
+ .xp-scene.xp-charge .xp-station-v3 .xp-station-display .xp-mdi-icon{
+  width:17px!important;height:17px!important;
+  --xp-icon-size:17px!important;--mdc-icon-size:17px!important
+ }
+}
+@container xpeng-layout (max-width:520px){
+ .xp-scene .xp-ux-modal-maintenance .xp-tpms-only>.xp-tire-screen{
+  height:clamp(265px,90cqw,360px)!important;max-width:100%!important
+ }
+ .xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-center{
+  left:30%!important;width:40%!important
+ }
+ .xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading{
+  width:28%!important;min-height:52px!important;
+  flex-direction:column!important;gap:2px!important;
+  padding:5px 2px!important;
+ }
+ .xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading>.xp-mdi-icon{
+  width:13px!important;height:13px!important;flex-basis:13px!important;
+  --xp-icon-size:13px!important;--mdc-icon-size:13px!important
+ }
+ .xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading strong{
+  font-size:clamp(13px,3.6cqw,17px)!important
+ }
+ .xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-wheel-highlight{
+  width:11%;height:15%;opacity:.67
+ }
+ .xp-scene .xp-ux-modal-climate .xp-climate-target .xp-ux-temp-line button{
+  flex-basis:40px!important;width:40px!important;min-width:40px!important;height:40px!important;min-height:40px!important
+ }
+ .xp-scene .xp-ux-modal-climate .xp-climate-target .xp-ux-temp-line b{
+  font-size:clamp(25px,7.1cqw,34px)!important
+ }
+ .xp-scene .xp-ux-modal-climate .xp-climate-primary{
+  min-height:71px!important;height:71px!important;width:clamp(78px,25cqw,100px)!important
+ }
+ .xp-scene .xp-ux-modal-climate .xp-climate-primary>.xp-mdi-icon,
+ .xp-scene .xp-ux-modal-climate .xp-ux-climate-feature>.xp-mdi-icon{
+  width:36px!important;height:36px!important;
+  min-height:36px!important;flex-basis:36px!important;
+  --xp-icon-size:20px!important;--mdc-icon-size:20px!important;
+  padding:7px!important
+ }
+ .xp-scene .xp-ux-modal-climate .xp-ux-climate-feature{
+  min-height:75px!important;flex-basis:87px!important;width:87px!important
+ }
+ .xp-scene.xp-charge .xp-station.xp-station-v3{
+  right:2.8%!important;bottom:30%!important;
+  width:9%!important;min-width:35px!important;
+  height:15%!important;min-height:80px!important
+ }
+}
+
+
+
+/* V3 HVAC final polish: icon discs float free of legacy solid button cards.
+   Explicit modal specificity beats old primary/status tile skins. */
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-climate-primary-controls .xp-climate-primary,
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-ux-climate-features .xp-ux-climate-feature{
+ border:0!important;outline-offset:3px!important;
+ border-radius:0!important;background:transparent!important;
+ box-shadow:none!important;backdrop-filter:none!important;
+ -webkit-backdrop-filter:none!important;
+}
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-climate-primary-controls .xp-climate-primary>.xp-mdi-icon,
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-ux-climate-features .xp-ux-climate-feature>.xp-mdi-icon{
+ display:grid!important;place-items:center!important;
+ width:44px!important;height:44px!important;min-height:44px!important;
+ flex:0 0 44px!important;
+ --xp-icon-size:23px!important;--mdc-icon-size:23px!important;
+ padding:10px!important;box-sizing:border-box!important;
+ border:1px solid rgba(134,217,236,.53)!important;
+ border-radius:50%!important;
+ background:rgba(13,47,64,.35)!important;
+ box-shadow:inset 0 1px rgba(243,254,255,.11)!important;
+ backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+ color:#c9f9fc!important;
+}
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-climate-primary-controls .xp-climate-primary.xp-ux-selected>.xp-mdi-icon,
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-ux-climate-features .xp-ux-climate-feature.xp-ux-selected>.xp-mdi-icon{
+ background:rgba(10,103,112,.32)!important;
+ border-color:#65f4d9!important;
+ color:#a8ffe9!important;
+ box-shadow:0 0 13px rgba(25,230,198,.17)!important;
+}
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-climate-primary b,
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-ux-climate-feature span{
+ font-weight:610!important;line-height:1.17!important;
+}
+@container xpeng-layout (max-width:520px){
+ .xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-climate-primary-controls .xp-climate-primary>.xp-mdi-icon,
+ .xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-ux-climate-features .xp-ux-climate-feature>.xp-mdi-icon{
+  width:40px!important;height:40px!important;min-height:40px!important;
+  flex:0 0 40px!important;padding:9px!important;
+  --xp-icon-size:22px!important;--mdc-icon-size:22px!important
+ }
+}
+
+
+/* TPMS photo-geometry acceptance: legacy top+bottom placement must not stretch
+   the four floating wheel readings (all data remains sensor-driven). */
+.xp-scene .xp-ux-modal.xp-ux-modal-maintenance .xp-tpms-only .xp-tire-stage>.xp-tire-reading{
+ box-sizing:border-box!important;
+ bottom:auto!important;
+ height:68px!important;min-height:68px!important;max-height:68px!important;
+ overflow:visible!important;
+}
+@container xpeng-layout (max-width:520px){
+ .xp-scene .xp-ux-modal.xp-ux-modal-maintenance .xp-tpms-only .xp-tire-stage>.xp-tire-reading{
+  bottom:auto!important;height:62px!important;
+  min-height:62px!important;max-height:62px!important;
  }
 }

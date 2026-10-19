@@ -20,7 +20,9 @@ const GALLERY=Object.freeze({
  'location-desktop':'map-desktop.png',
  'location-mobile':'map-mobile.png',
  'charging-actions-mobile':'charge-controls-mobile.png',
- 'diagnostics-mobile':'diagnostics-mobile.png'
+ 'diagnostics-mobile':'diagnostics-mobile.png',
+ 'functions-desktop':'functions-desktop.png',
+ 'functions-mobile':'functions-mobile.png'
 });
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 
@@ -137,16 +139,27 @@ async function main(){
  await page.evaluate(paths=>{
    if(window.customElements.get('ha-icon'))return;
    class PreviewHomeAssistantIcon extends HTMLElement{
-     connectedCallback(){
+     // Home Assistant updates ha-icon when icon changes with live SOC/state.
+     // The test preview must do the same or the battery can falsely display
+     // the initial battery-unknown (?) icon after a valid SOC update.
+     static get observedAttributes(){return ['icon'];}
+     connectedCallback(){this.renderGlyph();}
+     attributeChangedCallback(name,oldValue,newValue){
+       if(name==='icon'&&oldValue!==newValue&&this.isConnected)this.renderGlyph();
+     }
+     renderGlyph(){
        const glyph=paths[this.getAttribute('icon')];
        if(!glyph){this.setAttribute('data-mdi-missing','true');return;}
+       this.removeAttribute('data-mdi-missing');
+       const root=this.shadowRoot||this.attachShadow({mode:'open'});
+       root.textContent='';
        const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
        svg.setAttribute('viewBox','0 0 24 24');
        svg.setAttribute('width','100%');svg.setAttribute('height','100%');
        svg.setAttribute('fill','currentColor');
        const p=document.createElementNS('http://www.w3.org/2000/svg','path');
        p.setAttribute('d',glyph);svg.append(p);
-       this.attachShadow({mode:'open'}).append(svg);
+       root.append(svg);
      }
    }
    window.customElements.define('ha-icon',PreviewHomeAssistantIcon);
@@ -239,6 +252,15 @@ async function main(){
  // Compact owner-review JPEG: GitHub's binary API cannot preview large PNGs.
  // Keep the existing full-resolution PNG too.
  // Curated gallery uses a single full-resolution PNG per view.
+ const chargingDiscMetrics=await car.evaluate(el=>[...el.shadowRoot.querySelectorAll('.xp-charge-panel-actions button')].map(b=>{
+  const mdi=b.querySelector('ha-icon.xp-mdi-icon');
+  return {glyph:mdi?.getBoundingClientRect().width,ring:parseFloat(getComputedStyle(b,'::before').width),
+    circle:getComputedStyle(b,'::before').borderRadius};
+ }));
+ assert.ok(chargingDiscMetrics.length===3&&chargingDiscMetrics.every(x=>
+   x.glyph>=19&&x.glyph<=24&&x.ring>=42&&x.ring<=48&&
+   x.ring/x.glyph>=1.8&&x.circle==='50%'),
+   'Charging buttons must be compact 46px glass rings holding actual 21px MDI glyphs: '+JSON.stringify(chargingDiscMetrics));
  const chargingDesktop=await car.evaluate(el=>{
    const root=el.shadowRoot,find=q=>root.querySelector(q)?.getBoundingClientRect().toJSON();
    return {actions:[...root.querySelectorAll('.xp-ux-dock-seven .xp-ux-dock-action')].map(n=>n.dataset.xpToggle||n.dataset.xpOpen),
@@ -269,7 +291,38 @@ async function main(){
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
  await car.locator('button[data-xp-open="maintenance"]').first().click();
  assert.ok(await car.locator('.xp-ux-modal-maintenance').count(),'Maintenance modal was not opened');
+ const tpmsDesktop=await car.evaluate(el=>{
+  const root=el.shadowRoot;
+  const tiles=[...root.querySelectorAll('.xp-ux-modal-maintenance .xp-tire-reading')]
+    .map(tile=>({wheel:tile.dataset.wheel,rect:tile.getBoundingClientRect().toJSON()}));
+  const note=root.querySelector('.xp-tire-source-note')?.getBoundingClientRect().toJSON();
+  return {tiles,note};
+ });
+ assert.equal(tpmsDesktop.tiles.length,4);
+ assert.ok(tpmsDesktop.tiles.every(item=>item.rect.height>=48&&item.rect.height<=85),
+   'Desktop wheel badges must remain compact, not stretch to legacy stage height: '+JSON.stringify(tpmsDesktop));
+ assert.ok(tpmsDesktop.note&&tpmsDesktop.tiles.every(item=>item.rect.bottom<=tpmsDesktop.note.top+1),
+   'All four tire data labels must remain fully visible above the live-data note: '+JSON.stringify(tpmsDesktop));
  await screen('maintenance-desktop');
+ await car.locator('button[data-xp-close]').click();
+ // Browser-level V3 glass QA: seven official MDI badges, no opaque tile backing.
+ await car.locator('button[data-xp-more]').click();
+ const functionTiles=await car.evaluate(el=>[...el.shadowRoot.querySelectorAll('button.xp-extra-tile')].map(button=>{
+   const icon=button.querySelector('ha-icon.xp-mdi-icon');
+   const glyphRect=icon?.getBoundingClientRect(),circle=getComputedStyle(button,'::before'),
+     style=getComputedStyle(button);
+   return {page:button.dataset.xpExtraPage,mdi:icon?.getAttribute('icon'),
+     glyphSize:glyphRect?.width,circleSize:parseFloat(circle.width),
+     radius:circle.borderRadius,outerBackground:style.backgroundColor,
+     badgeBackground:circle.backgroundColor};
+ }));
+ assert.equal(functionTiles.length,7,'All seven Custom Functions routes must remain');
+ assert.ok(functionTiles.every(t=>t.mdi?.startsWith('mdi:')&&
+   t.circleSize>=46&&t.circleSize<=50&&t.glyphSize>=19&&t.glyphSize<=23&&
+   t.circleSize/t.glyphSize>=2&&t.radius==='50%'&&
+   t.outerBackground==='rgba(0, 0, 0, 0)'&&t.badgeBackground!=='rgba(0, 0, 0, 0)'),
+   'Desktop functions must have a transparent outer button, a 48px glass ring and a separate 21px native glyph: '+JSON.stringify(functionTiles));
+ await reviewShot('functions-desktop');
  await car.locator('button[data-xp-close]').click();
  // Exercise both HA-driven screens at phone widths and within a narrow
  // Home Assistant Sections column on a wide desktop viewport.
@@ -360,6 +413,7 @@ async function main(){
        return {car:rect('.xp-overview .xp-car')?.toJSON(),
          battery:rect('.xp-overview-stat')?.toJSON(),
          icon:rect('.xp-ux-dock-seven .xp-ux-dock-action ha-icon')?.toJSON(),
+         circle:parseFloat(getComputedStyle(root.querySelector('.xp-ux-dock-seven .xp-ux-dock-action'),'::before').width),
          actions:[...root.querySelectorAll('.xp-ux-dock-seven .xp-ux-dock-action')]
            .map(e=>e.getBoundingClientRect().toJSON())};
      });
@@ -367,8 +421,10 @@ async function main(){
        'Mobile vehicle object was not proportionally sized: '+JSON.stringify(sized));
      assert.ok(sized.battery?.height<=171&&sized.battery.height>=80,
        'Mobile battery card was not compacted: '+JSON.stringify(sized));
-     assert.ok(sized.icon?.width<=25&&sized.icon.width>=19,
-       'Mobile dock icons did not scale with card: '+JSON.stringify(sized));
+     // The circle and the MDI glyph have independent physical sizes.
+     assert.ok(sized.icon?.width>=19&&sized.icon.width<=24&&
+       sized.circle>=43&&sized.circle<=49&&sized.circle/sized.icon.width>=1.8,
+       'Mobile quick-action symbols must remain proportional inside compact glass circles: '+JSON.stringify(sized));
      assert.ok(sized.actions.length===7&&sized.actions.every(r=>r.height>=48),
        'Mobile dock has clipped/untappable actions: '+JSON.stringify(sized));
      assert.ok(sized.battery.bottom<=sized.car.top+3,
@@ -412,6 +468,16 @@ async function main(){
  });
  assert.ok(homeIconQuality.length===7&&homeIconQuality.every(i=>i.mdi?.startsWith('mdi:')&&i.within),
    'All seven actions must have genuine, centered native MDI icons: '+JSON.stringify(homeIconQuality));
+ const dockProportions=await car.evaluate(el=>[...el.shadowRoot.querySelectorAll('.xp-ux-dock-action')].map(button=>{
+   const glyph=button.querySelector('ha-icon.xp-mdi-icon');
+   const size=glyph?.getBoundingClientRect().width;
+   const circle=parseFloat(getComputedStyle(button,'::before').width);
+   return {icon:glyph?.getAttribute('icon'),glyph:size,circle,background:getComputedStyle(button).backgroundColor};
+ }));
+ assert.ok(dockProportions.length===7&&dockProportions.every(x=>
+   x.glyph>=19&&x.glyph<=24&&x.circle>=44&&x.circle<=50&&x.circle/x.glyph>=1.8&&
+   x.background==='rgba(0, 0, 0, 0)'),
+   'Home action MDI glyphs must be physically smaller than their floating glass circles: '+JSON.stringify(dockProportions));
  console.log('Desktop official MDI icons and bounding-box alignment verified:',JSON.stringify(homeIconQuality));
 
  // Beta 7: rendered Home Assistant header geometry and actual dock icon colors.
@@ -420,13 +486,29 @@ async function main(){
      wifi=root.querySelector('.xp-header .xp-wifi'),glyph=wifi?.querySelector('ha-icon'),
      gr=gear?.getBoundingClientRect(),wr=wifi?.getBoundingClientRect(),
      ir=glyph?.getBoundingClientRect();
-   const icons=[...root.querySelectorAll('.xp-ux-dock-seven .xp-ux-dock-action ha-icon')]
+   // Count the primary glyph of EACH dock button only. The official MDI
+   // trunk lift/lower badge is a subordinate action indicator, not an eighth
+   // shortcut or a replacement for the original neutral icon palette.
+   const icons=[...root.querySelectorAll('.xp-ux-dock-seven .xp-ux-dock-action')]
+     .map(button=>button.querySelector('ha-icon.xp-mdi-icon'))
+     .filter(Boolean)
      .map(icon=>getComputedStyle(icon).color);
+   const trunkButton=root.querySelector('.xp-ux-dock-action[data-xp-toggle="trunk"]');
+   const trunkArrow=trunkButton?.querySelector('.xp-trunk-arrow');
+   const trunkSymbol=trunkButton?.querySelector('.xp-trunk-symbol');
+   const trunkCar=trunkSymbol?.querySelector('ha-icon.xp-mdi-icon');
+   const carRect=trunkCar?.getBoundingClientRect(),arrowRect=trunkArrow?.getBoundingClientRect();
+   const tailgate={car:trunkCar?.getAttribute('icon'),
+     arrow:trunkArrow?.getAttribute('icon'),
+     action:trunkButton?.getAttribute('aria-label'),
+     arrowColor:trunkArrow?getComputedStyle(trunkArrow).color:null,
+     carLeft:carRect?.left,arrowRight:arrowRect?.right,
+     carWidth:carRect?.width,arrowWidth:arrowRect?.width};
    return {hasGear:!!gear,hasWifi:!!wifi,
      cssGap:parseFloat(getComputedStyle(root.querySelector('.xp-meta-tools')).gap),
      actualGap:gr&&wr?Math.abs(wr.left-gr.right):null,
      glyphOffset:ir&&wr?(ir.top+ir.height/2)-(wr.top+wr.height/2):null,
-     colors:[...new Set(icons)],iconCount:icons.length,
+     colors:[...new Set(icons)],iconCount:icons.length,tailgate,
      disabled:root.querySelectorAll('.xp-ux-dock-action[disabled]').length};
  });
  assert.equal(desktopHeaderPolish.hasGear,true,'Desktop gear must remain available');
@@ -438,6 +520,14 @@ async function main(){
  assert.deepEqual(desktopHeaderPolish.colors,['rgb(233, 244, 255)'],
    'Seven shortcut pictograms must share one neutral color');
  assert.equal(desktopHeaderPolish.iconCount,7);
+ assert.equal(desktopHeaderPolish.tailgate.car,'mdi:car-estate',
+   'Trunk shortcut must show a real rear-tailgate capable SUV side profile');
+ assert.ok(['mdi:arrow-up-bold','mdi:arrow-down-bold'].includes(desktopHeaderPolish.tailgate.arrow),
+   'Rear hatch must have a genuine MDI lift or lower action icon');
+ assert.ok(desktopHeaderPolish.tailgate.arrowRight<=desktopHeaderPolish.tailgate.carLeft+2,
+   'Rear hatch is the LEFT end of the right-facing SUV: arrow must stay beside its rear: '+JSON.stringify(desktopHeaderPolish.tailgate));
+ assert.ok(desktopHeaderPolish.tailgate.arrowWidth<desktopHeaderPolish.tailgate.carWidth*.7,
+   'Rear-hatch action indicator must be smaller than its main vehicle icon');
  assert.equal(desktopHeaderPolish.disabled,0,'All mock actions remain enabled');
  console.log('PASS desktop cog/Wi-Fi spacing and uniform action icon palette:',JSON.stringify(desktopHeaderPolish));
 
@@ -596,13 +686,26 @@ async function main(){
  const maintenanceFromGear=await car.evaluate(el=>{
    const root=el.shadowRoot;
    return {tires:root.querySelectorAll('.xp-ux-modal-maintenance .xp-tire-reading').length,
-     source:root.querySelector('.xp-ux-modal-maintenance .xp-maint-info')?.innerText||''};
+     source:root.querySelector('.xp-ux-modal-maintenance .xp-tire-source-note')?.innerText||'',
+     additionalDetails:root.querySelectorAll('.xp-ux-modal-maintenance .xp-maint-info').length};
  });
  assert.equal(maintenanceFromGear.tires,4);
- assert.match(maintenanceFromGear.source,/שנת דגם \(מהאינטגרציה\)/,
-   'Verified Xpengtk identity year must be explicitly distinguished from editor default');
+ assert.match(maintenanceFromGear.source,/חיישני הרכב דרך Home Assistant/);
+ assert.equal(maintenanceFromGear.additionalDetails,0,
+   'Owner requires only TPMS readouts on Maintenance, not unrelated vehicle data');
  await car.locator('button[data-xp-close]').click();
  assert.equal(await car.locator('.xp-ux-modal-extras').count(),1,'Maintenance Back must return to Gear options');
+ const mobileFunctionTiles=await car.evaluate(el=>[...el.shadowRoot.querySelectorAll('button.xp-extra-tile')].map(button=>{
+  const icon=button.querySelector('ha-icon.xp-mdi-icon'),circle=getComputedStyle(button,'::before');
+  return {page:button.dataset.xpExtraPage,glyphSize:icon?.getBoundingClientRect().width,
+    circleSize:parseFloat(circle.width),outerBackground:getComputedStyle(button).backgroundColor};
+ }));
+ assert.equal(mobileFunctionTiles.length,7);
+ assert.ok(mobileFunctionTiles.every(t=>t.circleSize>=43&&t.circleSize<=47&&
+  t.glyphSize>=18&&t.glyphSize<=21&&t.circleSize/t.glyphSize>=2&&
+  t.outerBackground==='rgba(0, 0, 0, 0)'),
+  'Phone functions must have a 44px circle containing a truly 19px icon: '+JSON.stringify(mobileFunctionTiles));
+ await reviewShot('functions-mobile');
  await car.locator('button[data-xp-extra-page="diagnostics"]').click();
  assert.ok(await car.locator('.xp-ux-modal-extras').count(),'Diagnostics extra page missing');
  const summary=await car.locator('.xp-entity-diagnostic').count();
@@ -694,7 +797,7 @@ async function main(){
        const root=el.shadowRoot,stage=root.querySelector('.xp-ux-modal-maintenance .xp-tire-stage').getBoundingClientRect();
        return {height:stage.height,width:stage.width};
      });
-     assert.ok(tyre.height>=155&&tyre.height<=320,'Mobile tire-stage objects not scaled: '+JSON.stringify(tyre));
+     assert.ok(tyre.height>=155&&tyre.height<=390,'Mobile TPMS stage must fit with larger original car art: '+JSON.stringify(tyre));
    }
 
    if(action==='climate'||action==='maintenance'){
@@ -703,7 +806,7 @@ async function main(){
        el.scrollTop=el.scrollHeight;
        const target=action==='climate'
          ?el.querySelector('.xp-ux-climate-feature:last-child')
-         :el.querySelector('.xp-maint-info .xp-extra-line:last-child');
+         :el.querySelector('.xp-tire-source-note');
        const area=el.getBoundingClientRect(),end=target?.getBoundingClientRect();
        return {start,position:el.scrollTop,clientHeight,scrollHeight,
          visible:!!end&&end.top<area.bottom&&end.bottom>area.top};
@@ -957,7 +1060,7 @@ async function main(){
        const inner=content?.querySelector('.xp-ux-modal-content-inner'),
          bodyRect=inner?.getBoundingClientRect();
        const tire=panel==='maintenance'?m.querySelector('.xp-tire-stage')?.getBoundingClientRect():null;
-       const metrics=panel==='maintenance'?m.querySelector('.xp-maint-info')?.getBoundingClientRect():null;
+       const metrics=panel==='maintenance'?m.querySelector('.xp-tire-source-note')?.getBoundingClientRect():null;
        const climateControls=panel==='climate'?m.querySelector('.xp-climate-layout>.xp-ux-climate-bottom')?.getBoundingClientRect():null;
        const hasGuide=!!m.querySelector('.xp-help-intro');
        const modalOverflow=getComputedStyle(m).overflowY;

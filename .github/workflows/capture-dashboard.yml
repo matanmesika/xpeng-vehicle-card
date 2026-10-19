@@ -8,6 +8,7 @@ on:
       - fix/g6-visual-live-feedback-20261018
       - design/g6-premium-visual-pass-20261018
       - refactor/g6-isolated-design-and-help-20261018
+      - design/g6-v2-surface-redesign-20261018
     paths:
       - scripts/capture-dashboard.cjs
       - src/xpeng-vehicle-card.js
@@ -56,11 +57,11 @@ jobs:
             'climate-desktop','climate-mobile',
             'maintenance-desktop','maintenance-mobile',
             'map-desktop','map-mobile',
-            'charge-controls-mobile','diagnostics-mobile'
+            'charge-controls-mobile','diagnostics-mobile','functions-desktop','functions-mobile'
           ]
           actual={p.name for p in root.iterdir() if p.suffix.lower() in ('.png','.jpg','.jpeg','.webp')}
           required={name+'.png' for name in names}
-          assert actual == required, f'Expected only the 12 curated captures; missing={required-actual}, extra={actual-required}'
+          assert actual == required, f'Expected only the 14 curated captures; missing={required-actual}, extra={actual-required}'
           for name in names:
               p=root/(name+'.png')
               b=p.read_bytes()
@@ -80,7 +81,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A docs/screenshots
           if ! git diff --staged --quiet; then
-            git commit -m "docs(g6): replace old captures with 12 current dashboard screenshots"
+            git commit -m "docs(g6): replace old captures with 14 current dashboard screenshots"
             # Work safely with concurrent changes to this PR branch.
             # Never force-push or discard updates made after checkout.
             for attempt in 1 2 3; do

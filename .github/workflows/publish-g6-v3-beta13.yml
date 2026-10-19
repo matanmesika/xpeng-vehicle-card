@@ -1,0 +1,79 @@
+name: Publish XPENG G6 V3 beta.13
+
+on:
+  push:
+    branches:
+      - design/g6-v2-surface-redesign-20261018
+    paths:
+      - .github/workflows/publish-g6-v3-beta13.yml
+      - docs/releases/v1.0.4-beta.13.md
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-g6-v3-beta13
+  cancel-in-progress: false
+
+jobs:
+  beta-preview:
+    name: Validate and publish prerelease v1.0.4-beta.13
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate shipped card bundle, separated sources and design guards
+        run: |
+          set -euo pipefail
+          node --check src/xpeng-vehicle-card.js
+          node --check dist/xpeng-vehicle-card.js
+          cmp src/xpeng-vehicle-card.js dist/xpeng-vehicle-card.js
+          node tools/build_vehicle_card.mjs --check
+          python -m json.tool hacs.json >/dev/null
+          node --test tests/g6-v3-inner-pages.test.cjs tests/g6-v3-canonical-style.test.cjs tests/g6-approved-glass-design.test.cjs
+          node --test tests/release-documentation.test.cjs tests/vehicle-artwork-mapping.test.cjs
+      - name: Verify fourteen current Chromium preview images
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import struct
+          root=Path('docs/screenshots')
+          names=['home-desktop','home-mobile','charging-desktop','charging-mobile',
+                 'climate-desktop','climate-mobile','maintenance-desktop','maintenance-mobile',
+                 'map-desktop','map-mobile','diagnostics-mobile','charge-controls-mobile',
+                 'functions-desktop','functions-mobile']
+          assert {x.name for x in root.glob('*.png')}=={n+'.png' for n in names}
+          for n in names:
+            data=(root/(n+'.png')).read_bytes()
+            assert data.startswith(b'\x89PNG\r\n\x1a\n') and len(data)>10000
+            w,h=struct.unpack('>II',data[16:24])
+            assert (w>=1100 if n.endswith('desktop') else 300<=w<=500) and h>=620,(n,w,h)
+          PY
+      - name: Package owner review images
+        run: zip -q -j xpeng-g6-v3-beta13-screenshots.zip docs/screenshots/*.png
+      - name: Publish real HACS beta prerelease from this tested branch commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: v1.0.4-beta.13
+          RELEASE_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            echo "Release $RELEASE_TAG already exists; refusing to move or overwrite its tag."
+            gh release view "$RELEASE_TAG" --json url,tagName,isPrerelease
+            exit 0
+          fi
+          gh release create "$RELEASE_TAG" \
+            src/xpeng-vehicle-card.js \
+            xpeng-g6-v3-beta13-screenshots.zip \
+            --target "$RELEASE_SHA" \
+            --title "XPENG Vehicle Card v1.0.4-beta.13 | G6 V3 Glass UI" \
+            --notes-file docs/releases/v1.0.4-beta.13.md \
+            --prerelease
+          gh release view "$RELEASE_TAG" --json url,tagName,isPrerelease,targetCommitish
