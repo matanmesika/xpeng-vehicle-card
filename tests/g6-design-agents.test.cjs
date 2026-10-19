@@ -103,6 +103,14 @@ test('Behavior Guardian: JS and vehicle assets do not change from the accepted b
     "default_zoom:11,hours_to_show:0");
   v=v.replace("return this.xpMaintenancePanel();",
     "return this.xpMaintenancePanel()+(out?'<div class=\"xp-maint-additional\">'+out+'</div>':'');");
+  // Beta 16 only mounts a one-time UI camera fix; car permissions and state are unchanged.
+  const centerStart=v.indexOf(' xpCenterMapOnVehicle(map,gps){');
+  if(centerStart>=0){
+    const centerEnd=v.indexOf(' async xpMountMap(){',centerStart);
+    assert.ok(centerEnd>centerStart,'One-time camera helper must be isolated');
+    v=v.slice(0,centerStart)+v.slice(centerEnd);
+  }
+  v=v.replace('     this.xpCenterMapOnVehicle(map,gps);\n','');
   return v;
  };
  assert.equal(normalize(source),normalize(reference),
