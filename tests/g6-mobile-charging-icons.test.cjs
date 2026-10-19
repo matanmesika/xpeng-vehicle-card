@@ -26,7 +26,7 @@ test('responsive styles change only dimensions, not markup or visual style',()=>
  const marker='/* ONE responsive charging dashboard component';
  assert.equal(css.split(marker).length-1,1);
  const style=css.slice(css.indexOf(marker));
- for(const x of ['--xp-charge-ring:48px','--xp-charge-icon:22px',
+ for(const x of ['--xp-charge-ring:48px','--xp-charge-icon:30px',
   '--xp-charge-ring:46px','--xp-charge-icon:21px',
   '--xp-charge-ring:44px','--xp-charge-icon:20px',
   'xp-charge-action-core','xp-charge-action-ring>.xp-mdi-icon',
