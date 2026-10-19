@@ -273,8 +273,9 @@ async function main(){
    'Charging must retain the three scoped charge buttons');
  assert.ok(chargingDesktop.image.width<.45*1400,
    'Desktop vehicle image must be smaller than original charging layout');
- assert.ok(chargingDesktop.image.right<=chargingDesktop.station.left+5,
-   'Desktop charging station must be exposed beside smaller car');
+ assert.ok(chargingDesktop.station.left>=chargingDesktop.image.left+chargingDesktop.image.width*.75 &&
+   chargingDesktop.station.left<=chargingDesktop.image.right+chargingDesktop.image.width*.18,
+   'Desktop charger should stand diagonally ahead of the front corner: '+JSON.stringify(chargingDesktop));
  assert.ok(chargingDesktop.image.bottom<chargingDesktop.dock.top+2,
    'Desktop car must not cover Home dock');
  console.log('Desktop charging: smaller car, station, 3 controls and identical Home dock',JSON.stringify(chargingDesktop));
@@ -426,12 +427,22 @@ async function main(){
      assert.deepEqual(geo.controls,['charge_controls','charge_schedule','stop_charge'],'Charging loses a charge control on '+width+'px');
      assert.ok(geo.car.width<=width*.81&&geo.car.width>=width*.72,
        'Scaled charging car is too large/small: '+JSON.stringify(geo));
-     assert.ok(geo.car.right<=geo.station.left+5,
-       'Charging station hidden behind vehicle on '+width+'px: '+JSON.stringify(geo));
+     assert.ok(geo.station.left>=geo.car.left+geo.car.width*.79 &&
+       geo.station.left<=geo.car.right+geo.car.width*.20,
+       'Charger must align near the front-right of car: '+JSON.stringify(geo));
      assert.ok(geo.car.bottom<geo.dock.top+4&&geo.station.bottom<geo.dock.top+4,
        'Charging scene objects overlap navigation dock: '+JSON.stringify(geo));
-     assert.ok(geo.panel.bottom<geo.car.bottom,
-       'Charging telemetry must stay above the car and navigation: '+JSON.stringify(geo));
+     assert.ok(geo.panel.bottom<=geo.car.top+12,
+       'Charging telemetry must not cover the car: '+JSON.stringify(geo));
+     const layers=await car.evaluate(el=>{
+       const r=el.shadowRoot,station=r.querySelector('.xp-station-xpeng19'),
+          vehicle=r.querySelector('.xp-charge .xp-car'),cable=r.querySelector('.xp-cable-mobile'),
+          info=r.querySelector('.xp-charge-card');
+       return {station:Number(getComputedStyle(station).zIndex),car:Number(getComputedStyle(vehicle).zIndex),
+          cable:Number(getComputedStyle(cable).zIndex),info:Number(getComputedStyle(info).zIndex)};
+     });
+     assert.ok(layers.station<layers.car&&layers.car<layers.cable&&layers.cable<layers.info,
+       'Charging layering: station behind car, cable on top, panel on top: '+JSON.stringify(layers));
      console.log('Mobile charging geometry verified '+width+'px',JSON.stringify(geo));
 
    }
