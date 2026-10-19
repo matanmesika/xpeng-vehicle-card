@@ -2750,388 +2750,6 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  .xp-scene .xp-ux-modal-extras .xp-extra-tile{min-height:112px}
 }
 
-/* V3 COMPACT INNER-PAGE DESIGN | all seven actions remain; presentation only.
-   Compact MDI glyphs sit inside accessible 40-44px targets, never huge tiles.
-   These styles belong to V3 itself, not another V2 override system. */
-.xp-scene .xp-ux-modal{
- --xp-v3-control-bg:rgba(13,43,64,.26);
- --xp-v3-control-hover:rgba(29,86,106,.43);
- --xp-v3-hairline:rgba(151,207,231,.25);
- --xp-v3-control-edge:rgba(159,213,239,.37);
- --xp-v3-glyph-size:21px;
- --xp-v3-control-height:42px;
- color:#eff9ff;
-}
-.xp-scene .xp-ux-modal-head{gap:clamp(8px,1.25cqw,15px)}
-.xp-scene .xp-ux-modal-head h2{font-size:clamp(17px,1.85cqw,25px)!important;line-height:1.2}
-.xp-scene .xp-ux-modal-head button{
- width:42px!important;min-width:42px!important;
- height:42px!important;min-height:42px!important;
- padding:9px!important;
- background:var(--xp-v3-control-bg)!important;
-}
-.xp-scene .xp-ux-modal-head button>.xp-mdi-icon{
- width:20px!important;height:20px!important;
- --xp-icon-size:20px!important;--mdc-icon-size:20px!important;
-}
-.xp-scene .xp-ux-tabs{gap:7px;flex-wrap:wrap}
-.xp-scene .xp-ux-tabs button{
- min-height:40px;padding:7px 12px!important;
- border-radius:999px!important;
- border:1px solid var(--xp-v3-control-edge)!important;
- background:var(--xp-v3-control-bg)!important;
- box-shadow:none!important;
- font-size:clamp(11px,1.04cqw,13px);
-}
-.xp-scene .xp-ux-selected{
- background:rgba(40,135,157,.35)!important;
- border-color:rgba(103,230,224,.8)!important;
- box-shadow:inset 0 0 0 1px rgba(105,226,233,.12)!important;
-}
-.xp-scene .xp-help-intro{padding:clamp(9px,1.3cqw,15px)!important}
-.xp-scene .xp-help-intro p,.xp-scene .xp-ux-note{line-height:1.45}
-.xp-scene .xp-ux-modal :is(
- .xp-extra-action,.xp-ux-vehicle-buttons button,
- .xp-ux-access-buttons button,.xp-ux-port-actions button,
- .xp-ux-charge-stop,.xp-ux-map-actions button,
- .xp-ux-climate-feature,.xp-climate-primary
-){
- border:1px solid var(--xp-v3-control-edge)!important;
- background:var(--xp-v3-control-bg)!important;
- box-shadow:none!important;
-}
-.xp-scene .xp-ux-modal :is(
- .xp-extra-action,.xp-ux-vehicle-buttons button,
- .xp-ux-access-buttons button,.xp-ux-port-actions button,
- .xp-ux-charge-stop,.xp-ux-map-actions button,
- .xp-climate-primary
-){
- min-height:var(--xp-v3-control-height)!important;
- padding:7px 11px!important;
- border-radius:13px!important;
- font-size:clamp(11px,1.06cqw,14px);
- line-height:1.25;
-}
-.xp-scene .xp-ux-modal :is(
- .xp-extra-action,.xp-ux-vehicle-buttons button,
- .xp-ux-access-buttons button,.xp-ux-port-actions button,
- .xp-ux-charge-stop,.xp-ux-map-actions button,
- .xp-ux-climate-primary
-):not(:disabled):is(:hover,:focus-visible){
- border-color:rgba(105,226,229,.8)!important;
- background:var(--xp-v3-control-hover)!important;
-}
-.xp-scene .xp-ux-modal :is(
- .xp-ux-vehicle-buttons button,.xp-ux-access-buttons button,
- .xp-ux-port-actions button,.xp-ux-map-actions button,
- .xp-climate-primary
-)>.xp-mdi-icon{
- width:20px!important;height:20px!important;
- --xp-icon-size:20px!important;--mdc-icon-size:20px!important;
- flex:0 0 20px!important;
-}
-.xp-scene .xp-ux-modal button:disabled{cursor:not-allowed;filter:saturate(.7)}
-/* HVAC: original cabin image and clickable seat positions remain untouched.
-   Resize the visual chrome, never remove a cabin hotspot or its level. */
-.xp-scene .xp-ux-modal-climate .xp-climate-primary{
- border-radius:13px!important;
- min-height:46px!important;
- gap:7px!important;
-}
-.xp-scene .xp-ux-modal-climate :is(
- .xp-climate-temp-panel,.xp-climate-fan-panel,.xp-ux-climate-feature
-){
- background:rgba(11,40,62,.22)!important;
- border-color:var(--xp-v3-hairline)!important;
- box-shadow:none!important;
-}
-.xp-scene .xp-ux-modal-climate :is(.xp-climate-temp-panel,.xp-climate-fan-panel){
- padding:clamp(7px,1.05cqw,12px)!important;
- border-radius:14px!important;
-}
-.xp-scene .xp-ux-modal-climate .xp-ux-climate-features{
- gap:clamp(5px,.9cqw,10px)!important;
-}
-.xp-scene .xp-ux-modal-climate .xp-ux-climate-feature{
- min-height:70px!important;
- padding:7px 6px!important;
- gap:4px!important;
- border-radius:13px!important;
- font-size:clamp(10px,.92cqw,13px);
-}
-.xp-scene .xp-ux-modal-climate .xp-ux-climate-feature>.xp-mdi-icon{
- width:22px!important;height:22px!important;
- --xp-icon-size:22px!important;--mdc-icon-size:22px!important;
-}
-.xp-scene .xp-ux-modal-climate .xp-ux-climate-feature span{
- font-size:clamp(10px,1.08cqw,13px)!important;
- line-height:1.2;
-}
-.xp-scene .xp-ux-modal-climate .xp-ux-climate-feature small{
- font-size:clamp(9px,.95cqw,11px)!important;
- line-height:1.2;
-}
-.xp-scene .xp-ux-modal-climate .xp-ux-temp-line button{
- min-width:40px!important;width:40px!important;
- min-height:40px!important;height:40px!important;
- padding:6px!important;
- background:var(--xp-v3-control-bg)!important;
-}
-.xp-scene .xp-ux-modal-climate .xp-ux-temp-line button>.xp-mdi-icon{
- width:20px!important;height:20px!important;
- --xp-icon-size:20px!important;--mdc-icon-size:20px!important;
-}
-.xp-scene .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-cycle{
- min-width:40px!important;width:40px!important;
- min-height:42px!important;height:42px!important;
- border-radius:14px!important;
- box-shadow:none!important;
-}
-.xp-scene .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-cycle>.xp-mdi-icon{
- width:19px!important;height:19px!important;
- --xp-icon-size:19px!important;--mdc-icon-size:19px!important;
-}
-.xp-scene .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-cycle .xp-ux-level{
- font-size:11px!important;
-}
-/* Maintenance: only the TPMS gauges get circular glass, while optional
-   information stays in small, unobtrusive, legible rows. */
-.xp-scene .xp-ux-modal-maintenance .xp-tire-reading{
- width:min(26%,116px)!important;
- min-height:0!important;
- padding:clamp(5px,.7cqw,9px)!important;
- border:1px solid rgba(96,218,225,.43)!important;
- background:rgba(10,42,60,.26)!important;
- box-shadow:none!important;
- gap:clamp(2px,.6cqw,6px)!important;
-}
-.xp-scene .xp-ux-modal-maintenance .xp-tire-reading>.xp-mdi-icon{
- width:18px!important;height:18px!important;
- --xp-icon-size:18px!important;--mdc-icon-size:18px!important;
- flex:0 0 18px!important;
-}
-.xp-scene .xp-ux-modal-maintenance .xp-tire-reading strong{
- font-size:clamp(15px,1.8cqw,25px)!important;
-}
-.xp-scene .xp-ux-modal-maintenance .xp-maint-info{
- gap:clamp(5px,.8cqw,9px)!important;
-}
-.xp-scene .xp-ux-modal-maintenance .xp-maint-info .xp-extra-line{
- min-height:34px!important;
- padding:6px 10px!important;
- border-radius:11px!important;
-}
-/* Custom Functions: compact tiles with official MDI (22px), not tall
-   opaque rectangles. Maintain every launcher and all seven destinations. */
-.xp-scene .xp-ux-modal-extras .xp-extra-grid{
- gap:clamp(7px,1.1cqw,12px)!important;
-}
-.xp-scene .xp-ux-modal-extras .xp-extra-tile{
-display:flex!important;flex-direction:column!important;
- align-content:center!important;align-items:center!important;
- justify-content:center!important;justify-items:center!important;
- gap:5px!important;
- min-height:102px!important;padding:6px 7px!important;
- border-radius:0!important;border:0!important;
- background:transparent!important;box-shadow:none!important;
- transform:none!important;text-align:center!important;
-}
-.xp-scene .xp-ux-modal-extras .xp-extra-tile>.xp-mdi-icon{
-flex:0 0 48px!important;
- width:48px!important;height:48px!important;
- --xp-icon-size:21px!important;--mdc-icon-size:21px!important;
- border:1px solid var(--xp-v3-control-edge)!important;
- border-radius:50%!important;
- background:rgba(13,43,64,.26)!important;
- box-shadow:inset 0 1px rgba(245,254,255,.1)!important;
- backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
- display:inline-flex!important;align-items:center!important;justify-content:center!important;
- color:#b7e8f3!important;filter:none!important;
-}
-.xp-scene .xp-ux-modal-extras .xp-extra-tile>b{
-font-size:clamp(12px,1.12cqw,14px)!important;
- line-height:1.12!important;text-align:center!important;
-}
-.xp-scene .xp-ux-modal-extras .xp-extra-tile>small{
-font-size:clamp(9px,.91cqw,11px)!important;
- line-height:1.2!important;text-align:center!important;
-}
-.xp-scene .xp-ux-modal-extras .xp-extra-tile:not(:disabled):is(:hover,:focus-visible){
-background:transparent!important;
- border:0!important;box-shadow:none!important;
- transform:none!important;
-}
-.xp-scene .xp-ux-modal-extras .xp-extra-heading{font-size:clamp(15px,1.5cqw,19px)!important}
-.xp-scene .xp-ux-modal-extras :is(.xp-extra-range,.xp-extra-line),
-.xp-scene .xp-ux-modal-charge_controls .xp-ux-charge-limit,
-.xp-scene .xp-charge-compact-modal .xp-ux-charge-schedule .xp-extra-line{
- border:1px solid var(--xp-v3-hairline)!important;
- background:rgba(12,44,65,.22)!important;
- box-shadow:none!important;
- border-radius:12px!important;
-}
-.xp-scene .xp-ux-modal-extras :is(.xp-extra-range,.xp-extra-line){
- min-height:34px!important;
- padding:7px 10px!important;
- gap:clamp(5px,.8cqw,10px)!important;
-}
-.xp-scene .xp-ux-modal-extras .xp-extra-line span{
- font-size:clamp(10px,1.05cqw,13px)!important;
-}
-.xp-scene .xp-ux-modal-extras .xp-extra-line b{
- font-size:clamp(11px,1.15cqw,14px)!important;
-}
-.xp-scene .xp-ux-modal-extras .xp-extra-action{
- width:fit-content;max-width:100%;
-}
-.xp-scene .xp-ux-modal-extras .xp-extra-tile:not(:disabled):is(:hover,:focus-visible)>.xp-mdi-icon{
- background:rgba(27,85,104,.39)!important;
- border-color:rgba(102,225,226,.83)!important;
- box-shadow:0 0 16px rgba(65,180,215,.12)!important;
-}
-/* Diagnostics: preserve independent scroll and full entity ID access.
-   Small separated rows have no heavy tiles and never split sensor names. */
-.xp-scene .xp-ux-modal-extras .xp-diagnostics-scroll .xp-entity-diagnostic{
- min-height:33px!important;
- padding:5px clamp(7px,1cqw,12px)!important;
- border:1px solid rgba(147,203,228,.13)!important;
- border-radius:9px!important;
- background:rgba(11,36,54,.18)!important;
- box-shadow:none!important;
- gap:clamp(5px,.85cqw,10px)!important;
-}
-.xp-scene .xp-ux-modal-extras .xp-diagnostics-scroll .xp-entity-diagnostic>span{
- font-size:clamp(10px,1.03cqw,12px)!important;
- line-height:1.4;
-}
-.xp-scene .xp-ux-modal-extras .xp-diagnostics-scroll .xp-entity-diagnostic>b{
- font-size:clamp(10px,1.02cqw,12px)!important;
- line-height:1.3;
-}
-/* Map: shrink native MDI controls without touching the real location map. */
-.xp-scene .xp-ux-modal-map .xp-ux-map-actions{
- gap:clamp(5px,.9cqw,9px)!important;
-}
-.xp-scene .xp-ux-modal-map .xp-ux-map-actions button{
- min-height:42px!important;
- padding:6px 9px!important;
- border-radius:12px!important;
- gap:6px!important;
- font-size:clamp(10px,1.05cqw,13px)!important;
-}
-.xp-scene .xp-ux-modal-map .xp-ux-map-actions button>.xp-mdi-icon{
- width:19px!important;height:19px!important;
- --xp-icon-size:19px!important;--mdc-icon-size:19px!important;
-}
-.xp-scene .xp-ux-modal-map .xp-ux-map-actions .xp-map-native-details{
- min-height:40px!important;background:rgba(10,38,57,.24)!important;
-}
-/* Charging settings and shared forms: match V3 instead of V2 solid blue. */
-.xp-scene .xp-charge-compact-modal :is(
- .xp-ux-charge-limit,.xp-ux-charge-schedule,.xp-ux-charge-actions,
- .xp-extra-line
-){
- background:rgba(12,42,62,.22)!important;
- border-color:var(--xp-v3-hairline)!important;
- box-shadow:none!important;
-}
-.xp-scene .xp-ux-modal :is(input[type=range],input[type=checkbox]){
- accent-color:#51e3c8;
-}
-@container xpeng-layout (max-width:850px){
- .xp-scene .xp-ux-modal{
-  --xp-v3-glyph-size:19px;
-  --xp-v3-control-height:42px;
- }
- .xp-scene .xp-ux-modal-extras .xp-extra-tile{
-display:flex!important;flex-direction:column!important;
- align-content:center!important;align-items:center!important;
- justify-content:center!important;justify-items:center!important;
- gap:5px!important;
- min-height:102px!important;padding:6px 7px!important;
- border-radius:0!important;border:0!important;
- background:transparent!important;box-shadow:none!important;
- transform:none!important;text-align:center!important;
-}
- .xp-scene .xp-ux-modal-extras .xp-extra-tile>.xp-mdi-icon{
-flex:0 0 48px!important;
- width:48px!important;height:48px!important;
- --xp-icon-size:21px!important;--mdc-icon-size:21px!important;
- border:1px solid var(--xp-v3-control-edge)!important;
- border-radius:50%!important;
- background:rgba(13,43,64,.26)!important;
- box-shadow:inset 0 1px rgba(245,254,255,.1)!important;
- backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
- display:inline-flex!important;align-items:center!important;justify-content:center!important;
- color:#b7e8f3!important;filter:none!important;
-}
- .xp-scene .xp-ux-modal-climate .xp-ux-climate-feature{
-  min-height:67px!important;padding:6px 4px!important;
- }
- .xp-scene .xp-ux-modal-climate .xp-ux-climate-feature>.xp-mdi-icon{
-  width:20px!important;height:20px!important;
-  --xp-icon-size:20px!important;--mdc-icon-size:20px!important;
- }
- .xp-scene .xp-ux-modal-maintenance .xp-tire-reading{
-  width:min(29%,90px)!important;padding:4px!important;
- }
- .xp-scene .xp-ux-modal-maintenance .xp-tire-reading strong{
-  font-size:clamp(13px,3.6cqw,19px)!important;
- }
-}
-@container xpeng-layout (max-width:520px){
- .xp-scene .xp-ux-modal-head button{
-  width:40px!important;min-width:40px!important;
-  height:40px!important;min-height:40px!important;
- }
- .xp-scene .xp-ux-modal-extras .xp-extra-grid{
-  grid-template-columns:repeat(2,minmax(0,1fr))!important;
- }
- .xp-scene .xp-ux-modal-extras .xp-extra-tile{
-display:flex!important;flex-direction:column!important;
- align-content:center!important;align-items:center!important;
- justify-content:center!important;justify-items:center!important;
- gap:5px!important;
- min-height:102px!important;padding:6px 7px!important;
- border-radius:0!important;border:0!important;
- background:transparent!important;box-shadow:none!important;
- transform:none!important;text-align:center!important;
-}
- .xp-scene .xp-ux-modal-extras .xp-extra-tile>.xp-mdi-icon{
-flex:0 0 48px!important;
- width:48px!important;height:48px!important;
- --xp-icon-size:21px!important;--mdc-icon-size:21px!important;
- border:1px solid var(--xp-v3-control-edge)!important;
- border-radius:50%!important;
- background:rgba(13,43,64,.26)!important;
- box-shadow:inset 0 1px rgba(245,254,255,.1)!important;
- backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
- display:inline-flex!important;align-items:center!important;justify-content:center!important;
- color:#b7e8f3!important;filter:none!important;
-}
- .xp-scene .xp-ux-modal-extras .xp-extra-tile>b{
-font-size:clamp(12px,1.12cqw,14px)!important;
- line-height:1.12!important;text-align:center!important;
-}
- .xp-scene .xp-ux-modal-extras .xp-extra-tile>small{
-font-size:clamp(9px,.91cqw,11px)!important;
- line-height:1.2!important;text-align:center!important;
-}
- .xp-scene .xp-ux-modal-climate .xp-ux-climate-feature{
-  min-height:64px!important;padding:5px 3px!important;
- }
- .xp-scene .xp-ux-modal-map .xp-ux-map-actions button{
-  min-height:42px!important;padding:5px 6px!important;
-  font-size:clamp(10px,2.5cqw,12px)!important;
- }
- .xp-scene .xp-ux-modal-extras .xp-diagnostics-scroll .xp-entity-diagnostic{
-  min-height:32px!important;padding:5px 7px!important;
- }
- .xp-scene .xp-ux-modal-maintenance .xp-tire-reading{
-  width:min(28%,76px)!important;
- }
-}
-
 @media(prefers-reduced-motion:reduce){
  .xp-scene .xp-ux-dock-seven .xp-ux-dock-action,
  .xp-scene .xp-ux-modal-extras .xp-extra-tile{
@@ -3661,6 +3279,406 @@ background:transparent!important;
   border-radius:18px!important;
  }
 }
+/* V3 COMPACT INNER-PAGE DESIGN | all seven actions remain; presentation only.
+   Compact MDI glyphs sit inside accessible 40-44px targets, never huge tiles.
+   These styles belong to V3 itself, not another V2 override system. */
+.xp-scene .xp-ux-modal{
+ --xp-v3-control-bg:rgba(13,43,64,.26);
+ --xp-v3-control-hover:rgba(29,86,106,.43);
+ --xp-v3-hairline:rgba(151,207,231,.25);
+ --xp-v3-control-edge:rgba(159,213,239,.37);
+ --xp-v3-glyph-size:21px;
+ --xp-v3-control-height:42px;
+ color:#eff9ff;
+}
+.xp-scene .xp-ux-modal-head{gap:clamp(8px,1.25cqw,15px)}
+.xp-scene .xp-ux-modal-head h2{font-size:clamp(17px,1.85cqw,25px)!important;line-height:1.2}
+.xp-scene .xp-ux-modal-head button{
+ width:42px!important;min-width:42px!important;
+ height:42px!important;min-height:42px!important;
+ padding:9px!important;
+ background:var(--xp-v3-control-bg)!important;
+}
+.xp-scene .xp-ux-modal-head button>.xp-mdi-icon{
+ width:20px!important;height:20px!important;
+ --xp-icon-size:20px!important;--mdc-icon-size:20px!important;
+}
+.xp-scene .xp-ux-tabs{gap:7px;flex-wrap:wrap}
+.xp-scene .xp-ux-tabs button{
+ min-height:40px;padding:7px 12px!important;
+ border-radius:999px!important;
+ border:1px solid var(--xp-v3-control-edge)!important;
+ background:var(--xp-v3-control-bg)!important;
+ box-shadow:none!important;
+ font-size:clamp(11px,1.04cqw,13px);
+}
+.xp-scene .xp-ux-selected{
+ background:rgba(40,135,157,.35)!important;
+ border-color:rgba(103,230,224,.8)!important;
+ box-shadow:inset 0 0 0 1px rgba(105,226,233,.12)!important;
+}
+.xp-scene .xp-help-intro{padding:clamp(9px,1.3cqw,15px)!important}
+.xp-scene .xp-help-intro p,.xp-scene .xp-ux-note{line-height:1.45}
+.xp-scene .xp-ux-modal :is(
+ .xp-extra-action,.xp-ux-vehicle-buttons button,
+ .xp-ux-access-buttons button,.xp-ux-port-actions button,
+ .xp-ux-charge-stop,.xp-ux-map-actions button,
+ .xp-ux-climate-feature,.xp-climate-primary
+){
+ border:1px solid var(--xp-v3-control-edge)!important;
+ background:var(--xp-v3-control-bg)!important;
+ box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal :is(
+ .xp-extra-action,.xp-ux-vehicle-buttons button,
+ .xp-ux-access-buttons button,.xp-ux-port-actions button,
+ .xp-ux-charge-stop,.xp-ux-map-actions button,
+ .xp-climate-primary
+){
+ min-height:var(--xp-v3-control-height)!important;
+ padding:7px 11px!important;
+ border-radius:13px!important;
+ font-size:clamp(11px,1.06cqw,14px);
+ line-height:1.25;
+}
+.xp-scene .xp-ux-modal :is(
+ .xp-extra-action,.xp-ux-vehicle-buttons button,
+ .xp-ux-access-buttons button,.xp-ux-port-actions button,
+ .xp-ux-charge-stop,.xp-ux-map-actions button,
+ .xp-ux-climate-primary
+):not(:disabled):is(:hover,:focus-visible){
+ border-color:rgba(105,226,229,.8)!important;
+ background:var(--xp-v3-control-hover)!important;
+}
+.xp-scene .xp-ux-modal :is(
+ .xp-ux-vehicle-buttons button,.xp-ux-access-buttons button,
+ .xp-ux-port-actions button,.xp-ux-map-actions button,
+ .xp-climate-primary
+)>.xp-mdi-icon{
+ width:20px!important;height:20px!important;
+ --xp-icon-size:20px!important;--mdc-icon-size:20px!important;
+ flex:0 0 20px!important;
+}
+.xp-scene .xp-ux-modal button:disabled{cursor:not-allowed;filter:saturate(.7)}
+/* HVAC: original cabin image and clickable seat positions remain untouched.
+   Resize the visual chrome, never remove a cabin hotspot or its level. */
+.xp-scene .xp-ux-modal-climate .xp-climate-primary{
+ border-radius:13px!important;
+ min-height:46px!important;
+ gap:7px!important;
+}
+.xp-scene .xp-ux-modal-climate :is(
+ .xp-climate-temp-panel,.xp-climate-fan-panel,.xp-ux-climate-feature
+){
+ background:rgba(11,40,62,.22)!important;
+ border-color:var(--xp-v3-hairline)!important;
+ box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal-climate :is(.xp-climate-temp-panel,.xp-climate-fan-panel){
+ padding:clamp(7px,1.05cqw,12px)!important;
+ border-radius:14px!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-climate-features{
+ gap:clamp(5px,.9cqw,10px)!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-climate-feature{
+ min-height:70px!important;
+ padding:7px 6px!important;
+ gap:4px!important;
+ border-radius:13px!important;
+ font-size:clamp(10px,.92cqw,13px);
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-climate-feature>.xp-mdi-icon{
+ width:22px!important;height:22px!important;
+ --xp-icon-size:22px!important;--mdc-icon-size:22px!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-climate-feature span{
+ font-size:clamp(10px,1.08cqw,13px)!important;
+ line-height:1.2;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-climate-feature small{
+ font-size:clamp(9px,.95cqw,11px)!important;
+ line-height:1.2;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-temp-line button{
+ min-width:40px!important;width:40px!important;
+ min-height:40px!important;height:40px!important;
+ padding:6px!important;
+ background:var(--xp-v3-control-bg)!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-temp-line button>.xp-mdi-icon{
+ width:20px!important;height:20px!important;
+ --xp-icon-size:20px!important;--mdc-icon-size:20px!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-cycle{
+ min-width:40px!important;width:40px!important;
+ min-height:42px!important;height:42px!important;
+ border-radius:14px!important;
+ box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-cycle>.xp-mdi-icon{
+ width:19px!important;height:19px!important;
+ --xp-icon-size:19px!important;--mdc-icon-size:19px!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-cabin-art .xp-ux-cycle .xp-ux-level{
+ font-size:11px!important;
+}
+/* Maintenance: only the TPMS gauges get circular glass, while optional
+   information stays in small, unobtrusive, legible rows. */
+.xp-scene .xp-ux-modal-maintenance .xp-tire-reading{
+ width:min(26%,116px)!important;
+ min-height:0!important;
+ padding:clamp(5px,.7cqw,9px)!important;
+ border:1px solid rgba(96,218,225,.43)!important;
+ background:rgba(10,42,60,.26)!important;
+ box-shadow:none!important;
+ gap:clamp(2px,.6cqw,6px)!important;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tire-reading>.xp-mdi-icon{
+ width:18px!important;height:18px!important;
+ --xp-icon-size:18px!important;--mdc-icon-size:18px!important;
+ flex:0 0 18px!important;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tire-reading strong{
+ font-size:clamp(15px,1.8cqw,25px)!important;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-maint-info{
+ gap:clamp(5px,.8cqw,9px)!important;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-maint-info .xp-extra-line{
+ min-height:34px!important;
+ padding:6px 10px!important;
+ border-radius:11px!important;
+}
+/* Custom Functions: compact tiles with official MDI (22px), not tall
+   opaque rectangles. Maintain every launcher and all seven destinations. */
+.xp-scene .xp-ux-modal-extras .xp-extra-grid{
+ gap:clamp(7px,1.1cqw,12px)!important;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile{
+display:flex!important;flex-direction:column!important;
+ align-content:center!important;align-items:center!important;
+ justify-content:center!important;justify-items:center!important;
+ gap:5px!important;
+ min-height:102px!important;padding:6px 7px!important;
+ border-radius:0!important;border:0!important;
+ background:transparent!important;box-shadow:none!important;
+ transform:none!important;text-align:center!important;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile>.xp-mdi-icon{
+flex:0 0 48px!important;
+ width:48px!important;height:48px!important;
+ --xp-icon-size:21px!important;--mdc-icon-size:21px!important;
+ border:1px solid var(--xp-v3-control-edge)!important;
+ border-radius:50%!important;
+ background:rgba(13,43,64,.26)!important;
+ box-shadow:inset 0 1px rgba(245,254,255,.1)!important;
+ backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ color:#b7e8f3!important;filter:none!important;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile>b{
+font-size:clamp(12px,1.12cqw,14px)!important;
+ line-height:1.12!important;text-align:center!important;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile>small{
+font-size:clamp(9px,.91cqw,11px)!important;
+ line-height:1.2!important;text-align:center!important;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile:not(:disabled):is(:hover,:focus-visible){
+background:transparent!important;
+ border:0!important;box-shadow:none!important;
+ transform:none!important;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-heading{font-size:clamp(15px,1.5cqw,19px)!important}
+.xp-scene .xp-ux-modal-extras :is(.xp-extra-range,.xp-extra-line),
+.xp-scene .xp-ux-modal-charge_controls .xp-ux-charge-limit,
+.xp-scene .xp-charge-compact-modal .xp-ux-charge-schedule .xp-extra-line{
+ border:1px solid var(--xp-v3-hairline)!important;
+ background:rgba(12,44,65,.22)!important;
+ box-shadow:none!important;
+ border-radius:12px!important;
+}
+.xp-scene .xp-ux-modal-extras :is(.xp-extra-range,.xp-extra-line){
+ min-height:34px!important;
+ padding:7px 10px!important;
+ gap:clamp(5px,.8cqw,10px)!important;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-line span{
+ font-size:clamp(10px,1.05cqw,13px)!important;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-line b{
+ font-size:clamp(11px,1.15cqw,14px)!important;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-action{
+ width:fit-content;max-width:100%;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile:not(:disabled):is(:hover,:focus-visible)>.xp-mdi-icon{
+ background:rgba(27,85,104,.39)!important;
+ border-color:rgba(102,225,226,.83)!important;
+ box-shadow:0 0 16px rgba(65,180,215,.12)!important;
+}
+/* Diagnostics: preserve independent scroll and full entity ID access.
+   Small separated rows have no heavy tiles and never split sensor names. */
+.xp-scene .xp-ux-modal-extras .xp-diagnostics-scroll .xp-entity-diagnostic{
+ min-height:33px!important;
+ padding:5px clamp(7px,1cqw,12px)!important;
+ border:1px solid rgba(147,203,228,.13)!important;
+ border-radius:9px!important;
+ background:rgba(11,36,54,.18)!important;
+ box-shadow:none!important;
+ gap:clamp(5px,.85cqw,10px)!important;
+}
+.xp-scene .xp-ux-modal-extras .xp-diagnostics-scroll .xp-entity-diagnostic>span{
+ font-size:clamp(10px,1.03cqw,12px)!important;
+ line-height:1.4;
+}
+.xp-scene .xp-ux-modal-extras .xp-diagnostics-scroll .xp-entity-diagnostic>b{
+ font-size:clamp(10px,1.02cqw,12px)!important;
+ line-height:1.3;
+}
+/* Map: shrink native MDI controls without touching the real location map. */
+.xp-scene .xp-ux-modal-map .xp-ux-map-actions{
+ gap:clamp(5px,.9cqw,9px)!important;
+}
+.xp-scene .xp-ux-modal-map .xp-ux-map-actions button{
+ min-height:42px!important;
+ padding:6px 9px!important;
+ border-radius:12px!important;
+ gap:6px!important;
+ font-size:clamp(10px,1.05cqw,13px)!important;
+}
+.xp-scene .xp-ux-modal-map .xp-ux-map-actions button>.xp-mdi-icon{
+ width:19px!important;height:19px!important;
+ --xp-icon-size:19px!important;--mdc-icon-size:19px!important;
+}
+.xp-scene .xp-ux-modal-map .xp-ux-map-actions .xp-map-native-details{
+ min-height:40px!important;background:rgba(10,38,57,.24)!important;
+}
+/* Charging settings and shared forms: match V3 instead of V2 solid blue. */
+.xp-scene .xp-charge-compact-modal :is(
+ .xp-ux-charge-limit,.xp-ux-charge-schedule,.xp-ux-charge-actions,
+ .xp-extra-line
+){
+ background:rgba(12,42,62,.22)!important;
+ border-color:var(--xp-v3-hairline)!important;
+ box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal :is(input[type=range],input[type=checkbox]){
+ accent-color:#51e3c8;
+}
+@container xpeng-layout (max-width:850px){
+ .xp-scene .xp-ux-modal{
+  --xp-v3-glyph-size:19px;
+  --xp-v3-control-height:42px;
+ }
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile{
+display:flex!important;flex-direction:column!important;
+ align-content:center!important;align-items:center!important;
+ justify-content:center!important;justify-items:center!important;
+ gap:5px!important;
+ min-height:102px!important;padding:6px 7px!important;
+ border-radius:0!important;border:0!important;
+ background:transparent!important;box-shadow:none!important;
+ transform:none!important;text-align:center!important;
+}
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile>.xp-mdi-icon{
+flex:0 0 48px!important;
+ width:48px!important;height:48px!important;
+ --xp-icon-size:21px!important;--mdc-icon-size:21px!important;
+ border:1px solid var(--xp-v3-control-edge)!important;
+ border-radius:50%!important;
+ background:rgba(13,43,64,.26)!important;
+ box-shadow:inset 0 1px rgba(245,254,255,.1)!important;
+ backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ color:#b7e8f3!important;filter:none!important;
+}
+ .xp-scene .xp-ux-modal-climate .xp-ux-climate-feature{
+  min-height:67px!important;padding:6px 4px!important;
+ }
+ .xp-scene .xp-ux-modal-climate .xp-ux-climate-feature>.xp-mdi-icon{
+  width:20px!important;height:20px!important;
+  --xp-icon-size:20px!important;--mdc-icon-size:20px!important;
+ }
+ .xp-scene .xp-ux-modal-maintenance .xp-tire-reading{
+  width:min(29%,90px)!important;padding:4px!important;
+ }
+ .xp-scene .xp-ux-modal-maintenance .xp-tire-reading strong{
+  font-size:clamp(13px,3.6cqw,19px)!important;
+ }
+}
+@container xpeng-layout (max-width:520px){
+ .xp-scene .xp-ux-modal-head button{
+  width:40px!important;min-width:40px!important;
+  height:40px!important;min-height:40px!important;
+ }
+ .xp-scene .xp-ux-modal-extras .xp-extra-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ }
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile{
+display:flex!important;flex-direction:column!important;
+ align-content:center!important;align-items:center!important;
+ justify-content:center!important;justify-items:center!important;
+ gap:5px!important;
+ min-height:102px!important;padding:6px 7px!important;
+ border-radius:0!important;border:0!important;
+ background:transparent!important;box-shadow:none!important;
+ transform:none!important;text-align:center!important;
+}
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile>.xp-mdi-icon{
+flex:0 0 48px!important;
+ width:48px!important;height:48px!important;
+ --xp-icon-size:21px!important;--mdc-icon-size:21px!important;
+ border:1px solid var(--xp-v3-control-edge)!important;
+ border-radius:50%!important;
+ background:rgba(13,43,64,.26)!important;
+ box-shadow:inset 0 1px rgba(245,254,255,.1)!important;
+ backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ color:#b7e8f3!important;filter:none!important;
+}
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile>b{
+font-size:clamp(12px,1.12cqw,14px)!important;
+ line-height:1.12!important;text-align:center!important;
+}
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile>small{
+font-size:clamp(9px,.91cqw,11px)!important;
+ line-height:1.2!important;text-align:center!important;
+}
+ .xp-scene .xp-ux-modal-climate .xp-ux-climate-feature{
+  min-height:64px!important;padding:5px 3px!important;
+ }
+ .xp-scene .xp-ux-modal-map .xp-ux-map-actions button{
+  min-height:42px!important;padding:5px 6px!important;
+  font-size:clamp(10px,2.5cqw,12px)!important;
+ }
+ .xp-scene .xp-ux-modal-extras .xp-diagnostics-scroll .xp-entity-diagnostic{
+  min-height:32px!important;padding:5px 7px!important;
+ }
+ .xp-scene .xp-ux-modal-maintenance .xp-tire-reading{
+  width:min(28%,76px)!important;
+ }
+}
+
+
+
+/* Subpage-only responsive sizing: smaller circle, same tappable cell. */
+@container xpeng-layout (max-width:850px){
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile{min-height:96px!important;padding:5px 6px!important}
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile>.xp-mdi-icon{
+  flex-basis:46px!important;width:46px!important;height:46px!important;
+  --xp-icon-size:20px!important;--mdc-icon-size:20px!important
+ }
+}
+@container xpeng-layout (max-width:520px){
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile{min-height:93px!important;padding:5px!important}
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile>.xp-mdi-icon{
+  flex-basis:44px!important;width:44px!important;height:44px!important;
+  --xp-icon-size:19px!important;--mdc-icon-size:19px!important
+ }
+}
+
 @media(prefers-reduced-motion:reduce){
  .xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon,
  .xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-trunk-symbol{transition:none!important}

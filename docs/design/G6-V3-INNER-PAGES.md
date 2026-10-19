@@ -18,3 +18,7 @@ No action, sensor, routing or original vehicle artwork has been changed.
 Acceptance: run `node --test tests/g6-v3-inner-pages.test.cjs` plus the
 existing full tests and real-browser screenshot workflow. Compare the screen
 captures before approving beta release. Do not merge the draft PR automatically.
+
+The final compact subpage module intentionally follows the V3 overview
+rules. This gives it cascade priority over retained legacy structural rules
+without modifying the functional runtime.
