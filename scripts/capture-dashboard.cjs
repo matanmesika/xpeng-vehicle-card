@@ -602,6 +602,12 @@ async function main(){
  assert.equal(hoverSquare.iconBorder,'0px','No square border on hovered HVAC icon');
  assert.equal(hoverSquare.iconShadow,'none','No blue square shadow on hovered HVAC icon');
  assert.notEqual(hoverSquare.ringBackground,'rgba(0, 0, 0, 0)','Only round button disc may highlight');
+ const climateHalo=hoverSquare.ringBackground;
+ await car.locator('.xp-ux-dock-action[data-xp-toggle="doors"]').hover();
+ const lockHalo=await car.evaluate(el=>getComputedStyle(
+   el.shadowRoot.querySelector('.xp-ux-dock-action[data-xp-toggle="doors"]'),'::before').backgroundColor);
+ assert.equal(climateHalo,lockHalo,'Climate must use the same circular hover color as door lock');
+
 
  console.log('PASS desktop cog/Wi-Fi spacing and uniform action icon palette:',JSON.stringify(desktopHeaderPolish));
 
@@ -673,6 +679,7 @@ async function main(){
      flash:root.querySelectorAll('button[data-xp-map-action="flash_lights"]').length,
      back:root.querySelectorAll('button[data-xp-close]').length,
      backVisible:!!b&&b.width>0&&b.height>0,
+     backOffset:!!b?b.left-root.querySelector('.xp-ux-modal-map').getBoundingClientRect().left:null,
      homeButtons:root.querySelectorAll('.xp-ux-dock-action').length,
      stageWidth:Math.round(r.width),stageHeight:Math.round(r.height),
      config:window.__xpengNativeMapRequest};
@@ -683,6 +690,8 @@ async function main(){
  assert.equal(desktopMap.flash,1,'Flash button missing in desktop map');
  assert.equal(desktopMap.back,1,'Desktop map should have exactly one Back');
  assert.equal(desktopMap.backVisible,true,'Desktop Back is not visible');
+ assert.ok(desktopMap.backOffset>=0&&desktopMap.backOffset<86,
+    'Desktop Back arrow must stay at the modal edge, not 110px inside: '+JSON.stringify(desktopMap));
  assert.equal(desktopMap.homeButtons,0,'Home dock must hide in Location');
  assert.ok(desktopMap.stageWidth>900&&desktopMap.stageHeight>=350,JSON.stringify(desktopMap));
  assert.deepEqual(desktopMap.config,{
@@ -705,6 +714,25 @@ async function main(){
  await car.locator('button[data-xp-close]').click();
  assert.equal(await car.locator('.xp-ux-modal-map').count(),0,'Desktop Back must close Location');
  assert.equal(await car.locator('.xp-ux-dock-action').count(),7,'Desktop Back must restore Home shortcuts');
+ // Owner's desktop More Options hover: the circle may glow, never the MDI host.
+ await car.locator('button[data-xp-more]').click();
+ await car.locator('.xp-extra-tile').first().hover();
+ const moreIconHover=await car.evaluate(el=>{
+   const tile=el.shadowRoot.querySelector('.xp-ux-modal-extras .xp-extra-tile'),
+     glyph=tile.querySelector('ha-icon.xp-mdi-icon'),style=getComputedStyle(glyph),
+     disc=getComputedStyle(tile,'::before'),outer=getComputedStyle(tile);
+   return {hover:tile.matches(':hover'),iconBg:style.backgroundColor,
+     iconShadow:style.boxShadow,iconBorder:style.borderTopWidth,
+     tileBg:outer.backgroundColor,discBg:disc.backgroundColor,discRadius:disc.borderRadius};
+ });
+ assert.equal(moreIconHover.hover,true,'More options test must hover an actual launcher');
+ assert.equal(moreIconHover.iconBg,'rgba(0, 0, 0, 0)','More options glyph must not paint a dark blue square');
+ assert.equal(moreIconHover.iconShadow,'none','More options glyph must not have a box shadow');
+ assert.equal(moreIconHover.iconBorder,'0px','More options glyph must not have a square border');
+ assert.equal(moreIconHover.tileBg,'rgba(0, 0, 0, 0)','More options tile must be transparent');
+ assert.equal(moreIconHover.discRadius,'50%','Only the circular disc changes color');
+ await car.locator('.xp-ux-modal-extras button[data-xp-close]').click();
+
 
  await car.locator('button[data-xp-open="climate"]').first().click();
  assert.ok(await car.locator('.xp-ux-modal-climate').count(),'Climate modal missing');
