@@ -99,7 +99,8 @@ test('native map reuses one unchanged Map card on repeated Xpengtk hass updates'
  const before=card._xpMapElement;
  card.hass={...card._hass,states:{...card._hass.states,'sensor.user_named_battery':{state:'71',attributes:{}}}};
  assert.equal(card._xpMapElement,before);
- assert.equal(card._xpMapElement.hass,card._hass);
+ assert.notEqual(card._xpMapElement.hass,card._hass);
+ assert.equal(card._xpMapElement.hass.states['device_tracker.user_gps'].attributes.icon,'mdi:car-back');
  assert.equal(count,1);
  await card.xpMountMap();
  assert.equal(count,1,'Map initialization must not repeat');
@@ -352,7 +353,8 @@ test('extras menu has seven categories and home preserves seven actions',()=>{
   const {card}=createCard();
   assert.match(card.header(),/data-xp-more/);
   card._xpPanel='extras';
-  assert.doesNotMatch(card.header(),/data-xp-more/,'subpages must expose only Back');
+  assert.match(card.header(),/data-xp-more/,'Gear stays visible in all subpages');
+ assert.match(card.header(),/data-meta-toggle/,'Wi-Fi stays visible in all subpages');
   assert.equal((card.xpExtrasPanel().match(/data-xp-extra-page=/g)||[]).length,7);
   assert.equal((card.xpDock().match(/data-xp-(?:open|toggle)=/g)||[]).length,7);
   for(const key of ['security','energy','schedule','power','maintenance','updates','diagnostics']){
@@ -1053,8 +1055,10 @@ test('every action is a native modern MDI glyph, including battery and charge st
  assert.match(home,/data-xp-battery-icon[^>]*><ha-icon[^>]*icon="mdi:battery-(?:[0-9]+|unknown|outline)"/,
    'Battery pictogram must be official MDI, not a custom drawn icon');
  assert.doesNotMatch(home,/class="xp-batt-fill"/);
- assert.match(charging,/class="xp-station xp-station-v3"[^>]*><span class="xp-station-display"><ha-icon[^>]*icon="mdi:ev-station"/,
-   'Charging station badge must be official MDI');
+ assert.match(charging,/xp-station-xpeng19[^>]*>[\s\S]*?xp-xpeng-pedestal/,
+   'G6 uses approved XPENG-branded charger on all viewports');
+ assert.match(charging,/xp-station-display[^>]*>.*?icon="mdi:ev-station"/,
+   'Original official MDI fallback remains in the DOM');
  assert.doesNotMatch(card.header(),/✕/,'No improvised decorative X brand icon');
 });
 test('every modal Back is a single accessible RTL MDI arrow with no visible Back text',()=>{
@@ -1187,8 +1191,8 @@ test('charging cable uses approved dedicated charging image and separate full-le
  const html=card.charging();
  assert.match(html,/data-xp-cable="desktop"/);
  assert.match(html,/data-xp-cable="mobile"/);
- assert.match(html,/M171 489.*358 516/);
- assert.match(html,/M935 460.*1310 475/);
+ assert.match(html,/M171 489.*346 516/);
+ assert.match(html,/M935 460.*1287 474/);
  card._hass.states['binary_sensor.is_charging'].state='off';
  assert.doesNotMatch(card.charging(),/data-xp-cable/);
 });
