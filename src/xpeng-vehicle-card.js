@@ -4736,6 +4736,51 @@ background:transparent!important;
  .xp-scene .xp-ux-modal-maintenance .xp-maintenance-v4 .xp-tire-reading-body{order:0!important}
 }
 
+/* Final owner desktop review (Oct 19): remove the old Back spacer, because
+   only the far-right header status controls are interactive above the modal. */
+@container xpeng-layout (min-width:851px){
+ .xp-scene:has(.xp-ux-modal) .xp-ux-modal .xp-ux-modal-head{
+  padding-inline-start:0!important;
+  padding-left:0!important;
+  padding-right:0!important;
+ }
+}
+/* One uniform round hover halo for the Climate action and all other shortcuts.
+   The icon host itself must never become a blue square. */
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action[data-xp-open="climate"]::before{
+ background:var(--xp-v3-glass)!important;
+ border-color:var(--xp-v3-edge)!important;
+ box-shadow:0 4px 18px rgba(0,3,13,.17),inset 0 1px rgba(245,254,255,.12)!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action:not(:disabled):is(:hover,:focus-visible)::before,
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action[data-xp-open="climate"]:not(:disabled):is(:hover,:focus-visible)::before{
+ background:rgba(20,88,117,.49)!important;
+ border-color:rgba(102,233,231,.85)!important;
+ box-shadow:0 0 22px var(--xp-v3-halo)!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action:not(:disabled):is(:hover,:focus-visible)>.xp-mdi-icon{
+ color:#9cfbed!important;
+}
+/* More Options: hover lights only the circular ::before. Keep each MDI icon
+   transparent, including focus and the original desktop 30px glyph. */
+.xp-scene .xp-ux-modal-extras .xp-extra-tile>.xp-mdi-icon,
+.xp-scene .xp-ux-modal-extras .xp-extra-tile:not(:disabled):is(:hover,:focus,:focus-visible)>.xp-mdi-icon{
+ background:transparent!important;
+ border:0!important;border-radius:0!important;
+ outline:0!important;box-shadow:none!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile:not(:disabled):is(:hover,:focus-visible){
+ background:transparent!important;border:0!important;
+ box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile:focus-visible{
+ outline:none!important;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile:focus-visible::before{
+ outline:2px solid #8fe8f2!important;outline-offset:3px!important;
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -6359,27 +6404,42 @@ class XpengVehicleCard extends HTMLElement{
  charging(){
   return `${this.title()}
     <div class="xp-station xp-station-v3 xp-station-xpeng19" aria-hidden="true">
-     <svg class="xp-xpeng-pedestal" viewBox="0 0 100 250" preserveAspectRatio="xMidYMid meet">
-      <defs>
-       <linearGradient id="xp19-case" x1="0" x2="1" y1="0" y2=".14"><stop offset="0" stop-color="#b4c6d2"/><stop offset=".15" stop-color="#64788b"/><stop offset=".32" stop-color="#243343"/><stop offset=".78" stop-color="#111c29"/><stop offset="1" stop-color="#070f18"/></linearGradient>
-       <linearGradient id="xp19-panel" x1="0" x2="1"><stop stop-color="#081524"/><stop offset=".55" stop-color="#182d3c"/><stop offset="1" stop-color="#03080d"/></linearGradient>
-       <linearGradient id="xp19-edge" x1="0" x2="1"><stop stop-color="#c9ddeb"/><stop offset=".6" stop-color="#6a8b9f"/><stop offset="1" stop-color="#1c2939"/></linearGradient>
-       <linearGradient id="xp19-led" x1="0" x2="1"><stop stop-color="#39bdf7"/><stop offset=".5" stop-color="#f5ffff"/><stop offset="1" stop-color="#1597d1"/></linearGradient>
-      </defs>
-      <ellipse cx="54" cy="243" rx="39" ry="4" fill="#01050d" opacity=".6"/>
-      <path d="M27 10Q27 5 35 4L73 1Q82 1 83 11L86 223Q87 229 79 233L34 237Q26 236 25 228Z" fill="url(#xp19-case)" stroke="#74899c" stroke-width="1.3"/>
-      <path d="M32 11Q32 9 36 9L73 6Q78 6 79 12L81 226Q80 230 76 230L36 232Q31 230 31 226Z" fill="url(#xp19-panel)" stroke="#3a5b73" stroke-width=".6"/>
-      <path d="M25 20L25 225Q27 234 33 236" stroke="url(#xp19-edge)" stroke-width="4" fill="none"/>
-      <rect x="37" y="13" width="38" height="93" rx="11" fill="#06111e" stroke="#2a3f51" stroke-width="1"/>
-      <path d="M43 36L52 45L61 36M43 45L52 36L61 45" stroke="#d6f2ff" stroke-width="3.4" fill="none" stroke-linecap="round"/>
-      <text x="56" y="60" fill="#d9eafa" text-anchor="middle" font-size="8" letter-spacing="1.2" font-family="Arial,sans-serif">XPENG</text>
-      <rect x="53" y="134" width="4" height="74" rx="2" fill="#20b9f5" opacity=".21"/>
-      <rect x="54.4" y="134" width="2" height="74" rx="1" fill="url(#xp19-led)"/>
-      <path d="M31 113L21 114Q17 115 17 122V132Q17 137 21 138L31 139" fill="#172736" stroke="#8ba9bd" stroke-width="1.7"/>
-      <circle cx="18.5" cy="126" r="5" fill="#091622" stroke="#8ba9bd" stroke-width="1.5"/>
-      <circle cx="18.5" cy="126" r="1.8" fill="#28e7c7"/>
-      <path d="M82 30L84 216" stroke="#91a7b5" stroke-opacity=".35" stroke-width="1.5"/>
-     </svg>
+     <svg class="xp-xpeng-pedestal" viewBox="0 0 100 250" preserveAspectRatio="xMidYMid meet" role="presentation">
+       <defs>
+        <linearGradient id="xp19-case" x1="0%" y1="0%" x2="100%" y2="9%"><stop offset="0" stop-color="#d1dce3"/><stop offset=".11" stop-color="#718392"/><stop offset=".28" stop-color="#344553"/><stop offset=".76" stop-color="#111d27"/><stop offset="1" stop-color="#091119"/></linearGradient>
+        <linearGradient id="xp19-panel" x1="0%" y1="0%" x2="100%" y2="12%"><stop stop-color="#08121d"/><stop offset=".26" stop-color="#1d303f"/><stop offset=".64" stop-color="#0a1722"/><stop offset="1" stop-color="#030a11"/></linearGradient>
+        <linearGradient id="xp19-metal" x1="0%" y1="0%" x2="100%" y2="0%"><stop stop-color="#839aa9"/><stop offset=".14" stop-color="#e3edf0"/><stop offset=".38" stop-color="#6c8392"/><stop offset="1" stop-color="#253643"/></linearGradient>
+        <linearGradient id="xp19-screen" x1="0%" y1="0%" x2="100%" y2="100%"><stop stop-color="#132634"/><stop offset=".39" stop-color="#07131d"/><stop offset="1" stop-color="#02080e"/></linearGradient>
+        <linearGradient id="xp19-green" x1="0%" y1="0%" x2="100%" y2="0%"><stop stop-color="#078f65"/><stop offset=".48" stop-color="#6effca"/><stop offset="1" stop-color="#10ab80"/></linearGradient>
+        <linearGradient id="xp19-reflection" x1="0%" y1="0%" x2="100%" y2="100%"><stop stop-color="#d4edfc" stop-opacity=".37"/><stop offset=".3" stop-color="#8bbbd0" stop-opacity=".12"/><stop offset="1" stop-color="#eefcff" stop-opacity="0"/></linearGradient>
+       </defs>
+       <ellipse cx="52" cy="244" rx="44" ry="5" fill="#000711" opacity=".66"/>
+       <path d="M23 236L35 232L80 229L92 236L82 242L25 243Z" fill="#16222d" stroke="#586e7d" stroke-width="1.1"/>
+       <path d="M29 6L70 2Q80 2 84 11L87 223Q87 232 78 235L35 240Q24 238 23 228L23 19Q23 9 29 6Z" fill="url(#xp19-case)" stroke="#8c9ead" stroke-width="1.3"/>
+       <path d="M76 6Q83 7 84 15L87 223Q88 230 78 235L72 235L72 10Z" fill="#09141e" opacity=".7"/>
+       <path d="M31 12L71 7Q77 8 78 15L80 224Q79 231 74 231L34 235Q29 234 29 226L29 19Q29 14 31 12Z" fill="url(#xp19-panel)" stroke="#617687" stroke-width=".65"/>
+       <path d="M24.8 20L25 226Q26 233 31 237" fill="none" stroke="url(#xp19-metal)" stroke-width="3.3" stroke-linecap="round"/>
+       <path d="M31 15L37 13L39 230L34 233Z" fill="url(#xp19-reflection)" opacity=".6"/>
+       <rect x="37" y="16" width="35" height="92" rx="7" fill="url(#xp19-screen)" stroke="#344b5b" stroke-width="1"/>
+       <path d="M40 23Q51 19 68 21L70 36Q56 28 42 33Z" fill="url(#xp19-reflection)" opacity=".5"/>
+       <path d="M43 41L52.5 48L62 41M43 48L52.5 41L62 48" stroke="#ebf6fc" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+       <text x="54" y="63" fill="#d7e5ed" text-anchor="middle" font-size="7.2" letter-spacing="1.1" font-family="Arial,sans-serif">XPENG</text>
+       <rect x="43" y="82" width="25" height="3" rx="1.5" fill="#1a2c37"/>
+       <circle cx="65" cy="91" r="2.4" fill="#23e9a5"/>
+       <path d="M43 95H66" stroke="#263b47" stroke-width="1"/>
+       <path d="M43 113H68" stroke="#5b7181" stroke-opacity=".4" stroke-width=".7"/>
+       <path d="M34 117H73" stroke="#05131c" stroke-width="1.4"/>
+       <path d="M34 117L22 119Q17 120 17 126V137Q18 142 23 144L33 143Z" fill="#263a47" stroke="#8295a1" stroke-width="1.3"/>
+       <rect x="14" y="121" width="9" height="20" rx="3" fill="#101e29" stroke="#718797" stroke-width="1.2"/>
+       <circle cx="17.6" cy="131" r="3.1" fill="#08141d" stroke="#52bb9f" stroke-width="1.3"/>
+       <path d="M35 128H70" stroke="#a0b5bf" stroke-opacity=".25" stroke-width=".5"/>
+       <rect x="51" y="143" width="8" height="69" rx="3.4" fill="#06171c" stroke="#1e343d" stroke-width=".7"/>
+       <rect x="53.3" y="145" width="3.3" height="65" rx="1.65" fill="url(#xp19-green)"/>
+       <path d="M38 194L46 193M38 199L46 198M38 204L46 203M38 209L46 208" stroke="#566e79" stroke-width="1.1" stroke-linecap="round" opacity=".6"/>
+       <circle cx="35" cy="222" r="1.1" fill="#8ca2af"/><circle cx="73" cy="220" r="1.1" fill="#4f6977"/>
+       <path d="M78 15L82 218" stroke="#acc2cb" stroke-opacity=".32" stroke-width="1.4"/>
+       <path d="M37 235L74 231" stroke="#c3d6db" stroke-opacity=".34" stroke-width="1.6"/>
+      </svg>
      <span class="xp-station-display">${xpIcon('station',24)}</span><span class="xp-station-charge-light"></span><span class="xp-station-side-light"></span>
     </div>${this.carArt()}
     ${this.model()==='G6'&&this.xpChargingActive()?
