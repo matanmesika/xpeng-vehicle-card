@@ -144,6 +144,8 @@ jobs:
         run: node --test --test-name-pattern="Glass Cascade Agent" tests/g6-approved-glass-design.test.cjs
       - name: Canonical design cleanup and live function compatibility
         run: node --test tests/g6-v3-canonical-style.test.cjs
+      - name: Verify all V3 inner pages and proportional MDI targets
+        run: node --test tests/g6-v3-inner-pages.test.cjs
 
   approved-responsive-glass-agent:
     name: Responsive UX Agent | one card on desktop iPhone and Sections
