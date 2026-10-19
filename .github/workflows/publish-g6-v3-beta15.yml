@@ -7,6 +7,9 @@ on:
     paths:
       - .github/workflows/publish-g6-v3-beta15.yml
       - docs/releases/v1.0.4-beta.15.md
+  pull_request:
+    branches:
+      - release/v1.0.4-beta.14
   workflow_dispatch:
 
 permissions:
@@ -107,6 +110,7 @@ jobs:
           retention-days: 14
           if-no-files-found: warn
       - name: Publish opt-in Beta 15 prerelease (never merge main)
+        if: github.event_name != 'pull_request'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
