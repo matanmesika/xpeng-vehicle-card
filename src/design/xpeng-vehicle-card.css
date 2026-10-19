@@ -4486,7 +4486,7 @@ background:transparent!important;
  }
  /* Only iPhone card: tighten data, but preserve every live value and action. */
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card{
-  top:158px!important;left:4%!important;width:92%!important;
+  top:142px!important;left:4%!important;width:92%!important;
   padding:9px 12px!important;border-radius:16px!important;
  }
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-heading{
