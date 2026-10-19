@@ -3799,6 +3799,450 @@ background:transparent!important;
  .xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-trunk-symbol{transition:none!important}
 }
 
+
+/* G6 V3 · Owner-approved Reference Layout:  TPMS / HVAC console / Charging pedestal.
+ * Uses approved existing photos and live sensors; no replacement vehicle or cabin image.
+ * The isolated functional runtime owns entities; this isolated CSS owns all surfaces.
+ */
+.xp-scene .xp-ux-modal-maintenance .xp-maintenance-page.xp-tpms-only{
+ display:flex!important;flex-direction:column!important;
+ gap:clamp(8px,1.1cqw,13px)!important;
+ width:100%;max-width:100%;min-width:0;
+ align-items:stretch;justify-content:center;position:relative;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only>h3{
+ margin:0 0 4px!important;padding:0 4px!important;
+ font-size:clamp(15px,1.5cqw,20px)!important;
+ font-weight:650;letter-spacing:.01em;
+ color:#ebf8ff;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only>.xp-tire-screen{
+ position:relative!important;inset:auto!important;
+ height:clamp(300px,50dvh,450px)!important;
+ max-height:none!important;min-height:0!important;
+ width:100%!important;max-width:100%!important;
+ margin:0 auto!important;padding:0!important;
+ flex:0 0 auto!important;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-stage{
+ position:relative!important;display:block!important;
+ height:100%!important;min-height:0!important;max-height:100%!important;
+ width:min(920px,100%)!important;
+ max-width:100%!important;
+ margin:0 auto!important;
+ overflow:visible!important;
+ background:radial-gradient(ellipse at center,rgba(24,91,106,.16),rgba(5,23,38,0) 70%)!important;
+ border:0!important;border-radius:0!important;box-shadow:none!important;
+ isolation:isolate;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-center{
+ position:absolute!important;
+ left:34%!important;top:1%!important;width:32%!important;
+ height:97%!important;max-height:none!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ z-index:1;
+ filter:drop-shadow(0 9px 16px rgba(0,0,0,.48))!important;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-center .xp-top-car{
+ width:100%!important;height:100%!important;
+ max-width:none!important;max-height:100%!important;
+ object-fit:contain!important;position:relative;z-index:1;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-wheel-highlight{
+ position:absolute;z-index:2;pointer-events:none;display:block;
+ width:13%;height:18%;
+ border:1px solid rgba(84,246,215,.62);
+ border-radius:45% 45% 30% 30%;
+ background:linear-gradient(90deg,rgba(4,252,203,.06),rgba(25,246,210,.18),rgba(4,252,203,.06));
+ box-shadow:0 0 14px rgba(18,241,208,.23),inset 0 0 11px rgba(25,237,206,.16);
+ opacity:.8;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-wheel-fl{left:9%;top:17%}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-wheel-fr{right:9%;top:17%}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-wheel-rl{left:9%;bottom:18%}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-wheel-rr{right:9%;bottom:18%}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading{
+ position:absolute!important;z-index:3!important;
+ display:flex!important;flex-direction:row!important;
+ align-items:center!important;justify-content:center!important;
+ gap:8px!important;
+ box-sizing:border-box!important;
+ width:24%!important;max-width:none!important;
+ min-height:65px!important;height:auto!important;
+ padding:9px 10px!important;margin:0!important;
+ border:1px solid rgba(91,197,213,.34)!important;
+ border-radius:13px!important;
+ background:linear-gradient(140deg,rgba(7,31,47,.68),rgba(4,23,39,.38))!important;
+ box-shadow:inset 0 1px 0 rgba(222,251,255,.06),0 8px 22px rgba(0,0,0,.12)!important;
+ backdrop-filter:blur(12px)!important;
+ transform:none!important;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading[data-wheel="tire_fl"]{left:5%!important;top:18%!important}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading[data-wheel="tire_fr"]{right:5%!important;top:18%!important}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading[data-wheel="tire_rl"]{left:5%!important;top:68%!important}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading[data-wheel="tire_rr"]{right:5%!important;top:68%!important}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading>.xp-mdi-icon{
+ flex:0 0 18px!important;width:18px!important;height:18px!important;
+ --xp-icon-size:18px!important;--mdc-icon-size:18px!important;
+ color:#70f3dc!important;filter:none!important;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading-body{
+ flex:0 1 auto!important;min-width:0;
+ text-align:center!important;display:flex;flex-direction:column;gap:2px;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading small{
+ display:block;font-size:clamp(10px,1.02cqw,13px)!important;
+ line-height:1.2;color:#b6d5e4!important;white-space:nowrap;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading strong{
+ font-size:clamp(18px,2.25cqw,28px)!important;
+ line-height:1.05;letter-spacing:-.025em;
+ white-space:nowrap;tab-size:2;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading strong span{
+ font-size:.58em!important;font-weight:500;color:#bad2e0!important;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-extras{
+ display:flex;flex-wrap:wrap;justify-content:center;gap:3px 8px;
+ font-size:clamp(9px,.8cqw,11px);color:#85dfd7;
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading::after{
+ content:"";position:absolute;top:50%!important;
+ width:24%!important;height:1px!important;
+ background:linear-gradient(90deg,rgba(103,241,218,.8),rgba(103,241,218,.07));
+}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading[data-wheel="tire_fl"]::after,
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading[data-wheel="tire_rl"]::after{right:-24%!important}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading[data-wheel="tire_fr"]::after,
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading[data-wheel="tire_rr"]::after{left:-24%!important;transform:rotate(180deg)}
+.xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-source-note{
+ margin:0!important;font-size:clamp(10px,.85cqw,12px)!important;
+ text-align:center;color:#a8c9da!important;line-height:1.4!important;
+}
+/* Cabin portrait + all hotspot coordinates are intentionally not styled here.
+ * Only the console on the other side gets new visual hierarchy. */
+.xp-scene .xp-ux-modal-climate .xp-climate-layout>.xp-ux-climate-bottom{
+ direction:ltr!important;
+ gap:clamp(9px,1.12cqw,15px)!important;
+ justify-content:center!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-temp-panel{
+ order:0!important;
+ border:0!important;border-radius:0!important;
+ background:transparent!important;box-shadow:none!important;
+ padding:4px 4px 6px!important;margin:0!important;overflow:visible!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-temp-panel .xp-ux-climate-caption{
+ font-size:clamp(11px,.95cqw,14px)!important;
+ color:#a8d5e9;font-weight:600;letter-spacing:.025em;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-thermometers{
+ grid-template-columns:minmax(0,1fr)!important;
+ grid-auto-flow:row!important;gap:0!important;
+ direction:ltr!important;text-align:center!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-target{grid-row:1!important;direction:ltr!important}
+.xp-scene .xp-ux-modal-climate .xp-climate-inside{
+ grid-row:2!important;
+ padding:3px 0!important;margin-top:1px!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-thermometers>div+div{
+ border:0!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-inside small{
+ font-size:clamp(9px,.78cqw,11px)!important;margin:0!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-inside b{
+ font-size:clamp(12px,1.06cqw,15px)!important;margin:0!important;
+ color:#b7dfea!important;font-weight:600;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-target>small{
+ font-size:clamp(11px,.94cqw,13px)!important;margin:0!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-target .xp-ux-temp-line{
+ margin:5px auto!important;display:flex!important;
+ justify-content:space-between!important;
+ align-items:center!important;gap:12px!important;
+ direction:ltr!important;width:100%;max-width:380px!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-target .xp-ux-temp-line b{
+ font-size:clamp(30px,3.35cqw,47px)!important;white-space:nowrap;
+ font-weight:650;line-height:1.05;letter-spacing:-.035em;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-target .xp-ux-temp-line button{
+ flex:0 0 43px!important;width:43px!important;min-width:43px!important;
+ height:43px!important;min-height:43px!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ border:1px solid rgba(135,207,231,.32)!important;
+ border-radius:50%!important;
+ background:rgba(11,50,69,.24)!important;
+ box-shadow:inset 0 1px rgba(221,248,255,.07)!important;
+ font-size:25px!important;font-weight:350;color:#effbff;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-primary-controls{
+ order:1!important;
+ display:flex!important;justify-content:center!important;gap:clamp(8px,1.2cqw,17px)!important;
+ grid-template-columns:none!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-primary{
+ display:flex!important;flex-direction:column!important;
+ align-items:center!important;justify-content:center!important;
+ min-width:0!important;max-width:130px!important;
+ width:clamp(86px,11cqw,130px)!important;
+ min-height:83px!important;height:83px!important;
+ padding:6px 4px!important;gap:3px!important;
+ border:0!important;border-radius:0!important;
+ background:transparent!important;box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-primary>.xp-mdi-icon{
+ width:40px!important;height:40px!important;
+ flex:0 0 40px!important;
+ --xp-icon-size:22px!important;--mdc-icon-size:22px!important;
+ padding:8px!important;box-sizing:border-box!important;
+ border:1px solid rgba(117,198,222,.5)!important;
+ border-radius:50%!important;
+ background:rgba(11,47,68,.34)!important;
+ color:#bdeaf2!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-primary.xp-ux-selected>.xp-mdi-icon{
+ border-color:rgba(77,244,216,.78)!important;
+ background:rgba(17,107,112,.32)!important;
+ color:#7cf2d5!important;
+ box-shadow:0 0 13px rgba(31,225,199,.2)!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-primary b{
+ font-size:clamp(11px,.9cqw,13px)!important;line-height:1.15;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-primary small{
+ font-size:clamp(9px,.74cqw,11px)!important;color:#a7c8d6!important;line-height:1.15;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-fan-panel{
+ order:2!important;
+ border:1px solid rgba(125,203,220,.22)!important;
+ border-radius:999px!important;
+ background:rgba(9,44,66,.32)!important;
+ box-shadow:none!important;
+ padding:11px 16px!important;margin:0!important;
+ overflow:visible!important;direction:ltr!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-fan-panel>span{
+ display:flex!important;justify-content:space-between!important;align-items:center!important;
+ gap:8px!important;
+ font-size:clamp(11px,1.05cqw,14px)!important;color:#e2f8ff;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-fan-panel>span>.xp-mdi-icon{
+ width:20px!important;height:20px!important;
+ --xp-icon-size:20px!important;--mdc-icon-size:20px!important;
+ color:#8bf2e7!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-fan-bars{
+ display:flex!important;flex-direction:row!important;
+ align-items:center!important;justify-content:center!important;
+ gap:clamp(6px,.82cqw,11px)!important;
+ height:15px!important;min-height:15px!important;
+ width:100%!important;direction:ltr!important;overflow:visible!important;
+ margin:7px 0 3px!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-fan-bars i{
+ display:block!important;flex:1 1 auto!important;
+ width:auto!important;max-width:8px!important;min-width:3px!important;
+ height:7px!important;min-height:7px!important;
+ margin:0!important;border:1px solid rgba(127,178,192,.29)!important;
+ border-radius:50%!important;
+ background:rgba(105,150,174,.38)!important;box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-fan-bars i.xp-fan-bar-on{
+ background:#55e9e0!important;border-color:#55e9e0!important;
+ box-shadow:0 0 9px rgba(41,229,220,.55)!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-climate-fan-panel input[type="range"]{
+ width:100%!important;margin:5px 0 0!important;
+ height:18px!important;accent-color:#69f1dd;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-climate-features{
+ order:3!important;display:flex!important;flex-direction:row!important;
+ flex-wrap:wrap!important;justify-content:center!important;
+ gap:clamp(8px,1.2cqw,16px)!important;
+ grid-template-columns:none!important;margin:0!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-climate-feature{
+ display:flex!important;flex-direction:column!important;
+ align-items:center!important;justify-content:center!important;
+ flex:0 1 120px!important;width:clamp(78px,9.6cqw,120px)!important;
+ min-height:88px!important;height:auto!important;
+ gap:4px!important;padding:6px 4px!important;
+ border:0!important;border-radius:0!important;
+ background:transparent!important;box-shadow:none!important;
+ text-align:center!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-climate-feature>.xp-mdi-icon{
+ width:40px!important;height:40px!important;min-height:40px!important;
+ --xp-icon-size:22px!important;--mdc-icon-size:22px!important;
+ border-radius:50%!important;
+ border:1px solid rgba(117,198,222,.5)!important;
+ padding:8px!important;box-sizing:border-box!important;
+ background:rgba(11,47,68,.34)!important;
+ color:#c6ecf4!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-climate-feature.xp-ux-selected>.xp-mdi-icon{
+ border-color:#60edcf!important;
+ background:rgba(23,105,114,.33)!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-climate-feature span{
+ font-size:clamp(10px,.94cqw,13px)!important;line-height:1.1!important;
+}
+.xp-scene .xp-ux-modal-climate .xp-ux-climate-feature small{
+ font-size:clamp(9px,.72cqw,10px)!important;line-height:1.15!important;
+}
+/* A CSS-built pedestal surface, not an invented or substituted vehicle photo.
+ * The original cable routes, grounded connector and charging art stay intact. */
+.xp-scene.xp-charge .xp-station.xp-station-v3{
+ display:flex!important;flex-direction:column!important;
+ align-items:center!important;justify-content:flex-start!important;
+ gap:0!important;
+ position:absolute!important;
+ right:3%!important;bottom:27%!important;
+ width:7%!important;min-width:57px!important;max-width:98px!important;
+ height:30%!important;min-height:112px!important;max-height:246px!important;
+ padding:13px 5px 8px!important;
+ border-radius:18px 18px 8px 8px!important;
+ border:1px solid rgba(88,204,248,.65)!important;
+ background:linear-gradient(96deg,#0b273f,#07152a 35%,#15334e 78%,#081625)!important;
+ box-shadow:0 0 23px rgba(0,194,243,.23),inset 0 0 16px rgba(79,189,230,.14),10px 14px 17px rgba(0,0,0,.2)!important;
+ box-sizing:border-box!important;
+ overflow:visible!important;z-index:2!important;
+}
+.xp-scene.xp-charge .xp-station.xp-station-v3::before{
+ content:"";position:absolute;left:-8%;right:-8%;bottom:-7px;
+ width:auto;height:8px;transform:perspective(20px) rotateX(18deg);
+ border:1px solid rgba(96,170,198,.38);
+ border-radius:3px;background:#06192a;
+ box-shadow:0 7px 8px rgba(0,0,0,.4);
+}
+.xp-scene.xp-charge .xp-station.xp-station-v3::after{
+ content:"";position:absolute;right:5px;top:8px;bottom:8px;width:3px;
+ border-radius:99px;background:linear-gradient(#4ad9ee,#1c6d93,#54ddea);
+ box-shadow:0 0 9px rgba(63,220,244,.32);opacity:.7;
+}
+.xp-scene.xp-charge .xp-station-v3 .xp-station-display{
+ position:relative;z-index:1;
+ display:grid;place-items:center;
+ width:82%;max-width:75px;aspect-ratio:1 / 1.1;
+ margin:14px auto 0;
+ border-radius:13px;
+ background:radial-gradient(circle at 50% 30%,rgba(29,192,223,.2),rgba(4,15,35,.89) 73%);
+ border:1px solid rgba(94,201,245,.66);
+ box-shadow:0 0 15px rgba(0,185,247,.25),inset 0 0 12px rgba(4,160,207,.24);
+}
+.xp-scene.xp-charge .xp-station-v3 .xp-station-display .xp-mdi-icon{
+ width:clamp(19px,2.2cqw,27px)!important;height:clamp(19px,2.2cqw,27px)!important;
+ --xp-icon-size:24px!important;--mdc-icon-size:24px!important;
+ color:#7be7fa!important;
+ filter:drop-shadow(0 0 6px rgba(69,216,243,.65));
+}
+.xp-scene.xp-charge .xp-station-v3 .xp-station-charge-light{
+ display:block;width:43%;height:5px;border-radius:99px;
+ margin:clamp(11px,2.1cqw,28px) auto 0;
+ background:#27e6b3;box-shadow:0 0 9px rgba(36,235,180,.78);
+ opacity:1;
+}
+.xp-scene.xp-charge .xp-station-v3 .xp-station-side-light{
+ display:block;position:absolute;left:7px;top:20%;bottom:10%;width:2px;
+ border-radius:99px;background:rgba(56,206,239,.45);
+ box-shadow:0 0 9px rgba(56,206,239,.4);
+}
+@container xpeng-layout (max-width:850px){
+ .xp-scene .xp-ux-modal-maintenance .xp-tpms-only>.xp-tire-screen{
+  height:clamp(270px,54dvh,395px)!important
+ }
+ .xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading{
+  width:29%!important;min-height:56px!important;padding:6px 4px!important;gap:3px!important;
+ }
+ .xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading>.xp-mdi-icon{
+  width:15px!important;height:15px!important;flex-basis:15px!important;
+  --xp-icon-size:15px!important;--mdc-icon-size:15px!important
+ }
+ .xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading small{
+  font-size:clamp(9px,2cqw,11px)!important
+ }
+ .xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading strong{
+  font-size:clamp(15px,3.3cqw,21px)!important
+ }
+ .xp-scene .xp-ux-modal-climate .xp-climate-target .xp-ux-temp-line b{
+  font-size:clamp(27px,6.5cqw,36px)!important
+ }
+ .xp-scene .xp-ux-modal-climate .xp-climate-primary{
+  min-height:75px!important;height:75px!important
+ }
+ .xp-scene .xp-ux-modal-climate .xp-climate-fan-panel{
+  padding:8px 11px!important
+ }
+ .xp-scene.xp-charge .xp-station.xp-station-v3{
+  right:3%!important;bottom:29%!important;
+  width:9%!important;min-width:34px!important;
+  max-width:57px!important;height:18%!important;
+  min-height:82px!important;max-height:135px!important;
+  border-radius:11px 11px 5px 5px!important;
+  padding:7px 3px!important
+ }
+ .xp-scene.xp-charge .xp-station-v3 .xp-station-display{
+  margin:4px auto 0;border-radius:7px
+ }
+ .xp-scene.xp-charge .xp-station-v3 .xp-station-display .xp-mdi-icon{
+  width:17px!important;height:17px!important;
+  --xp-icon-size:17px!important;--mdc-icon-size:17px!important
+ }
+}
+@container xpeng-layout (max-width:520px){
+ .xp-scene .xp-ux-modal-maintenance .xp-tpms-only>.xp-tire-screen{
+  height:clamp(265px,90cqw,360px)!important;max-width:100%!important
+ }
+ .xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-center{
+  left:30%!important;width:40%!important
+ }
+ .xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading{
+  width:28%!important;min-height:52px!important;
+  flex-direction:column!important;gap:2px!important;
+  padding:5px 2px!important;
+ }
+ .xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading>.xp-mdi-icon{
+  width:13px!important;height:13px!important;flex-basis:13px!important;
+  --xp-icon-size:13px!important;--mdc-icon-size:13px!important
+ }
+ .xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-tire-reading strong{
+  font-size:clamp(13px,3.6cqw,17px)!important
+ }
+ .xp-scene .xp-ux-modal-maintenance .xp-tpms-only .xp-wheel-highlight{
+  width:11%;height:15%;opacity:.67
+ }
+ .xp-scene .xp-ux-modal-climate .xp-climate-target .xp-ux-temp-line button{
+  flex-basis:40px!important;width:40px!important;min-width:40px!important;height:40px!important;min-height:40px!important
+ }
+ .xp-scene .xp-ux-modal-climate .xp-climate-target .xp-ux-temp-line b{
+  font-size:clamp(25px,7.1cqw,34px)!important
+ }
+ .xp-scene .xp-ux-modal-climate .xp-climate-primary{
+  min-height:71px!important;height:71px!important;width:clamp(78px,25cqw,100px)!important
+ }
+ .xp-scene .xp-ux-modal-climate .xp-climate-primary>.xp-mdi-icon,
+ .xp-scene .xp-ux-modal-climate .xp-ux-climate-feature>.xp-mdi-icon{
+  width:36px!important;height:36px!important;
+  min-height:36px!important;flex-basis:36px!important;
+  --xp-icon-size:20px!important;--mdc-icon-size:20px!important;
+  padding:7px!important
+ }
+ .xp-scene .xp-ux-modal-climate .xp-ux-climate-feature{
+  min-height:75px!important;flex-basis:87px!important;width:87px!important
+ }
+ .xp-scene.xp-charge .xp-station.xp-station-v3{
+  right:2.8%!important;bottom:30%!important;
+  width:9%!important;min-width:35px!important;
+  height:15%!important;min-height:80px!important
+ }
+}
+
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -4570,7 +5014,7 @@ class XpengVehicleCard extends HTMLElement{
    if(page==='climate'){
      body='<div class="xp-climate-layout">'+
        '<section class="xp-ux-climate-bottom" aria-label="בקרת אקלים">'+
-       this.xpClimatePrimaryControls()+this.xpTempControl()+this.xpFanControl()+
+       this.xpTempControl()+this.xpClimatePrimaryControls()+this.xpFanControl()+
        this.xpClimateFeatures()+'</section>'+
        this.xpCabinView()+'</div>';
    }else if(page==='charge_controls')body='<div class="xp-ux-charging-panel">'+this.xpChargeLimitPanel()+'</div>';
@@ -4590,27 +5034,14 @@ class XpengVehicleCard extends HTMLElement{
  }
 
  xpMaintenancePanel(){
-   const odometer=this.num('odometer','km');
-   const maint=this.xpLive('sensor','maintenance');
-   const ident=this.xpLive('sensor','vehicle_identity');
-   const attrs=ident?.state?.attributes||{};
-   const masked=typeof attrs.vin_masked==='string'&&attrs.vin_masked.trim()?attrs.vin_masked:'—';
-   const line=(name,value)=>'<div class="xp-extra-line"><span>'+xpEsc(name)+'</span><b>'+xpEsc(value)+'</b></div>';
-   const info=[
-     line('קילומטראז׳',odometer),
-     line('הטיפול הבא',maint?.state?.state||'—'),
-     line('תאריך טיפול',maint?.state?.attributes?.next_date||'—'),
-     line('ק״מ שנותרו לטיפול',maint?.state?.attributes?.km_remaining??'—'),
-     line('מספר שלדה (מוסתר)',masked),
-     line('דגם',attrs.vehicle_type_name||attrs.model_family||this.model()),
-     line(attrs.model_year?'שנת דגם (מהאינטגרציה)':'שנת דגם (מהגדרות הכרטיס)',attrs.model_year||this.year()),
-     line('יצרן',attrs.manufacturer||'XPENG'),
-     line('גרסת XOS',this.xpLive('sensor','xos_version')?.state?.state||'—')
-   ].join('');
-   return '<div class="xp-maintenance-page"><h3>לחץ אוויר בארבעת הצמיגים</h3>'+
-      this.tireScreen(false)+'<h3>תחזוקה ופרטי רכב</h3><div class="xp-maint-info">'+info+'</div>'+
-      '<p class="xp-ux-note">הערכים מתעדכנים לפי Home Assistant. מספר השלדה המלא אינו חשוף באינטגרציה.</p></div>';
+   // Owner's maintenance surface is tire pressure only. Never substitute
+   // simulated odometer, service or vehicle-identity cards for live TPMS.
+   return '<div class="xp-maintenance-page xp-tpms-only">'+
+     '<h3>לחץ אוויר בארבעת הצמיגים</h3>'+this.tireScreen(false)+
+     '<p class="xp-ux-note xp-tire-source-note">לחצי הצמיגים מתקבלים מחיישני הרכב דרך Home Assistant. ערך חסר נשאר לא זמין; יחידות הלחץ נקבעות בהגדרות הכרטיס.</p>'+
+     '</div>';
  }
+
  xpChargeLimitPanel(){
    // A focused slider, not an unrelated port/stop-charging page. Write only
    // when the real Xpengtk number entity exists with numeric current state.
@@ -4817,7 +5248,7 @@ class XpengVehicleCard extends HTMLElement{
      climate:['Climate controls','Climate power, AUTO, target temperature and fan settings operate only with mapped Home Assistant entities. Seat and steering-wheel controls cycle the supported levels directly on the cabin image.','Fan and temperature limits depend on the available entities.'],
      charge_controls:['Charge limit','Sets the target maximum battery percentage for charging. A lower limit stops at a lower target SOC; a higher limit allows a higher target SOC.','Changes are sent to Home Assistant and should be confirmed in the vehicle.'],
      charge_schedule:['Charging schedule','Displays the charging start and end times published by Xpengtk. This page does not invent an unsupported schedule editing action.','Read-only start and end times; no editable numeric limits.'],
-     maintenance:['Maintenance and tire pressure','Four tire readings are paired with their physical wheel positions. Other values show odometer, next service and vehicle identity.','Recommended tire pressure must come from the actual vehicle placard; no universal minimum or maximum is assumed.'],
+     maintenance:['Tire pressure','Live TPMS readings are shown directly beside the four wheels of the existing vehicle image. Additional tire temperature or air-life values appear only if their own tire sensor publishes them.','Recommended tire pressure comes from the actual vehicle placard, never a universal hard-coded range.'],
      port:['Charge port','Opens or closes the charge port when the vehicle reports a known state and the corresponding command exists.','Do not close the port while a cable is connected.'],
      doors:['Door locks','The action changes with the live state: Unlock when locked and Lock when unlocked. If the state is unknown, the action is unavailable.','Access permission may be required for unlocking.'],
      windows:['Windows','Shows the currently available open/close action for the vehicle windows. The command depends on a known sensor state.','No intermediate opening percentage is assumed unless the integration exposes one.'],
@@ -4835,6 +5266,7 @@ class XpengVehicleCard extends HTMLElement{
      spec='Temperature: Min '+lo+' °C · Max '+hi+' °C (integration values)';
    }
    if(['doors','windows','trunk','port'].includes(page))spec='State: Open / Closed; actions require real sensor feedback';
+   if(page==='maintenance')spec='TPMS: '+['tire_fl','tire_fr','tire_rl','tire_rr'].filter(k=>this.tirePressureBar(k)!==null).length+'/4 live readings · unit '+this.tirePressureUnit();
    if(page==='charge_schedule')spec='Editable range: None (read-only entities)';
    return this.xpGuidePanel(guide[0],guide[1],xpEsc(spec),guide[2]);
  }
@@ -5288,6 +5720,21 @@ class XpengVehicleCard extends HTMLElement{
     <path d="M70 537Q150 554 230 537" stroke="#fa4047" stroke-width="9" fill="none" stroke-linecap="round"/>
     </svg>`;
   }
+  xpTireExtra(key){
+    const a=this.data(key)?.entity?.attributes||{};
+    const temperature=a.tire_temperature_c??a.temperature_celsius??a.temperature_c??null;
+    const airLife=a.air_life_percent??a.air_life??null;
+    const extra=[];
+    if(temperature!==null&&String(temperature).trim()!==''&&Number.isFinite(Number(temperature))
+       &&Number(temperature)>=-40&&Number(temperature)<=100){
+      extra.push('<span class="xp-tire-temp" dir="ltr">'+xpEsc(xpNum(temperature,1))+' °C</span>');
+    }
+    if(airLife!==null&&String(airLife).trim()!==''&&Number.isFinite(Number(airLife))
+       &&Number(airLife)>=0&&Number(airLife)<=100){
+      extra.push('<span class="xp-tire-life" dir="ltr">Air life '+xpEsc(xpNum(airLife))+'%</span>');
+    }
+    return extra.length?'<div class="xp-tire-extras">'+extra.join('')+'</div>':'';
+  }
   tireScreen(showBack=true){
     const a=this.appearance(),photo=Array.isArray(this._config.vehicles)&&this._config.vehicles.length
       ?this.vehicle()?.top_image:this.vehicle()?.top_image||this._config.top_image;
@@ -5295,11 +5742,11 @@ class XpengVehicleCard extends HTMLElement{
     const wheel=(key,label)=>{const reading=this.tirePressureDisplay(key);
       return `<div class="xp-tire-reading" data-wheel="${key}" role="group" aria-label="${xpEsc(label)}">
         ${xpIcon('tire',20)}<div class="xp-tire-reading-body"><small>${xpEsc(label)}</small>
-        <strong dir="ltr">${xpEsc(reading.value)} <span>${reading.value==='—'?'לא זמין':unit==='kpa'?'kPa':unit==='psi'?'PSI':'bar'}</span></strong></div>
+        <strong dir="ltr">${xpEsc(reading.value)} <span>${reading.value==='—'?'לא זמין':unit==='kpa'?'kPa':unit==='psi'?'PSI':'bar'}</span></strong>${this.xpTireExtra(key)}</div>
       </div>`;};
     return `<section class="xp-tire-screen" role="region" aria-label="Tire pressure from above">
        ${showBack?`<div class="xp-tire-actions"><button type="button" data-tire-toggle aria-label="חזרה לתצוגת הרכב" title="חזרה לתצוגת הרכב">${xpIcon('back',22)}</button></div>`:''}
-       <div class="xp-tire-stage"><div class="xp-tire-center">${this.topCarArt()}</div>
+       <div class="xp-tire-stage"><div class="xp-tire-center">${this.topCarArt()}<i class="xp-wheel-highlight xp-wheel-fl" aria-hidden="true"></i><i class="xp-wheel-highlight xp-wheel-fr" aria-hidden="true"></i><i class="xp-wheel-highlight xp-wheel-rl" aria-hidden="true"></i><i class="xp-wheel-highlight xp-wheel-rr" aria-hidden="true"></i></div>
          ${wheel('tire_fl',showBack?'Front left':'קדמי שמאל')}${wheel('tire_fr',showBack?'Front right':'קדמי ימין')}
          ${wheel('tire_rl',showBack?'Rear left':'אחורי שמאל')}${wheel('tire_rr',showBack?'Rear right':'אחורי ימין')}</div>
        ${!xpLocalArtworkPath(photo)?'<div class="xp-tire-disclaimer">Illustrative overhead view · exact model artwork pending</div>':''}
@@ -5318,7 +5765,7 @@ class XpengVehicleCard extends HTMLElement{
  }
  charging(){
   return `${this.title()}
-    <div class="xp-station" aria-hidden="true">${xpIcon('station',24)}</div>${this.carArt()}
+    <div class="xp-station xp-station-v3" aria-hidden="true"><span class="xp-station-display">${xpIcon('station',24)}</span><span class="xp-station-charge-light"></span><span class="xp-station-side-light"></span></div>${this.carArt()}
     ${this.model()==='G6'&&this.xpChargingActive()?
       '<svg class="xp-charge-cable xp-charge-cable-live xp-cable-desktop" data-xp-cable="desktop" aria-hidden="true" viewBox="0 0 1400 788" preserveAspectRatio="none"><path class="xp-charge-cable-halo" d="M935 460 C950 499 960 555 998 589 C1038 623 1095 629 1145 632 S1235 635 1277 610 C1311 588 1317 535 1310 475"/><path class="xp-charge-cable-core" d="M935 460 C950 499 960 555 998 589 C1038 623 1095 629 1145 632 S1235 635 1277 610 C1311 588 1317 535 1310 475"/></svg>'+
       '<svg class="xp-charge-cable xp-charge-cable-live xp-cable-mobile" data-xp-cable="mobile" aria-hidden="true" viewBox="0 0 390 780" preserveAspectRatio="none"><path class="xp-charge-cable-halo" d="M171 489 C190 515 191 558 211 581 C236 609 270 612 301 603 C333 596 349 573 358 551 C362 541 359 529 358 516"/><path class="xp-charge-cable-core" d="M171 489 C190 515 191 558 211 581 C236 609 270 612 301 603 C333 596 349 573 358 551 C362 541 359 529 358 516"/></svg>':''}

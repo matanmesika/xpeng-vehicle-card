@@ -146,6 +146,8 @@ jobs:
         run: node --test tests/g6-v3-canonical-style.test.cjs
       - name: Verify all V3 inner pages and proportional MDI targets
         run: node --test tests/g6-v3-inner-pages.test.cjs
+      - name: Owner reference TPMS HVAC pedestal and original assets guardian
+        run: node --test tests/g6-v3-owner-reference.test.cjs
 
   approved-responsive-glass-agent:
     name: Responsive UX Agent | one card on desktop iPhone and Sections

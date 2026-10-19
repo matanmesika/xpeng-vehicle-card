@@ -1099,7 +1099,7 @@ class XpengVehicleCard extends HTMLElement{
    if(page==='climate'){
      body='<div class="xp-climate-layout">'+
        '<section class="xp-ux-climate-bottom" aria-label="בקרת אקלים">'+
-       this.xpClimatePrimaryControls()+this.xpTempControl()+this.xpFanControl()+
+       this.xpTempControl()+this.xpClimatePrimaryControls()+this.xpFanControl()+
        this.xpClimateFeatures()+'</section>'+
        this.xpCabinView()+'</div>';
    }else if(page==='charge_controls')body='<div class="xp-ux-charging-panel">'+this.xpChargeLimitPanel()+'</div>';
@@ -1119,27 +1119,14 @@ class XpengVehicleCard extends HTMLElement{
  }
 
  xpMaintenancePanel(){
-   const odometer=this.num('odometer','km');
-   const maint=this.xpLive('sensor','maintenance');
-   const ident=this.xpLive('sensor','vehicle_identity');
-   const attrs=ident?.state?.attributes||{};
-   const masked=typeof attrs.vin_masked==='string'&&attrs.vin_masked.trim()?attrs.vin_masked:'—';
-   const line=(name,value)=>'<div class="xp-extra-line"><span>'+xpEsc(name)+'</span><b>'+xpEsc(value)+'</b></div>';
-   const info=[
-     line('קילומטראז׳',odometer),
-     line('הטיפול הבא',maint?.state?.state||'—'),
-     line('תאריך טיפול',maint?.state?.attributes?.next_date||'—'),
-     line('ק״מ שנותרו לטיפול',maint?.state?.attributes?.km_remaining??'—'),
-     line('מספר שלדה (מוסתר)',masked),
-     line('דגם',attrs.vehicle_type_name||attrs.model_family||this.model()),
-     line(attrs.model_year?'שנת דגם (מהאינטגרציה)':'שנת דגם (מהגדרות הכרטיס)',attrs.model_year||this.year()),
-     line('יצרן',attrs.manufacturer||'XPENG'),
-     line('גרסת XOS',this.xpLive('sensor','xos_version')?.state?.state||'—')
-   ].join('');
-   return '<div class="xp-maintenance-page"><h3>לחץ אוויר בארבעת הצמיגים</h3>'+
-      this.tireScreen(false)+'<h3>תחזוקה ופרטי רכב</h3><div class="xp-maint-info">'+info+'</div>'+
-      '<p class="xp-ux-note">הערכים מתעדכנים לפי Home Assistant. מספר השלדה המלא אינו חשוף באינטגרציה.</p></div>';
+   // Owner's maintenance surface is tire pressure only. Never substitute
+   // simulated odometer, service or vehicle-identity cards for live TPMS.
+   return '<div class="xp-maintenance-page xp-tpms-only">'+
+     '<h3>לחץ אוויר בארבעת הצמיגים</h3>'+this.tireScreen(false)+
+     '<p class="xp-ux-note xp-tire-source-note">לחצי הצמיגים מתקבלים מחיישני הרכב דרך Home Assistant. ערך חסר נשאר לא זמין; יחידות הלחץ נקבעות בהגדרות הכרטיס.</p>'+
+     '</div>';
  }
+
  xpChargeLimitPanel(){
    // A focused slider, not an unrelated port/stop-charging page. Write only
    // when the real Xpengtk number entity exists with numeric current state.
@@ -1346,7 +1333,7 @@ class XpengVehicleCard extends HTMLElement{
      climate:['Climate controls','Climate power, AUTO, target temperature and fan settings operate only with mapped Home Assistant entities. Seat and steering-wheel controls cycle the supported levels directly on the cabin image.','Fan and temperature limits depend on the available entities.'],
      charge_controls:['Charge limit','Sets the target maximum battery percentage for charging. A lower limit stops at a lower target SOC; a higher limit allows a higher target SOC.','Changes are sent to Home Assistant and should be confirmed in the vehicle.'],
      charge_schedule:['Charging schedule','Displays the charging start and end times published by Xpengtk. This page does not invent an unsupported schedule editing action.','Read-only start and end times; no editable numeric limits.'],
-     maintenance:['Maintenance and tire pressure','Four tire readings are paired with their physical wheel positions. Other values show odometer, next service and vehicle identity.','Recommended tire pressure must come from the actual vehicle placard; no universal minimum or maximum is assumed.'],
+     maintenance:['Tire pressure','Live TPMS readings are shown directly beside the four wheels of the existing vehicle image. Additional tire temperature or air-life values appear only if their own tire sensor publishes them.','Recommended tire pressure comes from the actual vehicle placard, never a universal hard-coded range.'],
      port:['Charge port','Opens or closes the charge port when the vehicle reports a known state and the corresponding command exists.','Do not close the port while a cable is connected.'],
      doors:['Door locks','The action changes with the live state: Unlock when locked and Lock when unlocked. If the state is unknown, the action is unavailable.','Access permission may be required for unlocking.'],
      windows:['Windows','Shows the currently available open/close action for the vehicle windows. The command depends on a known sensor state.','No intermediate opening percentage is assumed unless the integration exposes one.'],
@@ -1364,6 +1351,7 @@ class XpengVehicleCard extends HTMLElement{
      spec='Temperature: Min '+lo+' °C · Max '+hi+' °C (integration values)';
    }
    if(['doors','windows','trunk','port'].includes(page))spec='State: Open / Closed; actions require real sensor feedback';
+   if(page==='maintenance')spec='TPMS: '+['tire_fl','tire_fr','tire_rl','tire_rr'].filter(k=>this.tirePressureBar(k)!==null).length+'/4 live readings · unit '+this.tirePressureUnit();
    if(page==='charge_schedule')spec='Editable range: None (read-only entities)';
    return this.xpGuidePanel(guide[0],guide[1],xpEsc(spec),guide[2]);
  }
@@ -1817,6 +1805,21 @@ class XpengVehicleCard extends HTMLElement{
     <path d="M70 537Q150 554 230 537" stroke="#fa4047" stroke-width="9" fill="none" stroke-linecap="round"/>
     </svg>`;
   }
+  xpTireExtra(key){
+    const a=this.data(key)?.entity?.attributes||{};
+    const temperature=a.tire_temperature_c??a.temperature_celsius??a.temperature_c??null;
+    const airLife=a.air_life_percent??a.air_life??null;
+    const extra=[];
+    if(temperature!==null&&String(temperature).trim()!==''&&Number.isFinite(Number(temperature))
+       &&Number(temperature)>=-40&&Number(temperature)<=100){
+      extra.push('<span class="xp-tire-temp" dir="ltr">'+xpEsc(xpNum(temperature,1))+' °C</span>');
+    }
+    if(airLife!==null&&String(airLife).trim()!==''&&Number.isFinite(Number(airLife))
+       &&Number(airLife)>=0&&Number(airLife)<=100){
+      extra.push('<span class="xp-tire-life" dir="ltr">Air life '+xpEsc(xpNum(airLife))+'%</span>');
+    }
+    return extra.length?'<div class="xp-tire-extras">'+extra.join('')+'</div>':'';
+  }
   tireScreen(showBack=true){
     const a=this.appearance(),photo=Array.isArray(this._config.vehicles)&&this._config.vehicles.length
       ?this.vehicle()?.top_image:this.vehicle()?.top_image||this._config.top_image;
@@ -1824,11 +1827,11 @@ class XpengVehicleCard extends HTMLElement{
     const wheel=(key,label)=>{const reading=this.tirePressureDisplay(key);
       return `<div class="xp-tire-reading" data-wheel="${key}" role="group" aria-label="${xpEsc(label)}">
         ${xpIcon('tire',20)}<div class="xp-tire-reading-body"><small>${xpEsc(label)}</small>
-        <strong dir="ltr">${xpEsc(reading.value)} <span>${reading.value==='—'?'לא זמין':unit==='kpa'?'kPa':unit==='psi'?'PSI':'bar'}</span></strong></div>
+        <strong dir="ltr">${xpEsc(reading.value)} <span>${reading.value==='—'?'לא זמין':unit==='kpa'?'kPa':unit==='psi'?'PSI':'bar'}</span></strong>${this.xpTireExtra(key)}</div>
       </div>`;};
     return `<section class="xp-tire-screen" role="region" aria-label="Tire pressure from above">
        ${showBack?`<div class="xp-tire-actions"><button type="button" data-tire-toggle aria-label="חזרה לתצוגת הרכב" title="חזרה לתצוגת הרכב">${xpIcon('back',22)}</button></div>`:''}
-       <div class="xp-tire-stage"><div class="xp-tire-center">${this.topCarArt()}</div>
+       <div class="xp-tire-stage"><div class="xp-tire-center">${this.topCarArt()}<i class="xp-wheel-highlight xp-wheel-fl" aria-hidden="true"></i><i class="xp-wheel-highlight xp-wheel-fr" aria-hidden="true"></i><i class="xp-wheel-highlight xp-wheel-rl" aria-hidden="true"></i><i class="xp-wheel-highlight xp-wheel-rr" aria-hidden="true"></i></div>
          ${wheel('tire_fl',showBack?'Front left':'קדמי שמאל')}${wheel('tire_fr',showBack?'Front right':'קדמי ימין')}
          ${wheel('tire_rl',showBack?'Rear left':'אחורי שמאל')}${wheel('tire_rr',showBack?'Rear right':'אחורי ימין')}</div>
        ${!xpLocalArtworkPath(photo)?'<div class="xp-tire-disclaimer">Illustrative overhead view · exact model artwork pending</div>':''}
@@ -1847,7 +1850,7 @@ class XpengVehicleCard extends HTMLElement{
  }
  charging(){
   return `${this.title()}
-    <div class="xp-station" aria-hidden="true">${xpIcon('station',24)}</div>${this.carArt()}
+    <div class="xp-station xp-station-v3" aria-hidden="true"><span class="xp-station-display">${xpIcon('station',24)}</span><span class="xp-station-charge-light"></span><span class="xp-station-side-light"></span></div>${this.carArt()}
     ${this.model()==='G6'&&this.xpChargingActive()?
       '<svg class="xp-charge-cable xp-charge-cable-live xp-cable-desktop" data-xp-cable="desktop" aria-hidden="true" viewBox="0 0 1400 788" preserveAspectRatio="none"><path class="xp-charge-cable-halo" d="M935 460 C950 499 960 555 998 589 C1038 623 1095 629 1145 632 S1235 635 1277 610 C1311 588 1317 535 1310 475"/><path class="xp-charge-cable-core" d="M935 460 C950 499 960 555 998 589 C1038 623 1095 629 1145 632 S1235 635 1277 610 C1311 588 1317 535 1310 475"/></svg>'+
       '<svg class="xp-charge-cable xp-charge-cable-live xp-cable-mobile" data-xp-cable="mobile" aria-hidden="true" viewBox="0 0 390 780" preserveAspectRatio="none"><path class="xp-charge-cable-halo" d="M171 489 C190 515 191 558 211 581 C236 609 270 612 301 603 C333 596 349 573 358 551 C362 541 359 529 358 516"/><path class="xp-charge-cable-core" d="M171 489 C190 515 191 558 211 581 C236 609 270 612 301 603 C333 596 349 573 358 551 C362 541 359 529 358 516"/></svg>':''}
