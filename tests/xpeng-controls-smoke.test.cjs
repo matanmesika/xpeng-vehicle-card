@@ -1046,8 +1046,10 @@ test('every action is a native modern MDI glyph, including battery and charge st
  const charging=card.charging();
  const dock=card.xpDock();
  const icons=[...dock.matchAll(/<ha-icon class="xp-mdi-icon" icon="([^"]+)"/g)].map(m=>m[1]);
- assert.equal(icons.length,7,'All seven Home/Charging controls have true native HA icons');
+ assert.equal(icons.length,6,'Six standard controls retain genuine native MDI icons');
  assert.ok(icons.every(icon=>icon.startsWith('mdi:')));
+ assert.match(dock,/class="xp-mdi-icon xp-tailgate-icon"/,
+   'Seventh Open Trunk action uses the owner-requested rear hatch vector');
  assert.match(home,/data-xp-battery-icon[^>]*><ha-icon[^>]*icon="mdi:battery-(?:[0-9]+|unknown|outline)"/,
    'Battery pictogram must be official MDI, not a custom drawn icon');
  assert.doesNotMatch(home,/class="xp-batt-fill"/);
@@ -1446,7 +1448,7 @@ test('beta.8 Home Assistant locale switches every vehicle modal and accessibilit
  assert.match(home,/Open windows/);
  assert.match(home,/Open charging port/);
  assert.match(home,/icon="mdi:car-door"/);
- assert.match(home,/icon="mdi:car-back"/);
+ assert.match(home,/class="xp-mdi-icon xp-tailgate-icon"/);
  card._xpPanel='maintenance';card.render();
  assert.match(card.shadowRoot.innerHTML,/icon="mdi:arrow-left"/,'English Back arrow must point left');
  card._hass.locale.language='he';card.render();
