@@ -55,8 +55,8 @@ test('Pedestal guardian: single responsive premium XPENG station and original dy
  assert.match(runtime,/data-xp-station-art="photo"/);
   assert.match(runtime,/data:image\/webp;base64/);
   assert.doesNotMatch(runtime,/id="xp19-case"/);
- assert.match(runtime,/M935 460[\s\S]*?1225 520/);
- assert.match(runtime,/M171 489[\s\S]*?333 520/);
+ assert.match(runtime,/M935 460[^\"]*1284 465/);
+ assert.match(runtime,/M171 489[^\"]*343 487/);
 });
 test('Build guardian: isolated design and runtime create identical HACS JS',()=>{
  assert.equal(bundle,dist);
