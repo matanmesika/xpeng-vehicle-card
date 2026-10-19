@@ -69,9 +69,10 @@ test('native MDI glyphs replace ALL hand-drawn dashboard controls',()=>{
     'mdi:ev-station','mdi:car-seat-heater','mdi:car-seat-cooler','mdi:steering','mdi:wifi'])
    assert.ok(block.includes(icon),'Native MDI mapping missing: '+icon);
   assert.doesNotMatch(block,/mdi:window-open|mdi:window-open-variant/,'House-window symbols must not return');
- assert.doesNotMatch(block,/<(?:svg|ellipse|circle|path|rect)\b/,'No hand-drawn SVG for buttons');
+ assert.match(block,/class="xp-mdi-icon xp-tailgate-icon"/,'Owner requested true side-profile open-tailgate vector');
+ assert.doesNotMatch(block,/<ellipse\b/,'No unrelated icon drawings');
  assert.match(block,/class="xp-mdi-icon" icon="'\+mdi\+'/);
- assert.doesNotMatch(block,/xp-trunk-symbol|arrowSize/,'Only one genuine rear car glyph, no composite arrow');
+ assert.doesNotMatch(block,/xp-trunk-symbol|arrowSize/,'No old composite trunk arrow');
  assert.match(block,/return glyph;/);
  assert.match(source,/\$\{xpIcon\('wifi',24\)\}/,'Connection indicator must also be native');
  assert.doesNotMatch(source,/\.xp-ux-(?:dock-action|cycle|climate-feature) svg/);
