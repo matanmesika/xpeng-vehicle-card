@@ -150,6 +150,7 @@ test('Integration Guardian: preserve live charging and state-dependent button ac
 
 test('Icon Reviewer: distinct MDI rear hatch lift/lower and correct automotive icons',()=>{
  assert.match(source,/trunk:'mdi:car-back'/);
+ assert.match(source,/role="img"/);
  assert.match(source,/trunk_open:'mdi:car-back'/);
  assert.match(source,/trunk_close:'mdi:car-back'/);
  assert.match(source,/trunk_lift:'mdi:arrow-up-bold'/);
@@ -158,7 +159,7 @@ test('Icon Reviewer: distinct MDI rear hatch lift/lower and correct automotive i
  assert.match(source,/lock:'mdi:car-door-lock'/);
  assert.match(source,/unlock:'mdi:car-door-lock-open'/);
  assert.match(source,/windows:'mdi:car-door'/);
- assert.match(css,/\.xp-trunk-symbol-lower>\.xp-trunk-arrow/);
+ assert.match(source,/xp-tailgate-icon/);
  assert.doesNotMatch(css,/\.xp-mdi-icon\[icon="mdi:car-back"\]/,
   'Old trunk-only color override must not make the primary icon inconsistent');
  assert.match(css,/\.xp-scene \.xp-ux-dock-seven \.xp-ux-dock-action ha-icon\{\s*color:#e9f4ff/,
