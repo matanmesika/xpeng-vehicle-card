@@ -1402,10 +1402,9 @@ test('beta.6 automotive window and trunk icons are official MDI, never a house-w
     assert.ok(windows&&trunk,'Both dock shortcuts must remain');
     assert.match(windows,/icon="mdi:car-door"/);
     assert.match(trunk,/icon="mdi:car-back"/);
-    // The real reported state changes the NEXT action and official lift/lower arrow.
-    const arrow=state==='off'?'mdi:arrow-up-bold':'mdi:arrow-down-bold';
-    assert.match(trunk,new RegExp('icon="'+arrow+'"'));
-    assert.match(card.xpToggleButton('trunk'),new RegExp('icon="'+arrow+'"'));
+    // The next action follows the live state, not an invented composite hatch arrow.
+    assert.doesNotMatch(trunk,/xp-trunk-arrow/);
+    assert.doesNotMatch(card.xpToggleButton('trunk'),/xp-trunk-arrow/);
     assert.match(card.xpToggleButton('windows'),/icon="mdi:car-door"/);
     assert.match(card.xpToggleButton('trunk'),/icon="mdi:car-back"/);
     assert.match(card.xpWindowsPanel(),/icon="mdi:car-door"/);
