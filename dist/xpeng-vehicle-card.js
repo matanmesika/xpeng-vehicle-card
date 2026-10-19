@@ -4690,6 +4690,31 @@ background:transparent!important;
  .xp-scene .xp-ux-modal .xp-ota-actions{grid-template-columns:1fr}
 }
 
+/* Beta 19 visual review fix: expose the same shared pedestal below the
+   charging information card on mobile; remove leftover generic neon shell. */
+.xp-scene.xp-charge .xp-station-xpeng19::before,
+.xp-scene.xp-charge .xp-station-xpeng19::after{
+ display:none!important;content:none!important;
+}
+.xp-scene .xp-header{z-index:48!important}
+.xp-scene .xp-header .xp-meta-tools{
+ z-index:49!important;pointer-events:auto!important;
+}
+@container xpeng-layout (max-width:850px){
+ .xp-scene.xp-charge .xp-station-xpeng19{
+   right:3%!important;bottom:20%!important;
+   height:21%!important;max-height:172px!important;min-height:102px!important;
+   width:15%!important;min-width:45px!important;
+ }
+}
+@container xpeng-layout (max-width:520px){
+ .xp-scene.xp-charge .xp-station-xpeng19{
+   right:3%!important;bottom:19%!important;
+   height:19%!important;min-height:94px!important;
+   width:16%!important;min-width:45px!important;
+ }
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
