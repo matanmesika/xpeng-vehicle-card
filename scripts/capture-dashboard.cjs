@@ -299,6 +299,21 @@ async function main(){
   return {tiles,note};
  });
  assert.equal(tpmsDesktop.tiles.length,4);
+ const maintenanceDesktop=await car.evaluate(el=>{
+  const root=el.shadowRoot,modal=root.querySelector('.xp-ux-modal-maintenance');
+  const tire=modal.querySelector('.xp-maintenance-tires').getBoundingClientRect();
+  const service=modal.querySelector('.xp-maintenance-service').getBoundingClientRect();
+  const markers=[...modal.querySelectorAll('.xp-wheel-highlight')].map(m=>getComputedStyle(m).display);
+  return {tire:tire.toJSON(),service:service.toJSON(),markers,
+    serviceText:modal.querySelector('.xp-maintenance-service')?.textContent};
+ });
+ assert.ok(maintenanceDesktop.tire.right<=maintenanceDesktop.service.left+2
+  ||maintenanceDesktop.service.right<=maintenanceDesktop.tire.left+2,
+  'Maintenance must show two side-by-side panels on desktop: '+JSON.stringify(maintenanceDesktop));
+ assert.ok(maintenanceDesktop.markers.every(x=>x==='none'),
+  'Unrequested tire highlight halos must stay hidden');
+ assert.ok(maintenanceDesktop.serviceText.includes('2027-01-10'),
+  'Real example maintenance date should be visible');
  assert.ok(tpmsDesktop.tiles.every(item=>item.rect.height>=48&&item.rect.height<=85),
    'Desktop wheel badges must remain compact, not stretch to legacy stage height: '+JSON.stringify(tpmsDesktop));
  assert.ok(tpmsDesktop.note&&tpmsDesktop.tiles.every(item=>item.rect.bottom<=tpmsDesktop.note.top+1),
@@ -603,7 +618,7 @@ async function main(){
  assert.ok(desktopMap.stageWidth>900&&desktopMap.stageHeight>=350,JSON.stringify(desktopMap));
  assert.deepEqual(desktopMap.config,{
    type:'map',entities:[{entity:'device_tracker.my_xpeng_location'}],
-   default_zoom:11,hours_to_show:0,theme_mode:'dark',aspect_ratio:'4:3'
+   default_zoom:16,auto_fit:true,fit_zones:false,hours_to_show:0,theme_mode:'dark',aspect_ratio:'4:3'
  },'Native dark map must use the real vehicle tracker entity');
  await reviewShot('location-desktop');
  const mapStable=await car.evaluate(el=>{
