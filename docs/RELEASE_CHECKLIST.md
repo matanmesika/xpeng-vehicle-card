@@ -1,26 +1,24 @@
-# XPENG Dashboard — v1.0.0-beta.2 release checklist
+# XPENG Vehicle Card — v1.0.4 stable release checklist
 
-**Scope:** XPENG Lovelace frontend only. The separate XPENG Home Assistant integration/backend is not changed by this repository.
+This repository packages only the Home Assistant Lovelace frontend. The independently installed Xpengtk integration is not modified.
 
-## Engineering gates
+## Source and storefront
+- [x] Shared runtime and stylesheet compiled into identical `src/` and HACS `dist/` JavaScript.
+- [x] One shared responsive Charging component on desktop, phone, and narrow Home Assistant Sections.
+- [x] Native MDI action icons, common label/ring alignment, preserved vehicle and station artwork.
+- [x] `hacs.json` and `render_readme: true` checked against Dashboard plugin conventions.
+- [x] One canonical fourteen-image Chromium gallery with simulated Xpengtk data.
+- [x] English GitHub README, HACS guide, changelog, installation guide, and release notes updated.
+- [x] Redundant beta publishing workflows, duplicate gallery pictures and populated-folder placeholders removed.
 
-- [x] `src/xpeng-vehicle-card.js` and `dist/xpeng-vehicle-card.js` are synchronized.
-- [x] JavaScript syntax validation passes for source and distribution bundles.
-- [x] `hacs.json`, `model-artwork.json` and `vehicle-art-inventory.json` are the current metadata sources.
-- [x] The approved lakeside background remains the common dashboard backdrop.
-- [x] Current G6 2026 Core Performance AWD front, charging and overhead WebP assets are present.
-- [x] The temporary `mix-blend-mode: multiply` workaround has been removed.
-- [x] Obsolete per-release note files were removed; `CHANGELOG.md` is the canonical release history.
-- [x] Legacy alpha publishing workflows were removed and replaced by one beta prerelease workflow.
-- [ ] Confirm the current GitHub Actions validation run is green for the release commit.
-- [ ] Verify installation/update through HACS on a real Home Assistant instance.
-- [ ] Verify phone and desktop rendering against the approved visual design.
+## Release gates
+- [x] Owner approved the charging layout and requested final release.
+- [ ] Confirm latest final commit CI: frontend, HACS, artwork, charging visual acceptance and stable release workflow.
+- [ ] Merge PR #59 without rewriting divergent main changes.
+- [ ] Confirm GitHub stable tag and release assets `v1.0.4` were created.
+- [ ] Check HACS refresh/download of the stable version from the custom repository.
 
-## Beta limitations
+## Limits
+Chromium screenshots are genuine renders of the shipped frontend with **simulated data**. They do not validate real Xpengtk commands, live GPS, physical charging, native Home Assistant integration permissions or iPhone Safari behavior. Verify these separately at a safely parked vehicle.
 
-- Artwork for all XPENG models and exterior colours is not yet mapped.
-- Current G6 2026 Graphite Gray artwork is the baseline for the next colour-mapping phase, using the model/year/color hierarchy.
-- Runtime artwork currently depends on GitHub-hosted assets, so network access is required.
-- A documented beta candidate is not the same as a published GitHub Release; confirm publication under [GitHub Releases](https://github.com/matanmesika/xpeng-vehicle-card/releases).
-
-See [DESIGN_LOCK.md](DESIGN_LOCK.md), [model artwork mapping](../model-artwork.json), and [CHANGELOG.md](../CHANGELOG.md).
+[README](../README.md) · [Store copy](HACS_STORE_GUIDE.md) · [Current gallery](screenshots/README.md)
