@@ -1641,5 +1641,5 @@ test('Beta 19 charging station has the same SVG and a side cable in both scene s
  assert.match(charging,/data-xp-cable="mobile"/);
  assert.match(charging,/M935 460[\s\S]*?1287 474/);
  assert.match(charging,/M171 489[\s\S]*?346 516/);
- assert.match(src,/\.xp-scene\.xp-charge \.xp-station-xpeng19/);
+ assert.match(src,/\.xp-scene\.xp-charge \.xp-station\.xp-station-v3\.xp-station-xpeng19/);
 });
