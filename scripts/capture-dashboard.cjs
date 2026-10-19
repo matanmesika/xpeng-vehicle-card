@@ -561,6 +561,17 @@ async function main(){
    if(!charging)assert.equal(layout.panelColumns,0,'Home location panel must not render: '+JSON.stringify(layout));
    if(viewportWidth===width)assert.equal(layout.horizontalOverflow,false,JSON.stringify(layout));
    await reviewShot(name);
+   if(charging && width===390 && name==='mobile-charging'){
+     // Genuine Playwright element captures from the running dashboard for review.
+     // Leave the curated 14-image HACS gallery unchanged until owner approval.
+     const qaDir=path.join(ROOT,'docs','qa');
+     fs.mkdirSync(qaDir,{recursive:true});
+     await car.locator('.xp-charge-card').screenshot({
+       path:path.join(qaDir,'charging-mobile-panel-detail.png'),animations:'disabled'});
+     await car.locator('.xp-charge-panel-actions').screenshot({
+       path:path.join(qaDir,'charging-mobile-icon-detail.png'),animations:'disabled'});
+     console.log('Fresh real-card mobile charging icon QA captures saved to docs/qa');
+   }
    console.log('Responsive capture '+name,JSON.stringify(layout));
  }
  await responsiveShot(390,false,'mobile-vehicle-status');
