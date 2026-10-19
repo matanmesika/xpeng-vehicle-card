@@ -152,9 +152,9 @@ const XP_ICONS = Object.freeze({
  windows:'mdi:car-door',
  windows_open:'mdi:car-door',
  // Side-profile SUV with official MDI lift/lower action badge: no front view.
- trunk:'mdi:car-back',
- trunk_open:'mdi:car-back',
- trunk_close:'mdi:car-back',
+ trunk:'mdi:car-estate',
+ trunk_open:'mdi:car-estate',
+ trunk_close:'mdi:car-estate',
  trunk_lift:'mdi:arrow-up-bold',
  trunk_lower:'mdi:arrow-down-bold',
  horn:'mdi:bullhorn-outline',

@@ -152,9 +152,9 @@ const XP_ICONS = Object.freeze({
  windows:'mdi:car-door',
  windows_open:'mdi:car-door',
  // Side-profile SUV with official MDI lift/lower action badge: no front view.
- trunk:'mdi:car-back',
- trunk_open:'mdi:car-back',
- trunk_close:'mdi:car-back',
+ trunk:'mdi:car-estate',
+ trunk_open:'mdi:car-estate',
+ trunk_close:'mdi:car-estate',
  trunk_lift:'mdi:arrow-up-bold',
  trunk_lower:'mdi:arrow-down-bold',
  horn:'mdi:bullhorn-outline',
@@ -3026,8 +3026,8 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  }
 }
 
-/* Genuine MDI rear hatch icon, not a composite car/arrow illustration. */
-.xp-scene .xp-ux-dock-seven .xp-ux-dock-action .xp-mdi-icon[icon="mdi:car-back"]{--mdc-icon-size:27px!important;color:#a7e5fb}
+/* The primary SUV trunk glyph shares the neutral dock palette; only its smaller
+   real MDI lift/lower arrow is allowed a state-specific accent. */
 
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.

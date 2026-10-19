@@ -2705,5 +2705,5 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  }
 }
 
-/* Genuine MDI rear hatch icon, not a composite car/arrow illustration. */
-.xp-scene .xp-ux-dock-seven .xp-ux-dock-action .xp-mdi-icon[icon="mdi:car-back"]{--mdc-icon-size:27px!important;color:#a7e5fb}
+/* The primary SUV trunk glyph shares the neutral dock palette; only its smaller
+   real MDI lift/lower arrow is allowed a state-specific accent. */
