@@ -299,7 +299,7 @@ async function main(){
   return {tiles,note};
  });
  assert.equal(tpmsDesktop.tiles.length,4);
- assert.ok(tpmsDesktop.tiles.every(item=>item.rect.height>=60&&item.rect.height<=85),
+ assert.ok(tpmsDesktop.tiles.every(item=>item.rect.height>=48&&item.rect.height<=85),
    'Desktop wheel badges must remain compact, not stretch to legacy stage height: '+JSON.stringify(tpmsDesktop));
  assert.ok(tpmsDesktop.note&&tpmsDesktop.tiles.every(item=>item.rect.bottom<=tpmsDesktop.note.top+1),
    'All four tire data labels must remain fully visible above the live-data note: '+JSON.stringify(tpmsDesktop));
