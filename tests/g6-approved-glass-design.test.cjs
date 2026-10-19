@@ -30,7 +30,7 @@ test('Responsive Glass UX Agent | one card, touch targets, accessibility and sma
  assert.match(v3,/button:focus-visible\{outline:2px/);
  assert.match(v3,/\.xp-scene \.xp-ux-dock-seven \.xp-ux-dock-action:disabled/);
  assert.match(v3,/@media\(prefers-reduced-motion:reduce\)/);
- assert.match(core,/container-name:xpeng-layout|xpeng-layout/);
+ assert.match(css,/ha-card\{[^}]*container-type:inline-size;container-name:xpeng-layout/);
 });
 test('Behavior Guardian | no executable wiring changes, both distributed copies rebuilt from CSS alone',()=>{
  const slot='const XP_CSS = "__XPENG_STYLES_FROM_THEME__";';
