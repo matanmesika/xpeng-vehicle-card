@@ -1955,25 +1955,25 @@ class XpengVehicleCard extends HTMLElement{
     ${this.model()==='G6'&&this.xpChargingActive()?
       '<svg class="xp-charge-cable xp-charge-cable-live xp-cable-desktop" data-xp-cable="desktop" aria-hidden="true" viewBox="0 0 1400 788" preserveAspectRatio="none"><path class="xp-charge-cable-halo" d="M935 460 C953 505 980 576 1025 604 C1090 648 1186 626 1220 607 C1264 583 1278 533 1284 465"/><path class="xp-charge-cable-core" d="M935 460 C953 505 980 576 1025 604 C1090 648 1186 626 1220 607 C1264 583 1278 533 1284 465"/></svg>'+
       '<svg class="xp-charge-cable xp-charge-cable-live xp-cable-mobile" data-xp-cable="mobile" aria-hidden="true" viewBox="0 0 390 780" preserveAspectRatio="none"><path class="xp-charge-cable-halo" d="M171 489 C185 522 200 570 230 584 C270 606 299 583 315 570 C331 551 339 500 343 487"/><path class="xp-charge-cable-core" d="M171 489 C185 522 200 570 230 584 C270 606 299 583 315 570 C331 551 339 500 343 487"/></svg>':''}
-    <section class="xp-charge-card" aria-label="Charging information">
-       <div class="xp-charge-heading">${xpIcon('bolt',42)}<span>${xpEsc(this.chargeStatus())}</span></div>
-       ${this.progress()}
-       <div class="xp-charge-main">
-         <div class="xp-soc" aria-label="Battery percentage">${this.socHtml()}</div>
-         <div class="xp-charge-divider"></div>
-         <div class="xp-charge-range"><div class="xp-stat-label">Estimated range</div>
-           <b>${xpIcon('gauge',25)}${xpEsc(this.num('range','km'))}</b></div>
-       </div>
-       <div class="xp-charge-meta">
-         <div>${xpIcon('bolt',23)}<small>Charging power</small><b>${xpEsc(this.num('power','kW',1))}</b></div>
-         <div>${xpIcon('clock',23)}<small>Time remaining</small><b>${xpEsc(this.remainingText())}</b></div>
-         <div>${xpIcon('battery',23)}<small>Charge limit</small><b>${xpEsc(this.num('target','%'))}</b></div>
-       </div>
-       ${this.xpUiEnabled()&&!this._xpPanel?'<nav class="xp-charge-panel-actions" aria-label="Charging controls" dir="rtl">'+
-        '<button type="button" data-xp-open="charge_controls">'+xpIcon('battery',22)+'<span>Charge limit</span></button>'+
-        '<button type="button" data-xp-open="charge_schedule">'+xpIcon('clock',22)+'<span>Schedule</span></button>'+
-        '<button type="button" data-xp-command="stop_charge" '+(this.xpLive('button','stop_charge')?'':'disabled title="Stop charging command unavailable"')+'>'+xpIcon('power',22)+'<span>Stop charging</span></button>'+
-        '</nav>':''}
+    <section class="xp-charge-card xp-charge-unified" aria-label="Charging information">
+      <div class="xp-charge-heading">${xpIcon('bolt',22)}<span>${xpEsc(this.chargeStatus())}</span></div>
+      ${this.progress()}
+      <div class="xp-charge-main">
+        <div class="xp-charge-soc-block"><div class="xp-soc" aria-label="Battery percentage">${this.socHtml()}</div><small class="xp-charge-soc-label">Battery</small></div>
+        <div class="xp-charge-divider" aria-hidden="true"></div>
+        <div class="xp-charge-range"><div class="xp-stat-label">Estimated range</div>
+          <b>${xpIcon('gauge',18)}${xpEsc(this.num('range','km'))}</b></div>
+      </div>
+      <div class="xp-charge-meta">
+        <div class="xp-charge-stat"><div class="xp-charge-stat-top">${xpIcon('bolt',16)}<small>Charging power</small></div><b class="xp-charge-stat-value">${xpEsc(this.num('power','kW',1))}</b></div>
+        <div class="xp-charge-stat"><div class="xp-charge-stat-top">${xpIcon('clock',16)}<small>Time remaining</small></div><b class="xp-charge-stat-value">${xpEsc(this.remainingText())}</b></div>
+        <div class="xp-charge-stat"><div class="xp-charge-stat-top">${xpIcon('battery',16)}<small>Charge limit</small></div><b class="xp-charge-stat-value">${xpEsc(this.num('target','%'))}</b></div>
+      </div>
+      ${this.xpUiEnabled()&&!this._xpPanel?'<nav class="xp-charge-panel-actions" aria-label="Charging controls" dir="ltr">'+
+       '<button type="button" class="xp-charge-action" data-xp-open="charge_controls"><span class="xp-charge-action-core"><span class="xp-charge-action-ring">'+xpIcon('battery',22)+'</span><span class="xp-charge-action-label">Charge limit</span></span></button>'+
+       '<button type="button" class="xp-charge-action" data-xp-open="charge_schedule"><span class="xp-charge-action-core"><span class="xp-charge-action-ring">'+xpIcon('clock',22)+'</span><span class="xp-charge-action-label">Schedule</span></span></button>'+
+       '<button type="button" class="xp-charge-action" data-xp-command="stop_charge" '+(this.xpLive('button','stop_charge')?'':'disabled title="Stop charging command unavailable"')+'><span class="xp-charge-action-core"><span class="xp-charge-action-ring">'+xpIcon('power',22)+'</span><span class="xp-charge-action-label">Stop charging</span></span></button>'+
+       '</nav>':''}
     </section>`;
  }
  // Update matching nodes in place instead of replacing the entire shadow tree
