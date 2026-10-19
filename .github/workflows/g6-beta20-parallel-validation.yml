@@ -109,7 +109,7 @@ jobs:
               data=(root/(n+'.png')).read_bytes()
               assert data[:8]==b'\x89PNG\r\n\x1a\n' and len(data)>10000,n
               w,h=unpack('>II',data[16:24])
-              assert ((w>=1100 and h>=620) if n.endswith('-desktop' else (300<=w<=500 and h>=700)),(n,w,h)
+              assert ((w>=1100 and h>=620) if n.endswith('-desktop') else (300<=w<=500 and h>=700)),(n,w,h)
               print('PASS',n,w,h,len(data))
           PY
       - name: Upload verified screenshots for owner review
