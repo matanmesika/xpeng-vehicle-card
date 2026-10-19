@@ -882,6 +882,16 @@ async function main(){
        return {height:stage.height,width:stage.width};
      });
      assert.ok(tyre.height>=155&&tyre.height<=390,'Mobile TPMS stage must fit with larger original car art: '+JSON.stringify(tyre));
+
+      const iconPositions=await car.evaluate(el=>[...el.shadowRoot.querySelectorAll('.xp-ux-modal-maintenance .xp-tire-reading[data-wheel]')].map(tile=>{
+        const icon=tile.querySelector('ha-icon.xp-mdi-icon'),body=tile.querySelector('.xp-tire-reading-body');
+        const a=icon?.getBoundingClientRect(),b=body?.getBoundingClientRect();
+        return {wheel:tile.dataset.wheel,direction:getComputedStyle(tile).flexDirection,
+          order:getComputedStyle(icon).order,iconTop:a?.top,iconBottom:a?.bottom,labelTop:b?.top};
+      }));
+      assert.equal(iconPositions.length,4,'Phone must show four tire sensor badges');
+      assert.ok(iconPositions.every(x=>x.direction==='column'&&Number(x.order)<0&&x.iconTop<x.labelTop&&x.iconBottom<=x.labelTop+2),
+        'Phone TPMS tire glyph must appear above label/value: '+JSON.stringify(iconPositions));
    }
 
    if(action==='climate'||action==='maintenance'){
