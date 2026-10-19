@@ -59,7 +59,7 @@ The prefix, model/year/paint and actual available entities must match your insta
 
 All dashboard, editor, help and error labels are **English-only** regardless of the Home Assistant interface language. Unknown or unavailable entity states are shown as unavailable; the card does not invent readings or guarantee control execution.
 
-## Sensor discovery and support
+## Sensor mapping and support
 
 The card reads **existing Home Assistant/Xpengtk entities** and never independently polls XPENG servers. Check **Developer Tools → States** and the card's Entity Diagnostics to verify your entity IDs and vehicle feedback. A successful Home Assistant service call means the command was accepted by Home Assistant; it does not establish that the vehicle executed it.
 
