@@ -68,16 +68,16 @@ These are **real Chromium captures of the running JavaScript card**, with *simul
 
 **Which language does the interface use?** English for current card and help text, irrespective of Home Assistant's selected language.
 
-**What is the current release?** Stable `v1.0.3`, published beta `v1.0.4-beta.21`. The next `v1.0.4` requires owner-approved live acceptance.
+**What is the current release?** Stable `v1.0.4`. The earlier stable `v1.0.3` and historical beta tags are available as rollback versions.
 
-## Pre-publication checklist
+## Final HACS / GitHub publication details
 
-- [ ] Final desktop and iPhone charging photos and cable endpoints approved by owner
-- [ ] Current fourteen screenshot links render and describe simulated states accurately
-- [ ] `README.md`, HACS guide and release notes match the released commit
-- [ ] GitHub repository About description manually updated if needed (the current connector cannot edit repository metadata)
-- [ ] HACS `hacs.json` stays valid and points to existing `xpeng-vehicle-card.js`
-- [ ] Stable tag is created only after main-branch reconciliation and explicit owner approval
-- [ ] No real location, VIN, tokens or private car states appear in published screenshots
+- The English [README](../README.md) is the canonical description and screenshot gallery used by GitHub and HACS (`hacs.json` sets `render_readme: true`).
+- The package entrypoint is `dist/xpeng-vehicle-card.js`; the [14 Chromium screenshots](screenshots/README.md) are captured from the real running frontend using simulated vehicle readings.
+- Stable `v1.0.4` is published on GitHub and is available to users who add this HACS **custom Dashboard repository**. Default public HACS catalog inclusion requires a separate HACS approval; do not claim it has happened merely because the release exists.
+- The repository's English About description is configured independently from Markdown. Current About text: "A custom Home Assistant dashboard card for XPENG vehicles with charging, climate, vehicle status and customizable appearance." A future optional improvement: "Responsive XPENG dashboard for Home Assistant using Xpengtk entities, with live charging, climate, TPMS, location and vehicle actions."
+- Preserve earlier releases and their historical notes as rollback references. The current panel, approved station/cable and current gallery are all in the stable README.
 
-*XPENG Vehicle Card is a community project and is not affiliated with XPENG.*
+The G6 is the primary reviewed model. Other artwork generations may be incomplete. On-device Home Assistant, native GPS, actual vehicle commands and iPhone Safari require live testing and are **not** proven by simulated Chromium browser screenshots.
+
+*XPENG Vehicle Card is an unofficial community project and is not affiliated with XPENG.*
