@@ -4617,6 +4617,79 @@ background:transparent!important;
  width:42px;height:32px;max-width:100%;
 }
 
+/* Beta 19: the same physically side-connected XPENG charging pedestal appears on desktop,
+   phone and narrow HA Sections. It never changes vehicle artwork or live commands. */
+.xp-scene.xp-charge .xp-station-xpeng19{
+ display:block!important;position:absolute!important;
+ right:2.7%!important;bottom:27.9%!important;
+ width:7.0%!important;min-width:61px!important;max-width:100px!important;
+ height:30%!important;max-height:265px!important;min-height:135px!important;
+ padding:0!important;border:0!important;border-radius:0!important;
+ background:transparent!important;box-shadow:none!important;overflow:visible!important;
+ z-index:12!important;
+}
+.xp-scene.xp-charge .xp-station-xpeng19 .xp-xpeng-pedestal{
+ display:block!important;height:100%!important;width:100%!important;
+ max-height:100%!important;filter:drop-shadow(1px 8px 9px rgba(0,7,20,.65));
+}
+.xp-scene.xp-charge .xp-station-xpeng19 :is(.xp-station-display,.xp-station-charge-light,.xp-station-side-light){
+ display:none!important;
+}
+@container xpeng-layout (max-width:850px){
+ .xp-scene.xp-charge .xp-station-xpeng19{
+  right:2%!important;bottom:28%!important;
+  width:13%!important;min-width:36px!important;max-width:67px!important;
+  height:24%!important;min-height:85px!important;max-height:190px!important;
+ }
+}
+@container xpeng-layout (max-width:520px){
+ .xp-scene.xp-charge .xp-station-xpeng19{
+  width:14%!important;min-width:34px!important;bottom:29%!important;
+  height:22%!important;min-height:78px!important;
+ }
+}
+/* All inner pages are a uniform shell, including nested More options sections. */
+@container xpeng-layout (min-width:851px){
+ .xp-scene .xp-ux-modal,
+ .xp-scene .xp-ux-modal.xp-ux-modal-extras:has(.xp-extra-details),
+ .xp-scene .xp-ux-modal.xp-ux-modal-extras:has(.xp-extra-diagnostics-layout){
+  inset:auto!important;left:50%!important;right:auto!important;
+  top:50%!important;bottom:auto!important;transform:translate(-50%,-50%)!important;
+  width:min(1230px,calc(100% - 24px))!important;
+  height:min(735px,calc(100% - 24px))!important;
+  max-width:calc(100% - 16px)!important;max-height:calc(100% - 20px)!important;
+  min-height:0!important;box-sizing:border-box!important;
+ }
+ .xp-scene .xp-ux-modal .xp-ux-modal-content{
+  flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;
+ }
+ .xp-scene .xp-ux-modal-extras .xp-extra-body{width:100%!important;max-width:100%!important;min-height:0!important}
+}
+@container xpeng-layout (max-width:850px){
+ .xp-scene .xp-ux-modal .xp-ux-modal-content{
+  overflow-y:auto!important;min-height:0!important;overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+ }
+}
+/* Both the gear and Wi-Fi status remain visible on inner pages. */
+.xp-scene .xp-meta-tools{position:relative;z-index:42!important;visibility:visible!important}
+.xp-scene .xp-more-trigger{visibility:visible!important}
+/* Software updates: one real action and a clearly differentiated status slot. */
+.xp-scene .xp-ux-modal .xp-ota-actions{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:12px;align-items:center;margin-top:12px;
+}
+.xp-scene .xp-ux-modal .xp-ota-actions>.xp-extra-action{
+ margin:0!important;width:100%!important;max-width:none!important;
+}
+.xp-scene .xp-ux-modal .xp-ota-status{
+ text-align:center;padding:11px 8px;border:1px solid rgba(117,200,223,.27);
+ border-radius:12px;color:#b9dce9;background:rgba(17,48,72,.24);font-size:13px;
+}
+@container xpeng-layout (max-width:520px){
+ .xp-scene .xp-ux-modal .xp-ota-actions{grid-template-columns:1fr}
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -4636,7 +4709,14 @@ class XpengVehicleCard extends HTMLElement{
       this.render();
     },true);
    this.shadowRoot.addEventListener('click',ev=>{
-    const b=ev.target.closest('button');if(!b)return;
+    const b=ev.target?.closest?.('button');
+    // Outside a modal, return to Home regardless of the nested navigation stack.
+    const modal=this.shadowRoot?.querySelector?.('.xp-ux-modal');
+    const outside=!!this._xpPanel&&!!modal&&!ev.composedPath().includes(modal);
+    if(outside&&!b?.hasAttribute('data-xp-more')&&!b?.hasAttribute('data-meta-toggle')){
+      this.xpBackToHome();return;
+    }
+    if(!b)return;
      
      if(b.hasAttribute('data-xp-close')){this.xpBackPanel();return;}
      if(b.hasAttribute('data-xp-home')){this.xpBackToHome();return;}
@@ -4691,7 +4771,7 @@ class XpengVehicleCard extends HTMLElement{
       if(b.hasAttribute('data-xp-map-details')){this.xpDetails('location','device_tracker');return;}
       if(b.hasAttribute('data-xp-map-action')){
         const action=b.dataset.xpMapAction;
-        if(['honk_horn','flash_lights'].includes(action))this.xpSend('button','press',action);
+        if(['honk_horn','flash_lights'].includes(action))this.xpMapDirectAction(action);
         return;
       }
       if(b.hasAttribute('data-xp-temp')){this.xpDoTemperature(Number(b.dataset.xpTemp));return;}
@@ -5364,26 +5444,35 @@ class XpengVehicleCard extends HTMLElement{
    return {...original,states:{...original.states,[gps.id]:presented}};
  }
  xpCenterMapOnVehicle(map,gps){
-   // Native Home Assistant ha-map handles both MapLibre and Leaflet.
-   // Never use a fallback place, never re-center when states merely refresh.
-   const a=gps?.state?.attributes||{};
-   if(a.latitude==null||a.longitude==null)return;
-   const lat=Number(a.latitude),lon=Number(a.longitude);
+   const attrs=gps?.state?.attributes||{};
+   if(attrs.latitude==null||attrs.longitude==null)return;
+   const lat=Number(attrs.latitude),lon=Number(attrs.longitude),zoom=16;
    if(!Number.isFinite(lat)||!Number.isFinite(lon)||Math.abs(lat)>90||Math.abs(lon)>180)return;
    if(typeof window==='undefined')return;
-   const recenter=()=>{
-     if(this._xpPanel!=='map'||this._xpMapElement!==map)return;
+   const fit=()=>{
+     if(this._xpPanel!=='map'||this._xpMapElement!==map)return false;
      const host=this.shadowRoot?.querySelector?.('[data-xp-map-host]');
-     if(!host||!host.contains?.(map))return;
+     if(!host||!host.contains?.(map))return false;
      const surface=map.shadowRoot?.querySelector?.('ha-map')||map.querySelector?.('ha-map');
-     if(!surface)return;
-     // Home Assistant's public component API: works on both map engines.
-     if(typeof surface.setView==='function')surface.setView([lat,lon],16);
-     else if(typeof surface.fitMap==='function')surface.fitMap({zoom:16,pad:0});
+     const engine=surface?._map||surface?.map||map?._map;
+     const region=surface||map;
+     if((region.getBoundingClientRect?.().width||host.getBoundingClientRect?.().width||0)<20)return false;
+     engine?.resize?.();engine?.invalidateSize?.({pan:false});
+     if(typeof surface?.setView==='function'){surface.setView([lat,lon],zoom);return true;}
+     if(typeof engine?.setView==='function'){engine.setView([lat,lon],zoom,{animate:false});return true;}
+     if(typeof engine?.jumpTo==='function'){engine.jumpTo({center:[lon,lat],zoom});return true;}
+     return !!surface;
+   };
+   let attempts=0;
+   const attempt=()=>{
+     if(this._xpPanel!=='map'||this._xpMapElement!==map)return;
+     if(fit())return;
+     if(++attempts<5&&typeof window.setTimeout==='function')
+       window.setTimeout(attempt,[80,190,350,650,1000][attempts]);
    };
    if(typeof window.requestAnimationFrame==='function')
-     window.requestAnimationFrame(()=>window.requestAnimationFrame(recenter));
-   if(typeof window.setTimeout==='function')window.setTimeout(recenter,600);
+     window.requestAnimationFrame(()=>window.requestAnimationFrame(attempt));
+   else attempt();
  }
  async xpMountMap(){
    if(this._xpPanel!=='map')return;
@@ -5595,13 +5684,19 @@ class XpengVehicleCard extends HTMLElement{
      return this.xpMaintenancePanel();
    }
    if(section==='updates'){
-     let out=this.xpExtraLine('גרסת XOS','sensor','xos_version');
-     out+=this.xpExtraLine('עדכוני תוכנה','sensor','ota_upgrade');
+     const version=this.xpExtraLive('sensor','xos_version');
+     const status=this.xpExtraLive('sensor','ota_upgrade');
      const auto=this.xpExtraLive('switch','auto_upgrade_switch');
-     if(auto?.state.state==='on')out+=this.xpExtraAction('כבה עדכונים אוטומטיים','ota_off','switch','auto_upgrade_switch');
-     else if(auto?.state.state==='off')out+=this.xpExtraAction('הפעל עדכונים אוטומטיים','ota_on','switch','auto_upgrade_switch');
-     if(this.xpExtraLive('sensor','ota_upgrade'))out+='<button type="button" class="xp-extra-action" data-xp-extra-detail="ota">פרטי עדכון</button>';
-     return out||'<p>אין נתוני גרסה או עדכונים זמינים.</p>';
+     let out='<div class="xp-ota-summary">';
+     if(version)out+=this.xpExtraLine('גרסת XOS','sensor','xos_version');
+     if(status)out+=this.xpExtraLine('סטטוס תוכנה','sensor','ota_upgrade');
+     out+='</div><div class="xp-ota-actions">';
+     if(auto&&['on','off'].includes(auto.state.state))
+       out+=this.xpExtraAction(auto.state.state==='on'?'כבה עדכונים אוטומטיים':'הפעל עדכונים אוטומטיים',
+         auto.state.state==='on'?'ota_off':'ota_on','switch','auto_upgrade_switch');
+     // No confirmed API command exists to check for updates on demand.
+     out+='<span class="xp-ota-status" role="status">סטטוס העדכון מוצג למעלה</span></div>';
+     return out;
    }
    return '';
  }
@@ -5711,8 +5806,8 @@ class XpengVehicleCard extends HTMLElement{
    const section=sections.find(x=>x[0]===this._xpExtraSection);
    if(section){
      return '<div class="xp-extra-body'+(section[0]==='diagnostics'?' xp-extra-diagnostics-layout':'')+'"><div class="xp-extra-heading"><strong>'+xpEsc(section[2])+'</strong></div>'
-       +'<div class="xp-extra-details">'+this.xpExtraSectionGuide(section[0])+this.xpExtraSectionContent(section[0])+'</div>'
-       +(section[0]==='diagnostics'?'':'<p class="xp-ux-note">המידע מגיע מ־Xpengtk. הפקודות פועלות לפי הרשאות Home Assistant והרכב בלבד.</p>')+'</div>';
+       +'<div class="xp-extra-details">'+(section[0]==='updates'?'':this.xpExtraSectionGuide(section[0]))+this.xpExtraSectionContent(section[0])+'</div>'
+       +(['diagnostics','updates'].includes(section[0])?'':'<p class="xp-ux-note">המידע מגיע מ־Xpengtk. הפקודות פועלות לפי הרשאות Home Assistant והרכב בלבד.</p>')+'</div>';
    }
    return '<div class="xp-extra-body"><p class="xp-extra-subtitle">אפשרויות נוספות לרכב — שבעת קיצורי הדרך נשארים במסך הבית בלבד.</p>'
      +'<div class="xp-extra-grid">'+sections.map(([id,icon,title,detail])=>
@@ -5776,6 +5871,21 @@ class XpengVehicleCard extends HTMLElement{
   if(!entity)return;
   this.dispatchEvent(new CustomEvent('hass-more-info',{detail:{entityId:entity.id},bubbles:true,composed:true}));
  }
+ async xpMapDirectAction(suffix){
+   if(!['honk_horn','flash_lights'].includes(suffix))return false;
+   if(!this._xpMapPending)this._xpMapPending=new Set();
+   if(this._xpMapPending.has(suffix))return false;
+   if(!this.xpLive('button',suffix)||!this._hass?.callService)return false;
+   this._xpMapPending.add(suffix);
+   const b=this.shadowRoot?.querySelector?.('[data-xp-map-action="'+suffix+'"]');
+   if(b){b.disabled=true;b.setAttribute('aria-busy','true');}
+   try{return await this.xpSend('button','press',suffix,undefined,true);}
+   finally{
+     this._xpMapPending.delete(suffix);
+     const current=this.shadowRoot?.querySelector?.('[data-xp-map-action="'+suffix+'"]');
+     if(current){current.disabled=!this.xpLive('button',suffix);current.removeAttribute('aria-busy');}
+   }
+ }
  async xpSend(domain,service,suffix,value,verifiedDirectTap=false){
   const entity=this.xpLive(domain,suffix);
   if(!entity||typeof this._hass?.callService!=='function')return false;
@@ -5791,7 +5901,7 @@ class XpengVehicleCard extends HTMLElement{
   const directAllowed=verifiedDirectTap&&(
     (domain==='lock'&&suffix==='door_lock'&&['lock','unlock'].includes(service))||
     (domain==='button'&&service==='press'&&
-      ['open_windows','close_windows','open_charge_port','close_charge_port','open_trunk','close_trunk'].includes(suffix))
+      ['open_windows','close_windows','open_charge_port','close_charge_port','open_trunk','close_trunk','honk_horn','flash_lights'].includes(suffix))
   );
   if((sensitive||['trunk_power_switch','auto_upgrade_switch','sentinel_sensitivity_control','trunk_power_timer_control'].includes(suffix))
      &&!directAllowed&&typeof window.confirm==='function'
@@ -5905,10 +6015,13 @@ class XpengVehicleCard extends HTMLElement{
      oldMapGps===this.xpLive('device_tracker','location')?.id&&
      this.shadowRoot?.querySelector?.('[data-xp-map-host]')){
     // The map's viewport must not be destroyed by frequent HA sensor ticks.
-    if(this._xpMapElement)this._xpMapElement.hass=hass;
+    if(this._xpMapElement){
+      const loc=this.xpLive('device_tracker','location');
+      this._xpMapElement.hass=loc?this.xpMapDisplayHass(loc):hass;
+    }
     for(const [suffix,action] of [['honk_horn','honk_horn'],['flash_lights','flash_lights']]){
       const button=this.shadowRoot.querySelector('[data-xp-map-action="'+action+'"]');
-      if(button)button.disabled=!this.xpLive('button',suffix);
+      if(button)button.disabled=!this.xpLive('button',suffix)||!!this._xpMapPending?.has(suffix);
     }
     return;
   }
@@ -6067,7 +6180,7 @@ class XpengVehicleCard extends HTMLElement{
    const stateClass=status==='Connected'?'xp-connected':status==='Connection error'?'xp-error':'xp-disconnected';
    return `<header class="xp-header">
      <div class="xp-header-right"><div class="xp-meta-tools">
-        ${this.xpUiEnabled()&&this._view!=='charging'&&!this._xpPanel?'<button type="button" class="xp-more-trigger" data-xp-more aria-label="אפשרויות נוספות" title="אפשרויות נוספות">'+xpIcon('settings',21)+'</button>':''}
+        ${this.xpUiEnabled()&&this._view!=='charging'?'<button type="button" class="xp-more-trigger" data-xp-more aria-label="אפשרויות נוספות" title="אפשרויות נוספות">'+xpIcon('settings',21)+'</button>':''}
        <button class="xp-wifi ${stateClass}" type="button" data-meta-toggle
          aria-label="Vehicle communication details" aria-expanded="${this._infoOpen?'true':'false'}"
          aria-controls="xp-last-update-details" title="Vehicle communication details">
@@ -6193,10 +6306,33 @@ class XpengVehicleCard extends HTMLElement{
  }
  charging(){
   return `${this.title()}
-    <div class="xp-station xp-station-v3" aria-hidden="true"><span class="xp-station-display">${xpIcon('station',24)}</span><span class="xp-station-charge-light"></span><span class="xp-station-side-light"></span></div>${this.carArt()}
+    <div class="xp-station xp-station-v3 xp-station-xpeng19" aria-hidden="true">
+     <svg class="xp-xpeng-pedestal" viewBox="0 0 100 250" preserveAspectRatio="xMidYMid meet">
+      <defs>
+       <linearGradient id="xp19-case" x1="0" x2="1" y1="0" y2=".14"><stop offset="0" stop-color="#b4c6d2"/><stop offset=".15" stop-color="#64788b"/><stop offset=".32" stop-color="#243343"/><stop offset=".78" stop-color="#111c29"/><stop offset="1" stop-color="#070f18"/></linearGradient>
+       <linearGradient id="xp19-panel" x1="0" x2="1"><stop stop-color="#081524"/><stop offset=".55" stop-color="#182d3c"/><stop offset="1" stop-color="#03080d"/></linearGradient>
+       <linearGradient id="xp19-edge" x1="0" x2="1"><stop stop-color="#c9ddeb"/><stop offset=".6" stop-color="#6a8b9f"/><stop offset="1" stop-color="#1c2939"/></linearGradient>
+       <linearGradient id="xp19-led" x1="0" x2="1"><stop stop-color="#39bdf7"/><stop offset=".5" stop-color="#f5ffff"/><stop offset="1" stop-color="#1597d1"/></linearGradient>
+      </defs>
+      <ellipse cx="54" cy="243" rx="39" ry="4" fill="#01050d" opacity=".6"/>
+      <path d="M27 10Q27 5 35 4L73 1Q82 1 83 11L86 223Q87 229 79 233L34 237Q26 236 25 228Z" fill="url(#xp19-case)" stroke="#74899c" stroke-width="1.3"/>
+      <path d="M32 11Q32 9 36 9L73 6Q78 6 79 12L81 226Q80 230 76 230L36 232Q31 230 31 226Z" fill="url(#xp19-panel)" stroke="#3a5b73" stroke-width=".6"/>
+      <path d="M25 20L25 225Q27 234 33 236" stroke="url(#xp19-edge)" stroke-width="4" fill="none"/>
+      <rect x="37" y="13" width="38" height="93" rx="11" fill="#06111e" stroke="#2a3f51" stroke-width="1"/>
+      <path d="M43 36L52 45L61 36M43 45L52 36L61 45" stroke="#d6f2ff" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+      <text x="56" y="60" fill="#d9eafa" text-anchor="middle" font-size="8" letter-spacing="1.2" font-family="Arial,sans-serif">XPENG</text>
+      <rect x="53" y="134" width="4" height="74" rx="2" fill="#20b9f5" opacity=".21"/>
+      <rect x="54.4" y="134" width="2" height="74" rx="1" fill="url(#xp19-led)"/>
+      <path d="M31 113L21 114Q17 115 17 122V132Q17 137 21 138L31 139" fill="#172736" stroke="#8ba9bd" stroke-width="1.7"/>
+      <circle cx="18.5" cy="126" r="5" fill="#091622" stroke="#8ba9bd" stroke-width="1.5"/>
+      <circle cx="18.5" cy="126" r="1.8" fill="#28e7c7"/>
+      <path d="M82 30L84 216" stroke="#91a7b5" stroke-opacity=".35" stroke-width="1.5"/>
+     </svg>
+     <span class="xp-station-display">${xpIcon('station',24)}</span><span class="xp-station-charge-light"></span><span class="xp-station-side-light"></span>
+    </div>${this.carArt()}
     ${this.model()==='G6'&&this.xpChargingActive()?
-      '<svg class="xp-charge-cable xp-charge-cable-live xp-cable-desktop" data-xp-cable="desktop" aria-hidden="true" viewBox="0 0 1400 788" preserveAspectRatio="none"><path class="xp-charge-cable-halo" d="M935 460 C950 499 960 555 998 589 C1038 623 1095 629 1145 632 S1235 635 1277 610 C1311 588 1317 535 1310 475"/><path class="xp-charge-cable-core" d="M935 460 C950 499 960 555 998 589 C1038 623 1095 629 1145 632 S1235 635 1277 610 C1311 588 1317 535 1310 475"/></svg>'+
-      '<svg class="xp-charge-cable xp-charge-cable-live xp-cable-mobile" data-xp-cable="mobile" aria-hidden="true" viewBox="0 0 390 780" preserveAspectRatio="none"><path class="xp-charge-cable-halo" d="M171 489 C190 515 191 558 211 581 C236 609 270 612 301 603 C333 596 349 573 358 551 C362 541 359 529 358 516"/><path class="xp-charge-cable-core" d="M171 489 C190 515 191 558 211 581 C236 609 270 612 301 603 C333 596 349 573 358 551 C362 541 359 529 358 516"/></svg>':''}
+      '<svg class="xp-charge-cable xp-charge-cable-live xp-cable-desktop" data-xp-cable="desktop" aria-hidden="true" viewBox="0 0 1400 788" preserveAspectRatio="none"><path class="xp-charge-cable-halo" d="M935 460 C950 499 960 555 998 589 C1038 623 1095 629 1145 632 S1235 635 1277 610 C1301 590 1296 538 1287 474"/><path class="xp-charge-cable-core" d="M935 460 C950 499 960 555 998 589 C1038 623 1095 629 1145 632 S1235 635 1277 610 C1301 590 1296 538 1287 474"/></svg>'+
+      '<svg class="xp-charge-cable xp-charge-cable-live xp-cable-mobile" data-xp-cable="mobile" aria-hidden="true" viewBox="0 0 390 780" preserveAspectRatio="none"><path class="xp-charge-cable-halo" d="M171 489 C190 515 191 558 211 581 C236 609 270 612 301 603 C333 596 349 573 358 551 C359 540 353 530 346 516"/><path class="xp-charge-cable-core" d="M171 489 C190 515 191 558 211 581 C236 609 270 612 301 603 C333 596 349 573 358 551 C359 540 353 530 346 516"/></svg>':''}
     <section class="xp-charge-card" aria-label="Charging information">
        <div class="xp-charge-heading">${xpIcon('bolt',42)}<span>${xpEsc(this.chargeStatus())}</span></div>
        ${this.progress()}
