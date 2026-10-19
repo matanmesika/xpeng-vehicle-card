@@ -353,7 +353,25 @@ async function main(){
  assert.ok(Math.abs(maintenanceGeometry.width-launcherSize.width)<=2,
    'Maintenance and More options must share exactly the same desktop width');
  await reviewShot('functions-desktop');
- await car.locator('button[data-xp-close]').click();
+ // New requirement: one click on the outside backdrop returns to Home from ANY
+ // nested Extras view; the existing back arrow keeps the previous-page stack.
+ await car.locator('button[data-xp-extra-page="updates"]').click();
+ assert.equal(await car.locator('.xp-ux-modal-extras').count(),1);
+ const nestedHeader=await car.evaluate(el=>{
+  const root=el.shadowRoot;
+  const gear=root.querySelector('.xp-more-trigger');
+  const wifi=root.querySelector('.xp-wifi');
+  const modal=root.querySelector('.xp-ux-modal');
+  return {gear:!!gear,wifi:!!wifi,
+    headerZ:Number(getComputedStyle(root.querySelector('.xp-header')).zIndex),
+    modalZ:Number(getComputedStyle(modal).zIndex)};
+ });
+ assert.ok(nestedHeader.gear&&nestedHeader.wifi&&nestedHeader.headerZ>nestedHeader.modalZ,
+   'Gear and Wi-Fi must remain visible above nested pages: '+JSON.stringify(nestedHeader));
+ await car.evaluate(el=>el.shadowRoot.querySelector('.xp-scene').click());
+ assert.equal(await car.locator('.xp-ux-modal').count(),0,
+   'Clicking outside a nested modal must return directly to Home');
+
  // Exercise both HA-driven screens at phone widths and within a narrow
  // Home Assistant Sections column on a wide desktop viewport.
  async function responsiveShot(width,charging,name,viewportWidth=width){
@@ -471,6 +489,17 @@ async function main(){
  await responsiveShot(390,false,'mobile-vehicle-status');
  // Curated gallery uses a single full-resolution PNG per view.
  await responsiveShot(390,true,'mobile-charging');
+ const phoneStation=await car.evaluate(el=>{
+  const root=el.shadowRoot;
+  const station=root.querySelector('.xp-station-xpeng19');
+  const svg=station?.querySelector('.xp-xpeng-pedestal');
+  const a=station?.getBoundingClientRect(),b=svg?.getBoundingClientRect();
+  return {stationVisible:!!a&&a.width>=30&&a.height>=75,
+   svgVisible:!!b&&b.width>=30&&b.height>=75,
+   svgTop:b?.top,svgBottom:b?.bottom,stationLeft:a?.left};
+ });
+ assert.ok(phoneStation.stationVisible&&phoneStation.svgVisible,
+ 'iPhone must render the SAME premium XPENG station, not a hidden generic pedestal: '+JSON.stringify(phoneStation));
  await responsiveShot(320,false,'small-mobile-vehicle-status');
  await responsiveShot(320,true,'small-mobile-charging');
  await responsiveShot(420,false,'sections-vehicle-status',1200);
