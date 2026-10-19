@@ -65,18 +65,26 @@ test('Behavior Guardian: JS and vehicle assets do not change from the accepted b
     "target?.suffix==='open_trunk'?'trunk_open':'trunk'");
   v=v.replace("xpIcon(state==='closed'?'trunk_open':state==='open'?'trunk_close':'trunk',36)+",
     "xpIcon('trunk',36)+");
-  // V3 owner's approved TPMS-only and new station badge are presentation
-  // changes. Normalize exact isolated view constructors, never action routing.
-  v=v.replace(/ xpTireExtra\(key\)\{[\s\S]*?\n  \}\n(?=  tireScreen\()/,'');
-  v=v.replace(/ xpMaintenancePanel\(\)\{[\s\S]*?\n \}\n(?= xpChargeLimitPanel\()/,
-    ' [OWNER_TPMS_PRESENTATION_ONLY]\n');
-  v=v.replace(/  tireScreen\(showBack=true\)\{[\s\S]*?\n  \}\n(?= overview\()/,
-    ' [OWNER_TIRE_LAYOUT_PRESENTATION_ONLY]\n');
+  // Remove exactly scoped presentation methods from BOTH compared versions.
+  // All state, service, and command methods outside these scopes must still match.
+  const guideTranslation='["לחצי הצמיגים מתקבלים מחיישני הרכב דרך Home Assistant. ערך חסר נשאר לא זמין; יחידות הלחץ נקבעות בהגדרות הכרטיס.","Tire pressure comes from the vehicle sensors through Home Assistant. Missing values stay unavailable; units are configured in the card editor."],';
+  v=v.replace(guideTranslation,'');
+  const aux=v.indexOf(' xpTireExtra(key){');
+  if(aux>=0){
+    const next=v.indexOf('  tireScreen(showBack=true){',aux);
+    assert.ok(next>aux,'TPMS read-only attribute helper must be beside the tire view');
+    v=v.slice(0,aux)+v.slice(next);
+  }
+  const tpmsStart=v.indexOf(' xpMaintenancePanel(){'),chargeNext=v.indexOf(' xpChargeLimitPanel(){',tpmsStart);
+  assert.ok(tpmsStart>=0&&chargeNext>tpmsStart,'TPMS-only page must not move service handlers');
+  v=v.slice(0,tpmsStart)+' [OWNER_TPMS_PRESENTATION_ONLY]\n'+v.slice(chargeNext);
+  const tireStart=v.indexOf('  tireScreen(showBack=true){'),overviewNext=v.indexOf(' overview(){',tireStart);
+  assert.ok(tireStart>=0&&overviewNext>tireStart,'Tire layout must not affect Home handler');
+  v=v.slice(0,tireStart)+' [OWNER_TIRE_LAYOUT_PRESENTATION_ONLY]\n'+v.slice(overviewNext);
   v=v.replace('this.xpTempControl()+this.xpClimatePrimaryControls()+this.xpFanControl()+',
     'this.xpClimatePrimaryControls()+this.xpTempControl()+this.xpFanControl()+');
   v=v.replace('<div class="xp-station xp-station-v3" aria-hidden="true"><span class="xp-station-display">${xpIcon(\'station\',24)}</span><span class="xp-station-charge-light"></span><span class="xp-station-side-light"></span></div>',
     '<div class="xp-station" aria-hidden="true">${xpIcon(\'station\',24)}</div>');
-  v=v.replaceAll('// Owner\'s maintenance surface is tire pressure only. Never substitute','// Owner\'s maintenance surface is tire pressure only. Never substitute');
   return v;
  };
  assert.equal(normalize(source),normalize(reference),
