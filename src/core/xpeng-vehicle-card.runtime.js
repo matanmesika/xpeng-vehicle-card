@@ -1082,7 +1082,7 @@ class XpengVehicleCard extends HTMLElement{
      if(this._xpPanel!=='map'||!this.shadowRoot?.contains?.(host)||
         this.xpLive('device_tracker','location')?.id!==gps.id)return;
      const map=helper.createCardElement({type:'map',entities:[{entity:gps.id}],
-       default_zoom:11,hours_to_show:0,theme_mode:'dark',aspect_ratio:'4:3'});
+       default_zoom:16,auto_fit:true,fit_zones:false,hours_to_show:0,theme_mode:'dark',aspect_ratio:'4:3'});
      map.hass=this._hass;
      this._xpMapElement=map;this._xpMapEntityId=gps.id;
      host.replaceChildren(map);
@@ -1119,12 +1119,33 @@ class XpengVehicleCard extends HTMLElement{
  }
 
  xpMaintenancePanel(){
-   // Owner's maintenance surface is tire pressure only. Never substitute
-   // stale service or vehicle-identity cards for live TPMS.
-   return '<div class="xp-maintenance-page xp-tpms-only">'+
-     '<h3>לחץ אוויר בארבעת הצמיגים</h3>'+this.tireScreen(false)+
-     '<p class="xp-ux-note xp-tire-source-note">לחצי הצמיגים מתקבלים מחיישני הרכב דרך Home Assistant. ערך חסר נשאר לא זמין; יחידות הלחץ נקבעות בהגדרות הכרטיס.</p>'+
-     '</div>';
+   // Display only real mapped Home Assistant vehicle values.
+   const maintenance=this.xpLive('sensor','maintenance');
+   const odometer=this.xpLive('sensor','odometer');
+   const identity=this.xpLive('sensor','vehicle_identity');
+   const attrs=maintenance?.state?.attributes||{};
+   const info=identity?.state?.attributes||{};
+   const line=(label,value,unit='')=>{
+     if(value===null||value===undefined||!String(value).trim()||XP_INVALID.has(String(value).toLowerCase()))return '';
+     return '<div class="xp-maint-service-row"><span>'+xpEsc(label)+'</span><b dir="auto">'+xpEsc(value)+(unit?' <small>'+xpEsc(unit)+'</small>':'')+'</b></div>';
+   };
+   const service=line('הטיפול הבא',maintenance?.state?.state)
+       +line('תאריך טיפול',attrs.next_date)
+       +line('ימים נותרו',attrs.days_remaining)
+       +line('קילומטרים נותרו',attrs.km_remaining,'km');
+   const details=line('נסועה כוללת',odometer?.state?.state,odometer?.state?.attributes?.unit_of_measurement||'')
+       +line('דגם',info.model_family||info.vehicle_type_name)
+       +line('שנת דגם',info.model_year)
+       +line('מספר שלדה מוסתר',info.vin_masked);
+   return '<div class="xp-maintenance-page xp-tpms-only xp-maintenance-v4"><div class="xp-maintenance-split">'+
+    '<section class="xp-maintenance-tires"><h3>לחץ אוויר בארבעת הצמיגים</h3>'+this.tireScreen(false)+
+    '<p class="xp-ux-note xp-tire-source-note">נתוני הצמיגים מתקבלים מ־Home Assistant, והיחידות נקבעות בהגדרות הכרטיס.</p></section>'+
+    '<section class="xp-maintenance-service" aria-label="נתוני טיפול אמיתיים">'+
+     '<h3>תחזוקת הרכב</h3><div class="xp-maint-service-group"><h4>הטיפול הבא</h4>'+
+       (service||'<p class="xp-ux-note">אין כרגע נתוני טיפול זמינים באינטגרציה.</p>')+'</div>'+
+     '<div class="xp-maint-service-group"><h4>פרטי הרכב</h4>'+
+       (details||'<p class="xp-ux-note">נתוני הרכב אינם זמינים כרגע.</p>')+'</div>'+
+    '</section></div></div>';
  }
 
  xpChargeLimitPanel(){
@@ -1249,7 +1270,7 @@ class XpengVehicleCard extends HTMLElement{
        }
        out+='<button type="button" class="xp-extra-action" data-xp-extra-detail="maintenance">פרטי תחזוקה ב־Home Assistant</button>';
      }
-     return this.xpMaintenancePanel()+(out?'<div class="xp-maint-additional">'+out+'</div>':'');
+     return this.xpMaintenancePanel();
    }
    if(section==='updates'){
      let out=this.xpExtraLine('גרסת XOS','sensor','xos_version');
@@ -1333,7 +1354,7 @@ class XpengVehicleCard extends HTMLElement{
      climate:['Climate controls','Climate power, AUTO, target temperature and fan settings operate only with mapped Home Assistant entities. Seat and steering-wheel controls cycle the supported levels directly on the cabin image.','Fan and temperature limits depend on the available entities.'],
      charge_controls:['Charge limit','Sets the target maximum battery percentage for charging. A lower limit stops at a lower target SOC; a higher limit allows a higher target SOC.','Changes are sent to Home Assistant and should be confirmed in the vehicle.'],
      charge_schedule:['Charging schedule','Displays the charging start and end times published by Xpengtk. This page does not invent an unsupported schedule editing action.','Read-only start and end times; no editable numeric limits.'],
-     maintenance:['Tire pressure','Live TPMS readings are shown directly beside the four wheels of the existing vehicle image. Additional tire temperature or air-life values appear only if their own tire sensor publishes them.','Recommended tire pressure comes from the actual vehicle placard; no universal minimum or maximum is assumed.'],
+     maintenance:['Tire pressure and vehicle maintenance','Four live TPMS values appear around the original vehicle image. The next-service, odometer and vehicle details are displayed only when their Home Assistant entities report them.','Tire pressure units come from card settings. Service dates and mileage are never invented.'],
      port:['Charge port','Opens or closes the charge port when the vehicle reports a known state and the corresponding command exists.','Do not close the port while a cable is connected.'],
      doors:['Door locks','The action changes with the live state: Unlock when locked and Lock when unlocked. If the state is unknown, the action is unavailable.','Access permission may be required for unlocking.'],
      windows:['Windows','Shows the currently available open/close action for the vehicle windows. The command depends on a known sensor state.','No intermediate opening percentage is assumed unless the integration exposes one.'],
