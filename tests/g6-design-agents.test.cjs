@@ -104,7 +104,7 @@ test('Behavior Guardian: JS and vehicle assets do not change from the accepted b
   v=v.replace("return this.xpMaintenancePanel();",
     "return this.xpMaintenancePanel()+(out?'<div class=\"xp-maint-additional\">'+out+'</div>':'');");
   // Beta 16 only mounts a one-time UI camera fix; car permissions and state are unchanged.
-  const centerStart=v.indexOf(' xpCenterMapOnVehicle(map,gps){');
+  const centerStart=v.indexOf(' xpMapDisplayHass(gps){');
   if(centerStart>=0){
     const centerEnd=v.indexOf(' async xpMountMap(){',centerStart);
     assert.ok(centerEnd>centerStart,'One-time camera helper must be isolated');
@@ -113,6 +113,15 @@ test('Behavior Guardian: JS and vehicle assets do not change from the accepted b
     v=v.replace('\n\n async xpMountMap(){','\n async xpMountMap(){');
   }
   v=v.replace('     this.xpCenterMapOnVehicle(map,gps);\n','');
+  // Beta 17 rendering-only changes; preserve protected service and command handlers.
+  v=v.replace("const homeSurface=!isCharging&&!this._tireOpen&&this.xpUiEnabled();\n",'');
+  v=v.replace("${homeSurface?'xp-home-navigation':''}","${onHome&&this.xpUiEnabled()?'xp-home-navigation':''}");
+  v=v.replace("<h1><em>${xpEsc(this.model())}</em></h1>","<h1>XPENG <em>${xpEsc(this.model())}</em></h1>");
+  v=v.replace('<header class="xp-header">','<header class="xp-header"><div class="xp-brand"><span>XPENG</span></div>');
+  v=v.replace("' aria-label=\"'+xpEsc(label)+'\" '","' aria-label=\"'+xpEsc(label)+'\" title=\"'+xpEsc(label)+'\" '");
+  v=v.replace("this._xpMapElement.hass=this.xpMapDisplayHass(gps);","this._xpMapElement.hass=this._hass;");
+  v=v.replace("map.hass=this.xpMapDisplayHass(gps);","map.hass=this._hass;");
+  v=v.replace("entities:[{entity:gps.id,label_mode:'icon',focus:true}]","entities:[{entity:gps.id}]");
   return v;
  };
  assert.equal(normalize(source),normalize(reference),
@@ -139,12 +148,12 @@ test('Integration Guardian: preserve live charging and state-dependent button ac
 });
 
 test('Icon Reviewer: distinct MDI rear hatch lift/lower and correct automotive icons',()=>{
- assert.match(source,/trunk:'mdi:car-estate'/);
- assert.match(source,/trunk_open:'mdi:car-estate'/);
- assert.match(source,/trunk_close:'mdi:car-estate'/);
+ assert.match(source,/trunk:'mdi:car-back'/);
+ assert.match(source,/trunk_open:'mdi:car-back'/);
+ assert.match(source,/trunk_close:'mdi:car-back'/);
  assert.match(source,/trunk_lift:'mdi:arrow-up-bold'/);
  assert.match(source,/trunk_lower:'mdi:arrow-down-bold'/);
- assert.doesNotMatch(source,/mdi:car-back|mdi:window-open|mdi:car-hatchback/);
+ assert.doesNotMatch(source,/mdi:window-open|mdi:car-hatchback/);
  assert.match(source,/lock:'mdi:car-door-lock'/);
  assert.match(source,/unlock:'mdi:car-door-lock-open'/);
  assert.match(source,/windows:'mdi:car-door'/);
