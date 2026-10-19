@@ -1,24 +1,20 @@
-# XPENG G6 — גלריית 14 מסכי הדשבורד
+# XPENG G6 — Screenshot gallery
 
-**צילומי מסך של כרטיס Home Assistant עצמו**, מתוך Chromium/Playwright עם חיישני Xpengtk מדומים — לא עיצוב שנוצר במחולל תמונות ולא צילום מתוך הרכב האמיתי. צילומי המפה משתמשים ברכיב מיקום מדומה: אריחי מפה אמיתיים זמינים רק בהתקנת Home Assistant.
+The fourteen PNGs show the **actual card running in Chromium**, driven by simulated Xpengtk entities. They are neither AI mockups nor proof of working live car commands. The Location screenshot uses a map stub; real tiles and native tracker centering require live Home Assistant.
 
-| מסך | מחשב | טלפון |
+| View | Desktop | iPhone-sized |
 | --- | --- | --- |
-| בית ושבע פעולות | [בית מחשב](home-desktop.png) | [בית טלפון](home-mobile.png) |
-| טעינה אוטומטית | [טעינה מחשב](charging-desktop.png) | [טעינה טלפון](charging-mobile.png) |
-| מיזוג, חימום, אוורור והגה — צילום הפנים ללא כיתוב | [מיזוג מחשב](climate-desktop.png) | [מיזוג טלפון](climate-mobile.png) |
-| תחזוקה, צמיגים ופרטי רכב | [תחזוקה מחשב](maintenance-desktop.png) | [תחזוקה טלפון](maintenance-mobile.png) |
-| מיקום, צופר והבהוב | [מפה מחשב (דמה)](map-desktop.png) | [מפה טלפון (דמה)](map-mobile.png) |
-| פונקציות מתקדמות — אייקונים קטנים בתוך כפתורי זכוכית עגולים | [פונקציות מחשב](functions-desktop.png) | [פונקציות טלפון](functions-mobile.png) |
+| Home | [Desktop](home-desktop.png) | [Mobile](home-mobile.png) |
+| Automatic Charging | [Desktop](charging-desktop.png) | [Mobile](charging-mobile.png) |
+| Climate and seat controls | [Desktop](climate-desktop.png) | [Mobile](climate-mobile.png) |
+| Maintenance and TPMS | [Desktop](maintenance-desktop.png) | [Mobile](maintenance-mobile.png) |
+| Native map placeholder, Honk and Flash | [Desktop](map-desktop.png) | [Mobile](map-mobile.png) |
+| More options | [Desktop](functions-desktop.png) | [Mobile](functions-mobile.png) |
 
-**תוספות רלוונטיות:** [בקרות טעינה](charge-controls-mobile.png) ו־[רשימת אבחון חיישנים](diagnostics-mobile.png) עם חלון גלילה עצמאי והערות גלויות.
+Also: [Charge controls](charge-controls-mobile.png) and [Diagnostics](diagnostics-mobile.png). Windows, lock, trunk and charge port are direct actions rather than separate permanent pages.
 
-הכפתורים של נעילה, חלונות, תא מטען ושקע טעינה הם **לחצני פעולה ישירה** ולא עמודים עצמאיים. בדיקות Chromium נפרדות מוודאות שהלחצנים עובדים לפי חיווי החיישנים, בלי לשלוח פקודות מיותרות.
+Regenerate with [the Chromium capture script](../../scripts/capture-dashboard.cjs) using [the screenshot workflow](../../.github/workflows/capture-dashboard.yml). Exactly these fourteen files are replaced. Vehicle artwork, the night background, and cabin photos in `assets/` must not change.
 
-## חידוש הגלריה וניהול קבצים
+**Real-device acceptance remains pending:** Safari scroll, modal header layering, GPS recentering, charging and native vehicle commands.
 
-הפקה אוטומטית: [`scripts/capture-dashboard.cjs`](../../scripts/capture-dashboard.cjs) עם `@mdi/js` רשמי ו־Playwright Chromium. תהליך [צילום הגלריה](../../.github/workflows/capture-dashboard.yml) מחליף את **14 קובצי ה־PNG בתיקייה זו בלבד**, ומוחק צילומי מסך עודפים. הוא **לא מוחק** תמונות רכב, צבעים, מושבים או רקע מ־`assets/`.
-
-נבדקים גדלי מחשב, iPhone, כרטיס צר ב־Home Assistant Sections, מפה מותאמת לגובה, מרכוז Wi-Fi, עברית/אנגלית וגלילה רק בחלון אבחון הישויות. יש להשוות מול רכב ומכשירי HA אמיתיים לפני גרסה יציבה.
-
-[בחזרה ל־README](../../README.md) · [מוכנות לשחרור](../G6_RELEASE_READINESS_HE.md) · [מצב הדגמים והתמונות](../ARTWORK_STATUS.md)
+[README](../../README.md) · [Release acceptance](../G6_FINAL_STABILIZATION.md)
