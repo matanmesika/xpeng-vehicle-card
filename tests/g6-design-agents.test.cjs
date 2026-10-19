@@ -43,6 +43,18 @@ test('Behavior Guardian: JS and vehicle assets do not change from the accepted b
  // those permitted additions before comparing the JS executable behavior.
  const normalize=s=>{
   let v=withoutCss(s);
+  // Owner-approved Beta 15 UI copy only; keep the strict original vehicle
+  // state / service / permissions baseline comparison intact.
+  const beta15Copy=[
+   ["נתוני הצמיגים מתקבלים מ־Home Assistant, והיחידות נקבעות בהגדרות הכרטיס.","Tire data is provided by Home Assistant; units are configured in the card settings."],
+   ["אין כרגע נתוני טיפול זמינים באינטגרציה.","No upcoming service data is currently available from the integration."],
+   ["נתוני הרכב אינם זמינים כרגע.","Vehicle details are currently unavailable."],
+   ["נתוני טיפול אמיתיים","Live vehicle service data"],
+   ["מספר שלדה מוסתר","Masked VIN"],
+   ["פרטי הרכב","Vehicle details"]
+  ].map(item=>JSON.stringify(item)+',').join('');
+  v=v.replace('const XP_EN_TRANSLATIONS=Object.freeze(['+beta15Copy,
+    'const XP_EN_TRANSLATIONS=Object.freeze([');
   const from=' // Guide copy is intentionally separate from sensor mappings and service';
   const to=' xpExtrasPanel(){';
   const a=v.indexOf(from),b=v.indexOf(to,a);
