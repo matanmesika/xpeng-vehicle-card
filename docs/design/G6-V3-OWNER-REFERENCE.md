@@ -1,30 +1,33 @@
-# G6 owner-approved TPMS / HVAC / Charging pedestal
-The original approved lakeside background, top-view vehicle PNG/WEBP, owner cabin interior
-images, grey charging car art, and thin live charging cable are **untouched**.
-Changes are isolated to `src/design/xpeng-vehicle-card.css` and view markup
-in `src/core/xpeng-vehicle-card.runtime.js` needed for presentation.
+# G6 owner review — Beta 15 maintenance, climate and map follow-up
 
-- **TPMS**: original top-view image with four turquoise wheel markers and four
-  glass rectangular pressure readouts adjacent to those wheels; units follow
-  card settings. Temperature (°C) and tire air-life (%) appear *only when
-  the corresponding mapped pressure sensor actually exposes attributes*.
-  Maintenance displays tire-pressure only; odometer/VIN/service were removed
-  from this particular page per owner's request.
-- **Climate**: photo and seat/steering hotspots unchanged; only the control
-  panel is rearranged to target temperature, Power/AUTO modes, segmented
-  fan range and optional climate features. Fan min/max/step and supported
-  functions still come from Xpengtk/Home Assistant.
-- **Charging pedestal**: sculpted dark charging tower using CSS and an official
-  MDI station symbol. The existing image of the actual car and cable
-  routing remain unchanged.
+The night lakeside background, vehicle and cabin artwork, charging pedestal, thin green
+active cable, mapped vehicle entities and command handlers must stay unchanged.
 
-Avoid fake functions or imaginary states. Run the reference guardian, browser
-screenshots on 1400px desktop / 390px mobile / narrow Home Assistant Sections,
-and the full regression suite. Do not merge into main without owner approval.
+## Maintenance
+- Four genuine pressure sensors remain alongside the original G6 overhead photo.
+- Remove turquoise decorative *wheel outline overlays*, not the four real tire pressure readings.
+- Move the tire MDI glyph toward the right side within the two left-hand readouts.
+- Restore next service, next date, remaining days/km, odometer, model year, and masked VIN
+  **only** if those sensor states/attributes are available. Never guess a service date.
+- Wide desktop: two side-by-side areas — TPMS image and vehicle maintenance.
+  Narrow Sections/iPhone: the same areas stack with independent scrolling.
+- Tire units come from the card editor; optional temperature/air-life only if reported.
 
-## Acceptance changes
-Older tests that expected odometer/model year inside Maintenance are replaced with
-a check for **only four mapped TPMS tiles**. Model year remains on its original
-integration entity; it is not deleted or synthesized. The station HTML keeps
-the native `mdi:ev-station` icon in the new facade. Browser QA verifies that
-the tire view scrolls to its real sensor note, not obsolete service details.
+## Climate
+- Preserve approved cabin photo, seat/steering action hotspots, HVAC power/AUTO and
+  available controls. The fan slider alone loses its outer blue glowing pill and is
+  presented as an open, minimal strip. Min/max/step remain integration-driven.
+
+## Home, location, and viewport
+- Unify seven real MDI quick-action glyphs; make them slightly larger including Climate.
+- XPENG wordmark has no rounded background badge.
+- Map uses only the real tracker entity, default zoom 16, auto-fit on the car,
+  and no invented location or extra zone.
+- On desktop expand the scene height without forcing a separate phone dashboard.
+
+## QA and release boundaries
+Validate the generated source and `dist` bytes, JS syntax, regression suites,
+real Chromium desktop/phone/Sections captures and full screenshot ZIP for Beta 15.
+Screenshots in the earlier committed gallery are NOT proof of the Beta 15 output.
+Keep stable `main` and the car's real command flow unchanged; before stable merge
+obtain explicit owner acceptance and perform Home Assistant/physical-car testing.
