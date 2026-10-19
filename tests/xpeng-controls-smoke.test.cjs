@@ -1643,3 +1643,30 @@ test('Beta 19 charging station has the same SVG and a side cable in both scene s
  assert.match(charging,/M171 489[\s\S]*?346 516/);
  assert.match(src,/\.xp-scene\.xp-charge \.xp-station\.xp-station-v3\.xp-station-xpeng19/);
 });
+
+test('Reopened native Location camera centers using the actual GPS with zoom 16',()=>{
+ const {card,sandbox}=createCard();
+ const centered=[];
+ const surface={getBoundingClientRect:()=>({width:390}),setView:(coords,zoom)=>centered.push({coords,zoom})};
+ const map={shadowRoot:{querySelector:()=>surface}};
+ card.shadowRoot.querySelector=key=>key==='[data-xp-map-host]'?{contains:x=>x===map,getBoundingClientRect:()=>({width:390})}:null;
+ card._xpPanel='map';card._xpMapElement=map;card._xpMapNeedsCenter=true;
+ sandbox.window.requestAnimationFrame=callback=>callback();
+ card.xpCenterMapOnVehicle(map,{state:{attributes:{latitude:31.9,longitude:34.82}}});
+ assert.deepEqual(JSON.parse(JSON.stringify(centered)),[{coords:[31.9,34.82],zoom:16}]);
+ assert.equal(card._xpMapNeedsCenter,false);
+ card._xpMapNeedsCenter=true;
+ card.xpCenterMapOnVehicle(map,{state:{attributes:{latitude:32.01,longitude:34.83}}});
+ assert.deepEqual(JSON.parse(JSON.stringify(centered[1])),{coords:[32.01,34.83],zoom:16});
+ assert.match(src,/if\(this\._xpMapNeedsCenter\)this\.xpCenterMapOnVehicle\(this\._xpMapElement,gps\)/);
+ assert.match(src,/if\(panel==='map'\)this\._xpMapNeedsCenter=true/);
+});
+test('OTA explanation remains visible in English for Hebrew Home Assistant',()=>{
+ const {card}=createCard();
+ card._xpPanel='extras';card._xpExtraSection='updates';card._hass.locale.language='he';
+ const html=card.xpExtrasPanel();
+ assert.match(html,/Software updates/);
+ assert.match(html,/XOS version identifies/);
+ assert.match(html,/No verified Check for Updates command/);
+ assert.doesNotMatch(html,/[\u0590-\u05ff]/);
+});
