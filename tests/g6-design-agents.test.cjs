@@ -109,6 +109,8 @@ test('Behavior Guardian: JS and vehicle assets do not change from the accepted b
     const centerEnd=v.indexOf(' async xpMountMap(){',centerStart);
     assert.ok(centerEnd>centerStart,'One-time camera helper must be isolated');
     v=v.slice(0,centerStart)+v.slice(centerEnd);
+    // Retain exactly the legacy separator between map methods.
+    v=v.replace('\n\n async xpMountMap(){','\n async xpMountMap(){');
   }
   v=v.replace('     this.xpCenterMapOnVehicle(map,gps);\n','');
   return v;
