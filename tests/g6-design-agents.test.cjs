@@ -78,9 +78,10 @@ test('Behavior Guardian: JS and vehicle assets do not change from the accepted b
   const tpmsStart=v.indexOf(' xpMaintenancePanel(){'),chargeNext=v.indexOf(' xpChargeLimitPanel(){',tpmsStart);
   assert.ok(tpmsStart>=0&&chargeNext>tpmsStart,'TPMS-only page must not move service handlers');
   v=v.slice(0,tpmsStart)+' [OWNER_TPMS_PRESENTATION_ONLY]\n'+v.slice(chargeNext);
-  const tireStart=v.indexOf('  tireScreen(showBack=true){'),overviewNext=v.indexOf(' overview(){',tireStart);
+  const tireStart=v.indexOf('tireScreen(showBack=true){'),overviewNext=v.indexOf(' overview(){',tireStart);
   assert.ok(tireStart>=0&&overviewNext>tireStart,'Tire layout must not affect Home handler');
-  v=v.slice(0,tireStart)+' [OWNER_TIRE_LAYOUT_PRESENTATION_ONLY]\n'+v.slice(overviewNext);
+  const tireLine=v.lastIndexOf('\n',tireStart)+1;
+  v=v.slice(0,tireLine)+' [OWNER_TIRE_LAYOUT_PRESENTATION_ONLY]\n'+v.slice(overviewNext);
   v=v.replace('this.xpTempControl()+this.xpClimatePrimaryControls()+this.xpFanControl()+',
     'this.xpClimatePrimaryControls()+this.xpTempControl()+this.xpFanControl()+');
   v=v.replace('<div class="xp-station xp-station-v3" aria-hidden="true"><span class="xp-station-display">${xpIcon(\'station\',24)}</span><span class="xp-station-charge-light"></span><span class="xp-station-side-light"></span></div>',
