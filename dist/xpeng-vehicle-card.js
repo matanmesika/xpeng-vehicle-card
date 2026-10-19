@@ -4931,21 +4931,34 @@ background:transparent!important;
   margin-top:8px!important;gap:4px!important;align-items:start!important;
  }
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-panel-actions button{
-  --xp-ring-size:32px!important;--xp-glyph-size:16px!important;
-  box-sizing:border-box!important;min-width:0!important;min-height:53px!important;
-  padding:8px 1px 0!important;gap:12px!important;
+  --xp-ring-size:34px!important;--xp-glyph-size:18px!important;
+  position:relative!important;isolation:isolate!important;
+  box-sizing:border-box!important;min-width:0!important;min-height:59px!important;
+  padding:39px 1px 3px!important;gap:0!important;
+  display:flex!important;flex-direction:column!important;
+  align-items:center!important;justify-content:flex-start!important;
  }
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-panel-actions button::before{
   width:var(--xp-ring-size)!important;height:var(--xp-ring-size)!important;
+  top:0!important;left:50%!important;transform:translateX(-50%)!important;
+  background:linear-gradient(155deg,rgba(15,53,79,.8),rgba(7,29,52,.55))!important;
+  border:1px solid rgba(123,199,229,.48)!important;box-sizing:border-box!important;
  }
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-panel-actions button>.xp-mdi-icon{
   flex:0 0 var(--xp-glyph-size)!important;width:var(--xp-glyph-size)!important;
   height:var(--xp-glyph-size)!important;--xp-icon-size:var(--xp-glyph-size)!important;
   --mdc-icon-size:var(--xp-glyph-size)!important;
+  --iron-icon-width:var(--xp-glyph-size)!important;--iron-icon-height:var(--xp-glyph-size)!important;
+  display:block!important;position:absolute!important;
+  top:calc((var(--xp-ring-size) - var(--xp-glyph-size)) / 2)!important;
+  left:50%!important;transform:translateX(-50%)!important;
+  margin:0!important;padding:0!important;line-height:1!important;
+  background:transparent!important;border:0!important;box-shadow:none!important;
  }
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-panel-actions button span{
   font-size:clamp(8.5px,2.35cqw,10px)!important;line-height:1.1!important;
-  white-space:normal!important;max-width:100%!important;text-align:center!important;
+  display:block!important;white-space:normal!important;max-width:100%!important;
+  text-align:center!important;min-height:11px!important;
  }
 }
 @container xpeng-layout (max-width:360px){
@@ -4957,8 +4970,8 @@ background:transparent!important;
  }
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-meta small{font-size:8px!important}
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-panel-actions button{
-  --xp-ring-size:30px!important;--xp-glyph-size:15px!important;
-  min-height:50px!important;padding-top:7px!important;gap:11px!important;
+  --xp-ring-size:32px!important;--xp-glyph-size:17px!important;
+  min-height:56px!important;padding-top:37px!important;gap:0!important;
  }
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-panel-actions button span{font-size:9px!important}
 }
