@@ -192,7 +192,16 @@ const XP_ICONS = Object.freeze({
 function xpIcon(name,size=22){
  const mdi=XP_ICONS[name]||XP_ICONS.info;
  const px=Math.max(12,Math.min(80,Number(size)||22));
- return '<ha-icon class="xp-mdi-icon" icon="'+mdi+'" style="--xp-icon-size:'+px+'px" aria-hidden="true"></ha-icon>';
+ const glyph='<ha-icon class="xp-mdi-icon" icon="'+mdi+'" style="--xp-icon-size:'+px+'px" aria-hidden="true"></ha-icon>';
+ // State-aware trunk icon is composed only of genuine Home Assistant MDI glyphs.
+ // Never infer a hatch movement if its live state/next action is unknown.
+ if(!['trunk','trunk_open','trunk_close'].includes(name))return glyph;
+ const arrowKey=name==='trunk_open'?'trunk_lift':name==='trunk_close'?'trunk_lower':null;
+ const arrowSize=Math.max(8,Math.min(13,Math.round(px*.36)));
+ return '<span class="xp-trunk-symbol'+(name==='trunk_close'?' xp-trunk-symbol-lower':'')+
+   '" style="--xp-trunk-size:'+px+'px">'+glyph+
+   (arrowKey?'<ha-icon class="xp-mdi-icon xp-trunk-arrow" icon="'+XP_ICONS[arrowKey]+
+   '" style="--xp-icon-size:'+arrowSize+'px" aria-hidden="true"></ha-icon>':'')+'</span>';
 }
 function xpEsc(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
 
