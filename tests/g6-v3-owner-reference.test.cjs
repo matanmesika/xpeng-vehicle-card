@@ -21,7 +21,13 @@ test('Tire design guardian: same approved overhead photo, four data-bound pressu
  assert.match(theme,/\.xp-tire-reading\[data-wheel="tire_fl"\]/);
  assert.match(theme,/TPMS photo-geometry acceptance/);
  assert.match(theme,/bottom:auto!important/);
- assert.doesNotMatch(runtime.slice(runtime.indexOf("return '<div class=\"xp-maintenance-page xp-tpms-only\">'"),runtime.indexOf(' xpChargeLimitPanel(){')),/xp-maint-info|VIN|next_date|odometer/);
+ assert.match(runtime,/xp-maintenance-split/);
+ assert.match(runtime,/this\.xpLive\('sensor','maintenance'\)/);
+ assert.match(runtime,/attrs\.next_date/);
+ assert.match(runtime,/this\.xpLive\('sensor','odometer'\)/);
+ assert.match(runtime,/info\.vin_masked/);
+ assert.match(css,/Beta 15 owner visual refinements/);
+ assert.match(css,/\.xp-wheel-highlight\{display:none!important\}/);
 });
 test('No fake tire temperatures or service data: optional sensor attributes only',()=>{
  assert.match(runtime,/a\.tire_temperature_c\?\?/);
