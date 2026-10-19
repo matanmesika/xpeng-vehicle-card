@@ -1064,6 +1064,31 @@ class XpengVehicleCard extends HTMLElement{
    }
    return XP_MAP_HELPERS_PROMISE;
  }
+
+ xpCenterMapOnVehicle(map,gps){
+   // One-time camera correction for Leaflet maps mounted after a modal resize.
+   // Only real tracker coordinates may set the camera, never a fallback city.
+   const at=gps?.state?.attributes||{};
+   const lat=Number(at.latitude),lon=Number(at.longitude);
+   if(!Number.isFinite(lat)||!Number.isFinite(lon)||Math.abs(lat)>90||Math.abs(lon)>180
+      ||at.latitude==null||at.longitude==null)return;
+   if(typeof window==='undefined')return;
+   const camera=()=>{
+     if(this._xpPanel!=='map'||this._xpMapElement!==map)return;
+     const host=this.shadowRoot?.querySelector?.('[data-xp-map-host]');
+     if(!host||!host.contains?.(map))return;
+     const surface=map.shadowRoot?.querySelector?.('ha-map')
+       ||map.querySelector?.('ha-map')||map._mapElement;
+     const leaflet=surface?._map||surface?.map||map._map;
+     if(!leaflet||typeof leaflet.setView!=='function')return;
+     leaflet.invalidateSize?.({pan:false});
+     leaflet.setView([lat,lon],16,{animate:false});
+   };
+   // Do not recenter on every Home Assistant update: preserve manual panning.
+   if(typeof window.requestAnimationFrame==='function')
+     window.requestAnimationFrame(()=>window.requestAnimationFrame(camera));
+   if(typeof window.setTimeout==='function')window.setTimeout(camera,350);
+ }
  async xpMountMap(){
    if(this._xpPanel!=='map')return;
    const host=this.shadowRoot?.querySelector?.('[data-xp-map-host]');
@@ -1086,6 +1111,7 @@ class XpengVehicleCard extends HTMLElement{
      map.hass=this._hass;
      this._xpMapElement=map;this._xpMapEntityId=gps.id;
      host.replaceChildren(map);
+     this.xpCenterMapOnVehicle(map,gps);
    }catch(err){
      host.textContent=xpLocalizeMarkup('המפה אינה זמינה בתוך הכרטיס כרגע. אפשר לפתוח את פרטי המיקום דרך הכפתור למטה.',this._hass);
    }
