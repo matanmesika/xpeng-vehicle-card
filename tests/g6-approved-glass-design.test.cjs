@@ -20,7 +20,11 @@ test('Glass Cascade Agent | approved rules are LAST and override old dark rectan
  assert.match(v3,/\.xp-scene\.xp-overview\.xp-home-navigation \.xp-overview-stat\{[\s\S]*?background:transparent!important/);
  assert.match(v3,/\.xp-scene\.xp-charge \.xp-charge-panel-actions button\{[\s\S]*?background:transparent!important/);
  assert.match(v3,/\.xp-scene \.xp-ux-modal-climate \.xp-ux-temp-line button\{[\s\S]*?border-radius:50%!important/);
- assert.ok(!v3.includes('display:none!important'), 'No functionality or touch controls may be hidden by V3');
+ // Only the obsolete CSS-drawn battery terminal is hidden; never hide
+ // any live buttons, seat hotspots or charging controls.
+ const hidden=[...v3.matchAll(/([^{}]+)\\{([^{}]*)\\}/g)].filter(m=>m[2].includes('display:none!important'));
+ assert.ok(hidden.every(m=>/\\.xp-batt-glyph:before/.test(m[1])),
+   'No functionality or touch controls may be hidden by V3');
 });
 test('Responsive Glass UX Agent | one card, touch targets, accessibility and small HA Sections',()=>{
  assert.match(v3,/@container xpeng-layout \(max-width:850px\)/);

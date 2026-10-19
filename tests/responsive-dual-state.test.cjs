@@ -42,7 +42,10 @@ test('original charging art uses the same seven-button dashboard dock',()=>{
 });
 
 test('phone subpages are touch scrollable and maintenance grid stacks rows',()=>{
- assert.match(css,/\.xp-ux-modal\{overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch/);
+ // Canonical V3 keeps the mobile scroll declarations in two complementary
+ // .xp-ux-modal rules instead of the previous single duplicated rule.
+ assert.match(css,/\\.xp-ux-modal\\{overflow-x:hidden;/);
+ assert.match(css,/\\.xp-ux-modal\\{[\\s\\S]*?overflow-y:auto;-webkit-overflow-scrolling:touch;/);
  assert.match(css,/touch-action:pan-y/);
  assert.match(css,/\.xp-ux-modal-maintenance \.xp-tire-stage\{display:grid;width:100%;height:auto/);
 });

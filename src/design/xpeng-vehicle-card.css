@@ -2697,8 +2697,8 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon,
 .xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-trunk-symbol{
  flex:0 0 auto!important;
- width:clamp(61px,6.2cqw,85px)!important;
- height:clamp(61px,6.2cqw,85px)!important;
+ width:clamp(56px,5.2cqw,72px)!important;
+ height:clamp(56px,5.2cqw,72px)!important;
  border:1px solid var(--xp-v3-edge)!important;
  border-radius:50%!important;
  background:var(--xp-v3-glass)!important;

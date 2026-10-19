@@ -142,6 +142,8 @@ jobs:
           node-version: '22'
       - name: Owner-approved transparency rules beat all V2 important selectors
         run: node --test --test-name-pattern="Glass Cascade Agent" tests/g6-approved-glass-design.test.cjs
+      - name: Canonical design cleanup and live function compatibility
+        run: node --test tests/g6-v3-canonical-style.test.cjs
 
   approved-responsive-glass-agent:
     name: Responsive UX Agent | one card on desktop iPhone and Sections
