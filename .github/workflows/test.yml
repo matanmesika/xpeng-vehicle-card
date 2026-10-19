@@ -53,6 +53,7 @@ jobs:
           node --test tests/charging-cable-static.test.cjs
           node --test tests/xpeng-controls-smoke.test.cjs
           node --test tests/responsive-dual-state.test.cjs
+          node --test tests/g6-mobile-charging-icons.test.cjs
           node --test tests/release-documentation.test.cjs
           python tools/check_photo_candidates.py
           python tools/audit_vehicle_provenance.py
