@@ -702,12 +702,12 @@ async function main(){
    const root=el.shadowRoot;
    return {tires:root.querySelectorAll('.xp-ux-modal-maintenance .xp-tire-reading').length,
      source:root.querySelector('.xp-ux-modal-maintenance .xp-tire-source-note')?.innerText||'',
-     additionalDetails:root.querySelectorAll('.xp-ux-modal-maintenance .xp-maint-info').length};
+     servicePresent:!!root.querySelector('.xp-ux-modal-maintenance .xp-maintenance-service')};
  });
  assert.equal(maintenanceFromGear.tires,4);
- assert.match(maintenanceFromGear.source,/חיישני הרכב דרך Home Assistant/);
- assert.equal(maintenanceFromGear.additionalDetails,0,
-   'Owner requires only TPMS readouts on Maintenance, not unrelated vehicle data');
+ assert.match(maintenanceFromGear.source,/נתוני הצמיגים מתקבלים מ־Home Assistant/);
+ assert.equal(maintenanceFromGear.servicePresent,true,
+   'Owner-approved Maintenance must include genuine service details alongside TPMS');
  await car.locator('button[data-xp-close]').click();
  assert.equal(await car.locator('.xp-ux-modal-extras').count(),1,'Maintenance Back must return to Gear options');
  const mobileFunctionTiles=await car.evaluate(el=>[...el.shadowRoot.querySelectorAll('button.xp-extra-tile')].map(button=>{
