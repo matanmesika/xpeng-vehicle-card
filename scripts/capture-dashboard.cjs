@@ -432,6 +432,18 @@ async function main(){
        charging:scene.classList.contains('xp-charge'),
        horizontalOverflow:document.documentElement.scrollWidth>innerWidth+2};
    });
+   // Capture icon details before geometry assertions so failures still produce a real diagnostic image.
+   if(charging && width===390 && name==='mobile-charging'){
+     // Genuine Playwright element captures from the running dashboard for review.
+     // Leave the curated 14-image HACS gallery unchanged until owner approval.
+     const qaDir=path.join(ROOT,'docs','qa');
+     fs.mkdirSync(qaDir,{recursive:true});
+     await car.locator('.xp-charge-card').screenshot({
+       path:path.join(qaDir,'charging-mobile-panel-detail.png'),animations:'disabled'});
+     await car.locator('.xp-charge-panel-actions').screenshot({
+       path:path.join(qaDir,'charging-mobile-icon-detail.png'),animations:'disabled'});
+     console.log('Fresh real-card mobile charging icon QA captures saved to docs/qa');
+   }
    assert.ok(layout.sceneWidth<=width+2 && layout.sceneWidth>=width-2,JSON.stringify(layout));
    assert.ok(layout.sceneHeight>=700,JSON.stringify(layout));
    assert.equal(layout.charging,charging,JSON.stringify(layout));
@@ -561,17 +573,6 @@ async function main(){
    if(!charging)assert.equal(layout.panelColumns,0,'Home location panel must not render: '+JSON.stringify(layout));
    if(viewportWidth===width)assert.equal(layout.horizontalOverflow,false,JSON.stringify(layout));
    await reviewShot(name);
-   if(charging && width===390 && name==='mobile-charging'){
-     // Genuine Playwright element captures from the running dashboard for review.
-     // Leave the curated 14-image HACS gallery unchanged until owner approval.
-     const qaDir=path.join(ROOT,'docs','qa');
-     fs.mkdirSync(qaDir,{recursive:true});
-     await car.locator('.xp-charge-card').screenshot({
-       path:path.join(qaDir,'charging-mobile-panel-detail.png'),animations:'disabled'});
-     await car.locator('.xp-charge-panel-actions').screenshot({
-       path:path.join(qaDir,'charging-mobile-icon-detail.png'),animations:'disabled'});
-     console.log('Fresh real-card mobile charging icon QA captures saved to docs/qa');
-   }
    console.log('Responsive capture '+name,JSON.stringify(layout));
  }
  await responsiveShot(390,false,'mobile-vehicle-status');
