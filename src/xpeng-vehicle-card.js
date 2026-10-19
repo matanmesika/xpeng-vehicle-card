@@ -2749,19 +2749,9 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  }
  .xp-scene .xp-ux-modal-extras .xp-extra-tile{min-height:112px}
 }
-
 @media(prefers-reduced-motion:reduce){
  .xp-scene .xp-ux-dock-seven .xp-ux-dock-action,
- .xp-scene .xp-ux-modal-extras .xp-extra-tile{
-display:flex!important;flex-direction:column!important;
- align-content:center!important;align-items:center!important;
- justify-content:center!important;justify-items:center!important;
- gap:5px!important;
- min-height:102px!important;padding:6px 7px!important;
- border-radius:0!important;border:0!important;
- background:transparent!important;box-shadow:none!important;
- transform:none!important;text-align:center!important;
-}
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile{transition:none!important;transform:none!important}
 }
 
 /* On Sections/iPhone widths reserve the original car-photo clearance. Larger
@@ -3191,19 +3181,12 @@ display:flex!important;flex-direction:column!important;
  box-shadow:none!important;
 }
 .xp-scene .xp-ux-modal-extras .xp-extra-tile{
-display:flex!important;flex-direction:column!important;
- align-content:center!important;align-items:center!important;
- justify-content:center!important;justify-items:center!important;
- gap:5px!important;
- min-height:102px!important;padding:6px 7px!important;
- border-radius:0!important;border:0!important;
- background:transparent!important;box-shadow:none!important;
- transform:none!important;text-align:center!important;
+ background:rgba(10,42,61,.28)!important;
+ border:1px solid rgba(158,210,238,.23)!important;
+ box-shadow:none!important;
 }
 .xp-scene .xp-ux-modal-extras .xp-extra-tile:not(:disabled):is(:hover,:focus-visible){
-background:transparent!important;
- border:0!important;box-shadow:none!important;
- transform:none!important;
+ background:rgba(23,80,101,.45)!important;
 }
 .xp-scene button:focus-visible{outline:2px solid #92e9f4!important;outline-offset:3px}
 /* The ONE card remains adaptive in HA Sections, small iPhones and desktop. */
