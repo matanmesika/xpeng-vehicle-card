@@ -2971,7 +2971,7 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-scene .xp-ux-modal-extras .xp-extra-heading{font-size:clamp(15px,1.5cqw,19px)!important}
 .xp-scene .xp-ux-modal-extras :is(.xp-extra-range,.xp-extra-line),
 .xp-scene .xp-ux-modal-charge_controls .xp-ux-charge-limit,
-.xp-scene .xp-ux-modal-charge_schedule .xp-extra-line{
+.xp-scene .xp-charge-compact-modal .xp-ux-charge-schedule .xp-extra-line{
  border:1px solid var(--xp-v3-hairline)!important;
  background:rgba(12,44,65,.22)!important;
  box-shadow:none!important;

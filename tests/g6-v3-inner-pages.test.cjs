@@ -9,7 +9,10 @@ const css=fs.readFileSync(path.join(root,'src/design/xpeng-vehicle-card.css'),'u
 const runtime=fs.readFileSync(path.join(root,'src/core/xpeng-vehicle-card.runtime.js'),'utf8');
 const source=fs.readFileSync(path.join(root,'src/xpeng-vehicle-card.js'),'utf8');
 const dist=fs.readFileSync(path.join(root,'dist/xpeng-vehicle-card.js'),'utf8');
-const inner=css.slice(css.indexOf('/* V3 COMPACT INNER-PAGE DESIGN'));
+const innerStart=css.indexOf('/* V3 COMPACT INNER-PAGE DESIGN');
+const innerEnd=css.indexOf('@media(prefers-reduced-motion:reduce){',innerStart);
+assert.ok(innerStart>=0&&innerEnd>innerStart,'V3 subpage module not found');
+const inner=css.slice(innerStart,innerEnd);
 const rule=(selector)=>{
  const i=inner.indexOf(selector);
  assert.ok(i>=0,'missing scoped V3 selector: '+selector);
