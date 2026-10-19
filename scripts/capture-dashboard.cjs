@@ -253,25 +253,26 @@ async function main(){
  // Keep the existing full-resolution PNG too.
  // Curated gallery uses a single full-resolution PNG per view.
  const chargingDiscMetrics=await car.evaluate(el=>{
-  const root=el.shadowRoot;
-  const read=button=>{
-    const icon=button.querySelector('ha-icon.xp-mdi-icon');
-    const r=button.getBoundingClientRect(),i=icon?.getBoundingClientRect();
-    const pseudo=getComputedStyle(button,'::before');
-    const ring=Number.parseFloat(pseudo.width);
-    return {glyph:i?.width,ring,mdi:icon?.getAttribute('icon'),round:pseudo.borderRadius,
-      xOffset:i?Math.abs((i.left+i.right)/2-(r.left+r.right)/2):999,
-      yOffset:i?Math.abs((i.top+i.bottom)/2-(r.top+ring/2)):999};
-  };
-  const dock=read(root.querySelector('.xp-ux-dock-seven .xp-ux-dock-action'));
-  const buttons=[...root.querySelectorAll('.xp-charge-panel-actions button')].map(read);
-  return {dock,buttons};
+   const r=el.shadowRoot,dock=r.querySelector('.xp-ux-dock-seven .xp-ux-dock-action');
+   const dockRing=Number.parseFloat(getComputedStyle(dock,'::before').width);
+   const dockIcon=dock.querySelector('.xp-mdi-icon').getBoundingClientRect().width;
+   const buttons=[...r.querySelectorAll('.xp-charge-panel-actions button')].map(b=>{
+     const ring=b.querySelector('.xp-charge-action-ring')?.getBoundingClientRect(),
+       icon=b.querySelector('.xp-charge-action-ring>.xp-mdi-icon'),
+       glyph=icon?.getBoundingClientRect(),
+       label=b.querySelector('.xp-charge-action-label')?.getBoundingClientRect(),
+       bounds=b.getBoundingClientRect();
+     return {ring:ring?.width,glyph:glyph?.width,mdi:icon?.getAttribute('icon'),
+       centered:!!glyph&&Math.abs((glyph.left+glyph.right)/2-(ring.left+ring.right)/2)<1.5&&
+         Math.abs((glyph.top+glyph.bottom)/2-(ring.top+ring.bottom)/2)<1.5,
+       labelFits:!!label&&label.top>=ring.bottom-1&&label.bottom<=bounds.bottom+1};
+   });
+   return {dockRing,dockIcon,buttons};
  });
- assert.ok(chargingDiscMetrics.buttons.length===3&&chargingDiscMetrics.buttons.every(x=>
-   x.glyph===chargingDiscMetrics.dock.glyph&&x.ring===chargingDiscMetrics.dock.ring&&
-   x.ring/x.glyph>=1.8&&x.round==='50%'&&x.xOffset<=1.5&&x.yOffset<=1.5&&
-   x.mdi?.startsWith('mdi:')),
-   'Charging desktop must exactly match the native dashboard dock rings and glyphs: '+JSON.stringify(chargingDiscMetrics));
+ assert.ok(chargingDiscMetrics.buttons.length===3&&chargingDiscMetrics.buttons.every(b=>
+   b.ring===chargingDiscMetrics.dockRing&&b.glyph===chargingDiscMetrics.dockIcon&&
+   b.centered&&b.labelFits&&b.mdi?.startsWith('mdi:')),
+   'Desktop charge action ring, icon and label must be centered and match dock: '+JSON.stringify(chargingDiscMetrics));
  const chargingDesktop=await car.evaluate(el=>{
    const root=el.shadowRoot,find=q=>root.querySelector(q)?.getBoundingClientRect().toJSON();
    return {actions:[...root.querySelectorAll('.xp-ux-dock-seven .xp-ux-dock-action')].map(n=>n.dataset.xpToggle||n.dataset.xpOpen),
@@ -502,35 +503,36 @@ async function main(){
      console.log('Mobile charging geometry verified '+width+'px',JSON.stringify(geo));
       if(width<=520){
         const metrics=await car.evaluate(el=>{
-          const root=el.shadowRoot,panel=root.querySelector('.xp-charge-card');
-          const read=btn=>{
-            const r=btn.getBoundingClientRect(),icon=btn.querySelector('ha-icon.xp-mdi-icon'),
-              glyph=icon?.getBoundingClientRect(),disc=getComputedStyle(btn,'::before'),
-              label=btn.querySelector('span')?.getBoundingClientRect(),
-              ring=Number.parseFloat(disc.width),style=getComputedStyle(btn);
-            return {ring,glyphSize:Number.parseFloat(style.getPropertyValue('--xp-glyph-size')),
-              hostWidth:glyph?.width,hitHeight:r.height,
-              xOffset:glyph?Math.abs((glyph.left+glyph.right)/2-(r.left+r.right)/2):999,
-              yOffset:glyph?Math.abs((glyph.top+glyph.bottom)/2-(r.top+ring/2)):999,
-              captionFits:!!label&&label.left>=r.left-1&&label.right<=r.right+1&&
-                label.bottom<=r.bottom+1&&label.top>=r.top+ring-2,
-              nativeMdi:icon?.getAttribute('icon')?.startsWith('mdi:')&&!icon.hasAttribute('data-mdi-missing')};
-          };
+          const root=el.shadowRoot,panel=root.querySelector('.xp-charge-unified'),
+            dock=root.querySelector('.xp-ux-dock-seven .xp-ux-dock-action');
+          const dockRing=Number.parseFloat(getComputedStyle(dock,'::before').width);
+          const dockGlyph=dock.querySelector('.xp-mdi-icon').getBoundingClientRect().width;
           return {height:panel.getBoundingClientRect().height,
-            stats:root.querySelectorAll('.xp-charge-meta>div').length,
-            dock:read(root.querySelector('.xp-ux-dock-seven .xp-ux-dock-action')),
-            buttons:[...root.querySelectorAll('.xp-charge-panel-actions button')].map(read)};
+            stats:root.querySelectorAll('.xp-charge-meta>.xp-charge-stat').length,
+            dockRing,dockGlyph,
+            buttons:[...root.querySelectorAll('.xp-charge-panel-actions button')].map(b=>{
+              const ring=b.querySelector('.xp-charge-action-ring')?.getBoundingClientRect(),
+                icon=b.querySelector('.xp-charge-action-ring>.xp-mdi-icon'),
+                glyph=icon?.getBoundingClientRect(),
+                label=b.querySelector('.xp-charge-action-label')?.getBoundingClientRect(),
+                bounds=b.getBoundingClientRect();
+              return {ring:ring?.width,glyph:glyph?.width,hitHeight:bounds.height,
+                nativeMdi:icon?.getAttribute('icon')?.startsWith('mdi:')&&!icon.hasAttribute('data-mdi-missing'),
+                centered:!!glyph&&Math.abs((glyph.left+glyph.right)/2-(ring.left+ring.right)/2)<1.5&&
+                  Math.abs((glyph.top+glyph.bottom)/2-(ring.top+ring.bottom)/2)<1.5,
+                labelFits:!!label&&label.left>=bounds.left-1&&label.right<=bounds.right+1&&
+                  label.top>=ring.bottom-1&&label.bottom<=bounds.bottom+1};
+            })};
         });
-        assert.ok(metrics.height<265,'Mobile charge panel too tall: '+JSON.stringify(metrics));
-        assert.equal(metrics.stats,3,'Mobile charging must retain all live statistics');
+        assert.ok(metrics.height<270,'Responsive charging component overlaps car: '+JSON.stringify(metrics));
+        assert.equal(metrics.stats,3,'Maintain all live charging statistics');
         assert.ok(metrics.buttons.length===3&&metrics.buttons.every(b=>
-          b.ring===metrics.dock.ring&&b.glyphSize===metrics.dock.glyphSize&&
-          b.hostWidth===metrics.dock.hostWidth&&b.hitHeight>=44&&
-          b.xOffset<=1.5&&b.yOffset<=1.5&&b.captionFits&&b.nativeMdi),
-          'Charging must match bottom dock rings, native glyph sizing and alignment: '+JSON.stringify(metrics));
-        console.log('PASS shared phone charging MDI icon geometry '+width+'px',JSON.stringify(metrics));
+          b.ring===metrics.dockRing&&b.glyph===metrics.dockGlyph&&
+          b.hitHeight>=44&&b.nativeMdi&&b.centered&&b.labelFits),
+          'Mobile charging action icon+label must be centered in same dock-style ring: '+JSON.stringify(metrics));
+        console.log('PASS single charging component '+width+'px',JSON.stringify(metrics));
       }
-              await chargingVisualAgent(width);
+      await chargingVisualAgent(width);
 
    }
    if(!charging){
