@@ -2947,8 +2947,8 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
 .xp-scene .xp-ux-modal-head{gap:clamp(8px,1.25cqw,15px)}
 .xp-scene .xp-ux-modal-head h2{font-size:clamp(17px,1.85cqw,25px)!important;line-height:1.2}
 .xp-scene .xp-ux-modal-head button{
- width:42px!important;min-width:42px!important;
- height:42px!important;min-height:42px!important;
+ width:44px!important;min-width:44px!important;
+ height:44px!important;min-height:44px!important;
  padding:9px!important;
  background:var(--xp-v3-control-bg)!important;
 }
@@ -3263,8 +3263,8 @@ flex:0 0 48px!important;
 }
 @container xpeng-layout (max-width:520px){
  .xp-scene .xp-ux-modal-head button{
-  width:40px!important;min-width:40px!important;
-  height:40px!important;min-height:40px!important;
+  width:44px!important;min-width:44px!important;
+  height:44px!important;min-height:44px!important;
  }
  .xp-scene .xp-ux-modal-extras .xp-extra-grid{
   grid-template-columns:repeat(2,minmax(0,1fr))!important;

@@ -27,7 +27,7 @@ test('V3 design agent: all secondary screens share glass controls',()=>{
  assert.doesNotMatch(inner,/display:none!important/);
 });
 test('V3 icon agent: proportional official MDI glyphs and compact accessible targets',()=>{
- assert.match(rule('.xp-scene .xp-ux-modal-head button{'),/42px!important/);
+ assert.match(rule('.xp-scene .xp-ux-modal-head button{'),/44px!important/);
  assert.match(rule('.xp-scene .xp-ux-modal-extras .xp-extra-tile>.xp-mdi-icon{'),/--xp-icon-size:21px!important/);
  assert.match(rule('.xp-scene .xp-ux-modal-extras .xp-extra-tile>.xp-mdi-icon{'),/border-radius:50%!important/);
  assert.match(rule('.xp-scene .xp-ux-modal-extras .xp-extra-tile{'),/background:transparent!important/);
