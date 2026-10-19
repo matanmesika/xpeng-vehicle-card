@@ -52,7 +52,9 @@ test('Pedestal guardian: single responsive premium XPENG station and original dy
  assert.match(theme,/\.xp-station-display/);
  assert.match(theme,/\.xp-station-charge-light/);
  assert.match(runtime,/class="xp-xpeng-pedestal"/);
- assert.match(runtime,/id="xp19-case"/);
+ assert.match(runtime,/data-xp-station-art="photo"/);
+  assert.match(runtime,/data:image\/webp;base64/);
+  assert.doesNotMatch(runtime,/id="xp19-case"/);
  assert.match(runtime,/M935 460[\s\S]*?1287 474/);
  assert.match(runtime,/M171 489[\s\S]*?346 516/);
 });
