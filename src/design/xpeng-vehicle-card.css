@@ -4551,7 +4551,7 @@ background:transparent!important;
 
 /* ONE responsive charging dashboard component for desktop, iPhone and HA Sections.
    Preserve original vehicle/pedestal/cable geometry; breakpoints change sizes only. */
-.xp-scene{--xp-charge-ring:48px;--xp-charge-icon:22px;--xp-charge-gap:11px;--xp-charge-label:11px}
+.xp-scene{--xp-charge-ring:48px;--xp-charge-icon:30px;--xp-charge-gap:11px;--xp-charge-label:11px}
 .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{
  display:flex!important;flex-direction:column!important;box-sizing:border-box!important;
  gap:var(--xp-charge-gap)!important;
