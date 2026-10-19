@@ -989,6 +989,21 @@ async function main(){
  assert.equal(await car.locator('button[data-xp-open="charge_controls"]').count(),1,'Charge limit control missing');
  assert.equal(await car.locator('button[data-xp-open="charge_schedule"]').count(),1,'Charge schedules shortcut missing');
  assert.equal(await car.locator('button[data-xp-command="stop_charge"]').count(),1,'Stop Charge must remain visible');
+
+ // Real browser must decode the embedded photographic charger asset. A generated
+ // dashboard mockup or empty IMG element does not satisfy this test.
+ const stationPhoto=await car.evaluate(async el=>{
+   const node=el.shadowRoot.querySelector('svg.xp-xpeng-pedestal[data-xp-station-art="photo"] image'),
+     src=node?.getAttribute('href');
+   if(!src)return {found:false};
+   const photo=new Image();photo.src=src;
+   try{await photo.decode()}catch(err){return {found:true,error:String(err)}}
+   return {found:true,decoded:photo.naturalWidth>=90&&photo.naturalHeight>=200,
+     width:photo.naturalWidth,height:photo.naturalHeight,format:src.slice(0,32)};
+ });
+ assert.ok(stationPhoto.found&&stationPhoto.decoded,
+   'The approved transparent charging station photo must decode in Chromium: '+JSON.stringify(stationPhoto));
+ assert.match(stationPhoto.format,/^data:image\/webp;base64,/);
  await reviewShot('charging-reference-mobile');
  const chargeVehicleBefore=await car.locator('.xp-charge .xp-car').boundingBox();
  const chargeStationBefore=await car.locator('.xp-station').boundingBox();
