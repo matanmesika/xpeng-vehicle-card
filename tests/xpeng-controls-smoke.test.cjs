@@ -711,7 +711,7 @@ test('subpages hide duplicate model name, preserving model identification on Hom
  const {card}=createCard();
  card._hass.states['binary_sensor.is_charging'].state='off';
  card.render();
- assert.match(card.shadowRoot.innerHTML, /<h1>XPENG <em>G6<\/em><\/h1>/);
+ assert.match(card.shadowRoot.innerHTML, /<h1><em>G6<\/em><\/h1>/);
  for(const page of ['climate','maintenance','map','charge_controls','charge_schedule','extras']){
    card._xpPanel=page;card.render();
    const modal=card.xpModal();
@@ -998,10 +998,12 @@ test('Location requests HA native GPS map with dark mode and zoom 11, not a fabr
  sandbox.window.loadCardHelpers=async()=>({createCardElement(config){captured=config;return {hass:null}}});
  await card.xpMountMap();
  assert.deepEqual(JSON.parse(JSON.stringify(captured)),{
-   type:'map',entities:[{entity:'device_tracker.real_vehicle'}],
+   type:'map',entities:[{entity:'device_tracker.real_vehicle',label_mode:'icon',focus:true}],
    default_zoom:16,auto_fit:true,fit_zones:false,hours_to_show:0,theme_mode:'dark',aspect_ratio:'4:3'
  });
- assert.equal(attached.hass,card._hass);
+ assert.notEqual(attached.hass,card._hass);
+ assert.equal(attached.hass.states['device_tracker.real_vehicle'].attributes.icon,'mdi:car-back');
+ assert.equal(card._hass.states['device_tracker.real_vehicle'].attributes.icon,undefined);
  card._xpPanel=null;captured=null;
  await card.xpMountMap();
  assert.equal(captured,null);
@@ -1375,9 +1377,9 @@ test('beta.6 automotive window and trunk icons are official MDI, never a house-w
   assert.ok(iconSection,'The central XP_ICONS dictionary is required');
   assert.match(iconSection,/windows:'mdi:car-door'/);
   assert.match(iconSection,/windows_open:'mdi:car-door'/);
-  assert.match(iconSection,/trunk:'mdi:car-estate'/);
-  assert.match(iconSection,/trunk_open:'mdi:car-estate'/);
-  assert.match(iconSection,/trunk_close:'mdi:car-estate'/);
+  assert.match(iconSection,/trunk:'mdi:car-back'/);
+  assert.match(iconSection,/trunk_open:'mdi:car-back'/);
+  assert.match(iconSection,/trunk_close:'mdi:car-back'/);
   assert.match(iconSection,/trunk_lift:'mdi:arrow-up-bold'/);
   assert.match(iconSection,/trunk_lower:'mdi:arrow-down-bold'/);
   assert.match(iconSection,/lock:'mdi:car-door-lock'/);
@@ -1399,15 +1401,15 @@ test('beta.6 automotive window and trunk icons are official MDI, never a house-w
     const trunk=dock.match(/<button[^>]*data-xp-toggle="trunk"[\s\S]*?<\/button>/)?.[0];
     assert.ok(windows&&trunk,'Both dock shortcuts must remain');
     assert.match(windows,/icon="mdi:car-door"/);
-    assert.match(trunk,/icon="mdi:car-estate"/);
+    assert.match(trunk,/icon="mdi:car-back"/);
     // The real reported state changes the NEXT action and official lift/lower arrow.
     const arrow=state==='off'?'mdi:arrow-up-bold':'mdi:arrow-down-bold';
     assert.match(trunk,new RegExp('icon="'+arrow+'"'));
     assert.match(card.xpToggleButton('trunk'),new RegExp('icon="'+arrow+'"'));
     assert.match(card.xpToggleButton('windows'),/icon="mdi:car-door"/);
-    assert.match(card.xpToggleButton('trunk'),/icon="mdi:car-estate"/);
+    assert.match(card.xpToggleButton('trunk'),/icon="mdi:car-back"/);
     assert.match(card.xpWindowsPanel(),/icon="mdi:car-door"/);
-    assert.match(card.xpTrunkPanel(),/icon="mdi:car-estate"/);
+    assert.match(card.xpTrunkPanel(),/icon="mdi:car-back"/);
     const expected=state==='off'?'פתיחת':'סגירת';
     assert.match(windows,new RegExp(expected+' חלונות'));
     assert.match(trunk,new RegExp(expected+' תא מטען'));
@@ -1445,7 +1447,7 @@ test('beta.8 Home Assistant locale switches every vehicle modal and accessibilit
  assert.match(home,/Open windows/);
  assert.match(home,/Open charging port/);
  assert.match(home,/icon="mdi:car-door"/);
- assert.match(home,/icon="mdi:car-estate"/);
+ assert.match(home,/icon="mdi:car-back"/);
  card._xpPanel='maintenance';card.render();
  assert.match(card.shadowRoot.innerHTML,/icon="mdi:arrow-left"/,'English Back arrow must point left');
  card._hass.locale.language='he';card.render();
@@ -1489,7 +1491,8 @@ test('beta.8 first Location open reuses proactively warmed HA map helpers',async
  await card.xpMountMap();
  assert.equal(loads,1,'Opening Location must not trigger a second bundle load');
  assert.equal(created,1,'One native HA map card is created');
- assert.equal(child.hass,card._hass);
+ assert.notEqual(child.hass,card._hass);
+ assert.equal(child.hass.states['device_tracker.user_gps'].attributes.icon,'mdi:car-back');
  assert.equal(child.config.entities[0].entity,'device_tracker.user_gps');
  assert.equal(commands.length,0,'Preloading never issues vehicle commands');
 });
@@ -1516,7 +1519,7 @@ test('owner fixes: exact Open Trunk, real SOC icon levels, silent successful cal
  card._hass.states['button.car_open_trunk']={state:'unknown',attributes:{}};
  card.render();
  assert.match(card.shadowRoot.innerHTML,/Open Trunk/);
- assert.match(card.shadowRoot.innerHTML,/mdi:car-estate/);
+ assert.match(card.shadowRoot.innerHTML,/mdi:car-back/);
  assert.equal(card.xpToggleTarget('trunk').suffix,'open_trunk');
  const originalNumber=card.number.bind(card);
  let fakeSoc=14;
