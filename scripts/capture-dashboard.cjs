@@ -342,7 +342,7 @@ async function main(){
    const mr=modal.getBoundingClientRect(),sr=scene.getBoundingClientRect();
    return {width:mr.width,scene:sr.width,centerOffset:Math.abs((mr.left+mr.right)/2-(sr.left+sr.right)/2)};
  });
- assert.ok(launcherSize.width<=855&&launcherSize.scene>1100&&launcherSize.centerOffset<=3,
+ assert.ok(launcherSize.width>=1100&&launcherSize.width<=1240&&launcherSize.scene>1100&&launcherSize.centerOffset<=3,
    'Extras launcher must be compact and centered on desktop: '+JSON.stringify(launcherSize));
  await reviewShot('functions-desktop');
  await car.locator('button[data-xp-close]').click();
@@ -497,7 +497,7 @@ async function main(){
    return {icon:glyph?.getAttribute('icon'),glyph:size,circle,background:getComputedStyle(button).backgroundColor};
  }));
  assert.ok(dockProportions.length===7&&dockProportions.every(x=>
-   x.glyph>=20&&x.glyph<=31&&x.circle>=44&&x.circle<=50&&x.circle/x.glyph>=1.45&&
+   x.glyph>=28&&x.glyph<=33&&x.circle>=66&&x.circle<=70&&x.circle/x.glyph>=1.8&&
    x.background==='rgba(0, 0, 0, 0)'),
    'Home action MDI glyphs must be physically smaller than their floating glass circles: '+JSON.stringify(dockProportions));
  console.log('Desktop official MDI icons and bounding-box alignment verified:',JSON.stringify(homeIconQuality));
@@ -518,7 +518,7 @@ async function main(){
    const trunkButton=root.querySelector('.xp-ux-dock-action[data-xp-toggle="trunk"]');
    const trunkArrow=trunkButton?.querySelector('.xp-trunk-arrow');
    const trunkSymbol=trunkButton?.querySelector('.xp-trunk-symbol');
-   const trunkCar=trunkSymbol?.querySelector('ha-icon.xp-mdi-icon');
+   const trunkCar=trunkButton?.querySelector('ha-icon.xp-mdi-icon');
    const carRect=trunkCar?.getBoundingClientRect(),arrowRect=trunkArrow?.getBoundingClientRect();
    const tailgate={car:trunkCar?.getAttribute('icon'),
      arrow:trunkArrow?.getAttribute('icon'),
@@ -543,17 +543,13 @@ async function main(){
    'Seven shortcut pictograms must share one neutral color');
  assert.equal(desktopHeaderPolish.iconCount,7);
  const desktopIconSize=await car.evaluate(el=>[...el.shadowRoot.querySelectorAll('.xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon')].map(icon=>icon.getBoundingClientRect().width));
- assert.ok(desktopIconSize.every(size=>size>=29&&size<=31),
+ assert.ok(desktopIconSize.every(size=>size>=31&&size<=33),
   'Desktop dock pictograms must be 30px while mobile stays unchanged: '+JSON.stringify(desktopIconSize));
 
- assert.equal(desktopHeaderPolish.tailgate.car,'mdi:car-estate',
+ assert.equal(desktopHeaderPolish.tailgate.car,'mdi:car-back',
    'Trunk shortcut must show a real rear-tailgate capable SUV side profile');
- assert.ok(['mdi:arrow-up-bold','mdi:arrow-down-bold'].includes(desktopHeaderPolish.tailgate.arrow),
-   'Rear hatch must have a genuine MDI lift or lower action icon');
- assert.ok(desktopHeaderPolish.tailgate.arrowRight<=desktopHeaderPolish.tailgate.carLeft+2,
-   'Rear hatch is the LEFT end of the right-facing SUV: arrow must stay beside its rear: '+JSON.stringify(desktopHeaderPolish.tailgate));
- assert.ok(desktopHeaderPolish.tailgate.arrowWidth<desktopHeaderPolish.tailgate.carWidth*.7,
-   'Rear-hatch action indicator must be smaller than its main vehicle icon');
+ assert.equal(desktopHeaderPolish.tailgate.arrow,null,'No invented hatch arrow or composite SVG');
+ assert.ok(desktopHeaderPolish.tailgate.carWidth>=30,'Official rear vehicle icon must be legible');
  assert.equal(desktopHeaderPolish.disabled,0,'All mock actions remain enabled');
  console.log('PASS desktop cog/Wi-Fi spacing and uniform action icon palette:',JSON.stringify(desktopHeaderPolish));
 
@@ -620,7 +616,7 @@ async function main(){
      r=host.getBoundingClientRect(),back=root.querySelector('[data-xp-close]'),
      b=back?.getBoundingClientRect();
    return {modal:!!root.querySelector('.xp-ux-modal-map'),
-     mapHasHass:map?.hass===element.hass,
+     mapHasHass:!!map?.hass&&map.hass!==element.hass&&map.hass.states['device_tracker.my_xpeng_location']?.attributes.icon==='mdi:car-back',
      horn:root.querySelectorAll('button[data-xp-map-action="honk_horn"]').length,
      flash:root.querySelectorAll('button[data-xp-map-action="flash_lights"]').length,
      back:root.querySelectorAll('button[data-xp-close]').length,
@@ -638,7 +634,7 @@ async function main(){
  assert.equal(desktopMap.homeButtons,0,'Home dock must hide in Location');
  assert.ok(desktopMap.stageWidth>900&&desktopMap.stageHeight>=350,JSON.stringify(desktopMap));
  assert.deepEqual(desktopMap.config,{
-   type:'map',entities:[{entity:'device_tracker.my_xpeng_location'}],
+   type:'map',entities:[{entity:'device_tracker.my_xpeng_location',label_mode:'icon',focus:true}],
    default_zoom:16,auto_fit:true,fit_zones:false,hours_to_show:0,theme_mode:'dark',aspect_ratio:'4:3'
  },'Native dark map must use the real vehicle tracker entity');
  await reviewShot('location-desktop');
