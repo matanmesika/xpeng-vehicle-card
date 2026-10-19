@@ -13,6 +13,7 @@ on:
       - dist/xpeng-vehicle-card.js
       - scripts/capture-dashboard.cjs
       - tests/xpeng-controls-smoke.test.cjs
+      - tests/g6-mobile-charging-icons.test.cjs
       - .github/workflows/g6-charging-visual-agent.yml
   pull_request:
     paths:
@@ -47,7 +48,7 @@ jobs:
           cmp src/xpeng-vehicle-card.js dist/xpeng-vehicle-card.js
           node tools/build_vehicle_card.mjs --check
       - name: Check charging lifecycle and real supported controls
-        run: node --test tests/charging-cable-static.test.cjs tests/xpeng-controls-smoke.test.cjs tests/responsive-dual-state.test.cjs
+        run: node --test tests/charging-cable-static.test.cjs tests/xpeng-controls-smoke.test.cjs tests/responsive-dual-state.test.cjs tests/g6-mobile-charging-icons.test.cjs
       - name: Install real Chromium and official MDI art
         run: |
           npm install --prefix /tmp/g6-charging-qa --no-audit --no-fund playwright@1.56.1 @mdi/js@7.4.47
@@ -66,5 +67,7 @@ jobs:
             docs/screenshots/charging-mobile.png
             docs/screenshots/home-desktop.png
             docs/screenshots/home-mobile.png
+            docs/qa/charging-mobile-panel-detail.png
+            docs/qa/charging-mobile-icon-detail.png
           if-no-files-found: warn
           retention-days: 30
