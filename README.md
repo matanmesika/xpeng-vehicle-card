@@ -4,7 +4,7 @@
 
 The card preserves the night-lakeside setting, the selected vehicle artwork, and entity-driven controls. When the vehicle reports active charging, it automatically switches to a dedicated charging scene with a photographic XPENG charging station, a green cable overlay, and live charging information.
 
-**Latest published beta:** [v1.0.4-beta.21](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.4-beta.21) · **Current stable:** [v1.0.3](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.3). The latest charger-placement refinements are **under review, not released**. The full `v1.0.4` release requires the owner's desktop and iPhone acceptance.
+**Stable release: [v1.0.4](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.4).** Previous stable: [v1.0.3](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.3). Historical betas remain available for rollback. The approved charging block uses one shared responsive component for desktop, iPhone and Home Assistant Sections.
 
 [Install with HACS](https://my.home-assistant.io/redirect/hacs_repository/?owner=matanmesika&repository=xpeng-vehicle-card&category=plugin) · [HACS product guide](docs/HACS_STORE_GUIDE.md) · [Screenshot gallery](docs/screenshots/README.md) · [Release acceptance](docs/G6_FINAL_STABILIZATION.md)
 
