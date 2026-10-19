@@ -29,7 +29,10 @@ test('V3 design agent: all secondary screens share glass controls',()=>{
 test('V3 icon agent: proportional official MDI glyphs and compact accessible targets',()=>{
  assert.match(rule('.xp-scene .xp-ux-modal-head button{'),/44px!important/);
  assert.match(rule('.xp-scene .xp-ux-modal-extras .xp-extra-tile>.xp-mdi-icon{'),/--xp-icon-size:21px!important/);
- assert.match(rule('.xp-scene .xp-ux-modal-extras .xp-extra-tile>.xp-mdi-icon{'),/border-radius:50%!important/);
+ assert.match(rule('.xp-scene .xp-ux-modal-extras .xp-extra-tile>.xp-mdi-icon{'),/width:21px!important;height:21px!important/);
+ assert.match(rule('.xp-scene .xp-ux-modal-extras .xp-extra-tile>.xp-mdi-icon{'),/background:transparent!important;border:0!important/);
+ assert.match(rule('.xp-scene .xp-ux-modal-extras .xp-extra-tile::before{'),/border-radius:50%/);
+ assert.match(rule('.xp-scene .xp-ux-modal-extras .xp-extra-tile::before{'),/width:48px;height:48px/);
  assert.match(rule('.xp-scene .xp-ux-modal-extras .xp-extra-tile{'),/background:transparent!important/);
  assert.match(rule('.xp-scene .xp-ux-modal-climate .xp-ux-climate-feature>.xp-mdi-icon{'),/22px!important/);
  assert.match(rule('.xp-scene .xp-ux-modal-map .xp-ux-map-actions button>.xp-mdi-icon{'),/19px!important/);

@@ -288,15 +288,19 @@ async function main(){
  await car.locator('button[data-xp-more]').click();
  const functionTiles=await car.evaluate(el=>[...el.shadowRoot.querySelectorAll('button.xp-extra-tile')].map(button=>{
    const icon=button.querySelector('ha-icon.xp-mdi-icon');
-   const size=icon?.getBoundingClientRect(),disc=icon&&getComputedStyle(icon),style=getComputedStyle(button);
+   const glyphRect=icon?.getBoundingClientRect(),circle=getComputedStyle(button,'::before'),
+     style=getComputedStyle(button);
    return {page:button.dataset.xpExtraPage,mdi:icon?.getAttribute('icon'),
-     diameter:size?.width,radius:disc?.borderRadius,
-     glyph:disc?.getPropertyValue('--mdc-icon-size').trim(),background:style.backgroundColor};
+     glyphSize:glyphRect?.width,circleSize:parseFloat(circle.width),
+     radius:circle.borderRadius,outerBackground:style.backgroundColor,
+     badgeBackground:circle.backgroundColor};
  }));
- assert.equal(functionTiles.length,7,'All seven advanced function launchers must remain');
- assert.ok(functionTiles.every(t=>t.mdi?.startsWith('mdi:')&&t.diameter>=44&&t.diameter<=50&&
-   t.radius==='50%'&&t.glyph==='21px'&&t.background==='rgba(0, 0, 0, 0)'),
-   'Desktop functions must display small glass MDI discs, not rectangles: '+JSON.stringify(functionTiles));
+ assert.equal(functionTiles.length,7,'All seven Custom Functions routes must remain');
+ assert.ok(functionTiles.every(t=>t.mdi?.startsWith('mdi:')&&
+   t.circleSize>=46&&t.circleSize<=50&&t.glyphSize>=19&&t.glyphSize<=23&&
+   t.circleSize/t.glyphSize>=2&&t.radius==='50%'&&
+   t.outerBackground==='rgba(0, 0, 0, 0)'&&t.badgeBackground!=='rgba(0, 0, 0, 0)'),
+   'Desktop functions must have a transparent outer button, a 48px glass ring and a separate 21px native glyph: '+JSON.stringify(functionTiles));
  await reviewShot('functions-desktop');
  await car.locator('button[data-xp-close]').click();
  // Exercise both HA-driven screens at phone widths and within a narrow
@@ -658,14 +662,15 @@ async function main(){
  await car.locator('button[data-xp-close]').click();
  assert.equal(await car.locator('.xp-ux-modal-extras').count(),1,'Maintenance Back must return to Gear options');
  const mobileFunctionTiles=await car.evaluate(el=>[...el.shadowRoot.querySelectorAll('button.xp-extra-tile')].map(button=>{
-  const symbol=button.querySelector('ha-icon.xp-mdi-icon'),disc=symbol&&getComputedStyle(symbol);
-  return {page:button.dataset.xpExtraPage,diameter:symbol?.getBoundingClientRect().width,
-   glyph:disc?.getPropertyValue('--mdc-icon-size').trim(),background:getComputedStyle(button).backgroundColor};
+  const icon=button.querySelector('ha-icon.xp-mdi-icon'),circle=getComputedStyle(button,'::before');
+  return {page:button.dataset.xpExtraPage,glyphSize:icon?.getBoundingClientRect().width,
+    circleSize:parseFloat(circle.width),outerBackground:getComputedStyle(button).backgroundColor};
  }));
  assert.equal(mobileFunctionTiles.length,7);
- assert.ok(mobileFunctionTiles.every(t=>t.diameter>=43&&t.diameter<=47&&t.glyph==='19px'&&
-  t.background==='rgba(0, 0, 0, 0)'),
-  'Mobile functions must use proportional 44px glass MDI discs: '+JSON.stringify(mobileFunctionTiles));
+ assert.ok(mobileFunctionTiles.every(t=>t.circleSize>=43&&t.circleSize<=47&&
+  t.glyphSize>=18&&t.glyphSize<=21&&t.circleSize/t.glyphSize>=2&&
+  t.outerBackground==='rgba(0, 0, 0, 0)'),
+  'Phone functions must have a 44px circle containing a truly 19px icon: '+JSON.stringify(mobileFunctionTiles));
  await reviewShot('functions-mobile');
  await car.locator('button[data-xp-extra-page="diagnostics"]').click();
  assert.ok(await car.locator('.xp-ux-modal-extras').count(),'Diagnostics extra page missing');

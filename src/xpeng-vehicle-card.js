@@ -3439,33 +3439,36 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
  gap:clamp(7px,1.1cqw,12px)!important;
 }
 .xp-scene .xp-ux-modal-extras .xp-extra-tile{
-display:flex!important;flex-direction:column!important;
+ display:grid!important;
+ grid-template-columns:minmax(0,1fr)!important;
+ grid-template-rows:48px auto auto!important;
  align-content:center!important;align-items:center!important;
  justify-content:center!important;justify-items:center!important;
- gap:5px!important;
+ gap:3px!important;
  min-height:102px!important;padding:6px 7px!important;
  border-radius:0!important;border:0!important;
  background:transparent!important;box-shadow:none!important;
  transform:none!important;text-align:center!important;
+ position:relative!important;isolation:isolate;
 }
 .xp-scene .xp-ux-modal-extras .xp-extra-tile>.xp-mdi-icon{
-flex:0 0 48px!important;
- width:48px!important;height:48px!important;
- --xp-icon-size:21px!important;--mdc-icon-size:21px!important;
- border:1px solid var(--xp-v3-control-edge)!important;
- border-radius:50%!important;
- background:rgba(13,43,64,.26)!important;
- box-shadow:inset 0 1px rgba(245,254,255,.1)!important;
- backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+ grid-column:1!important;grid-row:1!important;
+ align-self:center!important;justify-self:center!important;
+ flex:none!important;position:relative!important;z-index:1;
  display:inline-flex!important;align-items:center!important;justify-content:center!important;
- color:#b7e8f3!important;filter:none!important;
+ width:21px!important;height:21px!important;
+ --xp-icon-size:21px!important;--mdc-icon-size:21px!important;
+ background:transparent!important;border:0!important;border-radius:0!important;
+ box-shadow:none!important;color:#b7e8f3!important;filter:none!important;
 }
 .xp-scene .xp-ux-modal-extras .xp-extra-tile>b{
-font-size:clamp(12px,1.12cqw,14px)!important;
+ grid-column:1!important;grid-row:2!important;
+ font-size:clamp(12px,1.12cqw,14px)!important;
  line-height:1.12!important;text-align:center!important;
 }
 .xp-scene .xp-ux-modal-extras .xp-extra-tile>small{
-font-size:clamp(9px,.91cqw,11px)!important;
+ grid-column:1!important;grid-row:3!important;
+ font-size:clamp(9px,.91cqw,11px)!important;
  line-height:1.2!important;text-align:center!important;
 }
 .xp-scene .xp-ux-modal-extras .xp-extra-tile:not(:disabled):is(:hover,:focus-visible){
@@ -3500,6 +3503,25 @@ background:transparent!important;
  background:rgba(27,85,104,.39)!important;
  border-color:rgba(102,225,226,.83)!important;
  box-shadow:0 0 16px rgba(65,180,215,.12)!important;
+}
+/* A decorative pseudo-element is the circle; ha-icon stays its true 21px/19px size.
+   Putting a border on the ha-icon host previously enlarged the SVG to 48px. */
+.xp-scene .xp-ux-modal-extras .xp-extra-tile::before{
+ content:"";
+ grid-column:1;grid-row:1;align-self:center;justify-self:center;
+ display:block;
+ width:48px;height:48px;box-sizing:border-box;
+ border:1px solid var(--xp-v3-control-edge);
+ border-radius:50%;
+ background:rgba(13,43,64,.26);
+ box-shadow:inset 0 1px rgba(245,254,255,.1);
+ backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+ pointer-events:none;z-index:0;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile:not(:disabled):is(:hover,:focus-visible)::before{
+ background:rgba(27,85,104,.39);
+ border-color:rgba(102,225,226,.83);
+ box-shadow:0 0 16px rgba(65,180,215,.12);
 }
 /* Diagnostics: preserve independent scroll and full entity ID access.
    Small separated rows have no heavy tiles and never split sensor names. */
@@ -3556,27 +3578,28 @@ background:transparent!important;
   --xp-v3-control-height:42px;
  }
  .xp-scene .xp-ux-modal-extras .xp-extra-tile{
-display:flex!important;flex-direction:column!important;
- align-content:center!important;align-items:center!important;
- justify-content:center!important;justify-items:center!important;
- gap:5px!important;
- min-height:102px!important;padding:6px 7px!important;
- border-radius:0!important;border:0!important;
- background:transparent!important;box-shadow:none!important;
- transform:none!important;text-align:center!important;
-}
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  grid-template-rows:48px auto auto!important;
+  align-content:center!important;align-items:center!important;
+  justify-content:center!important;justify-items:center!important;
+  gap:3px!important;
+  min-height:102px!important;padding:6px 7px!important;
+  border-radius:0!important;border:0!important;
+  background:transparent!important;box-shadow:none!important;
+  transform:none!important;text-align:center!important;
+  position:relative!important;isolation:isolate;
+ }
  .xp-scene .xp-ux-modal-extras .xp-extra-tile>.xp-mdi-icon{
-flex:0 0 48px!important;
- width:48px!important;height:48px!important;
- --xp-icon-size:21px!important;--mdc-icon-size:21px!important;
- border:1px solid var(--xp-v3-control-edge)!important;
- border-radius:50%!important;
- background:rgba(13,43,64,.26)!important;
- box-shadow:inset 0 1px rgba(245,254,255,.1)!important;
- backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
- display:inline-flex!important;align-items:center!important;justify-content:center!important;
- color:#b7e8f3!important;filter:none!important;
-}
+  grid-column:1!important;grid-row:1!important;
+  align-self:center!important;justify-self:center!important;
+  flex:none!important;position:relative!important;z-index:1;
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  width:21px!important;height:21px!important;
+  --xp-icon-size:21px!important;--mdc-icon-size:21px!important;
+  background:transparent!important;border:0!important;border-radius:0!important;
+  box-shadow:none!important;color:#b7e8f3!important;filter:none!important;
+ }
  .xp-scene .xp-ux-modal-climate .xp-ux-climate-feature{
   min-height:67px!important;padding:6px 4px!important;
  }
@@ -3600,35 +3623,38 @@ flex:0 0 48px!important;
   grid-template-columns:repeat(2,minmax(0,1fr))!important;
  }
  .xp-scene .xp-ux-modal-extras .xp-extra-tile{
-display:flex!important;flex-direction:column!important;
- align-content:center!important;align-items:center!important;
- justify-content:center!important;justify-items:center!important;
- gap:5px!important;
- min-height:102px!important;padding:6px 7px!important;
- border-radius:0!important;border:0!important;
- background:transparent!important;box-shadow:none!important;
- transform:none!important;text-align:center!important;
-}
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  grid-template-rows:48px auto auto!important;
+  align-content:center!important;align-items:center!important;
+  justify-content:center!important;justify-items:center!important;
+  gap:3px!important;
+  min-height:102px!important;padding:6px 7px!important;
+  border-radius:0!important;border:0!important;
+  background:transparent!important;box-shadow:none!important;
+  transform:none!important;text-align:center!important;
+  position:relative!important;isolation:isolate;
+ }
  .xp-scene .xp-ux-modal-extras .xp-extra-tile>.xp-mdi-icon{
-flex:0 0 48px!important;
- width:48px!important;height:48px!important;
- --xp-icon-size:21px!important;--mdc-icon-size:21px!important;
- border:1px solid var(--xp-v3-control-edge)!important;
- border-radius:50%!important;
- background:rgba(13,43,64,.26)!important;
- box-shadow:inset 0 1px rgba(245,254,255,.1)!important;
- backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
- display:inline-flex!important;align-items:center!important;justify-content:center!important;
- color:#b7e8f3!important;filter:none!important;
-}
+  grid-column:1!important;grid-row:1!important;
+  align-self:center!important;justify-self:center!important;
+  flex:none!important;position:relative!important;z-index:1;
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  width:21px!important;height:21px!important;
+  --xp-icon-size:21px!important;--mdc-icon-size:21px!important;
+  background:transparent!important;border:0!important;border-radius:0!important;
+  box-shadow:none!important;color:#b7e8f3!important;filter:none!important;
+ }
  .xp-scene .xp-ux-modal-extras .xp-extra-tile>b{
-font-size:clamp(12px,1.12cqw,14px)!important;
- line-height:1.12!important;text-align:center!important;
-}
+  grid-column:1!important;grid-row:2!important;
+  font-size:clamp(12px,1.12cqw,14px)!important;
+  line-height:1.12!important;text-align:center!important;
+ }
  .xp-scene .xp-ux-modal-extras .xp-extra-tile>small{
-font-size:clamp(9px,.91cqw,11px)!important;
- line-height:1.2!important;text-align:center!important;
-}
+  grid-column:1!important;grid-row:3!important;
+  font-size:clamp(9px,.91cqw,11px)!important;
+  line-height:1.2!important;text-align:center!important;
+ }
  .xp-scene .xp-ux-modal-climate .xp-ux-climate-feature{
   min-height:64px!important;padding:5px 3px!important;
  }
@@ -3646,18 +3672,20 @@ font-size:clamp(9px,.91cqw,11px)!important;
 
 
 
-/* Subpage-only responsive sizing: smaller circle, same tappable cell. */
+/* Subpage-only responsive sizing: touch ring and true glyph scale separately. */
 @container xpeng-layout (max-width:850px){
- .xp-scene .xp-ux-modal-extras .xp-extra-tile{min-height:96px!important;padding:5px 6px!important}
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile{min-height:96px!important;padding:5px 6px!important;grid-template-rows:46px auto auto!important}
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile::before{width:46px;height:46px}
  .xp-scene .xp-ux-modal-extras .xp-extra-tile>.xp-mdi-icon{
-  flex-basis:46px!important;width:46px!important;height:46px!important;
+  width:20px!important;height:20px!important;
   --xp-icon-size:20px!important;--mdc-icon-size:20px!important
  }
 }
 @container xpeng-layout (max-width:520px){
- .xp-scene .xp-ux-modal-extras .xp-extra-tile{min-height:93px!important;padding:5px!important}
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile{min-height:93px!important;padding:5px!important;grid-template-rows:44px auto auto!important}
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile::before{width:44px;height:44px}
  .xp-scene .xp-ux-modal-extras .xp-extra-tile>.xp-mdi-icon{
-  flex-basis:44px!important;width:44px!important;height:44px!important;
+  width:19px!important;height:19px!important;
   --xp-icon-size:19px!important;--mdc-icon-size:19px!important
  }
 }
