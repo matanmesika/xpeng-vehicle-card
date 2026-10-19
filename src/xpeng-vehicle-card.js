@@ -4715,6 +4715,13 @@ background:transparent!important;
  }
 }
 
+/* Header sits above dialogs solely for the two status tools. Its transparent
+   full-width box must NOT intercept clicks on modal Back or dialog content. */
+.xp-scene .xp-header{pointer-events:none!important}
+.xp-scene .xp-header .xp-meta-tools,
+.xp-scene .xp-header .xp-meta-tools button,
+.xp-scene .xp-header .xp-meta-popover{pointer-events:auto!important}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
