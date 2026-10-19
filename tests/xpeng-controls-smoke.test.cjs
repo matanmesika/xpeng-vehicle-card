@@ -1191,8 +1191,8 @@ test('charging cable uses approved dedicated charging image and separate full-le
  const html=card.charging();
  assert.match(html,/data-xp-cable="desktop"/);
  assert.match(html,/data-xp-cable="mobile"/);
- assert.match(html,/M171 489.*333 520/);
- assert.match(html,/M935 460.*1225 520/);
+ assert.match(html,/M171 489.*343 487/);
+ assert.match(html,/M935 460.*1284 465/);
  card._hass.states['binary_sensor.is_charging'].state='off';
  assert.doesNotMatch(card.charging(),/data-xp-cable/);
 });
@@ -1639,8 +1639,8 @@ test('Owner-photo station and cable exist in both scene sizes',()=>{
  assert.equal((charging.match(/class="xp-xpeng-pedestal"/g)||[]).length,1);
  assert.match(charging,/data-xp-cable="desktop"/);
  assert.match(charging,/data-xp-cable="mobile"/);
- assert.match(charging,/M935 460[\s\S]*?1225 520/);
- assert.match(charging,/M171 489[\s\S]*?333 520/);
+ assert.match(charging,/M935 460[\s\S]*?1284 465/);
+ assert.match(charging,/M171 489[\s\S]*?343 487/);
  assert.match(src,/\.xp-scene\.xp-charge \.xp-station\.xp-station-v3\.xp-station-xpeng19/);
 });
 
