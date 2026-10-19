@@ -4702,15 +4702,15 @@ background:transparent!important;
 }
 @container xpeng-layout (max-width:850px){
  .xp-scene.xp-charge .xp-station.xp-station-v3.xp-station-xpeng19{
-   right:3%!important;bottom:20%!important;
-   height:21%!important;max-height:172px!important;min-height:102px!important;
+   right:3%!important;bottom:24%!important;
+   height:16%!important;max-height:125px!important;min-height:90px!important;
    width:15%!important;min-width:45px!important;
  }
 }
 @container xpeng-layout (max-width:520px){
  .xp-scene.xp-charge .xp-station.xp-station-v3.xp-station-xpeng19{
-   right:3%!important;bottom:19%!important;
-   height:19%!important;min-height:94px!important;
+   right:3%!important;bottom:24%!important;
+   height:15%!important;min-height:90px!important;max-height:112px!important;
    width:16%!important;min-width:45px!important;
  }
 }
