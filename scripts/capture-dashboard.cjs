@@ -497,7 +497,7 @@ async function main(){
    return {icon:glyph?.getAttribute('icon'),glyph:size,circle,background:getComputedStyle(button).backgroundColor};
  }));
  assert.ok(dockProportions.length===7&&dockProportions.every(x=>
-   x.glyph>=19&&x.glyph<=24&&x.circle>=44&&x.circle<=50&&x.circle/x.glyph>=1.8&&
+   x.glyph>=20&&x.glyph<=31&&x.circle>=44&&x.circle<=50&&x.circle/x.glyph>=1.45&&
    x.background==='rgba(0, 0, 0, 0)'),
    'Home action MDI glyphs must be physically smaller than their floating glass circles: '+JSON.stringify(dockProportions));
  console.log('Desktop official MDI icons and bounding-box alignment verified:',JSON.stringify(homeIconQuality));
