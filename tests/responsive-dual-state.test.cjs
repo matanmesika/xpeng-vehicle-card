@@ -56,7 +56,7 @@ test('original charging art is restored and green cable only exists during charg
  assert.match(source,/chargingAppearance=ownerCharging/);
  assert.match(source,/this\.model\(\)==='G6'&&this\.xpChargingActive\(\)/);
  assert.match(css,/\.xp-charge-cable-live \.xp-charge-cable-halo\{stroke:#00df90;stroke-width:5\.2/);
- assert.doesNotMatch(source,/\['charging','bolt','טעינה'\]/);
+ assert.doesNotMatch(source,/\['charging','bolt','Charging'\]/);
 });
 
 
@@ -96,9 +96,9 @@ test('tyre pressure units exist only in card editor and never in vehicle screens
 
 test('the Home screen hides maintenance summaries but preserves a single dedicated shortcut',()=>{
  assert.doesNotMatch(source.slice(source.indexOf(' overview(){'),source.indexOf('\n charging(){')),/xp-status-panel|Location/);
- assert.doesNotMatch(source,/const rows=\[\['settings','תחזוקת הרכב'/);
+ assert.doesNotMatch(source,/const rows=\[\['settings','Vehicle maintenance'/);
  assert.match(source,/xp-maintenance-home-button/);
- assert.match(source,/\['maintenance','maintenance','תחזוקה'\]/);
+ assert.match(source,/\['maintenance','maintenance','Maintenance'\]/);
  assert.match(source,/page==='maintenance'\)body=this\.xpMaintenancePanel\(\)/);
  assert.match(source,/xp-maintenance-home-button/);
 });

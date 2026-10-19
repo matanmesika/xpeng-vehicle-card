@@ -36,6 +36,9 @@ jobs:
             python -m json.tool profiles/year-profiles.json >/dev/null
           fi
 
+      - name: Enforce English-only maintained text
+        run: node tools/check_english_text.mjs
+
       - name: Verify full model/year/colour artwork map and trim invariance
         run: |
           python tools/sync_vehicle_artwork.py --check

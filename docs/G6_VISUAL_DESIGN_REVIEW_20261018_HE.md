@@ -1,29 +1,5 @@
-# סבב עיצוב XPENG G6 — סקירת משתמש (ללא שחרור)
+# G6 design review — Historical October 18 note
 
-**בסיס:** `release/v1.0.4-beta.10`. **מטרה:** שיפור נראות בלבד. אין שינוי בפקודות, חיישנים, שמות ישויות, ניווט, תמונות הרכב, רקע הלילה, תנאי מעבר לטעינה או הרשאות.
+Original scope: consistent modern automotive icons, clean Climate controls, a readable battery display, responsive Maintenance/TPMS, and one matching dashboard on desktop and phone. Preserve the approved nightly lakeside background, car artwork and automatic Charging scene. Never alter Xpengtk sensor mapping, Access permissions or vehicle commands during purely visual work.
 
-## מה בוצע בענף זה
-- הגדלת אייקון סוללה במחשב בלבד (MDI המקורי וה־SOC החיים נשמרים), שיפור גודל כרטיס הסטטוס.
-- הקטנה מדודה של גובה הסצנה ברוחב דסקטופ כדי לפנות מקום לסרגל Home Assistant.
-- אחידות חומרים: כרטיסיות זכוכית כהות, גבולות דקים, צל מתון, טיפוגרפיה ומצבי focus/hover.
-- מיזוג: בלי לגעת בתמונת הפנים ובלי להזיז מיפוי המושבים, חימום צבוע כתום/ענברי, אוורור צבוע טורקיז; עיצוב כרטיסי המיזוג משופר בדסקטופ ובמובייל.
-- תחזוקה / צמיגים: טיפול עיצובי בלבד; הסידור הקיים עם פרטים **מתחת** לתרשים נשמר.
-- Custom Functions: כרטיסי הפונקציות הקיימות מלוטשים, בלי להוסיף אופציות חדשות ובלי לשנות תיאור או טווח ערכים.
-
-## מה לא עושים עכשיו
-- לא מציגים מינימום/מקסימום חדשים או טקסטי עזרה לפני אישור עיצוב; ההסברים העתידיים יהיו **בדף הפנימי של כל לחצן**.
-- לא מחליפים את תמונות הרכב והפנים; אין תמונות מאומתות חדשות לגרסה שחורה.
-- לא פותחים דפים חדשים, לא מגדילים את מספר הפעולות, לא נוגעים בלוגיקת `Lock/Unlock` או בהפעלת טעינה.
-- לא מעלים `beta` ולא ממזגים אל `main` לפני אישור מפורש של בעל הרכב.
-
-## 5 שערי בדיקה נפרדים (בדיקות אוטומטיות, לא סוכנים עצמאיים)
-1. **רגרסיית פונקציות:** בדיקות ה־Node המקוריות (מפות ישויות, שתי סצנות ופעולות פקודה) חייבות לעבור ללא שינוי.
-2. **בדיקת CSS/עיצוב:** קוד המקור וקובץ `dist` חייבים להיות זהים; ה־diff בין הבטא לענף העיצוב חייב להשאיר את קוד JS וה־HTML ללא שינוי.
-3. **בדיקת רספונסיביות:** Playwright לדסקטופ, iPhone ולכרטיס Sections צר; מסכים לא נחתכים.
-4. **בדיקת נראות:** השוואת צילומי המסך האמיתיים (מנתוני הדגמה) של Home, Charging, Climate, Maintenance, Custom Functions ככל שכלי הצילום תומך.
-5. **בדיקת אינטגרציה:** אימות חיישנים ופקודות מול Home Assistant ורכב חונה נדרש לפני שחרור יציב. בדיקות הדפדפן לא מבטיחות שהרכב ביצע פקודה.
-
-## צילומי סקירה
-לאחר יצירתם ב־CI: [גלריית בדיקות מהענף](https://github.com/matanmesika/xpeng-vehicle-card/tree/design/g6-premium-visual-pass-20261018/docs/screenshots).
-
-**מצב:** Visual draft בלבד. לא מוכן להתקנה או לשחרור לפני אישור המשתמש.
+See [final stabilization](G6_FINAL_STABILIZATION.md) for current owner feedback and acceptance. Prior details are retained in Git history.

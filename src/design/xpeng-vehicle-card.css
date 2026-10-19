@@ -4387,9 +4387,70 @@ background:transparent!important;
 .xp-scene .xp-header .xp-meta-tools button,
 .xp-scene .xp-header .xp-meta-popover{pointer-events:auto!important}
 
-/* Beta 19: retain interactive Settings/Wi-Fi in their original header positions
-   without allowing their hit targets to cover the modal Back arrow. The modal
-   title and Back remain one responsive row on desktop and narrow iPhone. */
-.xp-scene:has(.xp-ux-modal) .xp-ux-modal-head{
- padding-inline-start:clamp(110px,12cqw,135px)!important;
+/* Desktop: preserve existing header controls. On narrow cards the dialog
+   covers header tools, so Back stays aligned and touch targets never overlap. */
+@container xpeng-layout (min-width:851px){
+ .xp-scene:has(.xp-ux-modal) .xp-ux-modal-head{
+  padding-inline-start:clamp(110px,12cqw,135px)!important;
+ }
+}
+@container xpeng-layout (max-width:850px){
+ .xp-scene:has(.xp-ux-modal) .xp-header{z-index:5!important}
+ .xp-scene:has(.xp-ux-modal) .xp-ux-modal{z-index:35!important}
+ .xp-scene:has(.xp-ux-modal) .xp-ux-modal-head{padding-inline-start:0!important}
+}
+/* Phone TPMS tire symbols precede the sensor labels and pressure values. */
+@container xpeng-layout (max-width:520px){
+ .xp-scene .xp-ux-modal-maintenance .xp-maintenance-v4 .xp-tire-reading{flex-direction:column!important;align-items:center!important}
+ .xp-scene .xp-ux-modal-maintenance .xp-maintenance-v4 .xp-tire-reading[data-wheel]>.xp-mdi-icon{
+  order:-1!important;margin:0 auto 2px!important;
+  width:17px!important;height:17px!important;flex-basis:17px!important;
+  --xp-icon-size:17px!important;--mdc-icon-size:17px!important;
+ }
+ .xp-scene .xp-ux-modal-maintenance .xp-maintenance-v4 .xp-tire-reading-body{order:0!important}
+}
+
+/* Final owner desktop review (Oct 19): remove the old Back spacer, because
+   only the far-right header status controls are interactive above the modal. */
+@container xpeng-layout (min-width:851px){
+ .xp-scene:has(.xp-ux-modal) .xp-ux-modal .xp-ux-modal-head{
+  padding-inline-start:0!important;
+  padding-left:0!important;
+  padding-right:0!important;
+ }
+}
+/* One uniform round hover halo for the Climate action and all other shortcuts.
+   The icon host itself must never become a blue square. */
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action[data-xp-open="climate"]::before{
+ background:var(--xp-v3-glass)!important;
+ border-color:var(--xp-v3-edge)!important;
+ box-shadow:0 4px 18px rgba(0,3,13,.17),inset 0 1px rgba(245,254,255,.12)!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action:not(:disabled):is(:hover,:focus-visible)::before,
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action[data-xp-open="climate"]:not(:disabled):is(:hover,:focus-visible)::before{
+ background:rgba(20,88,117,.49)!important;
+ border-color:rgba(102,233,231,.85)!important;
+ box-shadow:0 0 22px var(--xp-v3-halo)!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action:not(:disabled):is(:hover,:focus-visible)>.xp-mdi-icon{
+ color:#9cfbed!important;
+}
+/* More Options: hover lights only the circular ::before. Keep each MDI icon
+   transparent, including focus and the original desktop 30px glyph. */
+.xp-scene .xp-ux-modal-extras .xp-extra-tile>.xp-mdi-icon,
+.xp-scene .xp-ux-modal-extras .xp-extra-tile:not(:disabled):is(:hover,:focus,:focus-visible)>.xp-mdi-icon{
+ background:transparent!important;
+ border:0!important;border-radius:0!important;
+ outline:0!important;box-shadow:none!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile:not(:disabled):is(:hover,:focus-visible){
+ background:transparent!important;border:0!important;
+ box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile:focus-visible{
+ outline:none!important;
+}
+.xp-scene .xp-ux-modal-extras .xp-extra-tile:focus-visible::before{
+ outline:2px solid #8fe8f2!important;outline-offset:3px!important;
 }

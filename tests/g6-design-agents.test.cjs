@@ -41,90 +41,7 @@ test('Behavior Guardian: JS and vehicle assets do not change from the accepted b
  // The isolated-design branch intentionally adds PRESENTATION-ONLY helper
  // methods and includes their HTML before existing controls. Undo exactly
  // those permitted additions before comparing the JS executable behavior.
- const normalize=s=>{
-  let v=withoutCss(s);
-  // Owner-approved Beta 15 UI copy only; keep the strict original vehicle
-  // state / service / permissions baseline comparison intact.
-  const beta15Copy=[
-   ["נתוני הצמיגים מתקבלים מ־Home Assistant, והיחידות נקבעות בהגדרות הכרטיס.","Tire data is provided by Home Assistant; units are configured in the card settings."],
-   ["אין כרגע נתוני טיפול זמינים באינטגרציה.","No upcoming service data is currently available from the integration."],
-   ["נתוני הרכב אינם זמינים כרגע.","Vehicle details are currently unavailable."],
-   ["נתוני טיפול אמיתיים","Live vehicle service data"],
-   ["מספר שלדה מוסתר","Masked VIN"],
-   ["פרטי הרכב","Vehicle details"]
-  ].map(item=>JSON.stringify(item)+',').join('');
-  v=v.replace('const XP_EN_TRANSLATIONS=Object.freeze(['+beta15Copy,
-    'const XP_EN_TRANSLATIONS=Object.freeze([');
-  const from=' // Guide copy is intentionally separate from sensor mappings and service';
-  const to=' xpExtrasPanel(){';
-  const a=v.indexOf(from),b=v.indexOf(to,a);
-  if(a>=0){
-    assert.ok(b>a,'Guidance helpers are not correctly isolated');
-    const lineStart=v.lastIndexOf('\n',a);
-    v=v.slice(0,lineStart>=0?lineStart:a)+v.slice(b);
-    v=v.replace("this.xpExtraSectionGuide(section[0])+","");
-    v=v.replace("this.xpModalGuide(page)+","");
-    v=v.replace(/   \/\/ An in-page explanation must never force[\s\S]*?   }\n(?=   inner\.style\.zoom='1')/,'');
-  }
-  // Presentation-only icon changes: exact allowlist normalizes official MDI
-  // registry/rendering and the two trunk action selection expressions.
-  // Actual target suffix, permission and service dispatch code must match.
-  const iconStart=v.indexOf('const XP_ICONS = Object.freeze({');
-  const iconEnd=v.indexOf('function xpEsc(v)',iconStart);
-  assert.ok(iconStart>=0&&iconEnd>iconStart,'Central icon registry must exist');
-  v=v.slice(0,iconStart)+'[OFFICIAL_MDI_UI_ICON_REGISTRY_AND_RENDERER]\n'+v.slice(iconEnd);
-  v=v.replaceAll("target?.suffix==='open_trunk'?'trunk_open':target?.suffix==='close_trunk'?'trunk_close':'trunk'",
-    "target?.suffix==='open_trunk'?'trunk_open':'trunk'");
-  v=v.replace("xpIcon(state==='closed'?'trunk_open':state==='open'?'trunk_close':'trunk',36)+",
-    "xpIcon('trunk',36)+");
-  // Remove exactly scoped presentation methods from BOTH compared versions.
-  // All state, service, and command methods outside these scopes must still match.
-  const guideTranslation='["לחצי הצמיגים מתקבלים מחיישני הרכב דרך Home Assistant. ערך חסר נשאר לא זמין; יחידות הלחץ נקבעות בהגדרות הכרטיס.","Tire pressure comes from the vehicle sensors through Home Assistant. Missing values stay unavailable; units are configured in the card editor."],';
-  v=v.replace(guideTranslation,'');
-  const aux=v.indexOf(' xpTireExtra(key){');
-  if(aux>=0){
-    const next=v.indexOf('  tireScreen(showBack=true){',aux);
-    assert.ok(next>aux,'TPMS read-only attribute helper must be beside the tire view');
-    v=v.slice(0,aux)+v.slice(next);
-  }
-  const tpmsStart=v.indexOf(' xpMaintenancePanel(){'),chargeNext=v.indexOf(' xpChargeLimitPanel(){',tpmsStart);
-  assert.ok(tpmsStart>=0&&chargeNext>tpmsStart,'TPMS-only page must not move service handlers');
-  v=v.slice(0,tpmsStart)+' [OWNER_TPMS_PRESENTATION_ONLY]\n'+v.slice(chargeNext);
-  const tireStart=v.indexOf('tireScreen(showBack=true){'),overviewNext=v.indexOf(' overview(){',tireStart);
-  assert.ok(tireStart>=0&&overviewNext>tireStart,'Tire layout must not affect Home handler');
-  const tireLine=v.lastIndexOf('\n',tireStart)+1;
-  v=v.slice(0,tireLine)+' [OWNER_TIRE_LAYOUT_PRESENTATION_ONLY]\n'+v.slice(overviewNext);
-  v=v.replace('this.xpTempControl()+this.xpClimatePrimaryControls()+this.xpFanControl()+',
-    'this.xpClimatePrimaryControls()+this.xpTempControl()+this.xpFanControl()+');
-  v=v.replace('<div class="xp-station xp-station-v3" aria-hidden="true"><span class="xp-station-display">${xpIcon(\'station\',24)}</span><span class="xp-station-charge-light"></span><span class="xp-station-side-light"></span></div>',
-    '<div class="xp-station" aria-hidden="true">${xpIcon(\'station\',24)}</div>');
-  // Beta 15 changes only native map presentation and excludes duplicate maintenance.
-  v=v.replace("default_zoom:16,auto_fit:true,fit_zones:false,hours_to_show:0",
-    "default_zoom:11,hours_to_show:0");
-  v=v.replace("return this.xpMaintenancePanel();",
-    "return this.xpMaintenancePanel()+(out?'<div class=\"xp-maint-additional\">'+out+'</div>':'');");
-  // Beta 16 only mounts a one-time UI camera fix; car permissions and state are unchanged.
-  const centerStart=v.indexOf(' xpMapDisplayHass(gps){');
-  if(centerStart>=0){
-    const centerEnd=v.indexOf(' async xpMountMap(){',centerStart);
-    assert.ok(centerEnd>centerStart,'One-time camera helper must be isolated');
-    v=v.slice(0,centerStart)+v.slice(centerEnd);
-    // Retain exactly the legacy separator between map methods.
-    v=v.replace('\n\n async xpMountMap(){','\n async xpMountMap(){');
-  }
-  v=v.replace('     this.xpCenterMapOnVehicle(map,gps);\n','');
-  // Beta 17 rendering-only changes; preserve protected service and command handlers.
-  v=v.replace("  const homeSurface=!isCharging&&!this._tireOpen&&this.xpUiEnabled();"+String.fromCharCode(10),'');
-  v=v.replace("${homeSurface?'xp-home-navigation':''}","${onHome&&this.xpUiEnabled()?'xp-home-navigation':''}");
-  v=v.replace("<h1><em>${xpEsc(this.model())}</em></h1>","<h1>XPENG <em>${xpEsc(this.model())}</em></h1>");
-  v=v.replace('return `<header class="xp-header">'+String.fromCharCode(10),
-    'return `<header class="xp-header"><div class="xp-brand"><span>XPENG</span></div>'+String.fromCharCode(10));
-  v=v.replace("' aria-label=\"'+xpEsc(label)+'\" '","' aria-label=\"'+xpEsc(label)+'\" title=\"'+xpEsc(label)+'\" '");
-  v=v.replace("this._xpMapElement.hass=this.xpMapDisplayHass(gps);","this._xpMapElement.hass=this._hass;");
-  v=v.replace("map.hass=this.xpMapDisplayHass(gps);","map.hass=this._hass;");
-  v=v.replace("entities:[{entity:gps.id,label_mode:'icon',focus:true}]","entities:[{entity:gps.id}]");
-  return v;
- };
+ // Removed obsolete bilingual-code normalization; protected methods are checked directly.
  // UI and owner-approved direct Honk/Flash change in Beta 19, but the
  // underlying protected entity lookup, toggle policy, seat cycle, access policy
  // and service dispatch must remain exactly equal to the accepted baseline.
@@ -135,18 +52,29 @@ test('Behavior Guardian: JS and vehicle assets do not change from the accepted b
    assert.ok(j>i,'Method terminator missing: '+sig);
    return str.slice(i,j+3);
  };
+ // Compare executable behavior byte-for-byte while allowing approved English
+ // presentation copy to differ from the older Hebrew preview baseline.
+ // This intentionally does NOT normalize domains, services, suffixes, permissions,
+ // command arguments, conditions or state transitions.
+ const withoutDisplayCopy=text=>text
+   .replace(/label:'[^']*'/g,"label:'[COPY]'")
+   .replace(/this\._xpNotice='[^']*'/g,"this._xpNotice='[COPY]'")
+   .replace(/throw Error\('[^']*'\)/g,"throw Error('[COPY]')")
+   .replace(/\(error\?\.message\|\|'[^']*'\)/g,"(error?.message||'[COPY]')")
+   .replace(/\(err\?\.message\|\|'[^']*'\)/g,"(err?.message||'[COPY]')")
+   .replace(/xpLocalizeMarkup\('[^']*',this\._hass\)/g,"xpLocalizeMarkup('[COPY]',this._hass)");
  for(const sig of [
    ' xpengEntity(domain,suffix){',' xpLive(domain,suffix){',
    ' xpActionState(action){',' xpToggleTarget(action){',
    ' xpPendingToggle(action){',' xpToggle(action){',' xpAccessAllowed(){',
    ' async xpCycleSeat(suffix){'
  ]){
-   assert.equal(method(sig)(source),method(sig)(reference),
+   assert.equal(withoutDisplayCopy(method(sig)(source)),withoutDisplayCopy(method(sig)(reference)),
      'Protected vehicle/permission behavior was changed: '+sig);
  }
  const sendSig=' async xpSend(domain,service,suffix,value,verifiedDirectTap=false){';
- const oldSend=method(sendSig)(reference);
- const newSend=method(sendSig)(source).replace(",'honk_horn','flash_lights'","");
+ const oldSend=withoutDisplayCopy(method(sendSig)(reference));
+ const newSend=withoutDisplayCopy(method(sendSig)(source)).replace(",'honk_horn','flash_lights'","");
  assert.equal(newSend,oldSend,'Only two verified direct map actions may extend xpSend');
  assert.match(method(sendSig)(source),/verifiedDirectTap&&/);
  assert.match(source,/if\(\['honk_horn','flash_lights'\]\.includes\(action\)\)this\.xpMapDirectAction\(action\)/);
@@ -155,13 +83,13 @@ test('Behavior Guardian: JS and vehicle assets do not change from the accepted b
  const changed=git('diff','--name-only',base+'...HEAD','--','assets/').trim();
  assert.equal(changed,'','Original owner-provided vehicle artwork must not be modified');
 });
-test('English Copy Agent: real browser captures switch to English but preserve RTL regression',()=>{
+test('English Copy Agent: all UI and browser captures stay English',()=>{
  assert.match(screenshots,/Actual card screenshot \(English design review\)/);
  assert.match(screenshots,/language:'en'/);
  assert.match(screenshots,/localeBrowserQA\.untranslated/);
  assert.match(screenshots,/englishBack,'mdi:arrow-left'/);
- assert.match(screenshots,/hebrewBack,'mdi:arrow-right'/);
- assert.match(source,/const XP_EN_TRANSLATIONS=Object\.freeze/);
+ assert.match(screenshots,/localeBack,'mdi:arrow-left'/);
+ assert.doesNotMatch(source,/XP_EN_TRANSLATIONS|[\u0590-\u05ff]/);
 });
 test('Integration Guardian: preserve live charging and state-dependent button actions',()=>{
  assert.match(source,/xpChargingActive\(\)\{/);

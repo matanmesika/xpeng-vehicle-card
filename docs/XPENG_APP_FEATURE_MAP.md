@@ -80,7 +80,7 @@ Official XPENG G6 material (including regional availability caveats) describes A
 
 ## Climate page feature parity with owner-supplied XPENG screenshot (2026-10-17)
 
-**Interior colour is chosen exclusively in the vehicle card editor** (`Interior finish · צבע פנים הרכב`), or card `interior` YAML, not inside the climate panel. `xpCabinView()` displays the matching `light_gray` or `dark_gray` interior automatically; the generated photo WebP assets are still missing from this draft branch and the already-committed SVG art is the fallback.
+**Interior colour is chosen exclusively in the vehicle card editor** (`Interior finish · Vehicle interior color`), or card `interior` YAML, not inside the climate panel. `xpCabinView()` displays the matching `light_gray` or `dark_gray` interior automatically; the generated photo WebP assets are still missing from this draft branch and the already-committed SVG art is the fallback.
 
 | OEM-app feature | Verified Xpengtk entity/API | Card behaviour |
 | --- | --- | --- |

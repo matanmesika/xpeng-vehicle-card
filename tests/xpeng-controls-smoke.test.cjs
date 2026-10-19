@@ -79,7 +79,7 @@ test('Maintenance restores real service/identity beside four tire readings witho
  assert.match(html,/15284/);
  assert.match(html,/2024/);
  assert.match(html,/L1N\*\*\*\*\*\*123/);
- assert.match(html,/טיפול הבא/);
+ assert.match(html,/Next service/);
  assert.doesNotMatch(html,/NaN/);
 });
 test('native map reuses one unchanged Map card on repeated Xpengtk hass updates',async()=>{
@@ -196,7 +196,7 @@ test('charge flap panel has one state-driven action and clear cable disclaimer',
   card._hass.states['button.close_flap']={state:'unknown',attributes:{}};
   assert.match(card.xpPortPanel(), /data-xp-toggle="port"/);
   assert.match(card.xpPortPanel(), /data-xp-toggle="port"/);
-  assert.match(card.xpPortPanel(), /אין שחרור כבל/);
+  assert.match(card.xpPortPanel(), /No cable release/);
   card._xpPanel='port';card.render();
   assert.match(card.shadowRoot.innerHTML, /data-xp-toggle="port"/);
   assert.doesNotMatch(card.shadowRoot.innerHTML, /data-xp-page="seats"/);
@@ -281,8 +281,8 @@ test('map contains only horn and flash buttons, each resolved through Xpengtk',a
 test('charging never labels Stop charging as cable release',()=>{
   const {card}=createCard();
   const charge=card.xpChargeControls();
-  assert.match(charge,/הפסק טעינה/);
-  assert.doesNotMatch(charge,/שחרר.*כבל/);
+  assert.match(charge,/Stop charging/);
+  assert.doesNotMatch(charge,/Release.*cable/);
   assert.equal((charge.match(/data-xp-command="stop_charge"/g)||[]).length,1);
 });
 
@@ -319,7 +319,7 @@ test('passenger heat Off is never sent when upstream does not support it',async(
   for(let i=0;i<4;i++)await card.xpCycleSeat('passenger_seat_heat_select');
   assert.deepEqual(JSON.parse(JSON.stringify(commands.map(c=>c.data.option))),
     ['Heat 1','Heat 2','Heat 3']);
-  assert.match(card._xpNotice,/אינו נתמך/);
+  assert.match(card._xpNotice,/not supported/);
 });
 test('rapid repeated taps serialize native HA commands by entity',async()=>{
   const {card,commands}=createCard();
@@ -557,7 +557,7 @@ test('G6 charging keeps original photo, all seven Home controls and three scoped
  card._xpPanel='charge_schedule';
  const schedule=card.xpModal();
  assert.match(schedule,/xp-charge-compact-modal/);
- assert.match(schedule,/קריאה בלבד/,'Schedule is Xpengtk read-only');
+ assert.match(schedule,/read-only/,'Schedule is Xpengtk read-only');
 });
 
 test('all G6 generations use the same owner-photo slots',()=>{
@@ -732,7 +732,7 @@ test('nested Climate -> HVAC schedule returns to the same Climate window',()=>{
  card.xpNavigatePanel('extras','schedule');
  assert.equal(card._xpNavStack.length,1);
  assert.match(card.xpModal(),/xp-ux-modal-extras/);
- assert.match(card.xpModal(),/חזרה לחלון הקודם/);
+ assert.match(card.xpModal(),/Back to previous screen/);
  card.xpBackPanel();
  assert.equal(card._xpPanel,'climate');
  assert.equal(card._xpNavStack.length,0);
@@ -747,7 +747,7 @@ test('Extras -> Diagnostics returns first to Extras, then to Home',()=>{
  card.xpNavigatePanel('extras');
  card.xpNavigatePanel('extras','diagnostics');
  assert.equal(card._xpNavStack.length,1);
- assert.match(card.xpExtrasPanel(),/xp-entity-diagnostics|לא זוהו ישויות/);
+ assert.match(card.xpExtrasPanel(),/xp-entity-diagnostics|No Xpengtk entities/);
  card.xpBackPanel();
  assert.equal(card._xpPanel,'extras');
  assert.equal(card._xpExtraSection,null);
@@ -850,9 +850,9 @@ test('one-tap controls alter visible action labels, icons, and avoid duplicate c
    'button.real_open_port':{state:'unknown',attributes:{}},
    'button.real_close_port':{state:'unknown',attributes:{}}});
  let nav=card.xpDock();
- assert.match(nav,/פתח נעילה/);
- assert.match(nav,/פתח חלונות/);
- assert.match(nav,/פתח שקע/);
+ assert.match(nav,/Unlock/);
+ assert.match(nav,/Open windows/);
+ assert.match(nav,/Open port/);
  assert.match(nav,/data-xp-toggle="windows"/);
  assert.match(nav,/data-xp-toggle="port"/);
  assert.match(nav,/data-xp-toggle="doors"/);
@@ -870,11 +870,11 @@ test('one-tap controls alter visible action labels, icons, and avoid duplicate c
    assert.equal(card.xpPendingToggle(action),null,'A confirmed action clears its pending state');
  }
  nav=card.xpDock();
- assert.match(nav,/נעל/);
- assert.match(nav,/סגור חלונות/);
- assert.match(nav,/סגור שקע/);
+ assert.match(nav,/Lock/);
+ assert.match(nav,/Close windows/);
+ assert.match(nav,/Close port/);
  st['sensor.real_port'].state='Connected';
- assert.doesNotMatch(card.xpDock(),/data-xp-toggle="port"[^>]*>[^]*?<small>סגור שקע/);
+ assert.doesNotMatch(card.xpDock(),/data-xp-toggle="port"[^>]*>[^]*?<small>Close port/);
  const c=commands.length;card.xpToggle('port');
  assert.equal(commands.length,c,'cannot close charge flap when cable is connected');
  // Stop charging is always separately confirmed; the bypass is not general.
@@ -919,7 +919,7 @@ test('tailgate cycles open and close in one verified tap; Access and unknown sta
  st['button.real_open_trunk']={state:'unknown',attributes:{}};
  st['button.real_close_trunk']={state:'unknown',attributes:{}};
  assert.equal(card.xpToggleTarget('trunk').suffix,'open_trunk');
- assert.match(card.xpDock(),/פתח תא מטען/);
+ assert.match(card.xpDock(),/Open Trunk/);
  assert.match(card.xpTrunkPanel(),/data-xp-toggle="trunk"/);
  card.xpToggle('trunk');await new Promise(resolve=>setImmediate(resolve));
  assert.equal(commands.at(-1).data.entity_id,'button.real_open_trunk');
@@ -928,7 +928,7 @@ test('tailgate cycles open and close in one verified tap; Access and unknown sta
  assert.equal(card.xpToggleTarget('trunk').suffix,'close_trunk');
  assert.match(card.xpDock(),/aria-busy="true"/);
  card._xpTogglePending.trunk.at-=2000;card.xpPendingToggle('trunk');
- assert.match(card.xpDock(),/סגור תא מטען/);
+ assert.match(card.xpDock(),/Close Trunk/);
  card.xpToggle('trunk');await new Promise(resolve=>setImmediate(resolve));
  assert.equal(commands.at(-1).data.entity_id,'button.real_close_trunk');
  st['binary_sensor.real_trunk'].state='unavailable';
@@ -946,8 +946,8 @@ test('finder uses real horn and light commands, correct Hebrew, map and Back',()
  let html=card.xpMapPanel();
  assert.match(html,/data-xp-map-action="honk_horn" disabled/);
  assert.match(html,/data-xp-map-action="flash_lights" disabled/);
- assert.match(html,/צופר/);
- assert.match(html,/הבהוב/);
+ assert.match(html,/Horn/);
+ assert.match(html,/Flash lights/);
  card._xpengByKey['button.honk_horn']='button.real_horn';
  card._xpengByKey['button.flash_lights']='button.real_flash';
  card._hass.states['button.real_horn']={state:'unknown',attributes:{}};
@@ -956,7 +956,7 @@ test('finder uses real horn and light commands, correct Hebrew, map and Back',()
  assert.doesNotMatch(html,/data-xp-map-action="honk_horn" disabled/);
  assert.doesNotMatch(html,/data-xp-map-action="flash_lights" disabled/);
  card._xpPanel='map';card.render();
- assert.match(card.shadowRoot.innerHTML,/data-xp-close aria-label="חזרה למסך הבית"/);
+ assert.match(card.shadowRoot.innerHTML,/data-xp-close aria-label="Back to dashboard"/);
  assert.doesNotMatch(card.shadowRoot.innerHTML,/class="xp-ux-dock-action"/);
 });
 test('real Xpengtk AUTO status is read only; executable AUTO needs advertised climate mode',()=>{
@@ -968,7 +968,7 @@ test('real Xpengtk AUTO status is read only; executable AUTO needs advertised cl
  let html=card.xpClimatePrimaryControls();
  assert.match(html,/xp-ux-climate-readonly/);
  assert.match(html,/AUTO/);
- assert.match(html,/חיווי בלבד/);
+ assert.match(html,/Status only/);
  assert.doesNotMatch(html,/data-xp-hvac-mode/);
  assert.doesNotMatch(card.xpClimateFeatures(),/data-xp-swing-mode/);
  const attrs=card._hass.states['climate.renamed_hvac'].attributes;
@@ -994,7 +994,7 @@ test('Location requests HA native GPS map with dark mode and zoom 11, not a fabr
    state:'not_home',attributes:{latitude:32.0,longitude:34.8,gps_accuracy:15}
  };
  card._xpPanel='map';
- const host={textContent:'טוען מפה…',replaceChildren(view){attached=view}};
+ const host={textContent:'Loading map…',replaceChildren(view){attached=view}};
  card.shadowRoot.querySelector=selector=>selector==='[data-xp-map-host]'?host:null;
  card.shadowRoot.contains=x=>x===host;
  sandbox.window.loadCardHelpers=async()=>({createCardElement(config){captured=config;return {hass:null}}});
@@ -1010,7 +1010,7 @@ test('Location requests HA native GPS map with dark mode and zoom 11, not a fabr
  await card.xpMountMap();
  assert.equal(captured,null);
 });
-test('G6 multilingual text and icon contract covers all new user-facing actions',()=>{
+test('G6 English text and icon contract',()=>{
  const {card}=createCard({enable_access_controls:true});
  Object.assign(card._xpengByKey,{
    'binary_sensor.trunk':'binary_sensor.trunk_for_translation',
@@ -1024,13 +1024,13 @@ test('G6 multilingual text and icon contract covers all new user-facing actions'
  card._xpengByKey['button.open_windows']='button.open_windows_translation';
  card._hass.states['binary_sensor.window_for_translation']={state:'off',attributes:{}};
  card._hass.states['button.open_windows_translation']={state:'unknown',attributes:{}};
- for(const name of ['מיזוג','תחזוקה','מיקום','חלונות','פתח תא מטען'])
-   assert.ok(card.xpDock().includes(name),'Missing correct Hebrew action: '+name);
- assert.match(card.xpTrunkPanel(),/תא המטען/);
- assert.match(card.xpMapPanel(),/צופר/);
- assert.match(card.xpMapPanel(),/הבהוב/);
- assert.match(card.xpChargeSchedulesPanel(),/שעת התחלת טעינה/);
- assert.match(card.xpChargeSchedulesPanel(),/שעת סיום טעינה/);
+ for(const name of ['Climate','Maintenance','Location','Open windows','Open Trunk'])
+   assert.ok(card.xpDock().includes(name),'Missing English action: '+name);
+ assert.match(card.xpTrunkPanel(),/The tailgate/);
+ assert.match(card.xpMapPanel(),/Horn/);
+ assert.match(card.xpMapPanel(),/Flash lights/);
+ assert.match(card.xpChargeSchedulesPanel(),/Charging start time/);
+ assert.match(card.xpChargeSchedulesPanel(),/Charging end time/);
  assert.match(card.charging(),/Charging information/);
  assert.match(card.charging(),/data-xp-open="charge_controls"/);
  assert.match(card.charging(),/data-xp-open="charge_schedule"/);
@@ -1068,20 +1068,20 @@ test('every modal Back is a single accessible RTL MDI arrow with no visible Back
    const modal=card.xpModal();
    const button=modal.match(/<button type="button" data-xp-close[^>]*>[\s\S]*?<\/button>/)?.[0];
    assert.ok(button,'Missing Back button: '+page);
-   assert.match(button,/aria-label="חזרה למסך הבית"/);
+   assert.match(button,/aria-label="Back to dashboard"/);
    assert.match(button,/icon="mdi:arrow-right"/);
-   assert.doesNotMatch(button,/חזור אחורה|<span>|Back to vehicle|חזרה לבית<\/span>/,
+   assert.doesNotMatch(button,/<span>|Back to vehicle/,
      'No redundant Back words in visual button: '+page);
  }
  const tire=card.tireScreen(true);
  const back=tire.match(/<button type="button" data-tire-toggle[^>]*>[\s\S]*?<\/button>/)?.[0];
  assert.ok(back);
- assert.match(back,/aria-label="חזרה לתצוגת הרכב"/);
+ assert.match(back,/aria-label="Back to vehicle view"/);
  assert.match(back,/icon="mdi:arrow-right"/);
  assert.doesNotMatch(back,/>\s*Back to vehicle/);
  card._xpPanel='climate';
  card.xpNavigatePanel('extras','schedule');
- assert.match(card.xpModal(),/aria-label="חזרה לחלון הקודם"/,
+ assert.match(card.xpModal(),/aria-label="Back to previous screen"/,
    'Nested navigation remains correctly announced for screen-readers');
 });
 test('upstream Xpengtk unique IDs resolve without guessed windows/port names',()=>{
@@ -1103,8 +1103,8 @@ test('upstream Xpengtk unique IDs resolve without guessed windows/port names',()
  assert.equal(card.xpengEntity('binary_sensor','windows'),'binary_sensor.real_any_window_open');
  assert.equal(card.xpActionState('windows'),'open');
  assert.equal(card.xpActionState('port'),'open');
- assert.match(card.xpDoorsPanel(),/דלת נהג/);
- assert.match(card.xpDoorsPanel(),/דלת נוסע/);
+ assert.match(card.xpDoorsPanel(),/Driver door/);
+ assert.match(card.xpDoorsPanel(),/Passenger door/);
  delete card._xpengByKey['lock.door_lock'];delete st['lock.user_lock'];
  assert.equal(card.xpActionState('doors'),'closed','Xpengtk locked binary ON means unlocked');
  st['sensor.real_slow_charge_port'].state='Connected';
@@ -1211,10 +1211,10 @@ test('diagnostics list real one-car HA entities, show unavailable and never expo
  const html=card.xpSensorDiagnosticsPanel();
  assert.match(html,/sensor\.xpeng_abcdef_battery/);
  assert.match(html,/binary_sensor\.xpeng_abcdef_any_window_open/);
- assert.match(html,/לא זמין/);
- assert.match(html,/כפתור פעולה/);
+ assert.match(html,/Unavailable/);
+ assert.match(html,/Action button/);
  assert.doesNotMatch(html,/xpeng_ghijkl/);
- assert.match(card.xpExtrasPanel(),/אבחון ישויות/);
+ assert.match(card.xpExtrasPanel(),/Entity diagnostics/);
  card._xpengEntities=[{entity_id:'sensor.user_named_battery'},{entity_id:'binary_sensor.cable_present'}];
  const renamed=card.xpSensorDiagnosticsPanel();
  assert.match(renamed,/sensor\.user_named_battery/);
@@ -1224,7 +1224,7 @@ test('diagnostics list real one-car HA entities, show unavailable and never expo
 test('maintenance details appear only after pressing the Maintenance button, never in Home summary',()=>{
  const {card}=createCard({show_controls:true});
  const home=card.overview();
- assert.doesNotMatch(home,/תחזוקת הרכב|צמיגים · טיפולים|data-xp-open="maintenance"/);
+ assert.doesNotMatch(home,/Vehicle maintenance|data-xp-open="maintenance"/);
  assert.doesNotMatch(home,/xp-status-panel|xp-location-row|Location|data-xp-open="map"/);
  assert.match(card.xpDock(),/data-xp-open="map"/);
  const dock=card.xpDock();
@@ -1232,7 +1232,7 @@ test('maintenance details appear only after pressing the Maintenance button, nev
  card._xpPanel='maintenance';
  const page=card.xpModal();
  assert.match(page,/xp-ux-modal-maintenance/);
- assert.match(page,/תחזוקת הרכב/);
+ assert.match(page,/Vehicle maintenance/);
  assert.match(page,/data-xp-close/);
 });
 test('status-only legacy cards still show one simple Maintenance button, without Home maintenance stats',()=>{
@@ -1240,7 +1240,7 @@ test('status-only legacy cards still show one simple Maintenance button, without
  const home=card.overview();
  assert.equal((home.match(/data-xp-open="maintenance"/g)||[]).length,1);
  assert.match(home,/xp-maintenance-home-button/);
- assert.doesNotMatch(home,/צמיגים · טיפולים · נתוני רכב/);
+ assert.doesNotMatch(home,/Tire pressure and vehicle maintenance/);
  assert.equal(card.xpDock(),'');
  card._xpPanel='maintenance';
  assert.match(card.xpModal(),/xp-ux-modal-maintenance/);
@@ -1306,7 +1306,7 @@ test('HVAC reference panel draws only real fan levels and working seat controls'
  assert.match(card.xpFanControl(),/3 \/ 8/);
  assert.equal((card.xpFanControl().match(/<i class=/g)||[]).length,8,'show HA 8 levels, not an invented 10');
  assert.doesNotMatch(panel,/data-xp-hvac-mode="auto"/,'AUTO is feedback only when HA lacks AUTO command');
- assert.match(panel,/role="status" aria-label="מצב AUTO: פעיל"/);
+ assert.match(panel,/role="status" aria-label="AUTO mode: On"/);
 });
 
 
@@ -1415,15 +1415,15 @@ test('beta.6 automotive window and trunk icons are official MDI, never a house-w
     assert.match(card.xpToggleButton('trunk'),/class="xp-mdi-icon xp-tailgate-icon"/);
     assert.match(card.xpWindowsPanel(),/icon="mdi:car-door"/);
     assert.match(card.xpTrunkPanel(),/class="xp-mdi-icon xp-tailgate-icon"/);
-    const expected=state==='off'?'פתיחת':'סגירת';
-    assert.match(windows,new RegExp(expected+' חלונות'));
-    assert.match(trunk,new RegExp(expected+' תא מטען'));
+    const expected=state==='off'?'Open':'Close';
+    assert.match(windows,new RegExp(expected+' windows','i'));
+    assert.match(trunk,new RegExp(expected+' Trunk','i'));
   }
   assert.match(src,/xpIcon\(ico,27\)/,'Dock must render through ha-icon/Mdi helper');
   assert.equal(src,dist,'Source and HACS bundle must remain byte-identical');
 });
 
-test('beta.8 Home Assistant locale switches every vehicle modal and accessibility label from Hebrew to English',()=>{
+test('Card UI is always English regardless of Home Assistant locale',()=>{
  const {card}=createCard({enable_access_controls:true});
  card._hass.locale.language='en';
  card._hass.states['sensor.user_named_battery'].state='76';
@@ -1440,7 +1440,7 @@ test('beta.8 Home Assistant locale switches every vehicle modal and accessibilit
    card._xpPanel=page;
    card.render();
    const html=card.shadowRoot.innerHTML;
-   const leftovers=[...new Set((html.match(/[\u0590-\u05ff][\u0590-\u05ff\s.,•·־״׳()]+/g)||[]).map(t=>t.trim()))];
+   const leftovers=[...new Set((html.match(/[\u0590-\u05ff][\u0590-\u05ff\s.,•·\u05be\u05f4\u05f3()]+/g)||[]).map(t=>t.trim()))];
    if(leftovers.length)untranslated.push({page:page||'Home',leftovers:leftovers.slice(0,25)});
    if(page)assert.match(html,/dir="ltr"/,'English subpage must use LTR direction: '+page);
  }
@@ -1456,10 +1456,10 @@ test('beta.8 Home Assistant locale switches every vehicle modal and accessibilit
  card._xpPanel='maintenance';card.render();
  assert.match(card.shadowRoot.innerHTML,/icon="mdi:arrow-left"/,'English Back arrow must point left');
  card._hass.locale.language='he';card.render();
- assert.match(card.shadowRoot.innerHTML,/תחזוקת הרכב/,'Hebrew Home Assistant locale keeps the original language');
- assert.match(card.shadowRoot.innerHTML,/icon="mdi:arrow-right"/,'Hebrew Back arrow remains RTL');
+ assert.match(card.shadowRoot.innerHTML,/Vehicle maintenance/,'Hebrew Home Assistant locale keeps the original language');
+ assert.match(card.shadowRoot.innerHTML,/icon="mdi:arrow-left"/,'Back remains left with Hebrew HA language');
 });
-test('beta.8 editor follows HA locale without changing stored vehicle settings',()=>{
+test('Card editor is always English regardless of Home Assistant locale',()=>{
  const isolatedSandbox={HTMLElement:FakeElement,
    window:{customCards:[],confirm:()=>true,location:{origin:'http://localhost'}},
    customElements:{get(){return true},define(){}},document:{documentElement:{}},URL,console};
@@ -1471,7 +1471,7 @@ test('beta.8 editor follows HA locale without changing stored vehicle settings',
  assert.match(editor.shadowRoot.innerHTML,/Tire pressure unit/);
  assert.match(editor.shadowRoot.innerHTML,/Vehicle interior color/);
  editor._hass.locale.language='he';editor.render();
- assert.match(editor.shadowRoot.innerHTML,/צבע פנים הרכב/);
+ assert.match(editor.shadowRoot.innerHTML,/Vehicle interior color/);
 });
 test('beta.8 first Location open reuses proactively warmed HA map helpers',async()=>{
  const {card,sandbox,commands}=createCard();
@@ -1507,7 +1507,7 @@ test('cabin photograph and model fallback show no over-image captions in Climate
  const light=card.xpCabinView();
  assert.match(light,/data-cabin-art/);
  assert.match(light,/alt="G6 /,'Cabin image keeps accessible alt text');
- assert.doesNotMatch(light,/<small class="xp-ux-cabin-disclaimer"|xp-ux-cabin-disclaimer|תמונת פנים בעל הרכב/,
+ assert.doesNotMatch(light,/<small class="xp-ux-cabin-disclaimer"|xp-ux-cabin-disclaimer|Owner-provided G6 interior/,
    'No caption may overlap the cabin photo or heated seat buttons');
  card.setConfig({type:'custom:xpeng-vehicle-card',model:'G6',year:'2026',prefix:'my_xpeng',interior:'dark_gray'});
  assert.doesNotMatch(card.xpCabinView(),/xp-ux-cabin-disclaimer/);
@@ -1541,7 +1541,7 @@ test('owner fixes: exact Open Trunk, real SOC icon levels, silent successful cal
  assert.equal(ok,true);
  assert.equal(card._xpNotice,'','successful command acknowledgement should not show toast');
  card._xpExtraSection='updates';card._xpPanel='extras';card.render();
- assert.doesNotMatch(card.shadowRoot.innerHTML,/פרטי עדכון/);
+ assert.doesNotMatch(card.shadowRoot.innerHTML,/Update details/);
 });
 
 test('Black Edition G6 uses a dark cabin and never borrows another exterior paint view',()=>{
@@ -1642,4 +1642,31 @@ test('Beta 19 charging station has the same SVG and a side cable in both scene s
  assert.match(charging,/M935 460[\s\S]*?1287 474/);
  assert.match(charging,/M171 489[\s\S]*?346 516/);
  assert.match(src,/\.xp-scene\.xp-charge \.xp-station\.xp-station-v3\.xp-station-xpeng19/);
+});
+
+test('Reopened native Location camera centers using the actual GPS with zoom 16',()=>{
+ const {card,sandbox}=createCard();
+ const centered=[];
+ const surface={getBoundingClientRect:()=>({width:390}),setView:(coords,zoom)=>centered.push({coords,zoom})};
+ const map={shadowRoot:{querySelector:()=>surface}};
+ card.shadowRoot.querySelector=key=>key==='[data-xp-map-host]'?{contains:x=>x===map,getBoundingClientRect:()=>({width:390})}:null;
+ card._xpPanel='map';card._xpMapElement=map;card._xpMapNeedsCenter=true;
+ sandbox.window.requestAnimationFrame=callback=>callback();
+ card.xpCenterMapOnVehicle(map,{state:{attributes:{latitude:31.9,longitude:34.82}}});
+ assert.deepEqual(JSON.parse(JSON.stringify(centered)),[{coords:[31.9,34.82],zoom:16}]);
+ assert.equal(card._xpMapNeedsCenter,false);
+ card._xpMapNeedsCenter=true;
+ card.xpCenterMapOnVehicle(map,{state:{attributes:{latitude:32.01,longitude:34.83}}});
+ assert.deepEqual(JSON.parse(JSON.stringify(centered[1])),{coords:[32.01,34.83],zoom:16});
+ assert.match(src,/if\(this\._xpMapNeedsCenter\)this\.xpCenterMapOnVehicle\(this\._xpMapElement,gps\)/);
+ assert.match(src,/if\(panel==='map'\)this\._xpMapNeedsCenter=true/);
+});
+test('OTA explanation remains visible in English for Hebrew Home Assistant',()=>{
+ const {card}=createCard();
+ card._xpPanel='extras';card._xpExtraSection='updates';card._hass.locale.language='he';
+ const html=card.xpExtrasPanel();
+ assert.match(html,/Software updates/);
+ assert.match(html,/XOS version identifies/);
+ assert.match(html,/No verified Check for Updates command/);
+ assert.doesNotMatch(html,/[\u0590-\u05ff]/);
 });

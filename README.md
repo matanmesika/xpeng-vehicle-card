@@ -1,10 +1,10 @@
 # XPENG Vehicle Card for Home Assistant
 
-A responsive, bilingual Lovelace card for XPENG vehicles, built for the native **Home Assistant Sections dashboard**, desktop browsers and iPhone. One card adapts automatically to the available width, with the original night-lakeside dashboard, original vehicle artwork and live Home Assistant/Xpengtk sensors.
+A responsive **English-only** Lovelace card for XPENG vehicles. One card fits desktop, iPhone and Home Assistant Sections automatically. It preserves the original night-lakeside scene, separately approved vehicle artwork and native Xpengtk entities.
 
-**Project status (18 October 2026):** the **G6 dashboard and Xpengtk entity/control mapping is implemented and tested with simulated telemetry**. The current prerelease is **[v1.0.4-beta.9](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.4-beta.9)**; the stable HACS release is still **[v1.0.3](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.3)**. The current development branch also includes owner-reviewed fixes for the climate layout, maintenance, dynamic battery status, diagnostic rows, exact English **Open Trunk** label, and Black Edition cabin styling; they are not yet part of a tagged release. A full stable release is **not yet approved or merged**.
+**Published preview:** [v1.0.4-beta.19](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.4-beta.19). **Stable HACS release:** [v1.0.3](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.3). The [post-beta stabilization PR](https://github.com/matanmesika/xpeng-vehicle-card/pull/57) is under review and has not been released.
 
-[Install in HACS](https://my.home-assistant.io/redirect/hacs_repository/?owner=matanmesika&repository=xpeng-vehicle-card&category=plugin) · [מדריך בעברית](docs/G6_DASHBOARD_GUIDE_HE.md) · [Release readiness / מוכנות לשחרור](docs/G6_RELEASE_READINESS_HE.md) · [Screenshot gallery](docs/screenshots/README.md)
+[HACS installation](https://my.home-assistant.io/redirect/hacs_repository/?owner=matanmesika&repository=xpeng-vehicle-card&category=plugin) · [Final acceptance](docs/G6_FINAL_STABILIZATION.md) · [Screenshot gallery](docs/screenshots/README.md) · [Artwork status](docs/ARTWORK_STATUS.md)
 
 ## Screenshots — real card in browser, simulated XPENG sensors
 
@@ -51,13 +51,13 @@ Unknown or unavailable sensor data stays unknown; the card cannot repair an upst
 
 | Shortcut | What it does |
 | --- | --- |
-| Climate / מיזוג | Live cabin temperature, fan, supported HVAC, seat heating/cooling and steering-wheel heating using real integration entities; seat actions only at their physical positions in the cabin photo |
-| Lock / נעילה | State-dependent lock/unlock with duplicate-command suppression |
-| Windows / חלונות | State-dependent open/close, official `mdi:car-door` icon |
-| Charge flap / שקע טעינה | State-dependent flap, refusing unsafe close with connected cable |
-| Tailgate / תא מטען | State-dependent open/close, official `mdi:car-hatchback` icon; English **Open Trunk** label |
-| Maintenance / תחזוקה | Four wheel-positioned TPMS readings, odometer, identity/maintenance data |
-| Location / מיקום | Native Home Assistant GPS map, preloaded map helpers, horn and flash when available |
+| Climate | Live cabin temperature, fan, supported HVAC, seat heating/cooling and steering-wheel heating using real integration entities; seat actions only at their physical positions in the cabin photo |
+| Lock | State-dependent lock/unlock with duplicate-command suppression |
+| Windows | State-dependent open/close, official `mdi:car-door` icon |
+| Charge flap | State-dependent flap, refusing unsafe close with connected cable |
+| Tailgate | State-dependent open/close, official the approved raised-hatch side-profile icon icon; English **Open Trunk** label |
+| Maintenance | Four wheel-positioned TPMS readings, odometer, identity/maintenance data |
+| Location | Native Home Assistant GPS map, preloaded map helpers, horn and flash when available |
 
 The same seven actions appear on the Home and charging scenes. The charging scene is chosen **automatically** only from confirmed active charging; it uses its own rear-three-quarter photo and a thin **green cable only during charging**. There is no manual Charging navigation button.
 
