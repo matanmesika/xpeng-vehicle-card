@@ -485,18 +485,29 @@ async function main(){
             stats:root.querySelectorAll('.xp-charge-meta>div').length,
             buttons:buttons.map(btn=>{
               const r=btn.getBoundingClientRect(),s=getComputedStyle(btn),
+                ringStyle=getComputedStyle(btn,'::before'),
+                icon=btn.querySelector('ha-icon.xp-mdi-icon'),
+                glyph=icon?.getBoundingClientRect(),
                 label=btn.querySelector('span').getBoundingClientRect();
-              return {ring:parseFloat(s.getPropertyValue('--xp-ring-size')),
-                glyph:parseFloat(s.getPropertyValue('--xp-glyph-size')),
-                touch:r.height,captionFits:label.left>=r.left-1&&label.right<=r.right+1};
+              const ring=parseFloat(s.getPropertyValue('--xp-ring-size'));
+              const ringY=r.top+parseFloat(ringStyle.top)+ring/2;
+              return {ring,glyphSize:parseFloat(s.getPropertyValue('--xp-glyph-size')),
+                touch:r.height,captionFits:label.left>=r.left-1&&label.right<=r.right+1,
+                labelBelowRing:label.top>=r.top+ring-1,notClipped:label.bottom<=r.bottom+1,
+                xOffset:glyph?Math.abs((glyph.left+glyph.right)/2-(r.left+r.right)/2):999,
+                yOffset:glyph?Math.abs((glyph.top+glyph.bottom)/2-ringY):999,
+                nativeMdi:!!icon?.getAttribute('icon')?.startsWith('mdi:'),
+                missingGlyph:!!icon?.hasAttribute('data-mdi-missing')};
             })};
         });
-        assert.ok(metrics.height<215,'Mobile charging data panel too tall: '+JSON.stringify(metrics));
+        assert.ok(metrics.height<225,'Mobile charging data panel too tall: '+JSON.stringify(metrics));
         assert.equal(metrics.stats,3,'Mobile charging must keep every live statistic');
         assert.ok(metrics.buttons.length===3&&metrics.buttons.every(b=>
-          b.ring>=29&&b.ring<=32&&b.glyph<=16&&b.touch>=44&&b.captionFits),
-          'Mobile control size/label overflow: '+JSON.stringify(metrics));
-        console.log('PASS compact charging data/controls '+width+'px',JSON.stringify(metrics));
+          b.ring>=31&&b.ring<=34&&b.glyphSize>=17&&b.glyphSize<=18&&b.touch>=44&&
+          b.captionFits&&b.labelBelowRing&&b.notClipped&&b.xOffset<=1.5&&b.yOffset<=1.5&&
+          b.nativeMdi&&!b.missingGlyph),
+          'Mobile charging MDI glyph must be centered, proportional and readable: '+JSON.stringify(metrics));
+        console.log('PASS centered native MDI charging icons '+width+'px',JSON.stringify(metrics));
       }
        await chargingVisualAgent(width);
 
