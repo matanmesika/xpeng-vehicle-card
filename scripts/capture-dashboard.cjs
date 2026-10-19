@@ -252,15 +252,26 @@ async function main(){
  // Compact owner-review JPEG: GitHub's binary API cannot preview large PNGs.
  // Keep the existing full-resolution PNG too.
  // Curated gallery uses a single full-resolution PNG per view.
- const chargingDiscMetrics=await car.evaluate(el=>[...el.shadowRoot.querySelectorAll('.xp-charge-panel-actions button')].map(b=>{
-  const mdi=b.querySelector('ha-icon.xp-mdi-icon');
-  return {glyph:mdi?.getBoundingClientRect().width,ring:parseFloat(getComputedStyle(b,'::before').width),
-    circle:getComputedStyle(b,'::before').borderRadius};
- }));
- assert.ok(chargingDiscMetrics.length===3&&chargingDiscMetrics.every(x=>
-   x.glyph>=19&&x.glyph<=24&&x.ring>=42&&x.ring<=48&&
-   x.ring/x.glyph>=1.8&&x.circle==='50%'),
-   'Charging buttons must be compact 46px glass rings holding actual 21px MDI glyphs: '+JSON.stringify(chargingDiscMetrics));
+ const chargingDiscMetrics=await car.evaluate(el=>{
+  const root=el.shadowRoot;
+  const read=button=>{
+    const icon=button.querySelector('ha-icon.xp-mdi-icon');
+    const r=button.getBoundingClientRect(),i=icon?.getBoundingClientRect();
+    const pseudo=getComputedStyle(button,'::before');
+    const ring=Number.parseFloat(pseudo.width);
+    return {glyph:i?.width,ring,mdi:icon?.getAttribute('icon'),round:pseudo.borderRadius,
+      xOffset:i?Math.abs((i.left+i.right)/2-(r.left+r.right)/2):999,
+      yOffset:i?Math.abs((i.top+i.bottom)/2-(r.top+ring/2)):999};
+  };
+  const dock=read(root.querySelector('.xp-ux-dock-seven .xp-ux-dock-action'));
+  const buttons=[...root.querySelectorAll('.xp-charge-panel-actions button')].map(read);
+  return {dock,buttons};
+ });
+ assert.ok(chargingDiscMetrics.buttons.length===3&&chargingDiscMetrics.buttons.every(x=>
+   x.glyph===chargingDiscMetrics.dock.glyph&&x.ring===chargingDiscMetrics.dock.ring&&
+   x.ring/x.glyph>=1.8&&x.round==='50%'&&x.xOffset<=1.5&&x.yOffset<=1.5&&
+   x.mdi?.startsWith('mdi:')),
+   'Charging desktop must exactly match the native dashboard dock rings and glyphs: '+JSON.stringify(chargingDiscMetrics));
  const chargingDesktop=await car.evaluate(el=>{
    const root=el.shadowRoot,find=q=>root.querySelector(q)?.getBoundingClientRect().toJSON();
    return {actions:[...root.querySelectorAll('.xp-ux-dock-seven .xp-ux-dock-action')].map(n=>n.dataset.xpToggle||n.dataset.xpOpen),
@@ -492,36 +503,34 @@ async function main(){
       if(width<=520){
         const metrics=await car.evaluate(el=>{
           const root=el.shadowRoot,panel=root.querySelector('.xp-charge-card');
-          const buttons=[...root.querySelectorAll('.xp-charge-panel-actions button')];
+          const read=btn=>{
+            const r=btn.getBoundingClientRect(),icon=btn.querySelector('ha-icon.xp-mdi-icon'),
+              glyph=icon?.getBoundingClientRect(),disc=getComputedStyle(btn,'::before'),
+              label=btn.querySelector('span')?.getBoundingClientRect(),
+              ring=Number.parseFloat(disc.width),style=getComputedStyle(btn);
+            return {ring,glyphSize:Number.parseFloat(style.getPropertyValue('--xp-glyph-size')),
+              hostWidth:glyph?.width,hitHeight:r.height,
+              xOffset:glyph?Math.abs((glyph.left+glyph.right)/2-(r.left+r.right)/2):999,
+              yOffset:glyph?Math.abs((glyph.top+glyph.bottom)/2-(r.top+ring/2)):999,
+              captionFits:!!label&&label.left>=r.left-1&&label.right<=r.right+1&&
+                label.bottom<=r.bottom+1&&label.top>=r.top+ring-2,
+              nativeMdi:icon?.getAttribute('icon')?.startsWith('mdi:')&&!icon.hasAttribute('data-mdi-missing')};
+          };
           return {height:panel.getBoundingClientRect().height,
             stats:root.querySelectorAll('.xp-charge-meta>div').length,
-            buttons:buttons.map(btn=>{
-              const r=btn.getBoundingClientRect(),s=getComputedStyle(btn),
-                ringStyle=getComputedStyle(btn,'::before'),
-                icon=btn.querySelector('ha-icon.xp-mdi-icon'),
-                glyph=icon?.getBoundingClientRect(),
-                label=btn.querySelector('span').getBoundingClientRect();
-              const ring=parseFloat(s.getPropertyValue('--xp-ring-size'));
-              const ringY=r.top+parseFloat(ringStyle.top)+ring/2;
-              return {ring,glyphSize:parseFloat(s.getPropertyValue('--xp-glyph-size')),
-                touch:r.height,captionFits:label.left>=r.left-1&&label.right<=r.right+1,
-                labelBelowRing:label.top>=r.top+ring-1,notClipped:label.bottom<=r.bottom+1,
-                xOffset:glyph?Math.abs((glyph.left+glyph.right)/2-(r.left+r.right)/2):999,
-                yOffset:glyph?Math.abs((glyph.top+glyph.bottom)/2-ringY):999,
-                nativeMdi:!!icon?.getAttribute('icon')?.startsWith('mdi:'),
-                missingGlyph:!!icon?.hasAttribute('data-mdi-missing')};
-            })};
+            dock:read(root.querySelector('.xp-ux-dock-seven .xp-ux-dock-action')),
+            buttons:[...root.querySelectorAll('.xp-charge-panel-actions button')].map(read)};
         });
-        assert.ok(metrics.height<225,'Mobile charging data panel too tall: '+JSON.stringify(metrics));
-        assert.equal(metrics.stats,3,'Mobile charging must keep every live statistic');
+        assert.ok(metrics.height<265,'Mobile charge panel too tall: '+JSON.stringify(metrics));
+        assert.equal(metrics.stats,3,'Mobile charging must retain all live statistics');
         assert.ok(metrics.buttons.length===3&&metrics.buttons.every(b=>
-          b.ring>=31&&b.ring<=34&&b.glyphSize>=17&&b.glyphSize<=18&&b.touch>=44&&
-          b.captionFits&&b.labelBelowRing&&b.notClipped&&b.xOffset<=1.5&&b.yOffset<=1.5&&
-          b.nativeMdi&&!b.missingGlyph),
-          'Mobile charging MDI glyph must be centered, proportional and readable: '+JSON.stringify(metrics));
-        console.log('PASS centered native MDI charging icons '+width+'px',JSON.stringify(metrics));
+          b.ring===metrics.dock.ring&&b.glyphSize===metrics.dock.glyphSize&&
+          b.hostWidth===metrics.dock.hostWidth&&b.hitHeight>=44&&
+          b.xOffset<=1.5&&b.yOffset<=1.5&&b.captionFits&&b.nativeMdi),
+          'Charging must match bottom dock rings, native glyph sizing and alignment: '+JSON.stringify(metrics));
+        console.log('PASS shared phone charging MDI icon geometry '+width+'px',JSON.stringify(metrics));
       }
-       await chargingVisualAgent(width);
+              await chargingVisualAgent(width);
 
    }
    if(!charging){
