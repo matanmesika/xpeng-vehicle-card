@@ -4397,6 +4397,109 @@ background:transparent!important;
  border:0!important;box-shadow:none!important;
 }
 
+/* G6 Beta 16 — approved final desktop-only sizing and compact content windows.
+ * Preserve original vehicle image, live sensor mappings and all car commands.
+ * No mobile shortcut change. */
+@container xpeng-layout (min-width:851px){
+ /* 30px official MDI pictograms in 56px accessible circles. */
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon{
+   width:30px!important;height:30px!important;flex:0 0 30px!important;
+   --xp-icon-size:30px!important;--mdc-icon-size:30px!important;
+ }
+ .xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-trunk-symbol{
+   --xp-glyph-size:30px!important;
+ }
+ /* Owner's battery is a larger live-state icon with no green ring. */
+ .xp-scene.xp-overview.xp-home-navigation .xp-batt-glyph{
+   width:118px!important;min-width:118px!important;height:118px!important;
+   padding:0!important;border:0!important;border-radius:0!important;
+   background:transparent!important;box-shadow:none!important;outline:none!important;
+   filter:none!important;
+ }
+ .xp-scene.xp-overview.xp-home-navigation .xp-batt-glyph::before,
+ .xp-scene.xp-overview.xp-home-navigation .xp-batt-glyph::after{
+   display:none!important;content:none!important;
+ }
+ .xp-scene.xp-overview.xp-home-navigation .xp-batt-glyph .xp-battery-level-icon{
+   width:112px!important;height:112px!important;
+   --xp-icon-size:112px!important;--mdc-icon-size:112px!important;
+ }
+ .xp-scene.xp-overview.xp-home-navigation .xp-batt-line{
+   min-height:118px!important;gap:18px!important;
+ }
+ /* Compact, centered launcher rather than a full-wall mostly empty sheet. */
+ .xp-scene .xp-ux-modal-extras:not(:has(.xp-extra-details)){
+   inset:auto!important;top:50%!important;left:50%!important;right:auto!important;
+   bottom:auto!important;transform:translate(-50%,-50%)!important;
+   width:min(850px,calc(100% - 36px))!important;
+   height:min(580px,calc(100% - 34px))!important;
+   max-height:calc(100% - 30px)!important;box-sizing:border-box!important;
+ }
+ .xp-scene .xp-ux-modal-extras:has(.xp-extra-details):not(:has(.xp-extra-diagnostics-layout)){
+   inset:auto!important;top:50%!important;left:50%!important;right:auto!important;
+   bottom:auto!important;transform:translate(-50%,-50%)!important;
+   width:min(810px,calc(100% - 36px))!important;
+   height:min(570px,calc(100% - 34px))!important;
+   max-height:calc(100% - 30px)!important;box-sizing:border-box!important;
+ }
+ .xp-scene .xp-ux-modal-extras .xp-extra-grid{
+   width:min(740px,100%)!important;max-width:740px!important;
+   margin-inline:auto!important;
+ }
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile{
+   grid-template-rows:64px auto auto!important;
+   min-height:116px!important;
+ }
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile::before{
+   width:62px!important;height:62px!important;
+ }
+ .xp-scene .xp-ux-modal-extras .xp-extra-tile>.xp-mdi-icon{
+   width:30px!important;height:30px!important;
+   --xp-icon-size:30px!important;--mdc-icon-size:30px!important;
+ }
+ /* Diagnostics always retain generous scroll room for long entity IDs. */
+ .xp-scene .xp-ux-modal-extras:has(.xp-extra-diagnostics-layout){
+   left:50%!important;right:auto!important;
+   width:min(1090px,calc(100% - 30px))!important;
+   transform:translateX(-50%)!important;
+ }
+ /* Center and narrow Location but leave the map large enough for streets. */
+ .xp-scene .xp-ux-modal-map{
+   inset:auto!important;top:50%!important;left:50%!important;right:auto!important;
+   bottom:auto!important;transform:translate(-50%,-50%)!important;
+   width:min(1120px,calc(100% - 32px))!important;
+   height:min(770px,calc(100% - 32px))!important;
+   max-height:calc(100% - 24px)!important;box-sizing:border-box!important;
+ }
+ /* The approved TPMS + next-service view remains two side-by-side panels. */
+ .xp-scene .xp-ux-modal-maintenance{
+   left:50%!important;right:auto!important;
+   width:min(1150px,calc(100% - 32px))!important;
+   transform:translateX(-50%)!important;box-sizing:border-box!important;
+ }
+ /* Narrower, content-appropriate minor popovers; never change Climate. */
+ .xp-scene .xp-ux-modal:is(.xp-ux-modal-port,.xp-ux-modal-doors,
+ .xp-ux-modal-windows,.xp-ux-modal-trunk,.xp-ux-modal-charge_controls,
+ .xp-ux-modal-charge_schedule){
+   inset:auto!important;top:50%!important;left:50%!important;right:auto!important;
+   bottom:auto!important;transform:translate(-50%,-50%)!important;
+   width:min(740px,calc(100% - 32px))!important;
+   height:min(490px,calc(100% - 32px))!important;
+   max-height:calc(100% - 28px)!important;box-sizing:border-box!important;
+ }
+}
+/* The circular green gauge wrapper disappears on mobile too; its size does not change. */
+@container xpeng-layout (max-width:850px){
+ .xp-scene.xp-overview.xp-home-navigation .xp-batt-glyph{
+   border:0!important;border-radius:0!important;background:transparent!important;
+   box-shadow:none!important;
+ }
+ .xp-scene.xp-overview.xp-home-navigation .xp-batt-glyph::before,
+ .xp-scene.xp-overview.xp-home-navigation .xp-batt-glyph::after{
+   display:none!important;content:none!important;
+ }
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -5133,6 +5236,31 @@ class XpengVehicleCard extends HTMLElement{
    }
    return XP_MAP_HELPERS_PROMISE;
  }
+
+ xpCenterMapOnVehicle(map,gps){
+   // One-time camera correction for Leaflet maps mounted after a modal resize.
+   // Only real tracker coordinates may set the camera, never a fallback city.
+   const at=gps?.state?.attributes||{};
+   const lat=Number(at.latitude),lon=Number(at.longitude);
+   if(!Number.isFinite(lat)||!Number.isFinite(lon)||Math.abs(lat)>90||Math.abs(lon)>180
+      ||at.latitude==null||at.longitude==null)return;
+   if(typeof window==='undefined')return;
+   const camera=()=>{
+     if(this._xpPanel!=='map'||this._xpMapElement!==map)return;
+     const host=this.shadowRoot?.querySelector?.('[data-xp-map-host]');
+     if(!host||!host.contains?.(map))return;
+     const surface=map.shadowRoot?.querySelector?.('ha-map')
+       ||map.querySelector?.('ha-map')||map._mapElement;
+     const leaflet=surface?._map||surface?.map||map._map;
+     if(!leaflet||typeof leaflet.setView!=='function')return;
+     leaflet.invalidateSize?.({pan:false});
+     leaflet.setView([lat,lon],16,{animate:false});
+   };
+   // Do not recenter on every Home Assistant update: preserve manual panning.
+   if(typeof window.requestAnimationFrame==='function')
+     window.requestAnimationFrame(()=>window.requestAnimationFrame(camera));
+   if(typeof window.setTimeout==='function')window.setTimeout(camera,350);
+ }
  async xpMountMap(){
    if(this._xpPanel!=='map')return;
    const host=this.shadowRoot?.querySelector?.('[data-xp-map-host]');
@@ -5155,6 +5283,7 @@ class XpengVehicleCard extends HTMLElement{
      map.hass=this._hass;
      this._xpMapElement=map;this._xpMapEntityId=gps.id;
      host.replaceChildren(map);
+     this.xpCenterMapOnVehicle(map,gps);
    }catch(err){
      host.textContent=xpLocalizeMarkup('המפה אינה זמינה בתוך הכרטיס כרגע. אפשר לפתוח את פרטי המיקום דרך הכפתור למטה.',this._hass);
    }
