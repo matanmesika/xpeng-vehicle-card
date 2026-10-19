@@ -4221,11 +4221,7 @@ background:transparent!important;
 }
 .xp-scene .xp-ux-modal-head{align-items:center!important;gap:12px!important}
 .xp-scene .xp-header .xp-header-right{margin-inline-start:auto}
-/* All backgrounds/images remain as-is; opening a page never removes home layout. */
-.xp-scene.xp-home-navigation .xp-night-photo{
- background-size:cover!important;background-position:center center!important;
- transform:none!important;filter:none!important;
-}
+/* Backdrop remains unchanged when panels open; runtime retains home class. */
 /* Modal stays scrollable without changing the dashboard canvas. */
 .xp-scene .xp-ux-modal-climate .xp-ux-modal-content,
 .xp-scene .xp-ux-modal-extras .xp-ux-modal-content{min-height:0;overflow-y:auto}
