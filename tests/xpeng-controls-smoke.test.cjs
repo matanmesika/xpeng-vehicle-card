@@ -79,7 +79,7 @@ test('Maintenance restores real service/identity beside four tire readings witho
  assert.match(html,/15284/);
  assert.match(html,/2024/);
  assert.match(html,/L1N\*\*\*\*\*\*123/);
- assert.match(html,/ /);
+ assert.match(html,/Next service/);
  assert.doesNotMatch(html,/NaN/);
 });
 test('native map reuses one unchanged Map card on repeated Xpengtk hass updates',async()=>{
@@ -196,7 +196,7 @@ test('charge flap panel has one state-driven action and clear cable disclaimer',
   card._hass.states['button.close_flap']={state:'unknown',attributes:{}};
   assert.match(card.xpPortPanel(), /data-xp-toggle="port"/);
   assert.match(card.xpPortPanel(), /data-xp-toggle="port"/);
-  assert.match(card.xpPortPanel(), /  /);
+  assert.match(card.xpPortPanel(), /No cable release/);
   card._xpPanel='port';card.render();
   assert.match(card.shadowRoot.innerHTML, /data-xp-toggle="port"/);
   assert.doesNotMatch(card.shadowRoot.innerHTML, /data-xp-page="seats"/);
@@ -282,7 +282,7 @@ test('charging never labels Stop charging as cable release',()=>{
   const {card}=createCard();
   const charge=card.xpChargeControls();
   assert.match(charge,/Stop charging/);
-  assert.doesNotMatch(charge,/*/);
+  assert.doesNotMatch(charge,/Release.*cable/);
   assert.equal((charge.match(/data-xp-command="stop_charge"/g)||[]).length,1);
 });
 
@@ -319,7 +319,7 @@ test('passenger heat Off is never sent when upstream does not support it',async(
   for(let i=0;i<4;i++)await card.xpCycleSeat('passenger_seat_heat_select');
   assert.deepEqual(JSON.parse(JSON.stringify(commands.map(c=>c.data.option))),
     ['Heat 1','Heat 2','Heat 3']);
-  assert.match(card._xpNotice,/ /);
+  assert.match(card._xpNotice,/unsupported/);
 });
 test('rapid repeated taps serialize native HA commands by entity',async()=>{
   const {card,commands}=createCard();
@@ -557,7 +557,7 @@ test('G6 charging keeps original photo, all seven Home controls and three scoped
  card._xpPanel='charge_schedule';
  const schedule=card.xpModal();
  assert.match(schedule,/xp-charge-compact-modal/);
- assert.match(schedule,/ /,'Schedule is Xpengtk read-only');
+ assert.match(schedule,/read-only/,'Schedule is Xpengtk read-only');
 });
 
 test('all G6 generations use the same owner-photo slots',()=>{
@@ -747,7 +747,7 @@ test('Extras -> Diagnostics returns first to Extras, then to Home',()=>{
  card.xpNavigatePanel('extras');
  card.xpNavigatePanel('extras','diagnostics');
  assert.equal(card._xpNavStack.length,1);
- assert.match(card.xpExtrasPanel(),/xp-entity-diagnostics|  /);
+ assert.match(card.xpExtrasPanel(),/xp-entity-diagnostics|No Xpengtk entities/);
  card.xpBackPanel();
  assert.equal(card._xpPanel,'extras');
  assert.equal(card._xpExtraSection,null);
@@ -870,7 +870,7 @@ test('one-tap controls alter visible action labels, icons, and avoid duplicate c
    assert.equal(card.xpPendingToggle(action),null,'A confirmed action clears its pending state');
  }
  nav=card.xpDock();
- assert.match(nav,//);
+ assert.match(nav,/Lock/);
  assert.match(nav,/Close windows/);
  assert.match(nav,/Close port/);
  st['sensor.real_port'].state='Connected';
@@ -1010,7 +1010,7 @@ test('Location requests HA native GPS map with dark mode and zoom 11, not a fabr
  await card.xpMountMap();
  assert.equal(captured,null);
 });
-test('G6 English labels and icon contract',()=>{
+test('G6 English text and icon contract',()=>{
  const {card}=createCard({enable_access_controls:true});
  Object.assign(card._xpengByKey,{
    'binary_sensor.trunk':'binary_sensor.trunk_for_translation',
@@ -1070,7 +1070,7 @@ test('every modal Back is a single accessible RTL MDI arrow with no visible Back
    assert.ok(button,'Missing Back button: '+page);
    assert.match(button,/aria-label="Back to dashboard"/);
    assert.match(button,/icon="mdi:arrow-right"/);
-   assert.doesNotMatch(button,/ |<span>|Back to vehicle| <\/span>/,
+   assert.doesNotMatch(button,/<span>|Back to vehicle/,
      'No redundant Back words in visual button: '+page);
  }
  const tire=card.tireScreen(true);
@@ -1224,7 +1224,7 @@ test('diagnostics list real one-car HA entities, show unavailable and never expo
 test('maintenance details appear only after pressing the Maintenance button, never in Home summary',()=>{
  const {card}=createCard({show_controls:true});
  const home=card.overview();
- assert.doesNotMatch(home,/Vehicle maintenance| · |data-xp-open="maintenance"/);
+ assert.doesNotMatch(home,/Vehicle maintenance|data-xp-open="maintenance"/);
  assert.doesNotMatch(home,/xp-status-panel|xp-location-row|Location|data-xp-open="map"/);
  assert.match(card.xpDock(),/data-xp-open="map"/);
  const dock=card.xpDock();
@@ -1240,7 +1240,7 @@ test('status-only legacy cards still show one simple Maintenance button, without
  const home=card.overview();
  assert.equal((home.match(/data-xp-open="maintenance"/g)||[]).length,1);
  assert.match(home,/xp-maintenance-home-button/);
- assert.doesNotMatch(home,/ ·  ·  /);
+ assert.doesNotMatch(home,/Tire pressure and vehicle maintenance/);
  assert.equal(card.xpDock(),'');
  card._xpPanel='maintenance';
  assert.match(card.xpModal(),/xp-ux-modal-maintenance/);
@@ -1415,7 +1415,7 @@ test('beta.6 automotive window and trunk icons are official MDI, never a house-w
     assert.match(card.xpToggleButton('trunk'),/class="xp-mdi-icon xp-tailgate-icon"/);
     assert.match(card.xpWindowsPanel(),/icon="mdi:car-door"/);
     assert.match(card.xpTrunkPanel(),/class="xp-mdi-icon xp-tailgate-icon"/);
-    const expected=state==='off'?'':'';
+    const expected=state==='off'?'Open':'Close';
     assert.match(windows,new RegExp(expected+' windows','i'));
     assert.match(trunk,new RegExp(expected+' Trunk','i'));
   }
@@ -1423,7 +1423,7 @@ test('beta.6 automotive window and trunk icons are official MDI, never a house-w
   assert.equal(src,dist,'Source and HACS bundle must remain byte-identical');
 });
 
-test('English UI remains independent of Home Assistant language',()=>{
+test('Card UI is always English regardless of Home Assistant locale',()=>{
  const {card}=createCard({enable_access_controls:true});
  card._hass.locale.language='en';
  card._hass.states['sensor.user_named_battery'].state='76';
@@ -1440,7 +1440,7 @@ test('English UI remains independent of Home Assistant language',()=>{
    card._xpPanel=page;
    card.render();
    const html=card.shadowRoot.innerHTML;
-   const leftovers=[...new Set((html.match(/[\u0590-\u05ff][\u0590-\u05ff\s.,•·]+/g)||[]).map(t=>t.trim()))];
+   const leftovers=[...new Set((html.match(/[\u0590-\u05ff][\u0590-\u05ff\s.,•·\u05be\u05f4\u05f3()]+/g)||[]).map(t=>t.trim()))];
    if(leftovers.length)untranslated.push({page:page||'Home',leftovers:leftovers.slice(0,25)});
    if(page)assert.match(html,/dir="ltr"/,'English subpage must use LTR direction: '+page);
  }
@@ -1456,10 +1456,10 @@ test('English UI remains independent of Home Assistant language',()=>{
  card._xpPanel='maintenance';card.render();
  assert.match(card.shadowRoot.innerHTML,/icon="mdi:arrow-left"/,'English Back arrow must point left');
  card._hass.locale.language='he';card.render();
- assert.match(card.shadowRoot.innerHTML,/Vehicle maintenance/,'Interface stays English for Hebrew HA');
- assert.match(card.shadowRoot.innerHTML,/icon="mdi:arrow-left"/,'Back arrow stays left for every locale');
+ assert.match(card.shadowRoot.innerHTML,/Vehicle maintenance/,'Hebrew Home Assistant locale keeps the original language');
+ assert.match(card.shadowRoot.innerHTML,/icon="mdi:arrow-left"/,'Back remains left with Hebrew HA language');
 });
-test('Editor remains English across Home Assistant locales',()=>{
+test('Card editor is always English regardless of Home Assistant locale',()=>{
  const isolatedSandbox={HTMLElement:FakeElement,
    window:{customCards:[],confirm:()=>true,location:{origin:'http://localhost'}},
    customElements:{get(){return true},define(){}},document:{documentElement:{}},URL,console};
@@ -1507,7 +1507,7 @@ test('cabin photograph and model fallback show no over-image captions in Climate
  const light=card.xpCabinView();
  assert.match(light,/data-cabin-art/);
  assert.match(light,/alt="G6 /,'Cabin image keeps accessible alt text');
- assert.doesNotMatch(light,/<small class="xp-ux-cabin-disclaimer"|xp-ux-cabin-disclaimer|   /,
+ assert.doesNotMatch(light,/<small class="xp-ux-cabin-disclaimer"|xp-ux-cabin-disclaimer|Owner-provided G6 interior/,
    'No caption may overlap the cabin photo or heated seat buttons');
  card.setConfig({type:'custom:xpeng-vehicle-card',model:'G6',year:'2026',prefix:'my_xpeng',interior:'dark_gray'});
  assert.doesNotMatch(card.xpCabinView(),/xp-ux-cabin-disclaimer/);
