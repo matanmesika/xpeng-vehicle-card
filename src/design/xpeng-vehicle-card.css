@@ -4169,3 +4169,63 @@ background:transparent!important;
    display:none!important;content:none!important;
  }
 }
+
+/* Beta 17 — owner-approved overlay-only polish. No source image or command changes. */
+@container xpeng-layout (min-width:851px){
+ .xp-scene .xp-ux-modal-climate{
+   inset:auto!important;top:50%!important;left:50%!important;right:auto!important;
+   bottom:auto!important;transform:translate(-50%,-50%)!important;
+   width:min(1050px,calc(100% - 30px))!important;
+   height:min(735px,calc(100% - 26px))!important;
+   max-height:calc(100% - 20px)!important;box-sizing:border-box!important;
+ }
+ /* Full-sized More options screen again, with seven centered real MDI shortcuts. */
+ .xp-scene .xp-ux-modal-extras:not(:has(.xp-extra-details)){
+   inset:auto!important;top:50%!important;left:50%!important;right:auto!important;
+   bottom:auto!important;transform:translate(-50%,-50%)!important;
+   width:min(1230px,calc(100% - 24px))!important;
+   height:min(735px,calc(100% - 24px))!important;
+   max-height:calc(100% - 20px)!important;
+ }
+ .xp-scene .xp-ux-modal-extras .xp-extra-grid{max-width:1010px!important;width:100%!important}
+ /* 68px round home buttons, preserving all seven actions and labels. */
+ .xp-scene.xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action{
+   --xp-ring-size:68px!important;
+   min-width:75px!important;min-height:99px!important;
+   padding-top:18px!important;gap:22px!important;
+   border-radius:45px!important;
+ }
+ .xp-scene.xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon{
+   width:32px!important;height:32px!important;flex:0 0 32px!important;
+   --xp-icon-size:32px!important;--mdc-icon-size:32px!important;
+ }
+ .xp-scene.xp-home-navigation .xp-ux-dock-seven .xp-ux-dock-action::before{
+   width:68px!important;height:68px!important;border-radius:50%!important;
+ }
+}
+/* Remove pointer-focus square while retaining an accessible keyboard focus cue. */
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action:focus:not(:focus-visible),
+.xp-scene .xp-ux-modal-extras .xp-extra-tile:focus:not(:focus-visible),
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action>.xp-mdi-icon{
+ outline:0!important;outline-offset:0!important;
+}
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action:focus-visible,
+.xp-scene .xp-ux-modal-extras .xp-extra-tile:focus-visible{
+ outline:2px solid #8fe8f2!important;outline-offset:3px!important;
+ border-radius:45px!important;
+}
+/* One line of page headings, consistent sizing and less duplicate copy. */
+.xp-scene .xp-ux-modal-head h2{
+ font-size:clamp(18px,1.8cqw,25px)!important;font-weight:720!important;
+ letter-spacing:-.012em!important;line-height:1.22!important;
+}
+.xp-scene .xp-ux-modal-head{align-items:center!important;gap:12px!important}
+.xp-scene .xp-header .xp-header-right{margin-inline-start:auto}
+/* All backgrounds/images remain as-is; opening a page never removes home layout. */
+.xp-scene.xp-home-navigation .xp-night-photo{
+ background-size:cover!important;background-position:center center!important;
+ transform:none!important;filter:none!important;
+}
+/* Modal stays scrollable without changing the dashboard canvas. */
+.xp-scene .xp-ux-modal-climate .xp-ux-modal-content,
+.xp-scene .xp-ux-modal-extras .xp-ux-modal-content{min-height:0;overflow-y:auto}
