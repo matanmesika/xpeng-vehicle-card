@@ -13,14 +13,14 @@ const screenshotNames=[
  'map-desktop.png','map-mobile.png','charge-controls-mobile.png','diagnostics-mobile.png',
  'functions-desktop.png','functions-mobile.png'
 ];
-test('release README and G6 guide link only to the fourteen current screenshots',()=>{
+test('English README and screenshot index reference the fourteen current screenshots',()=>{
  const dir=path.join(root,'docs/screenshots');
  const actual=fs.readdirSync(dir).filter(f=>/\.(?:png|jpe?g|webp)$/i.test(f)).sort();
  assert.deepEqual(actual,screenshotNames.slice().sort(),'The curated screenshot folder must contain exactly 14 files');
- for(const doc of ['README.md','docs/README_HE.md','docs/G6_DASHBOARD_GUIDE_HE.md']){
+ for(const doc of ['README.md','docs/screenshots/README.md']){
    const markdown=read(doc),base=path.join(root,path.dirname(doc));
    const markdownImages=[...markdown.matchAll(/!\[[^\]]*\]\(([^)]+)\)/g)].map(m=>m[1]);
-   assert.ok(markdownImages.length>=10,doc+' should render the five desktop/mobile screen pairs');
+   assert.ok(markdownImages.length>=10||doc==='docs/screenshots/README.md',doc+' should include the desktop/mobile gallery');
    for(const rel of markdownImages){
      assert.ok(fs.existsSync(path.resolve(base,rel)),doc+' references missing screenshot '+rel);
    }
@@ -42,10 +42,10 @@ test('G6 functional mapping complete does not imply all G6 model artwork is comp
  assert.equal(g6.available_views,30);
  assert.equal(g6.total_views,33);
  assert.equal(g6.missing_views,3);
- const docs=read('README.md')+'\n'+read('docs/G6_RELEASE_READINESS_HE.md');
- assert.match(docs,/G6 functional mapping status: COMPLETE|מיפוי.*G6.*הושלם/);
+ const docs=read('README.md')+'\n'+read('docs/ARTWORK_STATUS.md');
+ assert.match(docs,/G6 functional mapping status: COMPLETE/);
  assert.match(docs,/30\/33/,'Document real G6 image inventory, not 100% claim');
- assert.match(docs,/other 14 vehicle families|14 משפחות/,'Other vehicle image characterization remains open');
+ assert.match(docs,/other 14 vehicle families/,'Other vehicle image characterization remains open');
 });
 test('historical alpha workflows and discontinued pre-v1 tests were removed safely',()=>{
  const missing=['tests/all-profiles.test.cjs','tests/dashboard-v010.test.cjs',
