@@ -1633,14 +1633,14 @@ test('Beta 19 Honk and Flash send directly without confirmation; repeated in-fli
  ]);
 });
 
-test('Beta 19 charging station has the same SVG and a side cable in both scene sizes',()=>{
+test('Owner-photo station and cable exist in both scene sizes',()=>{
  const {card}=createCard();
  const charging=card.charging();
  assert.equal((charging.match(/class="xp-xpeng-pedestal"/g)||[]).length,1);
  assert.match(charging,/data-xp-cable="desktop"/);
  assert.match(charging,/data-xp-cable="mobile"/);
- assert.match(charging,/M935 460[\s\S]*?1287 474/);
- assert.match(charging,/M171 489[\s\S]*?346 516/);
+ assert.match(charging,/M935 460[\s\S]*?1225 520/);
+ assert.match(charging,/M171 489[\s\S]*?333 520/);
  assert.match(src,/\.xp-scene\.xp-charge \.xp-station\.xp-station-v3\.xp-station-xpeng19/);
 });
 
@@ -1675,4 +1675,12 @@ test('Beta 21 replaces the drawn pedestal with self-contained photographic artwo
  assert.match(src,/data-xp-station-art="photo"/);
  assert.match(src,/XP_STATION_PHOTO/);
  assert.doesNotMatch(src,/xp19-case|xp19-panel|xp19-reflection/);
+});
+
+test('Owner charging composition stays layered and phone panel compact',()=>{
+ assert.match(src,/Owner-annotated charging composition/);
+ assert.match(src,/\.xp-car\{z-index:7!important\}/);
+ assert.match(src,/\.xp-charge-cable\{[\s\S]*?z-index:11!important/);
+ assert.match(src,/\.xp-charge-card\{z-index:12!important\}/);
+ assert.match(src,/top:158px!important/);
 });
