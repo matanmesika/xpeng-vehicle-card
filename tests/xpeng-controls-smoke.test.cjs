@@ -1670,3 +1670,9 @@ test('OTA explanation remains visible in English for Hebrew Home Assistant',()=>
  assert.match(html,/No verified Check for Updates command/);
  assert.doesNotMatch(html,/[\u0590-\u05ff]/);
 });
+
+test('Beta 21 replaces the drawn pedestal with self-contained photographic artwork',()=>{
+ assert.match(src,/data-xp-station-art="photo"/);
+ assert.match(src,/XP_STATION_PHOTO/);
+ assert.doesNotMatch(src,/xp19-case|xp19-panel|xp19-reflection/);
+});
