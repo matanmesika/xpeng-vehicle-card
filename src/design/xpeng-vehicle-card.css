@@ -2704,3 +2704,6 @@ button:focus-visible{outline:2px solid #81bbff;outline-offset:3px}
   --mdc-icon-size:9px!important;--xp-icon-size:9px!important
  }
 }
+
+/* Genuine MDI rear hatch icon, not a composite car/arrow illustration. */
+.xp-scene .xp-ux-dock-seven .xp-ux-dock-action .xp-mdi-icon[icon="mdi:car-back"]{--mdc-icon-size:27px!important;color:#a7e5fb}
