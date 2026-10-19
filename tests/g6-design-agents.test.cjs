@@ -125,8 +125,33 @@ test('Behavior Guardian: JS and vehicle assets do not change from the accepted b
   v=v.replace("entities:[{entity:gps.id,label_mode:'icon',focus:true}]","entities:[{entity:gps.id}]");
   return v;
  };
- assert.equal(normalize(source),normalize(reference),
-  'Service calls, sensors and actions must stay identical; only guides and CSS are permitted');
+ // UI and owner-approved direct Honk/Flash change in Beta 19, but the
+ // underlying protected entity lookup, toggle policy, seat cycle, access policy
+ // and service dispatch must remain exactly equal to the accepted baseline.
+ const method=sig=>str=>{
+   const i=str.indexOf(sig);
+   assert.ok(i>=0,'Missing safety method: '+sig);
+   const j=str.indexOf('\n }',i);
+   assert.ok(j>i,'Method terminator missing: '+sig);
+   return str.slice(i,j+3);
+ };
+ for(const sig of [
+   ' xpengEntity(domain,suffix){',' xpLive(domain,suffix){',
+   ' xpActionState(action){',' xpToggleTarget(action){',
+   ' xpPendingToggle(action){',' xpToggle(action){',' xpAccessAllowed(){',
+   ' async xpCycleSeat(suffix){'
+ ]){
+   assert.equal(method(sig)(source),method(sig)(reference),
+     'Protected vehicle/permission behavior was changed: '+sig);
+ }
+ const sendSig=' async xpSend(domain,service,suffix,value,verifiedDirectTap=false){';
+ const oldSend=method(sendSig)(reference);
+ const newSend=method(sendSig)(source).replace(",'honk_horn','flash_lights'","");
+ assert.equal(newSend,oldSend,'Only two verified direct map actions may extend xpSend');
+ assert.match(method(sendSig)(source),/verifiedDirectTap&&/);
+ assert.match(source,/if\(\['honk_horn','flash_lights'\]\.includes\(action\)\)this\.xpMapDirectAction\(action\)/);
+ assert.match(source,/this\._xpMapPending\.has\(suffix\)/);
+
  const changed=git('diff','--name-only',base+'...HEAD','--','assets/').trim();
  assert.equal(changed,'','Original owner-provided vehicle artwork must not be modified');
 });

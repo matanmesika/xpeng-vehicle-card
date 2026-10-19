@@ -99,7 +99,8 @@ test('native map reuses one unchanged Map card on repeated Xpengtk hass updates'
  const before=card._xpMapElement;
  card.hass={...card._hass,states:{...card._hass.states,'sensor.user_named_battery':{state:'71',attributes:{}}}};
  assert.equal(card._xpMapElement,before);
- assert.equal(card._xpMapElement.hass,card._hass);
+ assert.notEqual(card._xpMapElement.hass,card._hass);
+ assert.equal(card._xpMapElement.hass.states['device_tracker.user_gps'].attributes.icon,'mdi:car-back');
  assert.equal(count,1);
  await card.xpMountMap();
  assert.equal(count,1,'Map initialization must not repeat');
@@ -352,7 +353,8 @@ test('extras menu has seven categories and home preserves seven actions',()=>{
   const {card}=createCard();
   assert.match(card.header(),/data-xp-more/);
   card._xpPanel='extras';
-  assert.doesNotMatch(card.header(),/data-xp-more/,'subpages must expose only Back');
+  assert.match(card.header(),/data-xp-more/,'Gear stays visible in all subpages');
+ assert.match(card.header(),/data-meta-toggle/,'Wi-Fi stays visible in all subpages');
   assert.equal((card.xpExtrasPanel().match(/data-xp-extra-page=/g)||[]).length,7);
   assert.equal((card.xpDock().match(/data-xp-(?:open|toggle)=/g)||[]).length,7);
   for(const key of ['security','energy','schedule','power','maintenance','updates','diagnostics']){
@@ -1053,8 +1055,10 @@ test('every action is a native modern MDI glyph, including battery and charge st
  assert.match(home,/data-xp-battery-icon[^>]*><ha-icon[^>]*icon="mdi:battery-(?:[0-9]+|unknown|outline)"/,
    'Battery pictogram must be official MDI, not a custom drawn icon');
  assert.doesNotMatch(home,/class="xp-batt-fill"/);
- assert.match(charging,/class="xp-station xp-station-v3"[^>]*><span class="xp-station-display"><ha-icon[^>]*icon="mdi:ev-station"/,
-   'Charging station badge must be official MDI');
+ assert.match(charging,/xp-station-xpeng19[^>]*>[\s\S]*?xp-xpeng-pedestal/,
+   'G6 uses approved XPENG-branded charger on all viewports');
+ assert.match(charging,/xp-station-display[^>]*>.*?icon="mdi:ev-station"/,
+   'Original official MDI fallback remains in the DOM');
  assert.doesNotMatch(card.header(),/✕/,'No improvised decorative X brand icon');
 });
 test('every modal Back is a single accessible RTL MDI arrow with no visible Back text',()=>{
@@ -1187,8 +1191,8 @@ test('charging cable uses approved dedicated charging image and separate full-le
  const html=card.charging();
  assert.match(html,/data-xp-cable="desktop"/);
  assert.match(html,/data-xp-cable="mobile"/);
- assert.match(html,/M171 489.*358 516/);
- assert.match(html,/M935 460.*1310 475/);
+ assert.match(html,/M171 489.*346 516/);
+ assert.match(html,/M935 460.*1287 474/);
  card._hass.states['binary_sensor.is_charging'].state='off';
  assert.doesNotMatch(card.charging(),/data-xp-cable/);
 });
@@ -1567,4 +1571,75 @@ test('owner screenshot regression: diagnostic names remain inspectable without w
  assert.match(src,/\.xp-entity-diagnostic>span\{[\s\S]*?overflow-x:auto;overflow-y:hidden;text-overflow:clip/);
  assert.match(src,/\.xp-ux-modal-maintenance \.xp-tire-stage\{[\s\S]*?isolation:isolate;overflow:clip!important/);
  assert.match(src,/\.xp-ux-modal-climate \.xp-climate-target \.xp-ux-temp-line button\{[\s\S]*?min-width:26px/);
+});
+
+test('Beta 19 returns from any nested page straight to Home on backdrop, but preserves Back stack',()=>{
+ const {card}=createCard();
+ card.xpNavigatePanel('extras');
+ card.xpNavigatePanel('extras','updates');
+ card.xpNavigatePanel('maintenance');
+ assert.equal(card._xpPanel,'maintenance');
+ assert.equal(card._xpNavStack.length,2);
+ card.xpBackPanel();
+ assert.equal(card._xpPanel,'extras');
+ assert.equal(card._xpExtraSection,'updates');
+ card.xpBackToHome();
+ assert.equal(card._xpPanel,null);
+ assert.equal(card._xpNavStack.length,0);
+ assert.match(src,/ev\.composedPath\(\)\.includes\(modal\)/);
+ assert.match(src,/outside&&\!b/);
+});
+
+test('Beta 19 OTA screen never disguises entity details as an update-check command',()=>{
+ const {card}=createCard();
+ card._xpengByKey['switch.auto_upgrade_switch']='switch.ota_auto';
+ card._xpengByKey['sensor.ota_upgrade']='sensor.ota';
+ card._xpengByKey['sensor.xos_version']='sensor.xos';
+ card._hass.states['switch.ota_auto']={state:'on',attributes:{}};
+ card._hass.states['sensor.ota']={state:'Up to date',attributes:{}};
+ card._hass.states['sensor.xos']={state:'5.9.5.8910',attributes:{}};
+ const html=card.xpExtraSectionContent('updates');
+ assert.match(html,/xp-ota-actions/);
+ assert.match(html,/data-xp-extra-action="ota_off"/);
+ assert.match(html,/5\.9\.5\.8910/);
+ assert.doesNotMatch(html,/data-xp-extra-detail="ota"|data-xp-extra-action="check_updates"/);
+ assert.match(card.header(),/data-xp-more/);
+ card._xpPanel='map';
+ assert.match(card.header(),/data-xp-more/);
+});
+
+test('Beta 19 Honk and Flash send directly without confirmation; repeated in-flight taps are ignored',async()=>{
+ const {card,commands,sandbox}=createCard();
+ card._xpengByKey['button.honk_horn']='button.real_horn';
+ card._xpengByKey['button.flash_lights']='button.real_flash';
+ card._hass.states['button.real_horn']={state:'unknown',attributes:{}};
+ card._hass.states['button.real_flash']={state:'unknown',attributes:{}};
+ let pendingResolve;
+ const pending=new Promise(resolve=>{pendingResolve=resolve});
+ card._hass.callService=async(domain,service,data)=>{
+  commands.push({domain,service,data});
+  await pending;
+ };
+ sandbox.window.confirm=()=>{throw Error('No confirm dialog allowed on direct map buttons')};
+ const first=card.xpMapDirectAction('honk_horn');
+ assert.equal(await card.xpMapDirectAction('honk_horn'),false);
+ assert.equal(commands.length,1);
+ pendingResolve();
+ await first;
+ await card.xpMapDirectAction('flash_lights');
+ assert.deepEqual(JSON.parse(JSON.stringify(commands)),[
+  {domain:'button',service:'press',data:{entity_id:'button.real_horn'}},
+  {domain:'button',service:'press',data:{entity_id:'button.real_flash'}}
+ ]);
+});
+
+test('Beta 19 charging station has the same SVG and a side cable in both scene sizes',()=>{
+ const {card}=createCard();
+ const charging=card.charging();
+ assert.equal((charging.match(/class="xp-xpeng-pedestal"/g)||[]).length,1);
+ assert.match(charging,/data-xp-cable="desktop"/);
+ assert.match(charging,/data-xp-cable="mobile"/);
+ assert.match(charging,/M935 460[\s\S]*?1287 474/);
+ assert.match(charging,/M171 489[\s\S]*?346 516/);
+ assert.match(src,/\.xp-scene\.xp-charge \.xp-station\.xp-station-v3\.xp-station-xpeng19/);
 });
