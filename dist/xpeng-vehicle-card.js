@@ -4484,7 +4484,7 @@ background:transparent!important;
    inset:auto!important;top:50%!important;left:50%!important;right:auto!important;
    bottom:auto!important;transform:translate(-50%,-50%)!important;
    width:min(740px,calc(100% - 32px))!important;
-   height:min(490px,calc(100% - 32px))!important;
+   height:min(570px,calc(100% - 32px))!important;
    max-height:calc(100% - 28px)!important;box-sizing:border-box!important;
  }
 }
