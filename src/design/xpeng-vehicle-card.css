@@ -4284,7 +4284,7 @@ background:transparent!important;
 
 /* Beta 19: the same physically side-connected XPENG charging pedestal appears on desktop,
    phone and narrow HA Sections. It never changes vehicle artwork or live commands. */
-.xp-scene.xp-charge .xp-station-xpeng19{
+.xp-scene.xp-charge .xp-station.xp-station-v3.xp-station-xpeng19{
  display:block!important;position:absolute!important;
  right:2.7%!important;bottom:27.9%!important;
  width:7.0%!important;min-width:61px!important;max-width:100px!important;
@@ -4293,22 +4293,22 @@ background:transparent!important;
  background:transparent!important;box-shadow:none!important;overflow:visible!important;
  z-index:12!important;
 }
-.xp-scene.xp-charge .xp-station-xpeng19 .xp-xpeng-pedestal{
+.xp-scene.xp-charge .xp-station.xp-station-v3.xp-station-xpeng19 .xp-xpeng-pedestal{
  display:block!important;height:100%!important;width:100%!important;
  max-height:100%!important;filter:drop-shadow(1px 8px 9px rgba(0,7,20,.65));
 }
-.xp-scene.xp-charge .xp-station-xpeng19 :is(.xp-station-display,.xp-station-charge-light,.xp-station-side-light){
+.xp-scene.xp-charge .xp-station.xp-station-v3.xp-station-xpeng19 :is(.xp-station-display,.xp-station-charge-light,.xp-station-side-light){
  display:none!important;
 }
 @container xpeng-layout (max-width:850px){
- .xp-scene.xp-charge .xp-station-xpeng19{
+ .xp-scene.xp-charge .xp-station.xp-station-v3.xp-station-xpeng19{
   right:2%!important;bottom:28%!important;
   width:13%!important;min-width:36px!important;max-width:67px!important;
   height:24%!important;min-height:85px!important;max-height:190px!important;
  }
 }
 @container xpeng-layout (max-width:520px){
- .xp-scene.xp-charge .xp-station-xpeng19{
+ .xp-scene.xp-charge .xp-station.xp-station-v3.xp-station-xpeng19{
   width:14%!important;min-width:34px!important;bottom:29%!important;
   height:22%!important;min-height:78px!important;
  }
@@ -4357,8 +4357,8 @@ background:transparent!important;
 
 /* Beta 19 visual review fix: expose the same shared pedestal below the
    charging information card on mobile; remove leftover generic neon shell. */
-.xp-scene.xp-charge .xp-station-xpeng19::before,
-.xp-scene.xp-charge .xp-station-xpeng19::after{
+.xp-scene.xp-charge .xp-station.xp-station-v3.xp-station-xpeng19::before,
+.xp-scene.xp-charge .xp-station.xp-station-v3.xp-station-xpeng19::after{
  display:none!important;content:none!important;
 }
 .xp-scene .xp-header{z-index:48!important}
@@ -4366,14 +4366,14 @@ background:transparent!important;
  z-index:49!important;pointer-events:auto!important;
 }
 @container xpeng-layout (max-width:850px){
- .xp-scene.xp-charge .xp-station-xpeng19{
+ .xp-scene.xp-charge .xp-station.xp-station-v3.xp-station-xpeng19{
    right:3%!important;bottom:20%!important;
    height:21%!important;max-height:172px!important;min-height:102px!important;
    width:15%!important;min-width:45px!important;
  }
 }
 @container xpeng-layout (max-width:520px){
- .xp-scene.xp-charge .xp-station-xpeng19{
+ .xp-scene.xp-charge .xp-station.xp-station-v3.xp-station-xpeng19{
    right:3%!important;bottom:19%!important;
    height:19%!important;min-height:94px!important;
    width:16%!important;min-width:45px!important;
