@@ -33,6 +33,8 @@ test('Cabin layout guardian: unchanged cabin photo and seat-zone event handling'
  assert.match(runtime,/this\.xpTempControl\(\)\+this\.xpClimatePrimaryControls\(\)/);
  assert.match(theme,/\.xp-climate-target/);
  assert.match(theme,/\.xp-fan-bars i\.xp-fan-bar-on/);
+ assert.match(theme,/V3 HVAC final polish/);
+ assert.match(theme,/\.xp-ux-modal\.xp-ux-modal-climate \.xp-climate-primary-controls \.xp-climate-primary/);
  assert.match(runtime,/data-xp-range="fan_speed_control"/);
 });
 test('Pedestal guardian: only CSS-built charging unit around original car and cable',()=>{

@@ -3912,3 +3912,47 @@ background:transparent!important;
  }
 }
 
+
+
+/* V3 HVAC final polish: icon discs float free of legacy solid button cards.
+   Explicit modal specificity beats old primary/status tile skins. */
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-climate-primary-controls .xp-climate-primary,
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-ux-climate-features .xp-ux-climate-feature{
+ border:0!important;outline-offset:3px!important;
+ border-radius:0!important;background:transparent!important;
+ box-shadow:none!important;backdrop-filter:none!important;
+ -webkit-backdrop-filter:none!important;
+}
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-climate-primary-controls .xp-climate-primary>.xp-mdi-icon,
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-ux-climate-features .xp-ux-climate-feature>.xp-mdi-icon{
+ display:grid!important;place-items:center!important;
+ width:44px!important;height:44px!important;min-height:44px!important;
+ flex:0 0 44px!important;
+ --xp-icon-size:23px!important;--mdc-icon-size:23px!important;
+ padding:10px!important;box-sizing:border-box!important;
+ border:1px solid rgba(134,217,236,.53)!important;
+ border-radius:50%!important;
+ background:rgba(13,47,64,.35)!important;
+ box-shadow:inset 0 1px rgba(243,254,255,.11)!important;
+ backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+ color:#c9f9fc!important;
+}
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-climate-primary-controls .xp-climate-primary.xp-ux-selected>.xp-mdi-icon,
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-ux-climate-features .xp-ux-climate-feature.xp-ux-selected>.xp-mdi-icon{
+ background:rgba(10,103,112,.32)!important;
+ border-color:#65f4d9!important;
+ color:#a8ffe9!important;
+ box-shadow:0 0 13px rgba(25,230,198,.17)!important;
+}
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-climate-primary b,
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-ux-climate-feature span{
+ font-weight:610!important;line-height:1.17!important;
+}
+@container xpeng-layout (max-width:520px){
+ .xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-climate-primary-controls .xp-climate-primary>.xp-mdi-icon,
+ .xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-ux-climate-features .xp-ux-climate-feature>.xp-mdi-icon{
+  width:40px!important;height:40px!important;min-height:40px!important;
+  flex:0 0 40px!important;padding:9px!important;
+  --xp-icon-size:22px!important;--mdc-icon-size:22px!important
+ }
+}
