@@ -4736,24 +4736,37 @@ background:transparent!important;
 }
 
 
-/* Read-only charging electrical readings. Keep the three existing metrics and
- * all charging actions intact; fit a single compact row at narrow widths. */
-.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical{
- display:flex!important;align-items:center!important;flex-wrap:wrap!important;
- gap:5px 16px!important;min-width:0!important;margin:0!important;
- padding:7px 0 0!important;border-top:1px solid rgba(150,202,228,.18)!important;
- font-size:clamp(10px,.9cqw,13px)!important;line-height:1.2!important;
+/* Integrated five-metric charging grid: 3 existing readings in the first
+ * row, current and voltage in the second. Same typography, alignment and
+ * separators as the rest of the charging glass — no floating text row. */
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta{
+ display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;
+ gap:0!important;align-items:stretch!important;
 }
-.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical>span{
- display:inline-flex!important;align-items:baseline!important;gap:5px!important;white-space:nowrap!important;
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta>.xp-charge-stat{
+ grid-column:span 2!important;
 }
-.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical small{color:#a6c2d7!important;font-size:inherit!important}
-.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical b{
- color:#f2fbff!important;font-size:clamp(12px,1.1cqw,16px)!important;font-weight:600!important;
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta>.xp-charge-stat:nth-child(3){
+ border-right:0!important;padding-right:0!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta>.xp-charge-electrical{
+ grid-column:span 3!important;
+ border-top:1px solid rgba(150,202,228,.18)!important;
+ margin-top:8px!important;padding-top:8px!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta>.xp-charge-electrical:nth-child(4){
+ padding-left:0!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta>.xp-charge-electrical:last-child{
+ border-right:0!important;padding-right:0!important;
 }
 @container xpeng-layout (max-width:520px){
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical{gap:4px 12px!important;padding-top:5px!important;font-size:10px!important}
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical b{font-size:11px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta>.xp-charge-electrical{
+  margin-top:5px!important;padding-top:6px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta>.xp-charge-electrical .xp-charge-stat-value{
+  font-size:12px!important;
+ }
 }
 
 /* Mobile charging: reserve space for the read-only A/V row without
