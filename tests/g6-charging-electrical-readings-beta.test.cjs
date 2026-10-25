@@ -8,19 +8,24 @@ const css=fs.readFileSync(path.join(root,'src/design/xpeng-vehicle-card.css'),'u
 const src=fs.readFileSync(path.join(root,'src/xpeng-vehicle-card.js'),'utf8');
 const dist=fs.readFileSync(path.join(root,'dist/xpeng-vehicle-card.js'),'utf8');
 
-test('charging current and voltage are integrated into the same measurement grid',()=>{
+test('all three electrical metrics are grouped in the first row; charging session stays below',()=>{
  const start=core.indexOf('\n charging(){');
  const end=core.indexOf(' // Update matching nodes in place',start);
  assert.ok(start>=0&&end>start);
  const view=core.slice(start,end);
- assert.equal((view.match(/class="xp-charge-stat"/g)||[]).length,3,'preserve original three metrics');
- assert.equal((view.match(/class="xp-charge-stat xp-charge-electrical"/g)||[]).length,2,'add two integrated metric cells');
- for(const existing of ['Charging power','Time remaining','Charge limit'])assert.ok(view.includes(existing));
+ assert.equal((view.match(/class="xp-charge-stat xp-charge-electrical"/g)||[]).length,3);
+ assert.equal((view.match(/class="xp-charge-stat xp-charge-session"/g)||[]).length,2);
  assert.match(view,/class="xp-charge-meta" role="group" aria-label="Charging measurements"/);
+ const positions=['Charging power','Current</small>','Voltage</small>','Time remaining','Charge limit</small>'].map(s=>view.indexOf(s));
+ assert.ok(positions.every(x=>x>=0)&&positions.every((x,i)=>i===0||x>positions[i-1]),'power, current and voltage must be contiguous before session metrics');
+ assert.match(view,/xpIcon\('ampere',16\)/);
+ assert.match(view,/xpIcon\('voltage',16\)/);
+ assert.match(core,/ampere:'mdi:alpha-a-circle-outline'/);
+ assert.match(core,/voltage:'mdi:alpha-v-circle-outline'/);
+ assert.doesNotMatch(view,/xpIcon\('gauge',16\)/,'speedometer must not be used for electrical measurements');
  assert.match(view,/this\.chargingElectrical\('current','A'\)/);
  assert.match(view,/this\.chargingElectrical\('voltage','V'\)/);
- assert.doesNotMatch(view,/class="xp-charge-electrical" role="group"/,'no detached current/voltage row');
- assert.match(view,/data-xp-command="stop_charge"/,'keep charging controls');
+ assert.match(view,/data-xp-command="stop_charge"/);
 });
 
 test('missing or invalid electrical values display 0.0 A and 0.0 V without changing global fallback',()=>{
@@ -32,9 +37,11 @@ test('missing or invalid electrical values display 0.0 A and 0.0 V without chang
  assert.match(core,/this\.chargingElectrical\('voltage','V'\)/);
 });
 
-test('integrated electrical cells have responsive styles and generated bundles remain reproducible',()=>{
+test('electrical and session rows have responsive styles and generated bundles remain reproducible',()=>{
  assert.match(css,/\.xp-charge-meta>\.xp-charge-electrical\{/);
+ assert.match(css,/\.xp-charge-meta>\.xp-charge-session\{/);
  assert.match(css,/grid-template-columns:repeat\(6,minmax\(0,1fr\)\)/);
+ assert.match(css,/grid-column:span 2!important/);
  assert.match(css,/grid-column:span 3!important/);
  assert.match(css,/@container xpeng-layout \(max-width:520px\)\{/);
  const slot='const XP_CSS = "__XPENG_STYLES_FROM_THEME__";';
