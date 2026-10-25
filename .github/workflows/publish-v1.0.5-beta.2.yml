@@ -1,0 +1,75 @@
+name: Publish XPENG Vehicle Card v1.0.5-beta.2
+
+on:
+  push:
+    branches:
+      - beta/g6-shared-fan-bar-20261025
+    paths:
+      - .github/workflows/publish-v1.0.5-beta.2.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: xpeng-v1.0.5-beta.2-release
+  cancel-in-progress: false
+
+jobs:
+  publish-prerelease:
+    if: github.repository == 'matanmesika/xpeng-vehicle-card' && github.ref == 'refs/heads/beta/g6-shared-fan-bar-20261025'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Prevent accidental overwrite of an existing beta
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view v1.0.5-beta.2 >/dev/null 2>&1; then
+            echo 'v1.0.5-beta.2 already exists. Refusing to overwrite.'
+            exit 1
+          fi
+          if git ls-remote --exit-code --tags origin refs/tags/v1.0.5-beta.2; then
+            echo 'v1.0.5-beta.2 tag already exists. Refusing to move it.'
+            exit 1
+          fi
+      - name: Validate release files and frontend
+        run: |
+          set -euo pipefail
+          node --check src/xpeng-vehicle-card.js
+          node --check dist/xpeng-vehicle-card.js
+          cmp src/xpeng-vehicle-card.js dist/xpeng-vehicle-card.js
+          node tools/build_vehicle_card.mjs --check
+          python3 -m json.tool hacs.json >/dev/null
+          test -s dist/xpeng-vehicle-card.js
+          grep -q 'xp-charge-electrical' dist/xpeng-vehicle-card.js
+          grep -q 'Shared fan bar' dist/xpeng-vehicle-card.js
+          node --test tests/g6-charging-electrical-readings-beta.test.cjs tests/g6-new-climate-status-beta.test.cjs
+      - name: Publish installable HACS prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cat > /tmp/beta2-notes.md <<'NOTES'
+          XPENG Vehicle Card G6 beta 2 — optional HACS prerelease.
+
+          - Seven new read-only Climate status tiles: Max Cooling, Max Heating, Rear Defrost, Air Refresh, Sterilisation, A/C Cleaning, and Pet Mode.
+          - Shared fan-speed bar design for desktop and mobile Climate layouts.
+          - Charging screen now includes read-only Current (A) and Voltage (V) beneath existing charging metrics.
+          - Responsive charging layout refined for mobile without changing existing charging commands or stable main.
+          - Source and HACS distributable are identical; no new vehicle commands.
+
+          Install from HACS → XPENG Vehicle Card → Redownload → Need a different version? → v1.0.5-beta.2.
+          This is a beta: verify actual sensor readings and charging/climate layout on your Home Assistant dashboard.
+          NOTES
+          gh release create v1.0.5-beta.2 'dist/xpeng-vehicle-card.js#xpeng-vehicle-card.js' \
+            --target "${GITHUB_SHA}" \
+            --title 'XPENG Vehicle Card v1.0.5-beta.2 — G6 Climate & Charging Preview' \
+            --notes-file /tmp/beta2-notes.md \
+            --prerelease \
+            --latest=false
+          gh release view v1.0.5-beta.2 --json tagName,isPrerelease,isDraft,targetCommitish,url,assets
