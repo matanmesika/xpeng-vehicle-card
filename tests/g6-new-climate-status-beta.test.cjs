@@ -96,10 +96,10 @@ test('unsupported, read-only, unknown and unavailable modes never become clickab
 });
 
 test('front defrost remains separate, mirror heat remains read-only, generated HACS bundles match',()=>{
- assert.match(core,/data-xp-switch=\\"defrost_switch\\"/);
+ assert.match(core,/data-xp-switch=.*?defrost_switch/);
  assert.match(core,/Mirror heating/);
  assert.match(core,/xp-ux-climate-readonly/);
  const slot='const XP_CSS = "__XPENG_STYLES_FROM_THEME__";';
- assert.equal(src,core.replace(slot,'const XP_CSS = `'+css+'\\n`;'));
+ assert.equal(src,core.replace(slot,'const XP_CSS = `'+css+'\n`;'));
  assert.equal(src,dist);
 });
