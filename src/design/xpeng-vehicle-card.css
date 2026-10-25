@@ -4735,3 +4735,31 @@ background:transparent!important;
  border:0!important;box-shadow:none!important;
 }
 
+
+/* Read-only charging electrical readings. Keep the three existing metrics and
+ * all charging actions intact; fit a single compact row at narrow widths. */
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical{
+ display:flex!important;align-items:center!important;flex-wrap:wrap!important;
+ gap:5px 16px!important;min-width:0!important;margin:0!important;
+ padding:7px 0 0!important;border-top:1px solid rgba(150,202,228,.18)!important;
+ font-size:clamp(10px,.9cqw,13px)!important;line-height:1.2!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical>span{
+ display:inline-flex!important;align-items:baseline!important;gap:5px!important;white-space:nowrap!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical small{color:#a6c2d7!important;font-size:inherit!important}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical b{
+ color:#f2fbff!important;font-size:clamp(12px,1.1cqw,16px)!important;font-weight:600!important;
+}
+@container xpeng-layout (max-width:520px){
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical{gap:4px 12px!important;padding-top:5px!important;font-size:10px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical b{font-size:11px!important}
+}
+
+/* Mobile charging: reserve space for the read-only A/V row without
+ * letting the telemetry glass overlap the car or shrinking action icons. */
+@container xpeng-layout (max-width:520px){
+ .xp-scene{--xp-charge-gap:3px}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{padding:7px 11px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action{min-height:62px!important}
+}
