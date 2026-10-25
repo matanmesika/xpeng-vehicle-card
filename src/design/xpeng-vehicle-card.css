@@ -4763,3 +4763,19 @@ background:transparent!important;
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{padding:7px 11px!important}
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action{min-height:62px!important}
 }
+
+/* Wi-Fi button shows transport status and independently flags old/unknown
+ * vehicle telemetry; keep the existing icon and click-to-open popover. */
+.xp-header .xp-wifi.xp-stale{color:#ffbb70!important;border-color:#e7a45599!important}
+.xp-header .xp-wifi.xp-unknown{color:#a8b3c4!important;border-color:#7399c077!important}
+.xp-header .xp-meta-popover{width:min(310px,88vw)!important}
+.xp-header .xp-meta-popover .xp-data-recent{color:#91e6d0!important}
+.xp-header .xp-meta-popover .xp-data-old{color:#ffc78e!important}
+.xp-header .xp-meta-popover .xp-data-unknown{color:#aebbc9!important}
+.xp-header .xp-meta-hint{padding-top:7px;border-top:1px solid #7399c044;
+ color:#9eb4ca;font-size:10px;line-height:1.35}
+@container xpeng-layout (max-width:520px){
+ .xp-header .xp-meta-popover{width:min(290px,85vw)!important;padding:10px 12px!important;gap:7px!important}
+ .xp-header .xp-meta-field{gap:8px!important}
+ .xp-header .xp-meta-popover strong{font-size:12px!important;white-space:normal!important}
+}
