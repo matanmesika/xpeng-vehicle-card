@@ -193,6 +193,8 @@ const XP_ICONS = Object.freeze({
  carfront:'mdi:car-outline',
  shield:'mdi:shield-check-outline',
  sun:'mdi:white-balance-sunny',
+ ampere:'mdi:alpha-a-circle-outline',
+ voltage:'mdi:alpha-v-circle-outline',
  gauge:'mdi:speedometer',
  station:'mdi:ev-station',
  wifi:'mdi:wifi'
@@ -2030,11 +2032,11 @@ class XpengVehicleCard extends HTMLElement{
           <b>${xpIcon('gauge',18)}${xpEsc(this.num('range','km'))}</b></div>
       </div>
       <div class="xp-charge-meta" role="group" aria-label="Charging measurements">
-        <div class="xp-charge-stat"><div class="xp-charge-stat-top">${xpIcon('bolt',16)}<small>Charging power</small></div><b class="xp-charge-stat-value">${xpEsc(this.num('power','kW',1))}</b></div>
-        <div class="xp-charge-stat"><div class="xp-charge-stat-top">${xpIcon('clock',16)}<small>Time remaining</small></div><b class="xp-charge-stat-value">${xpEsc(this.remainingText())}</b></div>
-        <div class="xp-charge-stat"><div class="xp-charge-stat-top">${xpIcon('battery',16)}<small>Charge limit</small></div><b class="xp-charge-stat-value">${xpEsc(this.num('target','%'))}</b></div>
-        <div class="xp-charge-stat xp-charge-electrical"><div class="xp-charge-stat-top">${xpIcon('bolt',16)}<small>Current</small></div><b class="xp-charge-stat-value">${xpEsc(this.chargingElectrical('current','A'))}</b></div>
-        <div class="xp-charge-stat xp-charge-electrical"><div class="xp-charge-stat-top">${xpIcon('gauge',16)}<small>Voltage</small></div><b class="xp-charge-stat-value">${xpEsc(this.chargingElectrical('voltage','V'))}</b></div>
+        <div class="xp-charge-stat xp-charge-electrical" data-xp-metric-group="electrical"><div class="xp-charge-stat-top">${xpIcon('bolt',16)}<small>Charging power</small></div><b class="xp-charge-stat-value">${xpEsc(this.num('power','kW',1))}</b></div>
+        <div class="xp-charge-stat xp-charge-electrical" data-xp-metric-group="electrical"><div class="xp-charge-stat-top">${xpIcon('ampere',16)}<small>Current</small></div><b class="xp-charge-stat-value">${xpEsc(this.chargingElectrical('current','A'))}</b></div>
+        <div class="xp-charge-stat xp-charge-electrical" data-xp-metric-group="electrical"><div class="xp-charge-stat-top">${xpIcon('voltage',16)}<small>Voltage</small></div><b class="xp-charge-stat-value">${xpEsc(this.chargingElectrical('voltage','V'))}</b></div>
+        <div class="xp-charge-stat xp-charge-session" data-xp-metric-group="session"><div class="xp-charge-stat-top">${xpIcon('clock',16)}<small>Time remaining</small></div><b class="xp-charge-stat-value">${xpEsc(this.remainingText())}</b></div>
+        <div class="xp-charge-stat xp-charge-session" data-xp-metric-group="session"><div class="xp-charge-stat-top">${xpIcon('battery',16)}<small>Charge limit</small></div><b class="xp-charge-stat-value">${xpEsc(this.num('target','%'))}</b></div>
       </div>
       ${this.xpUiEnabled()&&!this._xpPanel?'<nav class="xp-charge-panel-actions" aria-label="Charging controls" dir="ltr">'+
        '<button type="button" class="xp-charge-action" data-xp-open="charge_controls"><span class="xp-charge-action-core"><span class="xp-charge-action-ring">'+xpIcon('battery',22)+'</span><span class="xp-charge-action-label">Charge limit</span></span></button>'+
