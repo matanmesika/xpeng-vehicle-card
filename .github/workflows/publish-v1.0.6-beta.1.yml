@@ -50,6 +50,7 @@ jobs:
           python -m json.tool hacs.json >/dev/null
           grep -q 'chargingElectrical' dist/xpeng-vehicle-card.js
           grep -q 'xp-charge-electrical' dist/xpeng-vehicle-card.js
+          grep -q 'grid-template-columns:repeat(6' dist/xpeng-vehicle-card.js
       - name: Run charging, connectivity and regression tests
         run: |
           set -euo pipefail
