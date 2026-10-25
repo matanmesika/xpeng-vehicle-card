@@ -27,7 +27,7 @@ test('missing or invalid electrical values display 0.0 A and 0.0 V without chang
  assert.match(core,/current:\[\['sensor','charge_current'\]\]/);
  assert.match(core,/voltage:\[\['sensor','charge_voltage'\]\]/);
  assert.match(core,/num\(key,unit='',dec=0\)\{const v=this\.number\(key\);return v===null\?'—'/);
- assert.match(core,/chargingElectrical\(key,unit\)\{const v=this\.number\(key\);return xpNum\(v===null\?0:v,1\)\+' '\+unit;\}/);
+ assert.match(core,/chargingElectrical\(key,unit\)\{const v=this\.number\(key\);return \(v===null\?0:v\)\.toFixed\(1\)\+' '\+unit;\}/);
  assert.match(core,/this\.chargingElectrical\('current','A'\)/);
  assert.match(core,/this\.chargingElectrical\('voltage','V'\)/);
 });
