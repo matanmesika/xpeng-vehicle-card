@@ -4705,3 +4705,33 @@ background:transparent!important;
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{top:153px!important;padding:8px 9px!important}
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-stat-top small{font-size:8px!important}
 }
+
+/* Shared fan bar: keep the same segmented bar and range track on vehicle and phone layouts. */
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-climate-fan-panel{
+ box-sizing:border-box!important;width:100%!important;max-width:100%!important;
+ padding:10px 3px!important;margin:0!important;gap:8px!important;
+ border:0!important;border-radius:0!important;background:transparent!important;
+ box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-fan-bars{
+ display:flex!important;flex-direction:row!important;align-items:center!important;
+ justify-content:center!important;box-sizing:border-box!important;width:100%!important;
+ min-width:0!important;height:15px!important;min-height:15px!important;
+ gap:clamp(4px,.82cqw,8px)!important;margin:7px 0 3px!important;
+ overflow:visible!important;direction:ltr!important;
+}
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-fan-bars i{
+ display:block!important;flex:1 1 auto!important;width:auto!important;
+ min-width:3px!important;max-width:8px!important;height:7px!important;min-height:7px!important;
+ margin:0!important;border:1px solid rgba(127,178,192,.29)!important;
+ border-radius:999px!important;background:rgba(105,150,174,.38)!important;box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-fan-bars i.xp-fan-bar-on{
+ background:#83e8e2!important;border-color:#83e8e2!important;box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-climate-fan-panel input[type="range"]{
+ box-sizing:border-box!important;width:100%!important;max-width:100%!important;min-width:0!important;
+ height:4px!important;margin:14px 2px 10px!important;accent-color:#82e8e2!important;
+ border:0!important;box-shadow:none!important;
+}
+
