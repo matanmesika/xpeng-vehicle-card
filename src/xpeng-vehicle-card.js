@@ -5093,24 +5093,37 @@ background:transparent!important;
 }
 
 
-/* Read-only charging electrical readings. Keep the three existing metrics and
- * all charging actions intact; fit a single compact row at narrow widths. */
-.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical{
- display:flex!important;align-items:center!important;flex-wrap:wrap!important;
- gap:5px 16px!important;min-width:0!important;margin:0!important;
- padding:7px 0 0!important;border-top:1px solid rgba(150,202,228,.18)!important;
- font-size:clamp(10px,.9cqw,13px)!important;line-height:1.2!important;
+/* Integrated five-metric charging grid: 3 existing readings in the first
+ * row, current and voltage in the second. Same typography, alignment and
+ * separators as the rest of the charging glass — no floating text row. */
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta{
+ display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;
+ gap:0!important;align-items:stretch!important;
 }
-.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical>span{
- display:inline-flex!important;align-items:baseline!important;gap:5px!important;white-space:nowrap!important;
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta>.xp-charge-stat{
+ grid-column:span 2!important;
 }
-.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical small{color:#a6c2d7!important;font-size:inherit!important}
-.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical b{
- color:#f2fbff!important;font-size:clamp(12px,1.1cqw,16px)!important;font-weight:600!important;
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta>.xp-charge-stat:nth-child(3){
+ border-right:0!important;padding-right:0!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta>.xp-charge-electrical{
+ grid-column:span 3!important;
+ border-top:1px solid rgba(150,202,228,.18)!important;
+ margin-top:8px!important;padding-top:8px!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta>.xp-charge-electrical:nth-child(4){
+ padding-left:0!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta>.xp-charge-electrical:last-child{
+ border-right:0!important;padding-right:0!important;
 }
 @container xpeng-layout (max-width:520px){
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical{gap:4px 12px!important;padding-top:5px!important;font-size:10px!important}
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical b{font-size:11px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta>.xp-charge-electrical{
+  margin-top:5px!important;padding-top:6px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta>.xp-charge-electrical .xp-charge-stat-value{
+  font-size:12px!important;
+ }
 }
 
 /* Mobile charging: reserve space for the read-only A/V row without
@@ -6544,6 +6557,9 @@ class XpengVehicleCard extends HTMLElement{
  number(key){const v=this.val(key);return v===null||v===''||!Number.isFinite(Number(v))?null:Number(v);}
  bool(key){return xpBool(this.val(key));}
  num(key,unit='',dec=0){const v=this.number(key);return v===null?'—':xpNum(v,dec)+(unit?' '+unit:'');}
+ // Display-only fallback for charging electrical metrics. Missing readings are
+ // shown as 0.0 by request; this is not evidence of a measured zero.
+ chargingElectrical(key,unit){const v=this.number(key);return xpNum(v===null?0:v,1)+' '+unit;}
  artworkUrl(relative){
     const configuredBase=this._config.image_path;
     const base=(!configuredBase||configuredBase==='/hacsfiles/xpeng-vehicle-card/assets')?null:configuredBase.replace(/\/$/,'');
@@ -6808,14 +6824,12 @@ class XpengVehicleCard extends HTMLElement{
         <div class="xp-charge-range"><div class="xp-stat-label">Estimated range</div>
           <b>${xpIcon('gauge',18)}${xpEsc(this.num('range','km'))}</b></div>
       </div>
-      <div class="xp-charge-meta">
+      <div class="xp-charge-meta" role="group" aria-label="Charging measurements">
         <div class="xp-charge-stat"><div class="xp-charge-stat-top">${xpIcon('bolt',16)}<small>Charging power</small></div><b class="xp-charge-stat-value">${xpEsc(this.num('power','kW',1))}</b></div>
         <div class="xp-charge-stat"><div class="xp-charge-stat-top">${xpIcon('clock',16)}<small>Time remaining</small></div><b class="xp-charge-stat-value">${xpEsc(this.remainingText())}</b></div>
         <div class="xp-charge-stat"><div class="xp-charge-stat-top">${xpIcon('battery',16)}<small>Charge limit</small></div><b class="xp-charge-stat-value">${xpEsc(this.num('target','%'))}</b></div>
-      </div>
-      <div class="xp-charge-electrical" role="group" aria-label="Charging current and voltage">
-        <span><small>Current</small><b>${xpEsc(this.num('current','A',1))}</b></span>
-        <span><small>Voltage</small><b>${xpEsc(this.num('voltage','V',0))}</b></span>
+        <div class="xp-charge-stat xp-charge-electrical"><div class="xp-charge-stat-top">${xpIcon('bolt',16)}<small>Current</small></div><b class="xp-charge-stat-value">${xpEsc(this.chargingElectrical('current','A'))}</b></div>
+        <div class="xp-charge-stat xp-charge-electrical"><div class="xp-charge-stat-top">${xpIcon('gauge',16)}<small>Voltage</small></div><b class="xp-charge-stat-value">${xpEsc(this.chargingElectrical('voltage','V'))}</b></div>
       </div>
       ${this.xpUiEnabled()&&!this._xpPanel?'<nav class="xp-charge-panel-actions" aria-label="Charging controls" dir="ltr">'+
        '<button type="button" class="xp-charge-action" data-xp-open="charge_controls"><span class="xp-charge-action-core"><span class="xp-charge-action-ring">'+xpIcon('battery',22)+'</span><span class="xp-charge-action-label">Charge limit</span></span></button>'+
