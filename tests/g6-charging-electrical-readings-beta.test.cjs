@@ -8,29 +8,34 @@ const css=fs.readFileSync(path.join(root,'src/design/xpeng-vehicle-card.css'),'u
 const src=fs.readFileSync(path.join(root,'src/xpeng-vehicle-card.js'),'utf8');
 const dist=fs.readFileSync(path.join(root,'dist/xpeng-vehicle-card.js'),'utf8');
 
-test('charging shows current (A) and voltage (V) without replacing the three existing metrics',()=>{
+test('charging current and voltage are integrated into the same measurement grid',()=>{
  const start=core.indexOf('\n charging(){');
  const end=core.indexOf(' // Update matching nodes in place',start);
  assert.ok(start>=0&&end>start);
  const view=core.slice(start,end);
- assert.equal((view.match(/class="xp-charge-stat"/g)||[]).length,3);
+ assert.equal((view.match(/class="xp-charge-stat"/g)||[]).length,3,'preserve original three metrics');
+ assert.equal((view.match(/class="xp-charge-stat xp-charge-electrical"/g)||[]).length,2,'add two integrated metric cells');
  for(const existing of ['Charging power','Time remaining','Charge limit'])assert.ok(view.includes(existing));
- const electrical=view.slice(view.indexOf('class="xp-charge-electrical"'),view.indexOf('class="xp-charge-panel-actions"'));
- assert.match(electrical,/role="group" aria-label="Charging current and voltage"/);
- assert.match(electrical,/this\.num\('current','A',1\)/);
- assert.match(electrical,/this\.num\('voltage','V',0\)/);
- assert.doesNotMatch(electrical,/data-xp-command|data-xp-switch|xpSend\(/);
- assert.match(view,/data-xp-command="stop_charge"/);
+ assert.match(view,/class="xp-charge-meta" role="group" aria-label="Charging measurements"/);
+ assert.match(view,/this\.chargingElectrical\('current','A'\)/);
+ assert.match(view,/this\.chargingElectrical\('voltage','V'\)/);
+ assert.doesNotMatch(view,/class="xp-charge-electrical" role="group"/,'no detached current/voltage row');
+ assert.match(view,/data-xp-command="stop_charge"/,'keep charging controls');
 });
 
-test('readings use existing XPENG sensors, and missing numeric data stays unavailable',()=>{
+test('missing or invalid electrical values display 0.0 A and 0.0 V without changing global fallback',()=>{
  assert.match(core,/current:\[\['sensor','charge_current'\]\]/);
  assert.match(core,/voltage:\[\['sensor','charge_voltage'\]\]/);
  assert.match(core,/num\(key,unit='',dec=0\)\{const v=this\.number\(key\);return v===null\?'—'/);
+ assert.match(core,/chargingElectrical\(key,unit\)\{const v=this\.number\(key\);return xpNum\(v===null\?0:v,1\)\+' '\+unit;\}/);
+ assert.match(core,/this\.chargingElectrical\('current','A'\)/);
+ assert.match(core,/this\.chargingElectrical\('voltage','V'\)/);
 });
 
-test('compact electrical row has responsive styles and generated bundles remain reproducible',()=>{
- assert.match(css,/\.xp-charge-electrical\{/);
+test('integrated electrical cells have responsive styles and generated bundles remain reproducible',()=>{
+ assert.match(css,/\.xp-charge-meta>\.xp-charge-electrical\{/);
+ assert.match(css,/grid-template-columns:repeat\(6,minmax\(0,1fr\)\)/);
+ assert.match(css,/grid-column:span 3!important/);
  assert.match(css,/@container xpeng-layout \(max-width:520px\)\{/);
  const slot='const XP_CSS = "__XPENG_STYLES_FROM_THEME__";';
  assert.equal(src,core.replace(slot,'const XP_CSS = `'+css+'\n`;'));
