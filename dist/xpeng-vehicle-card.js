@@ -122,6 +122,15 @@ const XP_CONTROL_FALLBACKS=Object.freeze({
  'sensor.slow_charge_port':'slow_charge_port',
  'binary_sensor.windows':'windows',
  'switch.defrost_switch':'front_defrost',
+ // Official Xpengtk >=0.6.28 uses climate_* unique IDs, but its English
+ // entity names omit that prefix. Resolve registry first, then these names.
+ 'switch.climate_max_cooling':'maximum_cooling',
+ 'switch.climate_max_heating':'maximum_heating',
+ 'switch.climate_rear_defrost':'rear_window_defroster',
+ 'switch.climate_refresh':'refresh',
+ 'switch.climate_sterilisation':'sterilisation',
+ 'switch.climate_ac_cleaning':'a_c_cleaning',
+ 'switch.climate_pet_mode':'pet_mode',
  'switch.maximum_cooling':'maximum_cooling',
  'switch.maximum_heating':'maximum_heating',
  'switch.rear_window_defroster':'rear_window_defroster',
@@ -5249,6 +5258,20 @@ class XpengVehicleCard extends HTMLElement{
        if(b.dataset.xpSwitch==='defrost_switch')this.xpSend('switch','toggle','defrost_switch');
        return;
      }
+     if(b.hasAttribute('data-xp-climate-switch')){
+       // Only the seven Xpengtk comfort-mode switches may issue a command.
+       // Require the integration's explicit capability AND policy approval.
+       const suffix=b.dataset.xpClimateSwitch;
+       const permitted=new Set(['climate_max_cooling','climate_max_heating',
+         'climate_rear_defrost','climate_refresh','climate_sterilisation',
+         'climate_ac_cleaning','climate_pet_mode']);
+       if(!permitted.has(suffix))return;
+       const ent=this.xpLive('switch',suffix);
+       if(!ent||ent.state.attributes?.control_allowed!==true)return;
+       if(!['on','off'].includes(ent.state.state))return;
+       this.xpSend('switch',ent.state.state==='on'?'turn_off':'turn_on',suffix);
+       return;
+     }
      if(b.hasAttribute('data-xp-hvac-mode')){
        const mode=b.dataset.xpHvacMode,c=this.xpLive('climate','cabin_climate');
        if(c&&Array.isArray(c.state.attributes?.hvac_modes)&&c.state.attributes.hvac_modes.includes(mode))
@@ -5770,16 +5793,18 @@ class XpengVehicleCard extends HTMLElement{
        +'<span>Windshield defrost</span><small>'
        +(active?'On':'Off')+'</small></button>');
    }
-   // New G6 comfort features: telemetry-only in this beta. No vehicle commands.
-   // Resolve by stable Xpengtk unique ID, then by the selected vehicle prefix.
+   // Xpengtk 0.6.28+ exposes these seven as real SwitchEntity controls.
+   // Each switch publishes control_allowed after checking vehicle capability
+   // and the integration's command policy. Never guess support from On/Off.
+   // Older Xpengtk builds and read-only policies stay safely status-only.
    const newModes=[
-     ['maximum_cooling','Max Cooling','snowflake'],
-     ['maximum_heating','Max Heating','thermometer'],
-     ['rear_window_defroster','Rear Defrost','windscreen'],
-     ['refresh','Air Refresh','refresh'],
-     ['sterilisation','Sterilisation','shield'],
-     ['a_c_cleaning','A/C Cleaning','fan'],
-     ['pet_mode','Pet Mode','info']
+     ['climate_max_cooling','Max Cooling','snowflake'],
+     ['climate_max_heating','Max Heating','thermometer'],
+     ['climate_rear_defrost','Rear Defrost','windscreen'],
+     ['climate_refresh','Air Refresh','refresh'],
+     ['climate_sterilisation','Sterilisation','shield'],
+     ['climate_ac_cleaning','A/C Cleaning','fan'],
+     ['climate_pet_mode','Pet Mode','info']
    ];
    const modeTiles=[];
    for(const [suffix,label,icon] of newModes){
@@ -5789,10 +5814,21 @@ class XpengVehicleCard extends HTMLElement{
      const value=state.state;
      const known=value==='on'||value==='off';
      const status=known?(value==='on'?'On':'Off'):'Unavailable';
-     modeTiles.push('<span class="xp-ux-climate-feature xp-ux-climate-readonly'
-       +(value==='on'?' xp-ux-selected':'')+'" role="status" aria-label="'
-       +xpEsc(label+': '+status)+'">'+xpIcon(icon,25)+'<span>'
-       +xpEsc(label)+'</span><small>'+status+' • Status only</small></span>');
+     const allowed=known&&state.attributes?.control_allowed===true;
+     if(allowed){
+       modeTiles.push('<button type="button" class="xp-ux-climate-feature'
+         +(value==='on'?' xp-ux-selected':'')+'" data-xp-climate-switch="'
+         +xpEsc(suffix)+'" aria-pressed="'+String(value==='on')
+         +'" aria-label="'+xpEsc(label+': '+status+'. Toggle')+'">'
+         +xpIcon(icon,25)+'<span>'+xpEsc(label)+'</span><small>'
+         +status+'</small></button>');
+     }else{
+       modeTiles.push('<span class="xp-ux-climate-feature xp-ux-climate-readonly'
+         +(value==='on'?' xp-ux-selected':'')+'" role="status" aria-label="'
+         +xpEsc(label+': '+status+'. Status only')+'">'+xpIcon(icon,25)
+         +'<span>'+xpEsc(label)+'</span><small>'+status
+         +' • Status only</small></span>');
+     }
    }
    if(modeTiles.length)tiles.push(...modeTiles);
    if(schedule){
