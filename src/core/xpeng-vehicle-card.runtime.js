@@ -2003,6 +2003,10 @@ class XpengVehicleCard extends HTMLElement{
         <div class="xp-charge-stat"><div class="xp-charge-stat-top">${xpIcon('clock',16)}<small>Time remaining</small></div><b class="xp-charge-stat-value">${xpEsc(this.remainingText())}</b></div>
         <div class="xp-charge-stat"><div class="xp-charge-stat-top">${xpIcon('battery',16)}<small>Charge limit</small></div><b class="xp-charge-stat-value">${xpEsc(this.num('target','%'))}</b></div>
       </div>
+      <div class="xp-charge-electrical" role="group" aria-label="Charging current and voltage">
+        <span><small>Current</small><b>${xpEsc(this.num('current','A',1))}</b></span>
+        <span><small>Voltage</small><b>${xpEsc(this.num('voltage','V',0))}</b></span>
+      </div>
       ${this.xpUiEnabled()&&!this._xpPanel?'<nav class="xp-charge-panel-actions" aria-label="Charging controls" dir="ltr">'+
        '<button type="button" class="xp-charge-action" data-xp-open="charge_controls"><span class="xp-charge-action-core"><span class="xp-charge-action-ring">'+xpIcon('battery',22)+'</span><span class="xp-charge-action-label">Charge limit</span></span></button>'+
        '<button type="button" class="xp-charge-action" data-xp-open="charge_schedule"><span class="xp-charge-action-core"><span class="xp-charge-action-ring">'+xpIcon('clock',22)+'</span><span class="xp-charge-action-label">Schedule</span></span></button>'+
