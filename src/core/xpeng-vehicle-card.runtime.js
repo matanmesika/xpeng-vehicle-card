@@ -240,8 +240,8 @@ function xpVehicleDataStatus(raw,now=Date.now()){
   const value=String(raw).trim();
   if(XP_INVALID.has(value.toLowerCase()))return {state:'unknown',age:'Unavailable',timestamp:null};
   let timestamp;
-  if(/^\\d{10}(?:\\.\\d+)?$/.test(value))timestamp=Number(value)*1000;
-  else if(/^\\d{13}$/.test(value))timestamp=Number(value);
+  if(/^\d{10}(?:\.\d+)?$/.test(value))timestamp=Number(value)*1000;
+  else if(/^\d{13}$/.test(value))timestamp=Number(value);
   else timestamp=Date.parse(value);
   if(!Number.isFinite(timestamp)||timestamp<=0||timestamp>now+5*60*1000)
     return {state:'unknown',age:'Unavailable',timestamp:null};
