@@ -45,6 +45,7 @@ jobs:
           set -euo pipefail
           node --check src/xpeng-vehicle-card.js
           node --check dist/xpeng-vehicle-card.js
+          node --check scripts/capture-dashboard.cjs
           cmp src/xpeng-vehicle-card.js dist/xpeng-vehicle-card.js
           node tools/build_vehicle_card.mjs --check
           python -m json.tool hacs.json >/dev/null
