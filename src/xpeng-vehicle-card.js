@@ -122,6 +122,14 @@ const XP_CONTROL_FALLBACKS=Object.freeze({
  'sensor.slow_charge_port':'slow_charge_port',
  'binary_sensor.windows':'windows',
  'switch.defrost_switch':'front_defrost',
+ 'switch.maximum_cooling':'maximum_cooling',
+ 'switch.maximum_heating':'maximum_heating',
+ 'switch.rear_window_defroster':'rear_window_defroster',
+ 'switch.refresh':'refresh',
+ 'switch.sterilisation':'sterilisation',
+ 'switch.a_c_cleaning':'a_c_cleaning',
+ 'switch.pet_mode':'pet_mode',
+
  'switch.sentinel_switch':'x_guard',
  'number.sentinel_sensitivity_control':'sentinel_sensitivity',
  'switch.trunk_power_switch':'trunk_power',
@@ -161,6 +169,7 @@ const XP_ICONS = Object.freeze({
  flash:'mdi:car-light-high',
  auto:'mdi:autorenew',
  windscreen:'mdi:car-defrost-front',
+ snowflake:'mdi:snowflake',
  port_open:'mdi:power-plug-outline',
  fan:'mdi:fan',
  bolt:'mdi:lightning-bolt',
@@ -5647,6 +5656,31 @@ class XpengVehicleCard extends HTMLElement{
        +'<span>Windshield defrost</span><small>'
        +(active?'On':'Off')+'</small></button>');
    }
+   // New G6 comfort features: telemetry-only in this beta. No vehicle commands.
+   // Resolve by stable Xpengtk unique ID, then by the selected vehicle prefix.
+   const newModes=[
+     ['maximum_cooling','Max Cooling','snowflake'],
+     ['maximum_heating','Max Heating','thermometer'],
+     ['rear_window_defroster','Rear Defrost','windscreen'],
+     ['refresh','Air Refresh','refresh'],
+     ['sterilisation','Sterilisation','shield'],
+     ['a_c_cleaning','A/C Cleaning','fan'],
+     ['pet_mode','Pet Mode','info']
+   ];
+   const modeTiles=[];
+   for(const [suffix,label,icon] of newModes){
+     const id=this.xpengEntity('switch',suffix);
+     const state=id?this._hass?.states?.[id]:null;
+     if(!state)continue;
+     const value=state.state;
+     const known=value==='on'||value==='off';
+     const status=known?(value==='on'?'On':'Off'):'Unavailable';
+     modeTiles.push('<span class="xp-ux-climate-feature xp-ux-climate-readonly'
+       +(value==='on'?' xp-ux-selected':'')+'" role="status" aria-label="'
+       +xpEsc(label+': '+status)+'">'+xpIcon(icon,25)+'<span>'
+       +xpEsc(label)+'</span><small>'+status+' • Status only</small></span>');
+   }
+   if(modeTiles.length)tiles.push(...modeTiles);
    if(schedule){
      tiles.push('<button type="button" class="xp-ux-climate-feature" data-xp-extra-page="schedule">'
        +xpIcon('clock',25)+'<span>Schedule climate</span><small>View existing schedules</small></button>');
