@@ -1,0 +1,156 @@
+name: Publish XPENG Vehicle Card v1.0.6 stable
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .release/v1.0.6
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-xpeng-v1.0.6-stable
+  cancel-in-progress: false
+
+jobs:
+  final-validation-and-release:
+    if: github.repository == 'matanmesika/xpeng-vehicle-card' && github.ref == 'refs/heads/main'
+    name: Validate, update HACS gallery screenshots and release stable
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify approval and immutable release target
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          grep -qx 'APPROVED_v1.0.6' .release/v1.0.6
+          if gh release view v1.0.6 >/dev/null 2>&1; then
+            echo 'v1.0.6 already published; refusing to overwrite.'
+            exit 1
+          fi
+          if git ls-remote --exit-code --tags origin refs/tags/v1.0.6; then
+            echo 'v1.0.6 tag already exists; refusing to move.'
+            exit 1
+          fi
+      - name: Verify frontend and HACS build
+        run: |
+          set -euo pipefail
+          node --check src/xpeng-vehicle-card.js
+          node --check dist/xpeng-vehicle-card.js
+          node --check scripts/capture-dashboard.cjs
+          cmp src/xpeng-vehicle-card.js dist/xpeng-vehicle-card.js
+          node tools/build_vehicle_card.mjs --check
+          python -m json.tool hacs.json >/dev/null
+          python tools/sync_vehicle_artwork.py --check
+          python tools/audit_vehicle_provenance.py
+          python tools/check_photo_candidates.py
+          grep -q 'chargingElectrical' dist/xpeng-vehicle-card.js
+          grep -q "ampere:'mdi:alpha-a-circle-outline'" dist/xpeng-vehicle-card.js
+          grep -q "voltage:'mdi:alpha-v-circle-outline'" dist/xpeng-vehicle-card.js
+          grep -q 'data-xp-metric-group="electrical"' dist/xpeng-vehicle-card.js
+      - name: Run maintained regression and documentation suites
+        run: |
+          set -euo pipefail
+          node --test \
+            tests/vehicle-artwork-mapping.test.cjs \
+            tests/charging-cable-static.test.cjs \
+            tests/xpeng-controls-smoke.test.cjs \
+            tests/responsive-dual-state.test.cjs \
+            tests/g6-mobile-charging-icons.test.cjs \
+            tests/release-documentation.test.cjs \
+            tests/g6-isolated-design-help.test.cjs \
+            tests/g6-design-agents.test.cjs \
+            tests/g6-approved-glass-design.test.cjs \
+            tests/g6-v3-canonical-style.test.cjs \
+            tests/g6-v3-inner-pages.test.cjs \
+            tests/g6-v3-owner-reference.test.cjs \
+            tests/g6-v3-visual-acceptance.test.cjs \
+            tests/g6-new-climate-status-beta.test.cjs \
+            tests/g6-charging-electrical-readings-beta.test.cjs \
+            tests/g6-wifi-connection-freshness-beta.test.cjs
+      - name: Install Chromium for real frontend screenshots
+        run: |
+          npm install --prefix /tmp/xpeng-v106-qa --no-audit --no-fund playwright@1.56.1 @mdi/js@7.4.47
+          /tmp/xpeng-v106-qa/node_modules/.bin/playwright install --with-deps chromium
+      - name: Capture desktop and iPhone card and validate layout
+        env:
+          PLAYWRIGHT_MODULE: /tmp/xpeng-v106-qa/node_modules/playwright
+        run: timeout 180s node scripts/capture-dashboard.cjs
+      - name: Validate both new charging screenshots and curated gallery
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import struct
+          root=Path('docs/screenshots')
+          names=['home-desktop','home-mobile','charging-desktop','charging-mobile',
+                 'climate-desktop','climate-mobile','maintenance-desktop','maintenance-mobile',
+                 'map-desktop','map-mobile','charge-controls-mobile','diagnostics-mobile',
+                 'functions-desktop','functions-mobile']
+          assert {p.name for p in root.glob('*.png')}=={n+'.png' for n in names}
+          for name in names:
+              data=(root/(name+'.png')).read_bytes()
+              assert data.startswith(b'\x89PNG\r\n\x1a\n') and len(data)>10000,name
+              w,h=struct.unpack('>II',data[16:24])
+              assert (w>=1100 if name.endswith('desktop') else 300<=w<=500) and h>=620,name
+          PY
+          grep -q 'docs/screenshots/charging-mobile.png' README.md
+          grep -q 'docs/screenshots/charging-desktop.png' README.md
+      - name: Commit actual v1.0.6 charging screenshots into HACS README gallery
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Keep the other 12 curated screenshots unchanged, per owner request.
+          git add docs/screenshots/charging-desktop.png docs/screenshots/charging-mobile.png
+          if git diff --cached --quiet; then
+            echo 'No updated charging screenshots detected; refusing stale-gallery release.'
+            exit 1
+          fi
+          git commit -m "docs(v1.0.6): update HACS charging screenshots from real Chromium"
+          git push origin HEAD:main
+          echo "RELEASE_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+      - name: Recheck committed README images and build
+        run: |
+          set -euo pipefail
+          node --test tests/release-documentation.test.cjs tests/g6-charging-electrical-readings-beta.test.cjs
+          cmp src/xpeng-vehicle-card.js dist/xpeng-vehicle-card.js
+          git status --short
+      - name: Package verified screenshots for the release
+        run: |
+          set -euo pipefail
+          zip -q -j xpeng-g6-v1.0.6-screenshots.zip docs/screenshots/*.png
+      - name: Upload desktop and iPhone screenshots as QA artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xpeng-g6-v1.0.6-verified-screenshots
+          path: |
+            docs/screenshots/charging-desktop.png
+            docs/screenshots/charging-mobile.png
+          retention-days: 30
+      - name: Publish immutable HACS-installable v1.0.6 stable
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release create v1.0.6 \
+            'dist/xpeng-vehicle-card.js#xpeng-vehicle-card.js' \
+            xpeng-g6-v1.0.6-screenshots.zip \
+            --target "$RELEASE_SHA" \
+            --title 'XPENG Vehicle Card v1.0.6 — Stable' \
+            --notes-file docs/releases/v1.0.6.md \
+            --latest
+          gh release view v1.0.6 --json tagName,isPrerelease,isDraft,targetCommitish,url,assets

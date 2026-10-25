@@ -4,7 +4,7 @@
 
 The card preserves the night-lakeside setting, the selected vehicle artwork, and entity-driven controls. When the vehicle reports active charging, it automatically switches to a dedicated charging scene with a photographic XPENG charging station, a green cable overlay, and live charging information.
 
-**Stable release: [v1.0.4](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.4).** Previous stable: [v1.0.3](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.3). Historical betas remain available for rollback. The approved charging block uses one shared responsive component for desktop, iPhone and Home Assistant Sections.
+**Stable release: [v1.0.6](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.6).** Previous stable: [v1.0.5](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.5). Historical releases and betas remain available for rollback. The charging block uses one shared responsive component for desktop, iPhone and Home Assistant Sections.
 
 [Install with HACS](https://my.home-assistant.io/redirect/hacs_repository/?owner=matanmesika&repository=xpeng-vehicle-card&category=plugin) · [HACS product guide](docs/HACS_STORE_GUIDE.md) · [Screenshot gallery](docs/screenshots/README.md) · [Release acceptance](docs/G6_FINAL_STABILIZATION.md)
 
@@ -15,7 +15,7 @@ Screenshots below were captured from **the running card in Chromium**, with simu
 | Screen | Desktop | Mobile |
 | --- | --- | --- |
 | Overview and seven shortcuts | ![G6 desktop overview](docs/screenshots/home-desktop.png) | ![G6 iPhone overview](docs/screenshots/home-mobile.png) |
-| Automatic charging, XPENG station and green cable | ![G6 desktop charging](docs/screenshots/charging-desktop.png) | ![G6 iPhone charging](docs/screenshots/charging-mobile.png) |
+| Automatic charging — grouped Power (kW), Current (A), Voltage (V), time and limit | ![G6 desktop charging](docs/screenshots/charging-desktop.png) | ![G6 iPhone charging](docs/screenshots/charging-mobile.png) |
 | HVAC, cabin seats and steering-wheel controls | ![G6 desktop climate](docs/screenshots/climate-desktop.png) | ![G6 iPhone climate](docs/screenshots/climate-mobile.png) |
 | Four tires and available maintenance data | ![G6 desktop maintenance](docs/screenshots/maintenance-desktop.png) | ![G6 iPhone maintenance](docs/screenshots/maintenance-mobile.png) |
 | Location and supported horn/flash commands | ![G6 desktop map placeholder](docs/screenshots/map-desktop.png) | ![G6 iPhone map placeholder](docs/screenshots/map-mobile.png) |
@@ -50,14 +50,14 @@ The prefix, model/year/paint and actual available entities must match your insta
 ## What the card can display and control
 
 - **Overview:** battery and range, connection state, approved vehicle artwork and seven compact shortcuts.
-- **Charging:** scene automatically shown only while the charging sensor reports an active charging state; battery percentage, charging power, estimated range, remaining time and charge limit where those entities exist. Charging limits, schedules and stop/release actions appear only when appropriately supported.
+- **Charging:** automatically shown while the charging sensor reports an active state. The electrical row groups **Charging power (kW), Current (A), and Voltage (V)**, with **Time remaining** and **Charge limit** together below. Battery percentage and estimated range remain above. Current and Voltage display `0.0 A` and `0.0 V` if their mapped readings are missing or invalid; these are **display placeholders, not measured zeroes**. Charging limits, schedules and stop/release actions appear only when supported.
 - **Climate:** supported temperature, fan, heating/cooling, front-seat heat/ventilation, rear-seat heating and heated steering wheel using mapped Home Assistant entities. A control is not proof that an unsupported physical feature exists.
 - **Vehicle actions:** lock/unlock, windows, trunk and charge flap through actual supported entities. State-sensitive action labels and pending-command suppression help avoid duplicate commands.
 - **Maintenance:** four live tire pressure sensors with unit preferences plus odometer, service information and identity only when the integration supplies them.
 - **Location:** native Home Assistant tracker map and horn/flash when the correct entities and permissions are available.
 - **More Options:** supported vehicle settings, Software Updates information and diagnostics. No unsupported manual software-update command is invented.
 
-All dashboard, editor, help and error labels are **English-only** regardless of the Home Assistant interface language. Unknown or unavailable entity states are shown as unavailable; the card does not invent readings or guarantee control execution.
+All dashboard, editor, help and error labels are **English-only** regardless of the Home Assistant interface language. Unknown or unavailable entity states are normally shown as unavailable; the **Charging Current and Voltage** tiles specifically use `0.0` as a display-only fallback. The card does not infer actual electrical measurements or guarantee control execution.
 
 ## Sensor mapping and support
 
@@ -71,7 +71,7 @@ The card is presently optimized for the G6. **G6 functional mapping status: COMP
 
 The automated suite checks source/dist parity, frontend syntax, HACS metadata, vehicle-image inventory, action and permission safeguards, English-only content, responsive geometry at desktop and 320/390/420px, and **14 browser screenshots**. These use simulated vehicle states and are not evidence of real-car execution.
 
-Before publishing `v1.0.4`, the owner must test charging station geometry and cable endpoints in real Home Assistant on desktop/iPhone; verify mobile scrolling, Back navigation, GPS map, TPMS and supported commands; and approve the final images. Do not publish a stable release or force-merge `main` without that approval.
+For `v1.0.6`, the owner approved the grouped electrical charging layout and requested a stable release. Chromium browser captures validate the frontend layout, but on-device Home Assistant, iPhone Safari, GPS, TPMS and supported vehicle commands still require real-world verification.
 
 [Owner acceptance checklist](docs/G6_FINAL_STABILIZATION.md) · [Browser screenshot index](docs/screenshots/README.md)
 

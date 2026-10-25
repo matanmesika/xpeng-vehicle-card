@@ -4736,24 +4736,42 @@ background:transparent!important;
 }
 
 
-/* Read-only charging electrical readings. Keep the three existing metrics and
- * all charging actions intact; fit a single compact row at narrow widths. */
-.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical{
- display:flex!important;align-items:center!important;flex-wrap:wrap!important;
- gap:5px 16px!important;min-width:0!important;margin:0!important;
- padding:7px 0 0!important;border-top:1px solid rgba(150,202,228,.18)!important;
- font-size:clamp(10px,.9cqw,13px)!important;line-height:1.2!important;
+/* Related measurements stay together: power/current/voltage in the first
+ * row; time remaining/charge limit in the second. No extra panel, no
+ * duplicate values, and no additional height at iPhone widths. */
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta{
+ display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;
+ gap:0!important;align-items:stretch!important;
 }
-.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical>span{
- display:inline-flex!important;align-items:baseline!important;gap:5px!important;white-space:nowrap!important;
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta>.xp-charge-electrical{
+ grid-column:span 2!important;
 }
-.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical small{color:#a6c2d7!important;font-size:inherit!important}
-.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical b{
- color:#f2fbff!important;font-size:clamp(12px,1.1cqw,16px)!important;font-weight:600!important;
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta>.xp-charge-electrical:nth-child(3){
+ border-right:0!important;padding-right:0!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta>.xp-charge-session{
+ grid-column:span 3!important;
+ border-top:1px solid rgba(150,202,228,.18)!important;
+ margin-top:8px!important;padding-top:8px!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta>.xp-charge-session:nth-child(4){
+ padding-left:0!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta>.xp-charge-session:last-child{
+ border-right:0!important;padding-right:0!important;
 }
 @container xpeng-layout (max-width:520px){
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical{gap:4px 12px!important;padding-top:5px!important;font-size:10px!important}
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical b{font-size:11px!important}
+ /* Compact the second row horizontally to keep the car fully visible. */
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta>.xp-charge-session{
+  flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;
+  gap:7px!important;margin-top:3px!important;padding-top:4px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta>.xp-charge-session .xp-charge-stat-top{
+  gap:3px!important;flex:0 1 auto!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta>.xp-charge-session .xp-charge-stat-value{
+  font-size:12px!important;flex:0 0 auto!important;
+ }
 }
 
 /* Mobile charging: reserve space for the read-only A/V row without
