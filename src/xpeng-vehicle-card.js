@@ -5072,7 +5072,36 @@ background:transparent!important;
  border:0!important;box-shadow:none!important;
 }
 
-\n`;
+
+/* Read-only charging electrical readings. Keep the three existing metrics and
+ * all charging actions intact; fit a single compact row at narrow widths. */
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical{
+ display:flex!important;align-items:center!important;flex-wrap:wrap!important;
+ gap:5px 16px!important;min-width:0!important;margin:0!important;
+ padding:7px 0 0!important;border-top:1px solid rgba(150,202,228,.18)!important;
+ font-size:clamp(10px,.9cqw,13px)!important;line-height:1.2!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical>span{
+ display:inline-flex!important;align-items:baseline!important;gap:5px!important;white-space:nowrap!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical small{color:#a6c2d7!important;font-size:inherit!important}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical b{
+ color:#f2fbff!important;font-size:clamp(12px,1.1cqw,16px)!important;font-weight:600!important;
+}
+@container xpeng-layout (max-width:520px){
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical{gap:4px 12px!important;padding-top:5px!important;font-size:10px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical b{font-size:11px!important}
+}
+
+/* Mobile charging: reserve space for the read-only A/V row without
+ * letting the telemetry glass overlap the car or shrinking action icons. */
+@container xpeng-layout (max-width:520px){
+ .xp-scene{--xp-charge-gap:3px}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{padding:7px 11px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action{min-height:62px!important}
+}
+
+`;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
  const mode=profile?.sensor_mapping_mode??cfg?.sensor_mapping_mode;
@@ -6739,6 +6768,10 @@ class XpengVehicleCard extends HTMLElement{
         <div class="xp-charge-stat"><div class="xp-charge-stat-top">${xpIcon('bolt',16)}<small>Charging power</small></div><b class="xp-charge-stat-value">${xpEsc(this.num('power','kW',1))}</b></div>
         <div class="xp-charge-stat"><div class="xp-charge-stat-top">${xpIcon('clock',16)}<small>Time remaining</small></div><b class="xp-charge-stat-value">${xpEsc(this.remainingText())}</b></div>
         <div class="xp-charge-stat"><div class="xp-charge-stat-top">${xpIcon('battery',16)}<small>Charge limit</small></div><b class="xp-charge-stat-value">${xpEsc(this.num('target','%'))}</b></div>
+      </div>
+      <div class="xp-charge-electrical" role="group" aria-label="Charging current and voltage">
+        <span><small>Current</small><b>${xpEsc(this.num('current','A',1))}</b></span>
+        <span><small>Voltage</small><b>${xpEsc(this.num('voltage','V',0))}</b></span>
       </div>
       ${this.xpUiEnabled()&&!this._xpPanel?'<nav class="xp-charge-panel-actions" aria-label="Charging controls" dir="ltr">'+
        '<button type="button" class="xp-charge-action" data-xp-open="charge_controls"><span class="xp-charge-action-core"><span class="xp-charge-action-ring">'+xpIcon('battery',22)+'</span><span class="xp-charge-action-label">Charge limit</span></span></button>'+
