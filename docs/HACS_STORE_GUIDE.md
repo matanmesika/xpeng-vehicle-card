@@ -20,7 +20,7 @@ These are **real Chromium captures of the running JavaScript card**, with *simul
 
 [Desktop overview](screenshots/home-desktop.png) · [Mobile overview](screenshots/home-mobile.png)
 
-[Desktop charging](screenshots/charging-desktop.png) · [Mobile charging](screenshots/charging-mobile.png)
+[Desktop charging — Power / Current / Voltage grouped](screenshots/charging-desktop.png) · [Mobile charging — Power / Current / Voltage grouped](screenshots/charging-mobile.png)
 
 [Desktop climate](screenshots/climate-desktop.png) · [Mobile climate](screenshots/climate-mobile.png)
 
@@ -37,7 +37,7 @@ These are **real Chromium captures of the running JavaScript card**, with *simul
 | Feature | What it does | Important conditions |
 | --- | --- | --- |
 | Live vehicle dashboard | Battery, range and applicable vehicle state | Uses configured Xpengtk entities; never fabricates unknown measurements |
-| Automatic charging view | Live charging information, charging station visual and live green cable | Shows only when the charging sensor confirms active charging; the cable is a visual overlay |
+| Automatic charging view | Power (kW), Current (A), Voltage (V) grouped together; remaining time and charge limit below; charging station visual and green cable | Shows only when charging is active; missing A/V readings show display-only `0.0`, not a measured zero |
 | Charge limit / scheduling | Displays and controls supported charging entities | Actions require matching Xpengtk entities and permissions; schedules may be read-only |
 | Cabin climate | HVAC, fan, temperatures, supported seat and wheel comfort controls | Functions only where exposed by the vehicle integration |
 | Doors, windows, trunk and charge port | Supported direct vehicle actions | Check real entity state, Access permissions and command feedback |
@@ -68,13 +68,13 @@ These are **real Chromium captures of the running JavaScript card**, with *simul
 
 **Which language does the interface use?** English for current card and help text, irrespective of Home Assistant's selected language.
 
-**What is the current release?** Stable `v1.0.4`. The earlier stable `v1.0.3` and historical beta tags are available as rollback versions.
+**What is the current release?** Stable `v1.0.6`. The earlier stable `v1.0.5` and historical beta tags remain available for rollback.
 
 ## Final HACS / GitHub publication details
 
 - The English [README](../README.md) is the canonical description and screenshot gallery used by GitHub and HACS (`hacs.json` sets `render_readme: true`).
 - The package entrypoint is `dist/xpeng-vehicle-card.js`; the [14 Chromium screenshots](screenshots/README.md) are captured from the real running frontend using simulated vehicle readings.
-- Stable `v1.0.4` is published on GitHub and is available to users who add this HACS **custom Dashboard repository**. Default public HACS catalog inclusion requires a separate HACS approval; do not claim it has happened merely because the release exists.
+- Stable `v1.0.6` is published on GitHub and is available to users who add this HACS **custom Dashboard repository**. Default public HACS catalog inclusion requires a separate HACS approval; do not claim it has happened merely because the release exists.
 - The repository's English About description is configured independently from Markdown. Current About text: "A custom Home Assistant dashboard card for XPENG vehicles with charging, climate, vehicle status and customizable appearance." A future optional improvement: "Responsive XPENG dashboard for Home Assistant using Xpengtk entities, with live charging, climate, TPMS, location and vehicle actions."
 - Preserve earlier releases and their historical notes as rollback references. The current panel, approved station/cable and current gallery are all in the stable README.
 
