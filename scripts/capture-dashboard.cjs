@@ -510,6 +510,7 @@ async function main(){
           return {height:panel.getBoundingClientRect().height,
             stats:root.querySelectorAll('.xp-charge-meta>.xp-charge-stat').length,
             electrical:[...root.querySelectorAll('.xp-charge-meta>.xp-charge-electrical .xp-charge-stat-value')].map(x=>x.textContent.trim()),
+            session:[...root.querySelectorAll('.xp-charge-meta>.xp-charge-session .xp-charge-stat-value')].map(x=>x.textContent.trim()),
             dockRing,dockGlyph,
             buttons:[...root.querySelectorAll('.xp-charge-panel-actions button')].map(b=>{
               const ring=b.querySelector('.xp-charge-action-ring')?.getBoundingClientRect(),
@@ -527,7 +528,9 @@ async function main(){
         });
         assert.ok(metrics.height<270,'Responsive charging component overlaps car: '+JSON.stringify(metrics));
         assert.equal(metrics.stats,5,'Keep 3 original charging metrics plus integrated Current and Voltage');
-        assert.deepEqual(metrics.electrical,['0.0 A','0.0 V'],'Missing demo A/V readings display 0.0 in their integrated metric cells');
+        assert.equal(metrics.electrical.length,3,'Power, Current and Voltage share the electrical row');
+        assert.deepEqual(metrics.electrical.slice(1),['0.0 A','0.0 V'],'Missing demo A/V readings display 0.0');
+        assert.equal(metrics.session.length,2,'Time remaining and charge limit share the second row');
         assert.ok(metrics.buttons.length===3&&metrics.buttons.every(b=>
           b.ring===metrics.dockRing&&b.glyph===metrics.dockGlyph&&
           b.hitHeight>=44&&b.nativeMdi&&b.centered&&b.labelFits),
