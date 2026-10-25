@@ -122,6 +122,14 @@ const XP_CONTROL_FALLBACKS=Object.freeze({
  'sensor.slow_charge_port':'slow_charge_port',
  'binary_sensor.windows':'windows',
  'switch.defrost_switch':'front_defrost',
+ 'switch.maximum_cooling':'maximum_cooling',
+ 'switch.maximum_heating':'maximum_heating',
+ 'switch.rear_window_defroster':'rear_window_defroster',
+ 'switch.refresh':'refresh',
+ 'switch.sterilisation':'sterilisation',
+ 'switch.a_c_cleaning':'a_c_cleaning',
+ 'switch.pet_mode':'pet_mode',
+
  'switch.sentinel_switch':'x_guard',
  'number.sentinel_sensitivity_control':'sentinel_sensitivity',
  'switch.trunk_power_switch':'trunk_power',
@@ -161,6 +169,7 @@ const XP_ICONS = Object.freeze({
  flash:'mdi:car-light-high',
  auto:'mdi:autorenew',
  windscreen:'mdi:car-defrost-front',
+ snowflake:'mdi:snowflake',
  port_open:'mdi:power-plug-outline',
  fan:'mdi:fan',
  bolt:'mdi:lightning-bolt',
@@ -222,6 +231,26 @@ function xpConnText(v){
   if(['off','false','0'].includes(raw))return 'Not connected';
   if(['error','connection_error','auth_error'].includes(raw))return 'Connection error';
   return String(v).replace(/_/g,' ');
+}
+// Connection status and vehicle telemetry freshness are independent. A live MQTT
+// transport does not prove the car has sent a recent update. Do not use HA's
+// entity.last_updated: it can advance on integration-side state refreshes.
+function xpVehicleDataStatus(raw,now=Date.now()){
+  if(raw===null||raw===undefined||String(raw).trim()==='')return {state:'unknown',age:'Unavailable',timestamp:null};
+  const value=String(raw).trim();
+  if(XP_INVALID.has(value.toLowerCase()))return {state:'unknown',age:'Unavailable',timestamp:null};
+  let timestamp;
+  if(/^\d{10}(?:\.\d+)?$/.test(value))timestamp=Number(value)*1000;
+  else if(/^\d{13}$/.test(value))timestamp=Number(value);
+  else timestamp=Date.parse(value);
+  if(!Number.isFinite(timestamp)||timestamp<=0||timestamp>now+5*60*1000)
+    return {state:'unknown',age:'Unavailable',timestamp:null};
+  const elapsed=Math.max(0,now-timestamp);
+  const minutes=Math.floor(elapsed/60000);
+  const age=minutes<1?'Just now':minutes<60?minutes+'m ago':minutes<1440?
+    Math.floor(minutes/60)+'h '+(minutes%60)+'m ago':Math.floor(minutes/1440)+'d '+Math.floor((minutes%1440)/60)+'h ago';
+  // A parked G6 can sleep. "Old" is a timestamp observation, not an API fault.
+  return {state:elapsed>2*60*60*1000?'old':'recent',age,timestamp};
 }
 function xpBool(v){
   const state=String(v??'').trim().toLowerCase();
@@ -5034,6 +5063,80 @@ background:transparent!important;
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-stat-top small{font-size:8px!important}
 }
 
+/* Shared fan bar: keep the same segmented bar and range track on vehicle and phone layouts. */
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-climate-fan-panel{
+ box-sizing:border-box!important;width:100%!important;max-width:100%!important;
+ padding:10px 3px!important;margin:0!important;gap:8px!important;
+ border:0!important;border-radius:0!important;background:transparent!important;
+ box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-fan-bars{
+ display:flex!important;flex-direction:row!important;align-items:center!important;
+ justify-content:center!important;box-sizing:border-box!important;width:100%!important;
+ min-width:0!important;height:15px!important;min-height:15px!important;
+ gap:clamp(4px,.82cqw,8px)!important;margin:7px 0 3px!important;
+ overflow:visible!important;direction:ltr!important;
+}
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-fan-bars i{
+ display:block!important;flex:1 1 auto!important;width:auto!important;
+ min-width:3px!important;max-width:8px!important;height:7px!important;min-height:7px!important;
+ margin:0!important;border:1px solid rgba(127,178,192,.29)!important;
+ border-radius:999px!important;background:rgba(105,150,174,.38)!important;box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-fan-bars i.xp-fan-bar-on{
+ background:#83e8e2!important;border-color:#83e8e2!important;box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-climate-fan-panel input[type="range"]{
+ box-sizing:border-box!important;width:100%!important;max-width:100%!important;min-width:0!important;
+ height:4px!important;margin:14px 2px 10px!important;accent-color:#82e8e2!important;
+ border:0!important;box-shadow:none!important;
+}
+
+
+/* Read-only charging electrical readings. Keep the three existing metrics and
+ * all charging actions intact; fit a single compact row at narrow widths. */
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical{
+ display:flex!important;align-items:center!important;flex-wrap:wrap!important;
+ gap:5px 16px!important;min-width:0!important;margin:0!important;
+ padding:7px 0 0!important;border-top:1px solid rgba(150,202,228,.18)!important;
+ font-size:clamp(10px,.9cqw,13px)!important;line-height:1.2!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical>span{
+ display:inline-flex!important;align-items:baseline!important;gap:5px!important;white-space:nowrap!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical small{color:#a6c2d7!important;font-size:inherit!important}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical b{
+ color:#f2fbff!important;font-size:clamp(12px,1.1cqw,16px)!important;font-weight:600!important;
+}
+@container xpeng-layout (max-width:520px){
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical{gap:4px 12px!important;padding-top:5px!important;font-size:10px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical b{font-size:11px!important}
+}
+
+/* Mobile charging: reserve space for the read-only A/V row without
+ * letting the telemetry glass overlap the car or shrinking action icons. */
+@container xpeng-layout (max-width:520px){
+ .xp-scene{--xp-charge-gap:3px}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{padding:7px 11px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action{min-height:62px!important}
+}
+
+/* Wi-Fi button shows transport status and independently flags old/unknown
+ * vehicle telemetry; keep the existing icon and click-to-open popover. */
+.xp-header .xp-wifi.xp-stale{color:#ffbb70!important;border-color:#e7a45599!important}
+.xp-header .xp-wifi.xp-unknown{color:#a8b3c4!important;border-color:#7399c077!important}
+.xp-header .xp-meta-popover{width:min(310px,88vw)!important}
+.xp-header .xp-meta-popover .xp-data-recent{color:#91e6d0!important}
+.xp-header .xp-meta-popover .xp-data-old{color:#ffc78e!important}
+.xp-header .xp-meta-popover .xp-data-unknown{color:#aebbc9!important}
+.xp-header .xp-meta-hint{padding-top:7px;border-top:1px solid #7399c044;
+ color:#9eb4ca;font-size:10px;line-height:1.35}
+@container xpeng-layout (max-width:520px){
+ .xp-header .xp-meta-popover{width:min(290px,85vw)!important;padding:10px 12px!important;gap:7px!important}
+ .xp-header .xp-meta-field{gap:8px!important}
+ .xp-header .xp-meta-popover strong{font-size:12px!important;white-space:normal!important}
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
@@ -5647,6 +5750,31 @@ class XpengVehicleCard extends HTMLElement{
        +'<span>Windshield defrost</span><small>'
        +(active?'On':'Off')+'</small></button>');
    }
+   // New G6 comfort features: telemetry-only in this beta. No vehicle commands.
+   // Resolve by stable Xpengtk unique ID, then by the selected vehicle prefix.
+   const newModes=[
+     ['maximum_cooling','Max Cooling','snowflake'],
+     ['maximum_heating','Max Heating','thermometer'],
+     ['rear_window_defroster','Rear Defrost','windscreen'],
+     ['refresh','Air Refresh','refresh'],
+     ['sterilisation','Sterilisation','shield'],
+     ['a_c_cleaning','A/C Cleaning','fan'],
+     ['pet_mode','Pet Mode','info']
+   ];
+   const modeTiles=[];
+   for(const [suffix,label,icon] of newModes){
+     const id=this.xpengEntity('switch',suffix);
+     const state=id?this._hass?.states?.[id]:null;
+     if(!state)continue;
+     const value=state.state;
+     const known=value==='on'||value==='off';
+     const status=known?(value==='on'?'On':'Off'):'Unavailable';
+     modeTiles.push('<span class="xp-ux-climate-feature xp-ux-climate-readonly'
+       +(value==='on'?' xp-ux-selected':'')+'" role="status" aria-label="'
+       +xpEsc(label+': '+status)+'">'+xpIcon(icon,25)+'<span>'
+       +xpEsc(label)+'</span><small>'+status+' • Status only</small></span>');
+   }
+   if(modeTiles.length)tiles.push(...modeTiles);
    if(schedule){
      tiles.push('<button type="button" class="xp-ux-climate-feature" data-xp-extra-page="schedule">'
        +xpIcon('clock',25)+'<span>Schedule climate</span><small>View existing schedules</small></button>');
@@ -6463,10 +6591,10 @@ class XpengVehicleCard extends HTMLElement{
     return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
   }
   lastUpdate(){
-   // Home Assistant's last_updated is not necessarily a vehicle refresh.
-   const t=this.val('last_update');if(!t)return 'Unavailable';
-   const parsed=Date.parse(String(t));if(!Number.isFinite(parsed))return String(t);
-   return new Date(parsed).toLocaleString(this._hass?.locale?.language||undefined,{dateStyle:'medium',timeStyle:'short'});
+   const reading=this.val('last_update');
+   const parsed=xpVehicleDataStatus(reading);
+   if(parsed.timestamp===null)return reading===null?'Unavailable':String(reading);
+   return new Date(parsed.timestamp).toLocaleString(this._hass?.locale?.language||undefined,{dateStyle:'medium',timeStyle:'short'});
  }
   tirePressureBar(key){
     const d=this.data(key),n=this.number(key);
@@ -6526,19 +6654,27 @@ class XpengVehicleCard extends HTMLElement{
       style="background-image:url(&quot;${xpEsc(source)}&quot;)"></div>`;
   }
  header(){
-   const connection=this.val('connection'),status=xpConnText(connection);
-   const stateClass=status==='Connected'?'xp-connected':status==='Connection error'?'xp-error':'xp-disconnected';
+   const connection=this.data('connection'),status=xpConnText(connection?.value);
+   const vehicleData=xpVehicleDataStatus(this.val('last_update'));
+   const transport=connection?.id?.includes('mqtt_connected')?'MQTT':'Integration';
+   const dataLabel=vehicleData.state==='recent'?'Recent':vehicleData.state==='old'?'Old':'Unknown';
+   const stateClass=status==='Connection error'?'xp-error':status!=='Connected'?'xp-disconnected':
+     vehicleData.state==='old'?'xp-stale':vehicleData.state==='unknown'?'xp-unknown':'xp-connected';
+   const details='Connection: '+status+'; vehicle data: '+dataLabel;
    return `<header class="xp-header">
      <div class="xp-header-right"><div class="xp-meta-tools">
         ${this.xpUiEnabled()&&this._view!=='charging'?'<button type="button" class="xp-more-trigger" data-xp-more aria-label="More options" title="More options">'+xpIcon('settings',21)+'</button>':''}
        <button class="xp-wifi ${stateClass}" type="button" data-meta-toggle
-         aria-label="Vehicle communication details" aria-expanded="${this._infoOpen?'true':'false'}"
-         aria-controls="xp-last-update-details" title="Vehicle communication details">
+         aria-label="${xpEsc(details)}. Show communication details" aria-expanded="${this._infoOpen?'true':'false'}"
+         aria-controls="xp-last-update-details" title="${xpEsc(details)}">
          ${xpIcon('wifi',24)}</button>
        ${this._infoOpen?`<div id="xp-last-update-details" class="xp-meta-popover" role="region"
-         aria-label="Vehicle connection and last update">
-           <div class="xp-meta-field"><small>Connection</small><strong>${xpEsc(status)}</strong></div>
+         aria-label="Vehicle connection and data freshness">
+           <div class="xp-meta-field"><small>${xpEsc(transport)} connection</small><strong>${xpEsc(status)}</strong></div>
+           <div class="xp-meta-field"><small>Vehicle data</small><strong class="xp-data-${vehicleData.state}">${xpEsc(dataLabel)}</strong></div>
+           <div class="xp-meta-field"><small>Data age</small><strong>${xpEsc(vehicleData.age)}</strong></div>
            <div class="xp-meta-field"><small>Last vehicle update</small><strong>${xpEsc(this.lastUpdate())}</strong></div>
+           <div class="xp-meta-hint">Connection status does not confirm fresh vehicle data. Parked vehicles may sleep.</div>
          </div>`:''}
      </div></div></header>`;
  }
@@ -6676,6 +6812,10 @@ class XpengVehicleCard extends HTMLElement{
         <div class="xp-charge-stat"><div class="xp-charge-stat-top">${xpIcon('bolt',16)}<small>Charging power</small></div><b class="xp-charge-stat-value">${xpEsc(this.num('power','kW',1))}</b></div>
         <div class="xp-charge-stat"><div class="xp-charge-stat-top">${xpIcon('clock',16)}<small>Time remaining</small></div><b class="xp-charge-stat-value">${xpEsc(this.remainingText())}</b></div>
         <div class="xp-charge-stat"><div class="xp-charge-stat-top">${xpIcon('battery',16)}<small>Charge limit</small></div><b class="xp-charge-stat-value">${xpEsc(this.num('target','%'))}</b></div>
+      </div>
+      <div class="xp-charge-electrical" role="group" aria-label="Charging current and voltage">
+        <span><small>Current</small><b>${xpEsc(this.num('current','A',1))}</b></span>
+        <span><small>Voltage</small><b>${xpEsc(this.num('voltage','V',0))}</b></span>
       </div>
       ${this.xpUiEnabled()&&!this._xpPanel?'<nav class="xp-charge-panel-actions" aria-label="Charging controls" dir="ltr">'+
        '<button type="button" class="xp-charge-action" data-xp-open="charge_controls"><span class="xp-charge-action-core"><span class="xp-charge-action-ring">'+xpIcon('battery',22)+'</span><span class="xp-charge-action-label">Charge limit</span></span></button>'+

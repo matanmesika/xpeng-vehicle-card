@@ -4705,3 +4705,77 @@ background:transparent!important;
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{top:153px!important;padding:8px 9px!important}
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-stat-top small{font-size:8px!important}
 }
+
+/* Shared fan bar: keep the same segmented bar and range track on vehicle and phone layouts. */
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-climate-fan-panel{
+ box-sizing:border-box!important;width:100%!important;max-width:100%!important;
+ padding:10px 3px!important;margin:0!important;gap:8px!important;
+ border:0!important;border-radius:0!important;background:transparent!important;
+ box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-fan-bars{
+ display:flex!important;flex-direction:row!important;align-items:center!important;
+ justify-content:center!important;box-sizing:border-box!important;width:100%!important;
+ min-width:0!important;height:15px!important;min-height:15px!important;
+ gap:clamp(4px,.82cqw,8px)!important;margin:7px 0 3px!important;
+ overflow:visible!important;direction:ltr!important;
+}
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-fan-bars i{
+ display:block!important;flex:1 1 auto!important;width:auto!important;
+ min-width:3px!important;max-width:8px!important;height:7px!important;min-height:7px!important;
+ margin:0!important;border:1px solid rgba(127,178,192,.29)!important;
+ border-radius:999px!important;background:rgba(105,150,174,.38)!important;box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-fan-bars i.xp-fan-bar-on{
+ background:#83e8e2!important;border-color:#83e8e2!important;box-shadow:none!important;
+}
+.xp-scene .xp-ux-modal.xp-ux-modal-climate .xp-climate-fan-panel input[type="range"]{
+ box-sizing:border-box!important;width:100%!important;max-width:100%!important;min-width:0!important;
+ height:4px!important;margin:14px 2px 10px!important;accent-color:#82e8e2!important;
+ border:0!important;box-shadow:none!important;
+}
+
+
+/* Read-only charging electrical readings. Keep the three existing metrics and
+ * all charging actions intact; fit a single compact row at narrow widths. */
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical{
+ display:flex!important;align-items:center!important;flex-wrap:wrap!important;
+ gap:5px 16px!important;min-width:0!important;margin:0!important;
+ padding:7px 0 0!important;border-top:1px solid rgba(150,202,228,.18)!important;
+ font-size:clamp(10px,.9cqw,13px)!important;line-height:1.2!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical>span{
+ display:inline-flex!important;align-items:baseline!important;gap:5px!important;white-space:nowrap!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical small{color:#a6c2d7!important;font-size:inherit!important}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical b{
+ color:#f2fbff!important;font-size:clamp(12px,1.1cqw,16px)!important;font-weight:600!important;
+}
+@container xpeng-layout (max-width:520px){
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical{gap:4px 12px!important;padding-top:5px!important;font-size:10px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-electrical b{font-size:11px!important}
+}
+
+/* Mobile charging: reserve space for the read-only A/V row without
+ * letting the telemetry glass overlap the car or shrinking action icons. */
+@container xpeng-layout (max-width:520px){
+ .xp-scene{--xp-charge-gap:3px}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{padding:7px 11px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action{min-height:62px!important}
+}
+
+/* Wi-Fi button shows transport status and independently flags old/unknown
+ * vehicle telemetry; keep the existing icon and click-to-open popover. */
+.xp-header .xp-wifi.xp-stale{color:#ffbb70!important;border-color:#e7a45599!important}
+.xp-header .xp-wifi.xp-unknown{color:#a8b3c4!important;border-color:#7399c077!important}
+.xp-header .xp-meta-popover{width:min(310px,88vw)!important}
+.xp-header .xp-meta-popover .xp-data-recent{color:#91e6d0!important}
+.xp-header .xp-meta-popover .xp-data-old{color:#ffc78e!important}
+.xp-header .xp-meta-popover .xp-data-unknown{color:#aebbc9!important}
+.xp-header .xp-meta-hint{padding-top:7px;border-top:1px solid #7399c044;
+ color:#9eb4ca;font-size:10px;line-height:1.35}
+@container xpeng-layout (max-width:520px){
+ .xp-header .xp-meta-popover{width:min(290px,85vw)!important;padding:10px 12px!important;gap:7px!important}
+ .xp-header .xp-meta-field{gap:8px!important}
+ .xp-header .xp-meta-popover strong{font-size:12px!important;white-space:normal!important}
+}
