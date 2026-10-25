@@ -1,0 +1,128 @@
+name: Publish XPENG Vehicle Card v1.0.5 stable
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .release/v1.0.5
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-xpeng-v1.0.5-stable
+  cancel-in-progress: false
+
+jobs:
+  final-validation-and-release:
+    if: github.repository == 'matanmesika/xpeng-vehicle-card' && github.ref == 'refs/heads/main'
+    name: Full regressions, HACS, real browser gallery and stable release
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Ensure owner-approved marker and no existing v1.0.5 tag or release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          grep -qx 'APPROVED_v1.0.5' .release/v1.0.5
+          if gh release view v1.0.5 >/dev/null 2>&1; then
+            echo 'Stable v1.0.5 release already exists; refusing overwrite.'
+            exit 1
+          fi
+          if git ls-remote --exit-code --tags origin refs/tags/v1.0.5; then
+            echo 'Stable v1.0.5 tag already exists; refusing to move it.'
+            exit 1
+          fi
+      - name: Validate frontend, HACS and source assets
+        run: |
+          set -euo pipefail
+          node --check src/xpeng-vehicle-card.js
+          node --check dist/xpeng-vehicle-card.js
+          node --check scripts/capture-dashboard.cjs
+          cmp src/xpeng-vehicle-card.js dist/xpeng-vehicle-card.js
+          node tools/build_vehicle_card.mjs --check
+          python -m json.tool hacs.json >/dev/null
+          python tools/sync_vehicle_artwork.py --check
+          python tools/audit_vehicle_provenance.py
+          python tools/check_photo_candidates.py
+          test -s dist/xpeng-vehicle-card.js
+          grep -q 'xpVehicleDataStatus' dist/xpeng-vehicle-card.js
+          grep -q 'xp-charge-electrical' dist/xpeng-vehicle-card.js
+          grep -q 'Shared fan bar' dist/xpeng-vehicle-card.js
+      - name: Run maintained regression suite and v1.0.5 additions
+        run: |
+          set -euo pipefail
+          node --test \
+            tests/vehicle-artwork-mapping.test.cjs \
+            tests/charging-cable-static.test.cjs \
+            tests/xpeng-controls-smoke.test.cjs \
+            tests/responsive-dual-state.test.cjs \
+            tests/release-documentation.test.cjs \
+            tests/g6-isolated-design-help.test.cjs \
+            tests/g6-design-agents.test.cjs \
+            tests/g6-approved-glass-design.test.cjs \
+            tests/g6-v3-canonical-style.test.cjs \
+            tests/g6-v3-inner-pages.test.cjs \
+            tests/g6-v3-owner-reference.test.cjs \
+            tests/g6-v3-visual-acceptance.test.cjs \
+            tests/g6-new-climate-status-beta.test.cjs \
+            tests/g6-charging-electrical-readings-beta.test.cjs \
+            tests/g6-wifi-connection-freshness-beta.test.cjs
+      - name: Install browser test tooling
+        run: |
+          npm install --prefix /tmp/xpeng-v105-qa --no-audit --no-fund playwright@1.56.1 @mdi/js@7.4.47
+          /tmp/xpeng-v105-qa/node_modules/.bin/playwright install --with-deps chromium
+      - name: Verify desktop, phone and charging visual geometry
+        env:
+          PLAYWRIGHT_MODULE: /tmp/xpeng-v105-qa/node_modules/playwright
+        run: timeout 180s node scripts/capture-dashboard.cjs
+      - name: Package 14 verified screenshots
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import struct
+          names=['home-desktop','home-mobile','charging-desktop','charging-mobile',
+            'climate-desktop','climate-mobile','maintenance-desktop','maintenance-mobile',
+            'map-desktop','map-mobile','charge-controls-mobile','diagnostics-mobile',
+            'functions-desktop','functions-mobile']
+          root=Path('docs/screenshots')
+          assert {x.name for x in root.glob('*.png')}=={n+'.png' for n in names}
+          for name in names:
+            data=(root/(name+'.png')).read_bytes()
+            assert data.startswith(b'\x89PNG\r\n\x1a\n') and len(data)>10000,name
+            w,h=struct.unpack('>II',data[16:24])
+            assert (w>=1100 if name.endswith('desktop') else 300<=w<=500) and h>=620,name
+          PY
+          zip -q -j xpeng-g6-v1.0.5-screenshots.zip docs/screenshots/*.png
+      - name: Upload verified browser screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xpeng-g6-v1.0.5-verified-screenshots
+          path: docs/screenshots/*.png
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Publish immutable HACS-installable stable release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release create v1.0.5 \
+            'dist/xpeng-vehicle-card.js#xpeng-vehicle-card.js' \
+            xpeng-g6-v1.0.5-screenshots.zip \
+            --target "${GITHUB_SHA}" \
+            --title 'XPENG Vehicle Card v1.0.5 — Stable' \
+            --notes-file docs/releases/v1.0.5.md \
+            --latest
+          gh release view v1.0.5 --json tagName,isPrerelease,isDraft,targetCommitish,url,assets
