@@ -232,6 +232,26 @@ function xpConnText(v){
   if(['error','connection_error','auth_error'].includes(raw))return 'Connection error';
   return String(v).replace(/_/g,' ');
 }
+// Connection status and vehicle telemetry freshness are independent. A live MQTT
+// transport does not prove the car has sent a recent update. Do not use HA's
+// entity.last_updated: it can advance on integration-side state refreshes.
+function xpVehicleDataStatus(raw,now=Date.now()){
+  if(raw===null||raw===undefined||String(raw).trim()==='')return {state:'unknown',age:'Unavailable',timestamp:null};
+  const value=String(raw).trim();
+  if(XP_INVALID.has(value.toLowerCase()))return {state:'unknown',age:'Unavailable',timestamp:null};
+  let timestamp;
+  if(/^\\d{10}(?:\\.\\d+)?$/.test(value))timestamp=Number(value)*1000;
+  else if(/^\\d{13}$/.test(value))timestamp=Number(value);
+  else timestamp=Date.parse(value);
+  if(!Number.isFinite(timestamp)||timestamp<=0||timestamp>now+5*60*1000)
+    return {state:'unknown',age:'Unavailable',timestamp:null};
+  const elapsed=Math.max(0,now-timestamp);
+  const minutes=Math.floor(elapsed/60000);
+  const age=minutes<1?'Just now':minutes<60?minutes+'m ago':minutes<1440?
+    Math.floor(minutes/60)+'h '+(minutes%60)+'m ago':Math.floor(minutes/1440)+'d '+Math.floor((minutes%1440)/60)+'h ago';
+  // A parked G6 can sleep. "Old" is a timestamp observation, not an API fault.
+  return {state:elapsed>2*60*60*1000?'old':'recent',age,timestamp};
+}
 function xpBool(v){
   const state=String(v??'').trim().toLowerCase();
   if(['on','true','1'].includes(state))return true;
@@ -1789,10 +1809,10 @@ class XpengVehicleCard extends HTMLElement{
     return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
   }
   lastUpdate(){
-   // Home Assistant's last_updated is not necessarily a vehicle refresh.
-   const t=this.val('last_update');if(!t)return 'Unavailable';
-   const parsed=Date.parse(String(t));if(!Number.isFinite(parsed))return String(t);
-   return new Date(parsed).toLocaleString(this._hass?.locale?.language||undefined,{dateStyle:'medium',timeStyle:'short'});
+   const reading=this.val('last_update');
+   const parsed=xpVehicleDataStatus(reading);
+   if(parsed.timestamp===null)return reading===null?'Unavailable':String(reading);
+   return new Date(parsed.timestamp).toLocaleString(this._hass?.locale?.language||undefined,{dateStyle:'medium',timeStyle:'short'});
  }
   tirePressureBar(key){
     const d=this.data(key),n=this.number(key);
@@ -1852,19 +1872,27 @@ class XpengVehicleCard extends HTMLElement{
       style="background-image:url(&quot;${xpEsc(source)}&quot;)"></div>`;
   }
  header(){
-   const connection=this.val('connection'),status=xpConnText(connection);
-   const stateClass=status==='Connected'?'xp-connected':status==='Connection error'?'xp-error':'xp-disconnected';
+   const connection=this.data('connection'),status=xpConnText(connection?.value);
+   const vehicleData=xpVehicleDataStatus(this.val('last_update'));
+   const transport=connection?.id?.includes('mqtt_connected')?'MQTT':'Integration';
+   const dataLabel=vehicleData.state==='recent'?'Recent':vehicleData.state==='old'?'Old':'Unknown';
+   const stateClass=status==='Connection error'?'xp-error':status!=='Connected'?'xp-disconnected':
+     vehicleData.state==='old'?'xp-stale':vehicleData.state==='unknown'?'xp-unknown':'xp-connected';
+   const details='Connection: '+status+'; vehicle data: '+dataLabel;
    return `<header class="xp-header">
      <div class="xp-header-right"><div class="xp-meta-tools">
         ${this.xpUiEnabled()&&this._view!=='charging'?'<button type="button" class="xp-more-trigger" data-xp-more aria-label="More options" title="More options">'+xpIcon('settings',21)+'</button>':''}
        <button class="xp-wifi ${stateClass}" type="button" data-meta-toggle
-         aria-label="Vehicle communication details" aria-expanded="${this._infoOpen?'true':'false'}"
-         aria-controls="xp-last-update-details" title="Vehicle communication details">
+         aria-label="${xpEsc(details)}. Show communication details" aria-expanded="${this._infoOpen?'true':'false'}"
+         aria-controls="xp-last-update-details" title="${xpEsc(details)}">
          ${xpIcon('wifi',24)}</button>
        ${this._infoOpen?`<div id="xp-last-update-details" class="xp-meta-popover" role="region"
-         aria-label="Vehicle connection and last update">
-           <div class="xp-meta-field"><small>Connection</small><strong>${xpEsc(status)}</strong></div>
+         aria-label="Vehicle connection and data freshness">
+           <div class="xp-meta-field"><small>${xpEsc(transport)} connection</small><strong>${xpEsc(status)}</strong></div>
+           <div class="xp-meta-field"><small>Vehicle data</small><strong class="xp-data-${vehicleData.state}">${xpEsc(dataLabel)}</strong></div>
+           <div class="xp-meta-field"><small>Data age</small><strong>${xpEsc(vehicleData.age)}</strong></div>
            <div class="xp-meta-field"><small>Last vehicle update</small><strong>${xpEsc(this.lastUpdate())}</strong></div>
+           <div class="xp-meta-hint">Connection status does not confirm fresh vehicle data. Parked vehicles may sleep.</div>
          </div>`:''}
      </div></div></header>`;
  }
