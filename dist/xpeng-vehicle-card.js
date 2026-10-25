@@ -6559,7 +6559,7 @@ class XpengVehicleCard extends HTMLElement{
  num(key,unit='',dec=0){const v=this.number(key);return v===null?'—':xpNum(v,dec)+(unit?' '+unit:'');}
  // Display-only fallback for charging electrical metrics. Missing readings are
  // shown as 0.0 by request; this is not evidence of a measured zero.
- chargingElectrical(key,unit){const v=this.number(key);return xpNum(v===null?0:v,1)+' '+unit;}
+ chargingElectrical(key,unit){const v=this.number(key);return (v===null?0:v).toFixed(1)+' '+unit;}
  artworkUrl(relative){
     const configuredBase=this._config.image_path;
     const base=(!configuredBase||configuredBase==='/hacsfiles/xpeng-vehicle-card/assets')?null:configuredBase.replace(/\/$/,'');
