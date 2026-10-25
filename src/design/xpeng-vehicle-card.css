@@ -4761,11 +4761,16 @@ background:transparent!important;
  border-right:0!important;padding-right:0!important;
 }
 @container xpeng-layout (max-width:520px){
+ /* Compact the second row horizontally on iPhone to protect car clearance. */
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta>.xp-charge-electrical{
-  margin-top:5px!important;padding-top:6px!important;
+  flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;
+  gap:7px!important;margin-top:3px!important;padding-top:4px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta>.xp-charge-electrical .xp-charge-stat-top{
+  gap:3px!important;flex:0 1 auto!important;
  }
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta>.xp-charge-electrical .xp-charge-stat-value{
-  font-size:12px!important;
+  font-size:12px!important;flex:0 0 auto!important;
  }
 }
 
