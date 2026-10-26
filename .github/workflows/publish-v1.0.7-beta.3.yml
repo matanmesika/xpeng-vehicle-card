@@ -54,6 +54,7 @@ jobs:
           python -m json.tool hacs.json >/dev/null
           grep -q 'config/entity_registry/list' dist/xpeng-vehicle-card.js
           grep -q 'XP_XPENGTK_KEYS\[key\]' dist/xpeng-vehicle-card.js
+          grep -q 'XP_SENSOR_FIELD_META' dist/xpeng-vehicle-card.js
           grep -q 'control_allowed===true' dist/xpeng-vehicle-card.js
           grep -q 'Xpengtk entity catalogue' docs/XPENGTK_ENTITY_CATALOG.md
       - name: Run complete Node regression suite
