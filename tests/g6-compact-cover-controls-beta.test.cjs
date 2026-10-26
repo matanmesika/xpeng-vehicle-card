@@ -78,7 +78,7 @@ test('legacy window, trunk and port telemetry remain readable without compact co
  assert.equal(vehicle({sensors:{trunk:'off'}}).xpActionState('trunk'),'closed');
  assert.equal(vehicle({sensors:{windows:'on'}}).xpActionState('windows'),'open');
  assert.equal(vehicle({portSensor:'Open'}).xpActionState('port'),'open');
- assert.equal(vehicle({portSensor:'Connected'}).xpActionState('port'),'open');
+ assert.equal(vehicle({portSensor:'Connected'}).xpActionState('port'),null);
  assert.equal(vehicle({lock:'locked'}).xpActionState('doors'),'closed');
 });
 test('cover mapping supports both canonical unique ID and generated English entity name',()=>{
