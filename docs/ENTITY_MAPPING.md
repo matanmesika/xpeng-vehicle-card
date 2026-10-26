@@ -64,6 +64,12 @@ Xpengtk vehicle, it can be selected without relying on a location entity. With
 multiple vehicles, set xpeng_device_id per card/vehicle profile; the card will
 not combine entities from different vehicles or select one arbitrarily.
 
+Manual mode exposes every telemetry field used by the dashboard, grouped by
+vehicle, battery, range, charging, vehicle status, climate, and tires. Assign an
+entity ID (or `entity_id|attribute_name`) to override a field; leave it blank to
+use automatic XPENG lookup for that field. The field list is generated from the
+dashboard's telemetry keys so it stays in sync when fields are added.
+
 The complete current entity catalogue is documented in
 [XPENGTK_ENTITY_CATALOG.md](XPENGTK_ENTITY_CATALOG.md). The live Entity
 Diagnostics panel shows the actual entity IDs for the selected car, including

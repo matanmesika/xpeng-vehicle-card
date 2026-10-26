@@ -2211,7 +2211,33 @@ class XpengVehicleCard extends HTMLElement{
   if(this._xpPanel==='map')this.xpMountMap();
  }
 }
-const XP_MAPPABLE_FIELDS = Object.freeze([{"key":"charging","label":"Charging state"},{"key":"soc","label":"Battery level (%)"},{"key":"range","label":"Estimated range (km)"},{"key":"power","label":"Charging power (kW)"},{"key":"remaining","label":"Time remaining (minutes)"},{"key":"target","label":"Charging limit (%)"},{"key":"plugged","label":"Cable connected"},{"key":"odometer","label":"Odometer (km)"},{"key":"tire_fl","label":"Tire front left (kPa)"},{"key":"tire_fr","label":"Tire front right (kPa)"},{"key":"tire_rl","label":"Tire rear left (kPa)"},{"key":"tire_rr","label":"Tire rear right (kPa)"},{"key":"location","label":"Vehicle location"},{"key":"last_update","label":"Last update"},{"key":"connection","label":"Connection status"}]);
+const XP_SENSOR_FIELD_META = Object.freeze({
+ model:['Vehicle','Vehicle model'],name:['Vehicle','Vehicle name'],powertrain:['Vehicle','Powertrain'],
+ connection:['Vehicle','Integration connection'],
+ soc:['Battery','Battery level (%)'],health:['Battery','Battery health (%)'],
+ battery_voltage:['Battery','High-voltage battery voltage'],battery_current:['Battery','High-voltage battery current'],
+ battery_12v:['Battery','12 V battery voltage'],
+ range:['Range','Estimated range (km)'],fuel:['Range','Fuel level (%)'],
+ fuel_range:['Range','Fuel-powered range (km)'],combined:['Range','Combined range (km)'],
+ charging:['Charging','Charging state'],plugged:['Charging','Cable connected'],
+ target:['Charging','Charging limit (%)'],power:['Charging','Charging power (kW)'],
+ energy:['Charging','Session energy (kWh)'],remaining:['Charging','Time remaining (minutes)'],
+ current:['Charging','Charging current (A)'],voltage:['Charging','Charging voltage (V)'],
+ odometer:['Vehicle status','Odometer (km)'],speed:['Vehicle status','Vehicle speed (km/h)'],
+ locked:['Vehicle status','Locked'],door_fl:['Vehicle status','Front-left door'],
+ door_fr:['Vehicle status','Front-right door'],door_rl:['Vehicle status','Rear-left door'],
+ door_rr:['Vehicle status','Rear-right door'],trunk:['Vehicle status','Trunk'],hood:['Vehicle status','Hood'],
+ location:['Vehicle status','Vehicle location'],last_update:['Vehicle status','Last vehicle update'],
+ climate:['Climate','Climate active'],cabin:['Climate','Cabin temperature (°C)'],
+ outside:['Climate','Outside temperature (°C)'],
+ tire_fl:['Tires','Front-left tire pressure'],tire_fr:['Tires','Front-right tire pressure'],
+ tire_rl:['Tires','Rear-left tire pressure'],tire_rr:['Tires','Rear-right tire pressure']
+});
+// Keep manual mapping in lockstep with every telemetry key the dashboard reads.
+const XP_MAPPABLE_FIELDS = Object.freeze(Object.keys(XP_KEYS).map(key=>{
+ const [group,label]=XP_SENSOR_FIELD_META[key]||['Other',key.replaceAll('_',' ')];
+ return Object.freeze({key,group,label});
+}));
 class XpengVehicleCardEditor extends HTMLElement{
  constructor(){
   super();this.attachShadow({mode:'open'});
@@ -2267,16 +2293,23 @@ class XpengVehicleCardEditor extends HTMLElement{
   const mappingMode=xpSensorMappingMode(v);
   const states=this._hass?.states||{};
   const dataList=Object.keys(states).filter(id=>xpParseEntityMapping(id)).sort().map(id=>'<option value="'+xpEsc(id)+'"></option>').join('');
-  const mappingRows=XP_MAPPABLE_FIELDS.map(field=>{
+  const mappingRows=XP_MAPPABLE_FIELDS.reduce((groups,field)=>{
    const spec=XP_KEYS[field.key];
    const auto=spec[0]+'.'+prefix+'_'+spec[1];
-   return '<label class="xp-map-row"><span>'+xpEsc(field.label)+'</span><input data-entity="'+xpEsc(field.key)+'" list="xp-entity-choices" autocomplete="off" value="'+xpEsc(v.entities?.[field.key]||'')+'" placeholder="Auto: '+xpEsc(auto)+'" title="Leave blank for automatic mapping. Supports entity_id or entity_id|attribute_name"></label>';
-  }).join('');
+   const row='<label class="xp-map-row"><span>'+xpEsc(field.label)+'</span><input data-entity="'+xpEsc(field.key)+'" list="xp-entity-choices" autocomplete="off" value="'+xpEsc(v.entities?.[field.key]||'')+'" placeholder="Auto: '+xpEsc(auto)+'" title="Leave blank for automatic mapping. Supports entity_id or entity_id|attribute_name"></label>';
+   (groups[field.group]||(groups[field.group]=[])).push(row);
+   return groups;
+  },{});
+  const mappingGroups=Object.entries(mappingRows).map(([group,rows],index)=>
+   '<details class="xp-map-group" '+(index===0?'open':'')+'><summary>'+xpEsc(group)+' · '+rows.length+'</summary><div class="xp-map-group-fields">'+rows.join('')+'</div></details>'
+  ).join('');
   this.shadowRoot.innerHTML=xpLocalizeMarkup(`<style>section{display:grid;gap:13px;padding:14px;font:inherit}label{display:grid;gap:5px;font-size:13px}input,select{border:1px solid #8b959e;border-radius:7px;padding:10px;background:var(--card-background-color,#fff);color:var(--primary-text-color,#111)}p{font-size:12px;opacity:.8;line-height:1.5}
    h3{margin:8px 0 0;font-size:15px}
    details{border:1px solid var(--divider-color,#7d879a77);border-radius:9px;padding:11px}
    summary{cursor:pointer;font-weight:600}
    .xp-map-fields{display:grid;gap:9px;margin-top:12px}
+   .xp-map-group{padding:9px;border:1px solid var(--divider-color,#7d879a77);border-radius:8px}
+   .xp-map-group-fields{display:grid;gap:9px;margin-top:10px}
    .xp-map-row{display:grid;grid-template-columns:minmax(105px,1fr) minmax(145px,2fr);gap:9px;align-items:center}
    .xp-map-row input{font-size:12px}
    @media(max-width:460px){.xp-map-row{grid-template-columns:1fr}}
@@ -2298,8 +2331,8 @@ class XpengVehicleCardEditor extends HTMLElement{
        <option value="manual" ${mappingMode==='manual'?'selected':''}>Manual · choose sensors</option>
      </select></label>
      ${mappingMode==='manual'? `<div class="xp-map-fields" data-mappings>
-       <p>Choose any of the ${XP_MAPPABLE_FIELDS.length} Home Assistant sensors. A blank field uses automatic integration mapping. Entity attributes: entity_id|attribute_name.</p>
-       ${mappingRows}
+       <p>Map all ${XP_MAPPABLE_FIELDS.length} dashboard telemetry fields. Leave a field blank to use automatic XPENG mapping. Entity attributes are supported as entity_id|attribute_name.</p>
+       ${mappingGroups}
        <datalist id="xp-entity-choices">${dataList}</datalist>
      </div>`:`<p data-auto-mapping>Vehicle sensors are matched automatically using the XPENG integration. Choose Manual to show and assign individual sensor entities.</p>`}
      <p>Vehicle status and automatic Charging remain the two principal scenes. Optional in-card overlays show climate and seat controls and use native Home Assistant services. The cabin illustration reflects the selected interior colour.</p>
