@@ -1,0 +1,87 @@
+name: Publish XPENG Vehicle Card v1.0.7-beta.2
+
+on:
+  push:
+    branches:
+      - fix/v1.0.7-beta.2-official-xpeng-cover-entities-20261026
+    paths:
+      - .github/workflows/publish-v1.0.7-beta.2.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: xpeng-v1.0.7-beta.2-release
+  cancel-in-progress: false
+
+jobs:
+  verify-and-publish:
+    if: github.repository == 'matanmesika/xpeng-vehicle-card' && github.ref == 'refs/heads/fix/v1.0.7-beta.2-official-xpeng-cover-entities-20261026'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Reject existing beta release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view v1.0.7-beta.2 >/dev/null 2>&1; then
+            echo 'Release already exists, refusing overwrite.'
+            exit 1
+          fi
+          if git ls-remote --exit-code --tags origin refs/tags/v1.0.7-beta.2; then
+            echo 'Tag already exists, refusing to move.'
+            exit 1
+          fi
+      - name: Validate code, bundle and HACS metadata
+        run: |
+          set -euo pipefail
+          node --check src/core/xpeng-vehicle-card.runtime.js
+          node --check src/xpeng-vehicle-card.js
+          node --check dist/xpeng-vehicle-card.js
+          node --check scripts/capture-dashboard.cjs
+          node tools/build_vehicle_card.mjs --check
+          cmp src/xpeng-vehicle-card.js dist/xpeng-vehicle-card.js
+          python -m json.tool hacs.json >/dev/null
+          grep -q "domain:'cover'" dist/xpeng-vehicle-card.js
+          grep -q "service:opening?'open_cover':'close_cover'" dist/xpeng-vehicle-card.js
+      - name: Test compact covers, legacy fallback and frontend regressions
+        run: |
+          set -euo pipefail
+          node --test tests/g6-compact-cover-controls-beta.test.cjs tests/g6-new-climate-status-beta.test.cjs
+          node --test tests/xpeng-controls-smoke.test.cjs tests/responsive-dual-state.test.cjs tests/g6-mobile-charging-icons.test.cjs tests/g6-charging-electrical-readings-beta.test.cjs tests/g6-wifi-connection-freshness-beta.test.cjs tests/charging-cable-static.test.cjs
+      - name: Install Chromium for actual UI verification
+        run: |
+          npm install --prefix /tmp/xpeng-v107-beta2-qa --no-audit --no-fund playwright@1.56.1 @mdi/js@7.4.47
+          /tmp/xpeng-v107-beta2-qa/node_modules/.bin/playwright install --with-deps chromium
+      - name: Verify actual home dock controls in Chromium
+        env:
+          PLAYWRIGHT_MODULE: /tmp/xpeng-v107-beta2-qa/node_modules/playwright
+        run: timeout 180s node scripts/capture-dashboard.cjs
+      - name: Upload actual screenshot evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xpeng-v1.0.7-beta.2-official-compact-cover-ui
+          path: |
+            docs/screenshots/home-compact-cover-actions-desktop.png
+            docs/screenshots/home-mobile.png
+          retention-days: 30
+      - name: Publish HACS-installable prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release create v1.0.7-beta.2 'dist/xpeng-vehicle-card.js#xpeng-vehicle-card.js' \
+            --target "${GITHUB_SHA}" \
+            --title 'XPENG Vehicle Card v1.0.7-beta.2 — Official Compact Controls' \
+            --notes-file docs/releases/v1.0.7-beta.2.md \
+            --prerelease --latest=false
+          gh release view v1.0.7-beta.2 --json tagName,isPrerelease,isDraft,url,assets
