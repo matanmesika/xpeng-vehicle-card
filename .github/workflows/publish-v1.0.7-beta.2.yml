@@ -1,6 +1,7 @@
 name: Publish XPENG Vehicle Card v1.0.7-beta.2
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - feat/v1.0.7-beta.1-climate-switch-controls-20261025

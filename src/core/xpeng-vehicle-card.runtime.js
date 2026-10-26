@@ -29,24 +29,32 @@ const XP_KEYS = Object.freeze({
  */
 const XP_XPENGTK_KEYS = Object.freeze({
  connection:[['binary_sensor','mqtt_connected']],
- soc:[['sensor','battery']],
+ soc:[['sensor','battery_soc'],['sensor','battery']],
  range:[['sensor','range']],
- charging:[['binary_sensor','charging']],
+ charging:[['binary_sensor','charging'],['sensor','charging_state']],
  plugged:[['binary_sensor','plugged_in']],
- target:[['number','charge_limit'],['sensor','max_charge']],
+ target:[['number','charge_limit_control'],['sensor','max_charge']],
  power:[['sensor','charge_power']],
  remaining:[['sensor','charge_time_remaining']],
  current:[['sensor','charge_current']],
  voltage:[['sensor','charge_voltage']],
  odometer:[['sensor','odometer']],
- tire_fl:[['sensor','tyre_pressure_front_left']],
- tire_fr:[['sensor','tyre_pressure_front_right']],
- tire_rl:[['sensor','tyre_pressure_rear_left']],
- tire_rr:[['sensor','tyre_pressure_rear_right']],
- last_update:[['sensor','last_data_timestamp'],['sensor','last_data_update']],
+ tire_fl:[['sensor','tyre_pressure_fl'],['sensor','tyre_pressure_front_left']],
+ tire_fr:[['sensor','tyre_pressure_fr'],['sensor','tyre_pressure_front_right']],
+ tire_rl:[['sensor','tyre_pressure_rl'],['sensor','tyre_pressure_rear_left']],
+ tire_rr:[['sensor','tyre_pressure_rr'],['sensor','tyre_pressure_rear_right']],
+ last_update:[['sensor','last_data_update'],['sensor','last_update']],
  cabin:[['sensor','cabin_temperature']],
  speed:[['sensor','speed']],
- location:[['device_tracker','location']]
+ location:[['device_tracker','location']],
+ locked:[['binary_sensor','locked']],
+ climate:[['binary_sensor','hvac_on']],
+ door_fl:[['binary_sensor','driver_door']],
+ door_fr:[['binary_sensor','passenger_door']],
+ door_rl:[['binary_sensor','rear_left_door']],
+ door_rr:[['binary_sensor','rear_right_door']],
+ trunk:[['binary_sensor','trunk']],
+ hood:[['binary_sensor','bonnet']]
 });
 
 
@@ -91,18 +99,40 @@ function xpVehicleRegistryRows(rows,prefix,deviceSelector){
    && typeof e.unique_id==='string'&&e.unique_id.startsWith('xpeng_')
    && typeof e.entity_id==='string'&&/^[a-z_]+\.[a-z0-9_]+$/.test(e.entity_id)):[];
  const gps=own.filter(e=>e.unique_id.endsWith('_location')&&e.entity_id.startsWith('device_tracker.'));
- const matchingGps=gps.find(e=>e.entity_id.startsWith('device_tracker.'+prefix+'_'));
- const chosen=gps.find(e=>deviceSelector&&e.device_id===deviceSelector)
-   ||matchingGps||(gps.length===1?gps[0]:null);
- if(!chosen)return {byKey:Object.create(null),entries:[],message:gps.length>1?'multiple_vehicles':'no_vehicle'};
- const marker=chosen.unique_id.slice(0,-'_location'.length)+'_';
- const sameVehicle=own.filter(e=>e.unique_id.startsWith(marker)&&e.device_id===chosen.device_id);
+ const prefixMatches=e=>e.entity_id.startsWith(e.entity_id.split('.')[0]+'.'+prefix+'_')
+   ||e.unique_id.startsWith(prefix+'_');
+ const groups=new Map();
+ const groupKey=e=>{
+   const marker=/^(xpeng_[^_]+)_/.exec(e?.unique_id||'')?.[1];
+   return e?.device_id?'device:'+e.device_id:marker?'vehicle:'+marker:null;
+ };
+ for(const e of own){
+   const group=groupKey(e);
+   if(!group)continue;
+   if(!groups.has(group))groups.set(group,[]);
+   groups.get(group).push(e);
+ }
+ const selectedEntry=own.find(e=>deviceSelector&&(e.device_id===deviceSelector||e.entity_id===deviceSelector));
+ const matchingGroups=new Set(own.filter(prefixMatches).map(groupKey).filter(Boolean));
+ let selectedGroup=deviceSelector
+   ?(selectedEntry?groupKey(selectedEntry):null)
+   :matchingGroups.size===1?[...matchingGroups][0]
+   :matchingGroups.size>1?null
+   :groups.size===1?[...groups.keys()][0]:null;
+ let sameVehicle=selectedGroup?groups.get(selectedGroup):null;
+ if(deviceSelector&&!selectedEntry)return {byKey:Object.create(null),entries:[],message:'vehicle_not_found'};
+ if(!sameVehicle)return {byKey:Object.create(null),entries:[],message:groups.size>1?'multiple_vehicles':groups.size===0?'no_vehicle':'vehicle_not_selected'};
+ // Resolve every entity attached to the selected Xpengtk device, even when
+ // Location is disabled/deleted. Entity IDs may be user-renamed; unique IDs
+ // and the HA device registry keep the association intact.
+ const marker=/^(xpeng_[^_]+)_/.exec(sameVehicle[0]?.unique_id)?.[1]+'_';
  const byKey=Object.create(null);
  for(const e of sameVehicle){
-   const suffix=e.unique_id.slice(marker.length);
-   byKey[e.entity_id.split('.')[0]+'.'+suffix]=e.entity_id;
+   const prefixMatch=/^(xpeng_[^_]+)_/.exec(e.unique_id)?.[1]+'_';
+   const suffix=prefixMatch&&prefixMatch===marker?e.unique_id.slice(marker.length):null;
+   if(suffix)byKey[e.entity_id.split('.')[0]+'.'+suffix]=e.entity_id;
  }
- return {byKey,entries:sameVehicle,message:null};
+ return {byKey,entries:sameVehicle,message:gps.length===0?'location_not_registered':null};
 }
 
 /* Local ID aliases only when HA Entity Registry is not readable. */
@@ -576,7 +606,8 @@ class XpengVehicleCard extends HTMLElement{
  }
 
  async ensureXpengRegistry(){
-  if(this._xpengRegistryPending||this._xpengRegistryLoaded)return;
+  if(this._xpengRegistryPending||this._xpengRegistryLoaded
+    ||(this._xpengRegistryRetryAfter&&Date.now()<this._xpengRegistryRetryAfter))return;
   const conn=this._hass?.connection;
   if(typeof conn?.sendMessagePromise!=='function')return;
   this._xpengRegistryPending=true;
@@ -586,10 +617,13 @@ class XpengVehicleCard extends HTMLElement{
    this._xpengByKey=selection.byKey;
    this._xpengEntities=selection.entries;
    this._xpengRegistryMessage=selection.message;
+   this._xpengObservedStateIds=new Set(Object.keys(this._hass?.states||{}));
+   this._xpengRegistryRetryAfter=0;
    this._xpengRegistryLoaded=true;
    this.render();
   }catch(error){
    this._xpengRegistryMessage='registry_unavailable';
+   this._xpengRegistryRetryAfter=Date.now()+30000;
   }finally{
    this._xpengRegistryPending=false;
   }
@@ -616,7 +650,12 @@ class XpengVehicleCard extends HTMLElement{
    'sensor.maintenance':['next_maintenance']
   }[key]||[];
   const tails=[XP_CONTROL_FALLBACKS[key],suffix,...extra].filter(Boolean);
-  const registryKeys=[key,...extra.map(x=>domain+'.'+x)];
+  const aliases=XP_CONTROL_FALLBACKS[key];
+  const aliasSuffixes=(Array.isArray(aliases)?aliases:[aliases]).filter(Boolean);
+  // Resolve the canonical Xpengtk key first, then known previous/alternate
+  // keys. This also survives an upstream entity-key rename after the entity_id
+  // itself has been customized in Home Assistant.
+  const registryKeys=[key,...aliasSuffixes.map(x=>domain+'.'+x),...extra.map(x=>domain+'.'+x)];
   const candidates=[...new Set([
    ...registryKeys.map(k=>this._xpengByKey?.[k]),
    ...this.xpPrefixes().flatMap(prefix=>tails.map(t=>domain+'.'+prefix+'_'+t))
@@ -1712,22 +1751,35 @@ class XpengVehicleCard extends HTMLElement{
   if(config.background_image&&!xpLocalArtworkPath(config.background_image))throw Error('Invalid local background_image');
   const v={prefix:'my_xpeng',year:'2026',model:'G6',trim:'core_plus_rwd',color:'graphite_gray',interior:'dark_gray',theme:'dark',...config};
   const next=xpNormalizeAppearance(v);
-  const oldVehicle=JSON.stringify([this._config.prefix,this._config.model,this._config.year,
-    (this._config.vehicles||[]).map(x=>[x.prefix,x.model,x.year])]);
-  const nextVehicle=JSON.stringify([next.prefix,next.model,next.year,
-    (next.vehicles||[]).map(x=>[x.prefix,x.model,x.year])]);
+  const oldVehicle=JSON.stringify([this._config.prefix,this._config.model,this._config.year,this._config.xpeng_device_id,
+    (this._config.vehicles||[]).map(x=>[x.prefix,x.model,x.year,x.xpeng_device_id])]);
+  const nextVehicle=JSON.stringify([next.prefix,next.model,next.year,next.xpeng_device_id,
+    (next.vehicles||[]).map(x=>[x.prefix,x.model,x.year,x.xpeng_device_id])]);
   // Editor-only changes (interior colour, image, appearance) must not collapse a
   // nested HVAC page. Switching to a different vehicle resets the navigation.
   if(oldVehicle!==nextVehicle){
     this._xpPanel=null;this._xpExtraSection=null;this._xpNavStack=[];this._xpSeatFocus=null;
   }
   if(oldVehicle!==nextVehicle)this._xpTogglePending=Object.create(null);
-  this._config=next;this._infoOpen=false;this._tireOpen=false;this._xpManualCharging=false;this._xpChargingDismissed=false;this._xpLastActualCharging=false;this.render();
+  this._config=next;
+  if(oldVehicle!==nextVehicle){
+    this._xpengRegistryLoaded=false;this._xpengByKey=null;this._xpengObservedStateIds=null;
+    this._xpengEntities=[];this._xpengRegistryMessage=null;this._xpengRegistryRetryAfter=0;
+  }
+  this._infoOpen=false;this._tireOpen=false;this._xpManualCharging=false;this._xpChargingDismissed=false;this._xpLastActualCharging=false;
+  this.ensureXpengRegistry();this.render();
  }
  set hass(hass){
   const oldCharging=this.xpChargingActive();
   const oldMapGps=this._xpPanel==='map'?this.xpLive('device_tracker','location')?.id:null;
   this._hass=hass;
+  const currentStates=this._hass?.states||{};
+  const cachedIds=Object.values(this._xpengByKey||{});
+  const renamed=cachedIds.some(id=>this._xpengObservedStateIds?.has(id)&&!currentStates[id]);
+  if(this._xpengRegistryLoaded&&renamed){
+    this._xpengRegistryLoaded=false;this._xpengByKey=null;this._xpengObservedStateIds=null;
+    this._xpengEntities=[];this._xpengRegistryMessage=null;
+  }
   this.xpWarmMapHelpers();
   if(!this._xpengRegistryLoaded)this.ensureXpengRegistry();
   const actualCharging=this.xpChargingActive();
@@ -1780,6 +1832,7 @@ class XpengVehicleCard extends HTMLElement{
    const custom=override?xpParseEntityMapping(override):null;
    const ids=custom?[custom.id]:[
      ...(XP_UNIQUE_KEYS[key]||[]).map(([domain,suffix])=>this._xpengByKey?.[domain+'.'+suffix]).filter(Boolean),
+     ...(XP_XPENGTK_KEYS[key]||[]).map(([domain,suffix])=>this._xpengByKey?.[domain+'.'+suffix]).filter(Boolean),
      ...this.xpPrefixes().flatMap(prefix=>[
        ...spec.slice(1).map(s=>spec[0]+'.'+prefix+'_'+s),
        ...(XP_XPENGTK_KEYS[key]||[]).map(([domain,suffix])=>domain+'.'+prefix+'_'+suffix)
