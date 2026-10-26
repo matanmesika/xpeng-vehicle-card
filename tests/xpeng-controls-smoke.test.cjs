@@ -851,7 +851,7 @@ test('one-tap controls alter visible action labels, icons, and avoid duplicate c
    'button.real_close_port':{state:'unknown',attributes:{}}});
  let nav=card.xpDock();
  assert.match(nav,/Unlock/);
- assert.match(nav,/Open windows/);
+ assert.match(nav,/Vent windows/);
  assert.match(nav,/Open port/);
  assert.match(nav,/data-xp-toggle="windows"/);
  assert.match(nav,/data-xp-toggle="port"/);
@@ -1024,7 +1024,7 @@ test('G6 English text and icon contract',()=>{
  card._xpengByKey['button.open_windows']='button.open_windows_translation';
  card._hass.states['binary_sensor.window_for_translation']={state:'off',attributes:{}};
  card._hass.states['button.open_windows_translation']={state:'unknown',attributes:{}};
- for(const name of ['Climate','Maintenance','Location','Open windows','Open Trunk'])
+ for(const name of ['Climate','Maintenance','Location','Vent windows','Open Trunk'])
    assert.ok(card.xpDock().includes(name),'Missing English action: '+name);
  assert.match(card.xpTrunkPanel(),/The tailgate/);
  assert.match(card.xpMapPanel(),/Horn/);
@@ -1416,7 +1416,7 @@ test('beta.6 automotive window and trunk icons are official MDI, never a house-w
     assert.match(card.xpWindowsPanel(),/icon="mdi:car-door"/);
     assert.match(card.xpTrunkPanel(),/class="xp-mdi-icon xp-tailgate-icon"/);
     const expected=state==='off'?'Open':'Close';
-    assert.match(windows,new RegExp(expected+' windows','i'));
+    assert.match(windows,new RegExp((state==='off'?'Vent':'Close')+' windows','i'));
     assert.match(trunk,new RegExp(expected+' Trunk','i'));
   }
   assert.match(src,/xpIcon\(ico,27\)/,'Dock must render through ha-icon/Mdi helper');
@@ -1449,7 +1449,7 @@ test('Card UI is always English regardless of Home Assistant locale',()=>{
  card.render();
  const home=card.shadowRoot.innerHTML;
  assert.match(home,/Vehicle controls and shortcuts/);
- assert.match(home,/Open windows/);
+ assert.match(home,/Vent windows/);
  assert.match(home,/Open charging port/);
  assert.match(home,/icon="mdi:car-door"/);
  assert.match(home,/class="xp-mdi-icon xp-tailgate-icon"/);
