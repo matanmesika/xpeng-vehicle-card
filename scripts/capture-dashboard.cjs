@@ -10,6 +10,7 @@ const OUTPUT=path.join(ROOT,'docs','screenshots');
 // Direct vehicle actions are tested, not presented as imaginary pages.
 const GALLERY=Object.freeze({
  'vehicle-status':'home-desktop.png',
+ 'compact-cover-actions':'home-compact-cover-actions-desktop.png',
  'mobile-vehicle-status':'home-mobile.png',
  'charging':'charging-desktop.png',
  'mobile-charging':'charging-mobile.png',
@@ -732,7 +733,7 @@ async function main(){
  const readActions=async()=>car.locator('.xp-ux-dock-action').allTextContents();
  let quickLabels=(await readActions()).join(' ');
  assert.match(quickLabels,/Unlock/);
- assert.match(quickLabels,/Open windows/);
+ assert.match(quickLabels,/Vent windows/);
  assert.match(quickLabels,/Open port/);
  assert.match(quickLabels,/Open Trunk/);
  await page.evaluate(()=>{
@@ -751,6 +752,40 @@ async function main(){
  assert.match(quickLabels,/Close port/);
  assert.match(quickLabels,/Close Trunk/);
  await reviewShot('home-close-actions-desktop');
+ // Verify the new official compact Xpengtk covers even with no legacy buttons.
+ await page.evaluate(()=>{
+   const card=document.querySelector('xpeng-vehicle-card'),h=card.hass;
+   const states={...h.states};
+   for(const key of ['trunk','windows','charge_port']){
+     states['cover.my_xpeng_'+key]={state:'closed',attributes:{supported_features:3}};
+   }
+   delete states['button.my_xpeng_open_trunk'];
+   delete states['button.my_xpeng_close_trunk'];
+   delete states['button.my_xpeng_open_windows'];
+   delete states['button.my_xpeng_close_windows'];
+   delete states['button.my_xpeng_open_charge_port'];
+   delete states['button.my_xpeng_close_charge_port'];
+   card.hass={...h,states};
+ });
+ quickLabels=(await readActions()).join(' ');
+ assert.match(quickLabels,/Vent windows/);
+ assert.match(quickLabels,/Open port/);
+ assert.match(quickLabels,/Open Trunk/);
+ await reviewShot('compact-cover-actions');
+ await page.evaluate(()=>{
+   const card=document.querySelector('xpeng-vehicle-card'),h=card.hass;
+   const states={...h.states};
+   states['cover.my_xpeng_windows']={state:'closed',attributes:{supported_features:0}};
+   states['cover.my_xpeng_trunk']={state:'unknown',attributes:{supported_features:3}};
+   states['cover.my_xpeng_charge_port']={state:'open',attributes:{supported_features:3,port_state:'Connected'}};
+   card.hass={...h,states};
+ });
+ quickLabels=(await readActions()).join(' ');
+ assert.match(quickLabels,/Read only/);
+ assert.match(quickLabels,/No data/);
+ assert.equal(await car.locator('.xp-ux-dock-action[data-xp-toggle="windows"]:disabled').count(),1);
+ assert.equal(await car.locator('.xp-ux-dock-action[data-xp-toggle="trunk"]:disabled').count(),1);
+ assert.equal(await car.locator('.xp-ux-dock-action[data-xp-toggle="port"]:disabled').count(),1);
  // Restore reference states; this mock does not issue any vehicle commands.
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
 
