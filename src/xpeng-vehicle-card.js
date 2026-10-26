@@ -120,6 +120,7 @@ const XP_CONTROL_FALLBACKS=Object.freeze({
  'select.right_rear_seat_ventilation_select':'right_rear_seat_ventilation',
  'select.steering_wheel_heat_select':'steering_wheel_heating',
  'sensor.slow_charge_port':'slow_charge_port',
+ 'cover.trunk':'trunk','cover.windows':'windows','cover.charge_port':'charge_port',
  'binary_sensor.windows':'windows',
  'switch.defrost_switch':'front_defrost',
  // Official Xpengtk >=0.6.28 uses climate_* unique IDs, but its English
@@ -5410,6 +5411,9 @@ class XpengVehicleCard extends HTMLElement{
  xpengEntity(domain,suffix){
   const key=domain+'.'+suffix;
   const extra={
+   'cover.trunk':['trunk_cover'],
+   'cover.windows':['windows_cover'],
+   'cover.charge_port':['charge_port_cover'],
    'binary_sensor.windows':['any_window_open'],
    'binary_sensor.locked':['lock'],
    'sensor.slow_charge_port':['charge_port'],
@@ -5437,14 +5441,25 @@ class XpengVehicleCard extends HTMLElement{
   if(this.bool('plugged')===false)return false;
   return xpChargingActive(this.val('charging'))===true;
  }
+ xpCover(action){
+   const suffix=action==='port'?'charge_port':action;
+   if(!['trunk','windows','charge_port'].includes(suffix))return null;
+   const id=this.xpengEntity('cover',suffix);
+   return id?{id,state:this._hass?.states?.[id]||null,suffix}:null;
+ }
  xpActionState(action){
    if(action==='doors'){
      const state=this.xpLive('lock','door_lock')?.state?.state;
      if(state==='locked'||state==='unlocked')return state==='locked'?'closed':'open';
-     // In Xpengtk binary_sensor.locked: ON means *unlocked*, OFF means locked.
+     // Official Xpengtk binary_sensor.lock: ON means unlocked.
      const sensor=this.xpLive('binary_sensor','locked')?.state?.state;
      return sensor==='on'?'open':sensor==='off'?'closed':null;
    }
+   // The compact cover's measured state takes precedence over legacy sensors.
+   // Never guess from old telemetry when a cover reports unknown/unavailable.
+   const cover=this.xpCover(action);
+   if(cover)return cover.state?.state==='open'?'open':
+     cover.state?.state==='closed'?'closed':null;
    if(action==='trunk'){
      const state=this.xpLive('binary_sensor','trunk')?.state?.state;
      return state==='off'?'closed':state==='on'?'open':null;
@@ -5454,10 +5469,10 @@ class XpengVehicleCard extends HTMLElement{
      return state==='off'?'closed':state==='on'?'open':null;
    }
    if(action==='port'){
-     // Xpengtk slow-charge-port enum: Closed / Open / Connected (with optional raw 0/1/2).
      const raw=this.xpLive('sensor','slow_charge_port')||this.xpLive('sensor','charge_port');
      const val=String(raw?.state?.state??'').trim().toLowerCase();
-     return ['closed','0'].includes(val)?'closed':['open','1'].includes(val)?'open':null;
+     return ['closed','0'].includes(val)?'closed':
+       ['open','1','connected','2'].includes(val)?'open':null;
    }
    return null;
  }
@@ -5467,15 +5482,41 @@ class XpengVehicleCard extends HTMLElement{
    if(action==='doors')return state==='open'
      ?{domain:'lock',service:'lock',suffix:'door_lock',label:'Lock vehicle'}
      :this.xpAccessAllowed()?{domain:'lock',service:'unlock',suffix:'door_lock',label:'Unlock vehicle'}:null;
-   if(action==='windows')return state==='open'
-     ?{domain:'button',service:'press',suffix:'close_windows',label:'Close windows'}
-     :this.xpAccessAllowed()?{domain:'button',service:'press',suffix:'open_windows',label:'Open windows'}:null;
+   const cover=this.xpCover(action);
+   if(cover){
+     // HA CoverEntityFeature.OPEN=1, CLOSE=2. Never infer permission.
+     const features=Number(cover.state?.attributes?.supported_features);
+     if(!Number.isInteger(features)||features<0)return null;
+     const opening=state==='closed';
+     if(!(features&(opening?1:2)))return null;
+     if(opening&&action!=='port'&&!this.xpAccessAllowed())return null;
+     // A connected charging cable must never trigger flap closing.
+     const portStatus=String(cover.state?.attributes?.port_state||'').toLowerCase();
+     if(action==='port'&&!opening&&(portStatus==='connected'||this.bool('plugged')===true))return null;
+     const label=action==='windows'?(opening?'Vent windows':'Close windows'):
+       action==='trunk'?(opening?'Open Trunk':'Close Trunk'):
+       (opening?'Open charging port':'Close charging port');
+     return {domain:'cover',service:opening?'open_cover':'close_cover',suffix:cover.suffix,label};
+   }
+   // Legacy paired buttons remain supported when compact covers are absent.
+   if(action==='windows'){
+     if(state==='open')return {domain:'button',service:'press',suffix:'close_windows',label:'Close windows'};
+     if(!this.xpAccessAllowed())return null;
+     const suffix=this.xpLive('button','vent_windows')?'vent_windows':'open_windows';
+     return {domain:'button',service:'press',suffix,label:'Vent windows'};
+   }
    if(action==='trunk')return state==='open'
      ?{domain:'button',service:'press',suffix:'close_trunk',label:'Close Trunk'}
      :this.xpAccessAllowed()?{domain:'button',service:'press',suffix:'open_trunk',label:'Open Trunk'}:null;
-   if(action==='port')return state==='open'
-     ?{domain:'button',service:'press',suffix:'close_charge_port',label:'Close charging port'}
-     :{domain:'button',service:'press',suffix:'open_charge_port',label:'Open charging port'};
+   if(action==='port'){
+     if(state==='open'){
+       const port=this.xpLive('sensor','slow_charge_port')||this.xpLive('sensor','charge_port');
+       if(String(port?.state?.state??'').toLowerCase()==='connected'||this.bool('plugged')===true)return null;
+     }
+     return state==='open'
+       ?{domain:'button',service:'press',suffix:'close_charge_port',label:'Close charging port'}
+       :{domain:'button',service:'press',suffix:'open_charge_port',label:'Open charging port'};
+   }
    return null;
  }
  xpPendingToggle(action){
@@ -5515,10 +5556,10 @@ class XpengVehicleCard extends HTMLElement{
    const pending=this.xpPendingToggle(action);
    const target=pending?.target||this.xpToggleTarget(action);
    const usable=!pending&&target&&this.xpLive(target.domain,target.suffix);
-   const title=target?.label||(this.xpActionState(action)===null?'Status unknown':'Access permission required');
+   const title=target?.label||(this.xpActionState(action)===null?'Status unknown':'Control not permitted');
    return '<button type="button" data-xp-toggle="'+action+'" '+(usable?'':'disabled')+
      ' aria-label="'+xpEsc(title)+'" title="'+xpEsc(title)+'">'+
-     xpIcon(action==='doors'?(target?.service==='unlock'?'unlock':'lock'):action==='trunk'?(target?.suffix==='open_trunk'?'trunk_open':target?.suffix==='close_trunk'?'trunk_close':'trunk'):action==='port'?(target?.suffix==='open_charge_port'?'port_open':'plug'):(target?.suffix==='open_windows'?'windows_open':'windows'),20)+'<span>'+xpEsc(title)+'</span></button>';
+     xpIcon(action==='doors'?(target?.service==='unlock'?'unlock':'lock'):action==='trunk'?(target?.service==='open_cover'||target?.suffix==='open_trunk'?'trunk_open':target?.service==='close_cover'||target?.suffix==='close_trunk'?'trunk_close':'trunk'):action==='port'?(target?.service==='open_cover'||target?.suffix==='open_charge_port'?'port_open':'plug'):(target?.service==='open_cover'||['vent_windows','open_windows'].includes(target?.suffix)?'windows_open':'windows'),20)+'<span>'+xpEsc(title)+'</span></button>';
  }
  xpDock(){
    if(!this.xpUiEnabled())return '';
@@ -5535,17 +5576,17 @@ class XpengVehicleCard extends HTMLElement{
        const target=toggle?(pending?.target||this.xpToggleTarget(action)):null;
        const available=toggle?!pending&&!!(target&&this.xpLive(target.domain,target.suffix)):
          action==='climate'?!!this.xpLive('climate','cabin_climate'):true;
-       const label=toggle?(target?.label||(this.xpActionState(action)===null?'Status unknown':'Access permission required')):title;
+       const label=toggle?(target?.label||(this.xpActionState(action)===null?'Status unknown':'Control not permitted')):title;
        const compact=toggle?({
          'Lock vehicle':'Lock','Unlock vehicle':'Unlock',
-         'Close windows':'Close windows','Open windows':'Open windows',
+         'Close windows':'Close windows','Open windows':'Open windows','Vent windows':'Vent windows',
          'Close charging port':'Close port','Open charging port':'Open port',
          'Close Trunk':'Close Trunk','Open Trunk':'Open Trunk'
-       }[label]||'Unavailable'):title;
+       }[label]||(this.xpActionState(action)===null?'No data':'Read only')):title;
        const ico=action==='doors'?(target?.service==='unlock'?'unlock':'lock'):
-         action==='windows'?(target?.suffix==='open_windows'?'windows_open':'windows'):
-         action==='port'?(target?.suffix==='open_charge_port'?'port_open':'plug'):
-         action==='trunk'?(target?.suffix==='open_trunk'?'trunk_open':target?.suffix==='close_trunk'?'trunk_close':'trunk'):icon;
+         action==='windows'?(target?.service==='open_cover'||['vent_windows','open_windows'].includes(target?.suffix)?'windows_open':'windows'):
+         action==='port'?(target?.service==='open_cover'||target?.suffix==='open_charge_port'?'port_open':'plug'):
+         action==='trunk'?(target?.service==='open_cover'||target?.suffix==='open_trunk'?'trunk_open':target?.service==='close_cover'||target?.suffix==='close_trunk'?'trunk_close':'trunk'):icon;
        return '<button class="xp-ux-dock-action" type="button" '+
          (toggle?'data-xp-toggle="'+action+'"':'data-xp-open="'+action+'"')+
          ' aria-label="'+xpEsc(label)+'" '+(pending?'aria-busy="true" ':'')+(available?'':'disabled')+'>'+
@@ -5868,11 +5909,11 @@ class XpengVehicleCard extends HTMLElement{
  }
  xpPortPanel(){
    const status=this.xpLive('sensor','slow_charge_port')||this.xpLive('sensor','charge_port');
+   const cover=this.xpCover('port');
    const readable=this.xpActionState('port');
-   const portValue=String(status?.state?.state??'').trim().toLowerCase();
-   const msg=readable!==null?(readable==='open'?'Flap open':'Flap closed')
-     :portValue==='connected'?(this.bool('plugged')===true?'Cable connected • Do not close the flap':'Connected reported • Cable connection unverified')
-     :'Flap status unavailable';
+   const portValue=String(cover?.state?.attributes?.port_state||status?.state?.state||'').trim().toLowerCase();
+   const msg=portValue==='connected'?(this.bool('plugged')===true?'Cable connected • Do not close the flap':'Port connected • Do not close the flap')
+     :readable!==null?(readable==='open'?'Flap open':'Flap closed'):'Flap status unavailable';
    return '<div class="xp-ux-port-panel"><div class="xp-ux-port-state">'+xpIcon('plug',34)+
      '<div><strong>Charging port flap</strong><small>'+xpEsc(msg)+'</small></div></div>'+
      '<div class="xp-ux-port-actions">'+this.xpToggleButton('port')+'</div>'+
@@ -6427,13 +6468,14 @@ class XpengVehicleCard extends HTMLElement{
   else if(service==='select_option')data.option=value;
   else if(service==='set_hvac_mode')data.hvac_mode=value;
   else if(service==='set_swing_mode')data.swing_mode=value;
-  const sensitive=(domain==='lock'||suffix==='stop_charge'||suffix==='open_trunk'||suffix==='open_charge_port'||suffix==='close_charge_port'||suffix==='close_trunk'||suffix==='close_windows'||suffix==='open_windows'||suffix==='honk_horn'||suffix==='flash_lights'||suffix==='sentinel_switch'||suffix.startsWith('hvac_schedule_'));
+  const sensitive=(domain==='lock'||domain==='cover'||suffix==='stop_charge'||suffix==='open_trunk'||suffix==='open_charge_port'||suffix==='close_charge_port'||suffix==='close_trunk'||suffix==='close_windows'||suffix==='open_windows'||suffix==='honk_horn'||suffix==='flash_lights'||suffix==='sentinel_switch'||suffix.startsWith('hvac_schedule_'));
   // One-tap means one click for verified status-driven lock/windows/flap actions.
   // Never bypass confirmation for arbitrary callers or other sensitive operations.
   const directAllowed=verifiedDirectTap&&(
     (domain==='lock'&&suffix==='door_lock'&&['lock','unlock'].includes(service))||
+    (domain==='cover'&&['trunk','windows','charge_port'].includes(suffix)&&['open_cover','close_cover'].includes(service))||
     (domain==='button'&&service==='press'&&
-      ['open_windows','close_windows','open_charge_port','close_charge_port','open_trunk','close_trunk','honk_horn','flash_lights'].includes(suffix))
+      ['vent_windows','open_windows','close_windows','open_charge_port','close_charge_port','open_trunk','close_trunk','honk_horn','flash_lights'].includes(suffix))
   );
   if((sensitive||['trunk_power_switch','auto_upgrade_switch','sentinel_sensitivity_control','trunk_power_timer_control'].includes(suffix))
      &&!directAllowed&&typeof window.confirm==='function'
