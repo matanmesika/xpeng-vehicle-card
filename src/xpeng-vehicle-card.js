@@ -5472,7 +5472,7 @@ class XpengVehicleCard extends HTMLElement{
      const raw=this.xpLive('sensor','slow_charge_port')||this.xpLive('sensor','charge_port');
      const val=String(raw?.state?.state??'').trim().toLowerCase();
      return ['closed','0'].includes(val)?'closed':
-       ['open','1','connected','2'].includes(val)?'open':null;
+       ['open','1'].includes(val)?'open':null;
    }
    return null;
  }
