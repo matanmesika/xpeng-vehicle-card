@@ -1,0 +1,87 @@
+name: Publish XPENG Vehicle Card v1.0.7-beta.2
+
+on:
+  push:
+    branches:
+      - feat/v1.0.7-beta.1-climate-switch-controls-20261025
+    paths:
+      - .github/workflows/publish-v1.0.7-beta.2.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: xpeng-v1.0.7-beta.2-release
+  cancel-in-progress: false
+
+jobs:
+  validate-and-publish-beta:
+    if: github.repository == 'matanmesika/xpeng-vehicle-card' && github.ref == 'refs/heads/feat/v1.0.7-beta.1-climate-switch-controls-20261025'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Reject existing beta tag or release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view v1.0.7-beta.2 >/dev/null 2>&1; then
+            echo 'Release already exists. Refusing to overwrite.'
+            exit 1
+          fi
+          if git ls-remote --exit-code --tags origin refs/tags/v1.0.7-beta.2; then
+            echo 'Tag already exists. Refusing to move.'
+            exit 1
+          fi
+      - name: Verify generated HACS bundle, source and mapping metadata
+        run: |
+          set -euo pipefail
+          node --check src/core/xpeng-vehicle-card.runtime.js
+          node --check src/xpeng-vehicle-card.js
+          node --check dist/xpeng-vehicle-card.js
+          node tools/build_vehicle_card.mjs --check
+          cmp src/xpeng-vehicle-card.js dist/xpeng-vehicle-card.js
+          python -m json.tool hacs.json >/dev/null
+          grep -q 'config/entity_registry/list' dist/xpeng-vehicle-card.js
+          grep -q 'XP_XPENGTK_KEYS\[key\]' dist/xpeng-vehicle-card.js
+          grep -q 'control_allowed===true' dist/xpeng-vehicle-card.js
+          grep -q 'Xpengtk entity catalogue' docs/XPENGTK_ENTITY_CATALOG.md
+      - name: Run complete Node regression suite
+        env:
+          XPENG_ALLOW_ENTITY_MAPPING_CHANGES: '1'
+        run: node --test
+      - name: Install Chromium for desktop and mobile preview checks
+        run: |
+          npm install --prefix /tmp/xpeng-v107-beta-qa --no-audit --no-fund playwright@1.56.1 @mdi/js@7.4.47
+          /tmp/xpeng-v107-beta-qa/node_modules/.bin/playwright install --with-deps chromium
+      - name: Capture responsive dashboard in Chromium
+        env:
+          PLAYWRIGHT_MODULE: /tmp/xpeng-v107-beta-qa/node_modules/playwright
+        run: timeout 180s node scripts/capture-dashboard.cjs
+      - name: Upload beta dashboard screenshots for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xpeng-g6-v1.0.7-beta.2-responsive-captures
+          path: docs/screenshots/*.png
+          retention-days: 30
+      - name: Publish opt-in HACS beta, never stable
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release create v1.0.7-beta.2 'dist/xpeng-vehicle-card.js#xpeng-vehicle-card.js' \
+            --target "${GITHUB_SHA}" \
+            --title 'XPENG Vehicle Card v1.0.7-beta.2 — Xpengtk Entity Mapping' \
+            --notes-file docs/releases/v1.0.7-beta.2.md \
+            --prerelease --latest=false
+          gh release view v1.0.7-beta.2 --json tagName,isPrerelease,isDraft,targetCommitish,url,assets

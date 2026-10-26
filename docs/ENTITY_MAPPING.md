@@ -34,11 +34,20 @@ The card does not call remote control services. Steering wheel heating, driver/p
 
 ## Direct Xpengtk auto-discovery (rename safe)
 
-The XPENG Vehicle Card now uses Home Assistant Entity Registry to discover entities
-registered by the Xpengtk integration (platform = xpeng). It reads their stable
-unique_id, not the user-editable entity_id. For example, xpeng_<VIN>_battery_soc
-continues to identify the battery when the user changes the entity ID from
-sensor.xpeng_g6_battery to sensor.my_car_battery.
+The XPENG Vehicle Card reads Home Assistant Entity Registry rows registered by
+Xpengtk (platform = xpeng). It maps stable unique-ID suffixes
+(xpeng_<VIN>_<key>) to the current entity IDs. For example,
+xpeng_<VIN>_battery_soc continues to identify the battery after the user
+renames its entity ID to sensor.my_car_battery. The registry mapping covers all
+domains returned for the selected Xpengtk device, not only the dashboard's
+current set of fields. Known previous key/domain aliases are checked after the
+canonical key.
+
+The mapping refreshes when a previously visible Xpengtk entity disappears from
+Home Assistant state, which lets the card pick up its replacement entity ID
+after a rename or integration reload. An administrator-level registry read is
+used where available; if Home Assistant rejects it, the card falls back to
+known Xpengtk prefixes and does not guess from friendly names.
 
 Example for the G6 2026:
 
@@ -49,18 +58,21 @@ Example for the G6 2026:
     sensor_mapping_mode: auto
 
 The prefix is used as a fallback only, so registry-based discovery is independent
-of the user's chosen entity IDs. Manual mappings still take precedence.
-Discovery uses an authenticated HA websocket registry read; it does not handle
-XPENG credentials, tokens, certificates or the XPENG cloud API.
+of the user's chosen entity IDs. In automatic mode, registry mappings are
+preferred. Manual mappings remain explicit overrides. When there is exactly one
+Xpengtk vehicle, it can be selected without relying on a location entity. With
+multiple vehicles, set xpeng_device_id per card/vehicle profile; the card will
+not combine entities from different vehicles or select one arbitrarily.
 
-If the entity registry is unavailable to the current Home Assistant user
-(possibly due to administrator permissions), the card falls back to conventional
-prefix lookups. Multiple XPENG cars are not selected arbitrarily: use
-xpeng_device_id to select a specific Home Assistant device registry ID,
-or a distinct conventional prefix if the existing tracker ID still matches.
+The complete current entity catalogue is documented in
+[XPENGTK_ENTITY_CATALOG.md](XPENGTK_ENTITY_CATALOG.md). The live Entity
+Diagnostics panel shows the actual entity IDs for the selected car, including
+disabled, unavailable, and action entities where Home Assistant exposes them.
+Discovery does not handle XPENG credentials, tokens, certificates, or the XPENG
+cloud API.
 
-Control entities (climate, lock, charge flap buttons, charging buttons,
-number and select) are provided by Xpengtk. This revision fixes automatic
-sensor discovery; the card remains read-only. Physical commands must be
-rendered with authorized HA controls in a later UI revision. The charge-port
-flap command is not proof of a separate charge-cable release command.
+Control entities (climate, lock, charge flap buttons, charging buttons, number,
+select and switch) are provided by Xpengtk. A matching entity is not proof that
+an action is permitted or supported: control rendering still requires the
+Xpengtk capability and command-policy checks. The charge-port flap is not a
+separate charge-cable release command.
