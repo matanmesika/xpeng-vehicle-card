@@ -14,6 +14,7 @@ const XP_KEYS = Object.freeze({
  door_fr:['binary_sensor','door_front_right_open'],door_rl:['binary_sensor','door_rear_left_open'],
  door_rr:['binary_sensor','door_rear_right_open'],trunk:['binary_sensor','trunk_open'],hood:['binary_sensor','hood_open'],
  climate:['binary_sensor','climate_active'],cabin:['sensor','cabin_temperature_c','cabin_temperature'],outside:['sensor','outside_temperature_c','outside_temperature'],
+ fan_speed:['sensor','hvac_fan_speed','fan_speed'],
  health:['sensor','battery_soh','battery_health'],battery_voltage:['sensor','battery_voltage'],
  battery_current:['sensor','battery_current'],battery_12v:['sensor','battery_12v_voltage_v','12v_supply_voltage'],
  tire_fl:['sensor','tire_pressure_front_left_kpa','front_left_tire_pressure'],tire_fr:['sensor','tire_pressure_front_right_kpa','front_right_tire_pressure'],
@@ -49,6 +50,7 @@ const XP_XPENGTK_KEYS = Object.freeze({
  location:[['device_tracker','location']],
  locked:[['binary_sensor','locked'],['lock','door_lock']],
  climate:[['binary_sensor','hvac_on'],['binary_sensor','climate']],
+ fan_speed:[['sensor','hvac_fan_speed'],['sensor','fan_speed']],
  door_fl:[['binary_sensor','driver_door']],
  door_fr:[['binary_sensor','passenger_door']],
  door_rl:[['binary_sensor','rear_left_door']],
@@ -86,7 +88,7 @@ const XP_UNIQUE_KEYS=Object.freeze({
  last_update:[['sensor','last_data_update'],['sensor','last_update']],
  cabin:[['sensor','cabin_temperature']],speed:[['sensor','speed']],
  location:[['device_tracker','location']],locked:[['binary_sensor','locked'],['lock','door_lock']],
- climate:[['binary_sensor','hvac_on'],['binary_sensor','climate']],door_fl:[['binary_sensor','driver_door']],
+ climate:[['binary_sensor','hvac_on'],['binary_sensor','climate']],fan_speed:[['sensor','hvac_fan_speed'],['sensor','fan_speed']],door_fl:[['binary_sensor','driver_door']],
  door_fr:[['binary_sensor','passenger_door']],door_rl:[['binary_sensor','rear_left_door']],
  door_rr:[['binary_sensor','rear_right_door']],trunk:[['binary_sensor','trunk'],['cover','trunk']],
  hood:[['binary_sensor','bonnet']]
@@ -685,14 +687,29 @@ class XpengVehicleCard extends HTMLElement{
      return sensor==='on'?'open':sensor==='off'?'closed':null;
    }
    if(action==='trunk'){
+     const cover=this.xpLive('cover','trunk')?.state;
+     const coverState=String(cover?.state??'').toLowerCase();
+     if(coverState==='open')return 'open';
+     if(coverState==='closed')return 'closed';
+     if(typeof cover?.attributes?.is_closed==='boolean')return cover.attributes.is_closed?'closed':'open';
      const state=this.xpLive('binary_sensor','trunk')?.state?.state;
      return state==='off'?'closed':state==='on'?'open':null;
    }
    if(action==='windows'){
+     const cover=this.xpLive('cover','windows')?.state;
+     const coverState=String(cover?.state??'').toLowerCase();
+     if(coverState==='open')return 'open';
+     if(coverState==='closed')return 'closed';
+     if(typeof cover?.attributes?.is_closed==='boolean')return cover.attributes.is_closed?'closed':'open';
      const state=this.xpLive('binary_sensor','windows')?.state?.state;
      return state==='off'?'closed':state==='on'?'open':null;
    }
    if(action==='port'){
+     const cover=this.xpLive('cover','charge_port')?.state;
+     const coverState=String(cover?.state??'').toLowerCase();
+     if(coverState==='open')return 'open';
+     if(coverState==='closed')return 'closed';
+     if(typeof cover?.attributes?.is_closed==='boolean')return cover.attributes.is_closed?'closed':'open';
      // Xpengtk slow-charge-port enum: Closed / Open / Connected (with optional raw 0/1/2).
      const raw=this.xpLive('sensor','slow_charge_port')||this.xpLive('sensor','charge_port');
      const val=String(raw?.state?.state??'').trim().toLowerCase();
@@ -958,7 +975,13 @@ class XpengVehicleCard extends HTMLElement{
  }
  xpFanControl(){
   const c=this.xpLive('number','fan_speed_control');
-  if(!c)return '';
+  if(!c){
+    const reading=this.number('fan_speed');
+    if(reading===null)return '';
+    return '<div class="xp-ux-range-row xp-climate-fan-panel xp-fan-readonly" role="status">'
+      +'<span>'+xpIcon('fan',24)+' <span>Fan level</span> <b dir="ltr">'
+      +xpEsc(xpNum(reading))+'</b></span></div>';
+  }
   const a=c.state.attributes||{},min=Number(a.min??1),max=Number(a.max??8),step=Number(a.step??1);
   const v=Number(c.state.state);
   if(!Number.isFinite(v)||!Number.isFinite(min)||!Number.isFinite(max)||step<=0)return '';
@@ -2229,7 +2252,7 @@ const XP_SENSOR_FIELD_META = Object.freeze({
  door_rr:['Vehicle status','Rear-right door'],trunk:['Vehicle status','Trunk'],hood:['Vehicle status','Hood'],
  location:['Vehicle status','Vehicle location'],last_update:['Vehicle status','Last vehicle update'],
  climate:['Climate','Climate active'],cabin:['Climate','Cabin temperature (°C)'],
- outside:['Climate','Outside temperature (°C)'],
+ outside:['Climate','Outside temperature (°C)'],fan_speed:['Climate','Fan speed (read-only level)'],
  tire_fl:['Tires','Front-left tire pressure'],tire_fr:['Tires','Front-right tire pressure'],
  tire_rl:['Tires','Rear-left tire pressure'],tire_rr:['Tires','Rear-right tire pressure']
 });

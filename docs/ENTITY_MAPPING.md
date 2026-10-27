@@ -75,6 +75,11 @@ Additional observed Xpengtk entity shapes are supported automatically, including
 `cover.*_trunk`. Open/closed and locked/unlocked states are normalized when those
 domains are used for a boolean dashboard field.
 
+Cover state from `cover.*_trunk`, `cover.*_windows`, and
+`cover.*_charge_port` is used for status when the matching binary sensor or
+charge-port enum is not available. A `sensor.*_hvac_fan_speed` value is shown as
+read-only when no controllable fan-speed number entity exists.
+
 The complete current entity catalogue is documented in
 [XPENGTK_ENTITY_CATALOG.md](XPENGTK_ENTITY_CATALOG.md). The live Entity
 Diagnostics panel shows the actual entity IDs for the selected car, including
