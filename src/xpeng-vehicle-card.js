@@ -33,7 +33,7 @@ const XP_XPENGTK_KEYS = Object.freeze({
  range:[['sensor','range']],
  charging:[['binary_sensor','charging'],['sensor','charging_state']],
  plugged:[['binary_sensor','plugged_in']],
- target:[['number','charge_limit_control'],['sensor','max_charge']],
+ target:[['number','charge_limit_control'],['number','charge_limit'],['sensor','max_charge']],
  power:[['sensor','charge_power']],
  remaining:[['sensor','charge_time_remaining']],
  current:[['sensor','charge_current']],
@@ -47,13 +47,13 @@ const XP_XPENGTK_KEYS = Object.freeze({
  cabin:[['sensor','cabin_temperature']],
  speed:[['sensor','speed']],
  location:[['device_tracker','location']],
- locked:[['binary_sensor','locked']],
- climate:[['binary_sensor','hvac_on']],
+ locked:[['binary_sensor','locked'],['lock','door_lock']],
+ climate:[['binary_sensor','hvac_on'],['binary_sensor','climate']],
  door_fl:[['binary_sensor','driver_door']],
  door_fr:[['binary_sensor','passenger_door']],
  door_rl:[['binary_sensor','rear_left_door']],
  door_rr:[['binary_sensor','rear_right_door']],
- trunk:[['binary_sensor','trunk']],
+ trunk:[['binary_sensor','trunk'],['cover','trunk']],
  hood:[['binary_sensor','bonnet']]
 });
 
@@ -78,17 +78,17 @@ function xpSeatLevel(option){
 const XP_UNIQUE_KEYS=Object.freeze({
  soc:[['sensor','battery_soc']],range:[['sensor','range']],odometer:[['sensor','odometer']],
  connection:[['binary_sensor','mqtt_connected']],charging:[['binary_sensor','charging']],
- plugged:[['binary_sensor','plugged_in']],target:[['number','charge_limit_control'],['sensor','max_charge']],
+ plugged:[['binary_sensor','plugged_in']],target:[['number','charge_limit_control'],['number','charge_limit'],['sensor','max_charge']],
  power:[['sensor','charge_power']],remaining:[['sensor','charge_time_remaining']],
  current:[['sensor','charge_current']],voltage:[['sensor','charge_voltage']],
  tire_fl:[['sensor','tyre_pressure_fl']],tire_fr:[['sensor','tyre_pressure_fr']],
  tire_rl:[['sensor','tyre_pressure_rl']],tire_rr:[['sensor','tyre_pressure_rr']],
  last_update:[['sensor','last_data_update'],['sensor','last_update']],
  cabin:[['sensor','cabin_temperature']],speed:[['sensor','speed']],
- location:[['device_tracker','location']],locked:[['binary_sensor','locked']],
- climate:[['binary_sensor','hvac_on']],door_fl:[['binary_sensor','driver_door']],
+ location:[['device_tracker','location']],locked:[['binary_sensor','locked'],['lock','door_lock']],
+ climate:[['binary_sensor','hvac_on'],['binary_sensor','climate']],door_fl:[['binary_sensor','driver_door']],
  door_fr:[['binary_sensor','passenger_door']],door_rl:[['binary_sensor','rear_left_door']],
- door_rr:[['binary_sensor','rear_right_door']],trunk:[['binary_sensor','trunk']],
+ door_rr:[['binary_sensor','rear_right_door']],trunk:[['binary_sensor','trunk'],['cover','trunk']],
  hood:[['binary_sensor','bonnet']]
 });
 /* Resolves Xpengtk stable unique IDs from HA Entity Registry so user-renamed
@@ -295,8 +295,8 @@ function xpVehicleDataStatus(raw,now=Date.now()){
 }
 function xpBool(v){
   const state=String(v??'').trim().toLowerCase();
-  if(['on','true','1'].includes(state))return true;
-  if(['off','false','0'].includes(state))return false;
+  if(['on','true','1','open','opened','locked'].includes(state))return true;
+  if(['off','false','0','closed','unlocked'].includes(state))return false;
   return null;
 }
 // Accept status sensors from other integrations without confusing 'plugged in' with charging.

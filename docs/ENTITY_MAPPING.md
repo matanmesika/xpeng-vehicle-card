@@ -70,6 +70,11 @@ entity ID (or `entity_id|attribute_name`) to override a field; leave it blank to
 use automatic XPENG lookup for that field. The field list is generated from the
 dashboard's telemetry keys so it stays in sync when fields are added.
 
+Additional observed Xpengtk entity shapes are supported automatically, including
+`number.*_charge_limit`, `binary_sensor.*_climate`, `lock.*_door_lock`, and
+`cover.*_trunk`. Open/closed and locked/unlocked states are normalized when those
+domains are used for a boolean dashboard field.
+
 The complete current entity catalogue is documented in
 [XPENGTK_ENTITY_CATALOG.md](XPENGTK_ENTITY_CATALOG.md). The live Entity
 Diagnostics panel shows the actual entity IDs for the selected car, including
