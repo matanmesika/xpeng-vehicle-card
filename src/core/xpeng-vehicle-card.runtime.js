@@ -14,6 +14,7 @@ const XP_KEYS = Object.freeze({
  door_fr:['binary_sensor','door_front_right_open'],door_rl:['binary_sensor','door_rear_left_open'],
  door_rr:['binary_sensor','door_rear_right_open'],trunk:['binary_sensor','trunk_open'],hood:['binary_sensor','hood_open'],
  climate:['binary_sensor','climate_active'],cabin:['sensor','cabin_temperature_c','cabin_temperature'],outside:['sensor','outside_temperature_c','outside_temperature'],
+ fan_speed:['sensor','hvac_fan_speed','fan_speed'],
  health:['sensor','battery_soh','battery_health'],battery_voltage:['sensor','battery_voltage'],
  battery_current:['sensor','battery_current'],battery_12v:['sensor','battery_12v_voltage_v','12v_supply_voltage'],
  tire_fl:['sensor','tire_pressure_front_left_kpa','front_left_tire_pressure'],tire_fr:['sensor','tire_pressure_front_right_kpa','front_right_tire_pressure'],
@@ -29,24 +30,33 @@ const XP_KEYS = Object.freeze({
  */
 const XP_XPENGTK_KEYS = Object.freeze({
  connection:[['binary_sensor','mqtt_connected']],
- soc:[['sensor','battery']],
+ soc:[['sensor','battery_soc'],['sensor','battery']],
  range:[['sensor','range']],
- charging:[['binary_sensor','charging']],
+ charging:[['binary_sensor','charging'],['sensor','charging_state']],
  plugged:[['binary_sensor','plugged_in']],
- target:[['number','charge_limit'],['sensor','max_charge']],
+ target:[['number','charge_limit_control'],['number','charge_limit'],['sensor','max_charge']],
  power:[['sensor','charge_power']],
  remaining:[['sensor','charge_time_remaining']],
  current:[['sensor','charge_current']],
  voltage:[['sensor','charge_voltage']],
  odometer:[['sensor','odometer']],
- tire_fl:[['sensor','tyre_pressure_front_left']],
- tire_fr:[['sensor','tyre_pressure_front_right']],
- tire_rl:[['sensor','tyre_pressure_rear_left']],
- tire_rr:[['sensor','tyre_pressure_rear_right']],
- last_update:[['sensor','last_data_timestamp'],['sensor','last_data_update']],
+ tire_fl:[['sensor','tyre_pressure_fl'],['sensor','tyre_pressure_front_left']],
+ tire_fr:[['sensor','tyre_pressure_fr'],['sensor','tyre_pressure_front_right']],
+ tire_rl:[['sensor','tyre_pressure_rl'],['sensor','tyre_pressure_rear_left']],
+ tire_rr:[['sensor','tyre_pressure_rr'],['sensor','tyre_pressure_rear_right']],
+ last_update:[['sensor','last_data_update'],['sensor','last_update']],
  cabin:[['sensor','cabin_temperature']],
  speed:[['sensor','speed']],
- location:[['device_tracker','location']]
+ location:[['device_tracker','location']],
+ locked:[['binary_sensor','locked'],['lock','door_lock']],
+ climate:[['binary_sensor','hvac_on'],['binary_sensor','climate']],
+ fan_speed:[['sensor','hvac_fan_speed'],['sensor','fan_speed']],
+ door_fl:[['binary_sensor','driver_door']],
+ door_fr:[['binary_sensor','passenger_door']],
+ door_rl:[['binary_sensor','rear_left_door']],
+ door_rr:[['binary_sensor','rear_right_door']],
+ trunk:[['binary_sensor','trunk'],['cover','trunk']],
+ hood:[['binary_sensor','bonnet']]
 });
 
 
@@ -70,17 +80,17 @@ function xpSeatLevel(option){
 const XP_UNIQUE_KEYS=Object.freeze({
  soc:[['sensor','battery_soc']],range:[['sensor','range']],odometer:[['sensor','odometer']],
  connection:[['binary_sensor','mqtt_connected']],charging:[['binary_sensor','charging']],
- plugged:[['binary_sensor','plugged_in']],target:[['number','charge_limit_control'],['sensor','max_charge']],
+ plugged:[['binary_sensor','plugged_in']],target:[['number','charge_limit_control'],['number','charge_limit'],['sensor','max_charge']],
  power:[['sensor','charge_power']],remaining:[['sensor','charge_time_remaining']],
  current:[['sensor','charge_current']],voltage:[['sensor','charge_voltage']],
  tire_fl:[['sensor','tyre_pressure_fl']],tire_fr:[['sensor','tyre_pressure_fr']],
  tire_rl:[['sensor','tyre_pressure_rl']],tire_rr:[['sensor','tyre_pressure_rr']],
  last_update:[['sensor','last_data_update'],['sensor','last_update']],
  cabin:[['sensor','cabin_temperature']],speed:[['sensor','speed']],
- location:[['device_tracker','location']],locked:[['binary_sensor','locked']],
- climate:[['binary_sensor','hvac_on']],door_fl:[['binary_sensor','driver_door']],
+ location:[['device_tracker','location']],locked:[['binary_sensor','locked'],['lock','door_lock']],
+ climate:[['binary_sensor','hvac_on'],['binary_sensor','climate']],fan_speed:[['sensor','hvac_fan_speed'],['sensor','fan_speed']],door_fl:[['binary_sensor','driver_door']],
  door_fr:[['binary_sensor','passenger_door']],door_rl:[['binary_sensor','rear_left_door']],
- door_rr:[['binary_sensor','rear_right_door']],trunk:[['binary_sensor','trunk']],
+ door_rr:[['binary_sensor','rear_right_door']],trunk:[['binary_sensor','trunk'],['cover','trunk']],
  hood:[['binary_sensor','bonnet']]
 });
 /* Resolves Xpengtk stable unique IDs from HA Entity Registry so user-renamed
@@ -91,18 +101,40 @@ function xpVehicleRegistryRows(rows,prefix,deviceSelector){
    && typeof e.unique_id==='string'&&e.unique_id.startsWith('xpeng_')
    && typeof e.entity_id==='string'&&/^[a-z_]+\.[a-z0-9_]+$/.test(e.entity_id)):[];
  const gps=own.filter(e=>e.unique_id.endsWith('_location')&&e.entity_id.startsWith('device_tracker.'));
- const matchingGps=gps.find(e=>e.entity_id.startsWith('device_tracker.'+prefix+'_'));
- const chosen=gps.find(e=>deviceSelector&&e.device_id===deviceSelector)
-   ||matchingGps||(gps.length===1?gps[0]:null);
- if(!chosen)return {byKey:Object.create(null),entries:[],message:gps.length>1?'multiple_vehicles':'no_vehicle'};
- const marker=chosen.unique_id.slice(0,-'_location'.length)+'_';
- const sameVehicle=own.filter(e=>e.unique_id.startsWith(marker)&&e.device_id===chosen.device_id);
+ const prefixMatches=e=>e.entity_id.startsWith(e.entity_id.split('.')[0]+'.'+prefix+'_')
+   ||e.unique_id.startsWith(prefix+'_');
+ const groups=new Map();
+ const groupKey=e=>{
+   const marker=/^(xpeng_[^_]+)_/.exec(e?.unique_id||'')?.[1];
+   return e?.device_id?'device:'+e.device_id:marker?'vehicle:'+marker:null;
+ };
+ for(const e of own){
+   const group=groupKey(e);
+   if(!group)continue;
+   if(!groups.has(group))groups.set(group,[]);
+   groups.get(group).push(e);
+ }
+ const selectedEntry=own.find(e=>deviceSelector&&(e.device_id===deviceSelector||e.entity_id===deviceSelector));
+ const matchingGroups=new Set(own.filter(prefixMatches).map(groupKey).filter(Boolean));
+ let selectedGroup=deviceSelector
+   ?(selectedEntry?groupKey(selectedEntry):null)
+   :matchingGroups.size===1?[...matchingGroups][0]
+   :matchingGroups.size>1?null
+   :groups.size===1?[...groups.keys()][0]:null;
+ let sameVehicle=selectedGroup?groups.get(selectedGroup):null;
+ if(deviceSelector&&!selectedEntry)return {byKey:Object.create(null),entries:[],message:'vehicle_not_found'};
+ if(!sameVehicle)return {byKey:Object.create(null),entries:[],message:groups.size>1?'multiple_vehicles':groups.size===0?'no_vehicle':'vehicle_not_selected'};
+ // Resolve every entity attached to the selected Xpengtk device, even when
+ // Location is disabled/deleted. Entity IDs may be user-renamed; unique IDs
+ // and the HA device registry keep the association intact.
+ const marker=/^(xpeng_[^_]+)_/.exec(sameVehicle[0]?.unique_id)?.[1]+'_';
  const byKey=Object.create(null);
  for(const e of sameVehicle){
-   const suffix=e.unique_id.slice(marker.length);
-   byKey[e.entity_id.split('.')[0]+'.'+suffix]=e.entity_id;
+   const prefixMatch=/^(xpeng_[^_]+)_/.exec(e.unique_id)?.[1]+'_';
+   const suffix=prefixMatch&&prefixMatch===marker?e.unique_id.slice(marker.length):null;
+   if(suffix)byKey[e.entity_id.split('.')[0]+'.'+suffix]=e.entity_id;
  }
- return {byKey,entries:sameVehicle,message:null};
+ return {byKey,entries:sameVehicle,message:gps.length===0?'location_not_registered':null};
 }
 
 /* Local ID aliases only when HA Entity Registry is not readable. */
@@ -122,6 +154,15 @@ const XP_CONTROL_FALLBACKS=Object.freeze({
  'sensor.slow_charge_port':'slow_charge_port',
  'binary_sensor.windows':'windows',
  'switch.defrost_switch':'front_defrost',
+ // Official Xpengtk >=0.6.28 uses climate_* unique IDs, but its English
+ // entity names omit that prefix. Resolve registry first, then these names.
+ 'switch.climate_max_cooling':'maximum_cooling',
+ 'switch.climate_max_heating':'maximum_heating',
+ 'switch.climate_rear_defrost':'rear_window_defroster',
+ 'switch.climate_refresh':'refresh',
+ 'switch.climate_sterilisation':'sterilisation',
+ 'switch.climate_ac_cleaning':'a_c_cleaning',
+ 'switch.climate_pet_mode':'pet_mode',
  'switch.maximum_cooling':'maximum_cooling',
  'switch.maximum_heating':'maximum_heating',
  'switch.rear_window_defroster':'rear_window_defroster',
@@ -256,8 +297,8 @@ function xpVehicleDataStatus(raw,now=Date.now()){
 }
 function xpBool(v){
   const state=String(v??'').trim().toLowerCase();
-  if(['on','true','1'].includes(state))return true;
-  if(['off','false','0'].includes(state))return false;
+  if(['on','true','1','open','opened','locked'].includes(state))return true;
+  if(['off','false','0','closed','unlocked'].includes(state))return false;
   return null;
 }
 // Accept status sensors from other integrations without confusing 'plugged in' with charging.
@@ -449,6 +490,20 @@ class XpengVehicleCard extends HTMLElement{
        if(b.dataset.xpSwitch==='defrost_switch')this.xpSend('switch','toggle','defrost_switch');
        return;
      }
+     if(b.hasAttribute('data-xp-climate-switch')){
+       // Only the seven Xpengtk comfort-mode switches may issue a command.
+       // Require the integration's explicit capability AND policy approval.
+       const suffix=b.dataset.xpClimateSwitch;
+       const permitted=new Set(['climate_max_cooling','climate_max_heating',
+         'climate_rear_defrost','climate_refresh','climate_sterilisation',
+         'climate_ac_cleaning','climate_pet_mode']);
+       if(!permitted.has(suffix))return;
+       const ent=this.xpLive('switch',suffix);
+       if(!ent||ent.state.attributes?.control_allowed!==true)return;
+       if(!['on','off'].includes(ent.state.state))return;
+       this.xpSend('switch',ent.state.state==='on'?'turn_off':'turn_on',suffix);
+       return;
+     }
      if(b.hasAttribute('data-xp-hvac-mode')){
        const mode=b.dataset.xpHvacMode,c=this.xpLive('climate','cabin_climate');
        if(c&&Array.isArray(c.state.attributes?.hvac_modes)&&c.state.attributes.hvac_modes.includes(mode))
@@ -553,7 +608,8 @@ class XpengVehicleCard extends HTMLElement{
  }
 
  async ensureXpengRegistry(){
-  if(this._xpengRegistryPending||this._xpengRegistryLoaded)return;
+  if(this._xpengRegistryPending||this._xpengRegistryLoaded
+    ||(this._xpengRegistryRetryAfter&&Date.now()<this._xpengRegistryRetryAfter))return;
   const conn=this._hass?.connection;
   if(typeof conn?.sendMessagePromise!=='function')return;
   this._xpengRegistryPending=true;
@@ -563,10 +619,13 @@ class XpengVehicleCard extends HTMLElement{
    this._xpengByKey=selection.byKey;
    this._xpengEntities=selection.entries;
    this._xpengRegistryMessage=selection.message;
+   this._xpengObservedStateIds=new Set(Object.keys(this._hass?.states||{}));
+   this._xpengRegistryRetryAfter=0;
    this._xpengRegistryLoaded=true;
    this.render();
   }catch(error){
    this._xpengRegistryMessage='registry_unavailable';
+   this._xpengRegistryRetryAfter=Date.now()+30000;
   }finally{
    this._xpengRegistryPending=false;
   }
@@ -593,7 +652,12 @@ class XpengVehicleCard extends HTMLElement{
    'sensor.maintenance':['next_maintenance']
   }[key]||[];
   const tails=[XP_CONTROL_FALLBACKS[key],suffix,...extra].filter(Boolean);
-  const registryKeys=[key,...extra.map(x=>domain+'.'+x)];
+  const aliases=XP_CONTROL_FALLBACKS[key];
+  const aliasSuffixes=(Array.isArray(aliases)?aliases:[aliases]).filter(Boolean);
+  // Resolve the canonical Xpengtk key first, then known previous/alternate
+  // keys. This also survives an upstream entity-key rename after the entity_id
+  // itself has been customized in Home Assistant.
+  const registryKeys=[key,...aliasSuffixes.map(x=>domain+'.'+x),...extra.map(x=>domain+'.'+x)];
   const candidates=[...new Set([
    ...registryKeys.map(k=>this._xpengByKey?.[k]),
    ...this.xpPrefixes().flatMap(prefix=>tails.map(t=>domain+'.'+prefix+'_'+t))
@@ -623,14 +687,29 @@ class XpengVehicleCard extends HTMLElement{
      return sensor==='on'?'open':sensor==='off'?'closed':null;
    }
    if(action==='trunk'){
+     const cover=this.xpLive('cover','trunk')?.state;
+     const coverState=String(cover?.state??'').toLowerCase();
+     if(coverState==='open')return 'open';
+     if(coverState==='closed')return 'closed';
+     if(typeof cover?.attributes?.is_closed==='boolean')return cover.attributes.is_closed?'closed':'open';
      const state=this.xpLive('binary_sensor','trunk')?.state?.state;
      return state==='off'?'closed':state==='on'?'open':null;
    }
    if(action==='windows'){
+     const cover=this.xpLive('cover','windows')?.state;
+     const coverState=String(cover?.state??'').toLowerCase();
+     if(coverState==='open')return 'open';
+     if(coverState==='closed')return 'closed';
+     if(typeof cover?.attributes?.is_closed==='boolean')return cover.attributes.is_closed?'closed':'open';
      const state=this.xpLive('binary_sensor','windows')?.state?.state;
      return state==='off'?'closed':state==='on'?'open':null;
    }
    if(action==='port'){
+     const cover=this.xpLive('cover','charge_port')?.state;
+     const coverState=String(cover?.state??'').toLowerCase();
+     if(coverState==='open')return 'open';
+     if(coverState==='closed')return 'closed';
+     if(typeof cover?.attributes?.is_closed==='boolean')return cover.attributes.is_closed?'closed':'open';
      // Xpengtk slow-charge-port enum: Closed / Open / Connected (with optional raw 0/1/2).
      const raw=this.xpLive('sensor','slow_charge_port')||this.xpLive('sensor','charge_port');
      const val=String(raw?.state?.state??'').trim().toLowerCase();
@@ -896,7 +975,13 @@ class XpengVehicleCard extends HTMLElement{
  }
  xpFanControl(){
   const c=this.xpLive('number','fan_speed_control');
-  if(!c)return '';
+  if(!c){
+    const reading=this.number('fan_speed');
+    if(reading===null)return '';
+    return '<div class="xp-ux-range-row xp-climate-fan-panel xp-fan-readonly" role="status">'
+      +'<span>'+xpIcon('fan',24)+' <span>Fan level</span> <b dir="ltr">'
+      +xpEsc(xpNum(reading))+'</b></span></div>';
+  }
   const a=c.state.attributes||{},min=Number(a.min??1),max=Number(a.max??8),step=Number(a.step??1);
   const v=Number(c.state.state);
   if(!Number.isFinite(v)||!Number.isFinite(min)||!Number.isFinite(max)||step<=0)return '';
@@ -970,16 +1055,18 @@ class XpengVehicleCard extends HTMLElement{
        +'<span>Windshield defrost</span><small>'
        +(active?'On':'Off')+'</small></button>');
    }
-   // New G6 comfort features: telemetry-only in this beta. No vehicle commands.
-   // Resolve by stable Xpengtk unique ID, then by the selected vehicle prefix.
+   // Xpengtk 0.6.28+ exposes these seven as real SwitchEntity controls.
+   // Each switch publishes control_allowed after checking vehicle capability
+   // and the integration's command policy. Never guess support from On/Off.
+   // Older Xpengtk builds and read-only policies stay safely status-only.
    const newModes=[
-     ['maximum_cooling','Max Cooling','snowflake'],
-     ['maximum_heating','Max Heating','thermometer'],
-     ['rear_window_defroster','Rear Defrost','windscreen'],
-     ['refresh','Air Refresh','refresh'],
-     ['sterilisation','Sterilisation','shield'],
-     ['a_c_cleaning','A/C Cleaning','fan'],
-     ['pet_mode','Pet Mode','info']
+     ['climate_max_cooling','Max Cooling','snowflake'],
+     ['climate_max_heating','Max Heating','thermometer'],
+     ['climate_rear_defrost','Rear Defrost','windscreen'],
+     ['climate_refresh','Air Refresh','refresh'],
+     ['climate_sterilisation','Sterilisation','shield'],
+     ['climate_ac_cleaning','A/C Cleaning','fan'],
+     ['climate_pet_mode','Pet Mode','info']
    ];
    const modeTiles=[];
    for(const [suffix,label,icon] of newModes){
@@ -989,10 +1076,21 @@ class XpengVehicleCard extends HTMLElement{
      const value=state.state;
      const known=value==='on'||value==='off';
      const status=known?(value==='on'?'On':'Off'):'Unavailable';
-     modeTiles.push('<span class="xp-ux-climate-feature xp-ux-climate-readonly'
-       +(value==='on'?' xp-ux-selected':'')+'" role="status" aria-label="'
-       +xpEsc(label+': '+status)+'">'+xpIcon(icon,25)+'<span>'
-       +xpEsc(label)+'</span><small>'+status+' • Status only</small></span>');
+     const allowed=known&&state.attributes?.control_allowed===true;
+     if(allowed){
+       modeTiles.push('<button type="button" class="xp-ux-climate-feature'
+         +(value==='on'?' xp-ux-selected':'')+'" data-xp-climate-switch="'
+         +xpEsc(suffix)+'" aria-pressed="'+String(value==='on')
+         +'" aria-label="'+xpEsc(label+': '+status+'. Toggle')+'">'
+         +xpIcon(icon,25)+'<span>'+xpEsc(label)+'</span><small>'
+         +status+'</small></button>');
+     }else{
+       modeTiles.push('<span class="xp-ux-climate-feature xp-ux-climate-readonly'
+         +(value==='on'?' xp-ux-selected':'')+'" role="status" aria-label="'
+         +xpEsc(label+': '+status+'. Status only')+'">'+xpIcon(icon,25)
+         +'<span>'+xpEsc(label)+'</span><small>'+status
+         +' • Status only</small></span>');
+     }
    }
    if(modeTiles.length)tiles.push(...modeTiles);
    if(schedule){
@@ -1676,22 +1774,35 @@ class XpengVehicleCard extends HTMLElement{
   if(config.background_image&&!xpLocalArtworkPath(config.background_image))throw Error('Invalid local background_image');
   const v={prefix:'my_xpeng',year:'2026',model:'G6',trim:'core_plus_rwd',color:'graphite_gray',interior:'dark_gray',theme:'dark',...config};
   const next=xpNormalizeAppearance(v);
-  const oldVehicle=JSON.stringify([this._config.prefix,this._config.model,this._config.year,
-    (this._config.vehicles||[]).map(x=>[x.prefix,x.model,x.year])]);
-  const nextVehicle=JSON.stringify([next.prefix,next.model,next.year,
-    (next.vehicles||[]).map(x=>[x.prefix,x.model,x.year])]);
+  const oldVehicle=JSON.stringify([this._config.prefix,this._config.model,this._config.year,this._config.xpeng_device_id,
+    (this._config.vehicles||[]).map(x=>[x.prefix,x.model,x.year,x.xpeng_device_id])]);
+  const nextVehicle=JSON.stringify([next.prefix,next.model,next.year,next.xpeng_device_id,
+    (next.vehicles||[]).map(x=>[x.prefix,x.model,x.year,x.xpeng_device_id])]);
   // Editor-only changes (interior colour, image, appearance) must not collapse a
   // nested HVAC page. Switching to a different vehicle resets the navigation.
   if(oldVehicle!==nextVehicle){
     this._xpPanel=null;this._xpExtraSection=null;this._xpNavStack=[];this._xpSeatFocus=null;
   }
   if(oldVehicle!==nextVehicle)this._xpTogglePending=Object.create(null);
-  this._config=next;this._infoOpen=false;this._tireOpen=false;this._xpManualCharging=false;this._xpChargingDismissed=false;this._xpLastActualCharging=false;this.render();
+  this._config=next;
+  if(oldVehicle!==nextVehicle){
+    this._xpengRegistryLoaded=false;this._xpengByKey=null;this._xpengObservedStateIds=null;
+    this._xpengEntities=[];this._xpengRegistryMessage=null;this._xpengRegistryRetryAfter=0;
+  }
+  this._infoOpen=false;this._tireOpen=false;this._xpManualCharging=false;this._xpChargingDismissed=false;this._xpLastActualCharging=false;
+  this.ensureXpengRegistry();this.render();
  }
  set hass(hass){
   const oldCharging=this.xpChargingActive();
   const oldMapGps=this._xpPanel==='map'?this.xpLive('device_tracker','location')?.id:null;
   this._hass=hass;
+  const currentStates=this._hass?.states||{};
+  const cachedIds=Object.values(this._xpengByKey||{});
+  const renamed=cachedIds.some(id=>this._xpengObservedStateIds?.has(id)&&!currentStates[id]);
+  if(this._xpengRegistryLoaded&&renamed){
+    this._xpengRegistryLoaded=false;this._xpengByKey=null;this._xpengObservedStateIds=null;
+    this._xpengEntities=[];this._xpengRegistryMessage=null;
+  }
   this.xpWarmMapHelpers();
   if(!this._xpengRegistryLoaded)this.ensureXpengRegistry();
   const actualCharging=this.xpChargingActive();
@@ -1744,6 +1855,7 @@ class XpengVehicleCard extends HTMLElement{
    const custom=override?xpParseEntityMapping(override):null;
    const ids=custom?[custom.id]:[
      ...(XP_UNIQUE_KEYS[key]||[]).map(([domain,suffix])=>this._xpengByKey?.[domain+'.'+suffix]).filter(Boolean),
+     ...(XP_XPENGTK_KEYS[key]||[]).map(([domain,suffix])=>this._xpengByKey?.[domain+'.'+suffix]).filter(Boolean),
      ...this.xpPrefixes().flatMap(prefix=>[
        ...spec.slice(1).map(s=>spec[0]+'.'+prefix+'_'+s),
        ...(XP_XPENGTK_KEYS[key]||[]).map(([domain,suffix])=>domain+'.'+prefix+'_'+suffix)
@@ -2122,7 +2234,33 @@ class XpengVehicleCard extends HTMLElement{
   if(this._xpPanel==='map')this.xpMountMap();
  }
 }
-const XP_MAPPABLE_FIELDS = Object.freeze([{"key":"charging","label":"Charging state"},{"key":"soc","label":"Battery level (%)"},{"key":"range","label":"Estimated range (km)"},{"key":"power","label":"Charging power (kW)"},{"key":"remaining","label":"Time remaining (minutes)"},{"key":"target","label":"Charging limit (%)"},{"key":"plugged","label":"Cable connected"},{"key":"odometer","label":"Odometer (km)"},{"key":"tire_fl","label":"Tire front left (kPa)"},{"key":"tire_fr","label":"Tire front right (kPa)"},{"key":"tire_rl","label":"Tire rear left (kPa)"},{"key":"tire_rr","label":"Tire rear right (kPa)"},{"key":"location","label":"Vehicle location"},{"key":"last_update","label":"Last update"},{"key":"connection","label":"Connection status"}]);
+const XP_SENSOR_FIELD_META = Object.freeze({
+ model:['Vehicle','Vehicle model'],name:['Vehicle','Vehicle name'],powertrain:['Vehicle','Powertrain'],
+ connection:['Vehicle','Integration connection'],
+ soc:['Battery','Battery level (%)'],health:['Battery','Battery health (%)'],
+ battery_voltage:['Battery','High-voltage battery voltage'],battery_current:['Battery','High-voltage battery current'],
+ battery_12v:['Battery','12 V battery voltage'],
+ range:['Range','Estimated range (km)'],fuel:['Range','Fuel level (%)'],
+ fuel_range:['Range','Fuel-powered range (km)'],combined:['Range','Combined range (km)'],
+ charging:['Charging','Charging state'],plugged:['Charging','Cable connected'],
+ target:['Charging','Charging limit (%)'],power:['Charging','Charging power (kW)'],
+ energy:['Charging','Session energy (kWh)'],remaining:['Charging','Time remaining (minutes)'],
+ current:['Charging','Charging current (A)'],voltage:['Charging','Charging voltage (V)'],
+ odometer:['Vehicle status','Odometer (km)'],speed:['Vehicle status','Vehicle speed (km/h)'],
+ locked:['Vehicle status','Locked'],door_fl:['Vehicle status','Front-left door'],
+ door_fr:['Vehicle status','Front-right door'],door_rl:['Vehicle status','Rear-left door'],
+ door_rr:['Vehicle status','Rear-right door'],trunk:['Vehicle status','Trunk'],hood:['Vehicle status','Hood'],
+ location:['Vehicle status','Vehicle location'],last_update:['Vehicle status','Last vehicle update'],
+ climate:['Climate','Climate active'],cabin:['Climate','Cabin temperature (°C)'],
+ outside:['Climate','Outside temperature (°C)'],fan_speed:['Climate','Fan speed (read-only level)'],
+ tire_fl:['Tires','Front-left tire pressure'],tire_fr:['Tires','Front-right tire pressure'],
+ tire_rl:['Tires','Rear-left tire pressure'],tire_rr:['Tires','Rear-right tire pressure']
+});
+// Keep manual mapping in lockstep with every telemetry key the dashboard reads.
+const XP_MAPPABLE_FIELDS = Object.freeze(Object.keys(XP_KEYS).map(key=>{
+ const [group,label]=XP_SENSOR_FIELD_META[key]||['Other',key.replaceAll('_',' ')];
+ return Object.freeze({key,group,label});
+}));
 class XpengVehicleCardEditor extends HTMLElement{
  constructor(){
   super();this.attachShadow({mode:'open'});
@@ -2178,16 +2316,23 @@ class XpengVehicleCardEditor extends HTMLElement{
   const mappingMode=xpSensorMappingMode(v);
   const states=this._hass?.states||{};
   const dataList=Object.keys(states).filter(id=>xpParseEntityMapping(id)).sort().map(id=>'<option value="'+xpEsc(id)+'"></option>').join('');
-  const mappingRows=XP_MAPPABLE_FIELDS.map(field=>{
+  const mappingRows=XP_MAPPABLE_FIELDS.reduce((groups,field)=>{
    const spec=XP_KEYS[field.key];
    const auto=spec[0]+'.'+prefix+'_'+spec[1];
-   return '<label class="xp-map-row"><span>'+xpEsc(field.label)+'</span><input data-entity="'+xpEsc(field.key)+'" list="xp-entity-choices" autocomplete="off" value="'+xpEsc(v.entities?.[field.key]||'')+'" placeholder="Auto: '+xpEsc(auto)+'" title="Leave blank for automatic mapping. Supports entity_id or entity_id|attribute_name"></label>';
-  }).join('');
+   const row='<label class="xp-map-row"><span>'+xpEsc(field.label)+'</span><input data-entity="'+xpEsc(field.key)+'" list="xp-entity-choices" autocomplete="off" value="'+xpEsc(v.entities?.[field.key]||'')+'" placeholder="Auto: '+xpEsc(auto)+'" title="Leave blank for automatic mapping. Supports entity_id or entity_id|attribute_name"></label>';
+   (groups[field.group]||(groups[field.group]=[])).push(row);
+   return groups;
+  },{});
+  const mappingGroups=Object.entries(mappingRows).map(([group,rows],index)=>
+   '<details class="xp-map-group" '+(index===0?'open':'')+'><summary>'+xpEsc(group)+' · '+rows.length+'</summary><div class="xp-map-group-fields">'+rows.join('')+'</div></details>'
+  ).join('');
   this.shadowRoot.innerHTML=xpLocalizeMarkup(`<style>section{display:grid;gap:13px;padding:14px;font:inherit}label{display:grid;gap:5px;font-size:13px}input,select{border:1px solid #8b959e;border-radius:7px;padding:10px;background:var(--card-background-color,#fff);color:var(--primary-text-color,#111)}p{font-size:12px;opacity:.8;line-height:1.5}
    h3{margin:8px 0 0;font-size:15px}
    details{border:1px solid var(--divider-color,#7d879a77);border-radius:9px;padding:11px}
    summary{cursor:pointer;font-weight:600}
    .xp-map-fields{display:grid;gap:9px;margin-top:12px}
+   .xp-map-group{padding:9px;border:1px solid var(--divider-color,#7d879a77);border-radius:8px}
+   .xp-map-group-fields{display:grid;gap:9px;margin-top:10px}
    .xp-map-row{display:grid;grid-template-columns:minmax(105px,1fr) minmax(145px,2fr);gap:9px;align-items:center}
    .xp-map-row input{font-size:12px}
    @media(max-width:460px){.xp-map-row{grid-template-columns:1fr}}
@@ -2209,8 +2354,8 @@ class XpengVehicleCardEditor extends HTMLElement{
        <option value="manual" ${mappingMode==='manual'?'selected':''}>Manual · choose sensors</option>
      </select></label>
      ${mappingMode==='manual'? `<div class="xp-map-fields" data-mappings>
-       <p>Choose any of the ${XP_MAPPABLE_FIELDS.length} Home Assistant sensors. A blank field uses automatic integration mapping. Entity attributes: entity_id|attribute_name.</p>
-       ${mappingRows}
+       <p>Map all ${XP_MAPPABLE_FIELDS.length} dashboard telemetry fields. Leave a field blank to use automatic XPENG mapping. Entity attributes are supported as entity_id|attribute_name.</p>
+       ${mappingGroups}
        <datalist id="xp-entity-choices">${dataList}</datalist>
      </div>`:`<p data-auto-mapping>Vehicle sensors are matched automatically using the XPENG integration. Choose Manual to show and assign individual sensor entities.</p>`}
      <p>Vehicle status and automatic Charging remain the two principal scenes. Optional in-card overlays show climate and seat controls and use native Home Assistant services. The cabin illustration reflects the selected interior colour.</p>

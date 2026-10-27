@@ -770,7 +770,7 @@ test('multi-hop modal Back stack clears on charge transition or vehicle switch',
  card.xpNavigatePanel('extras','schedule');
  card._xpengRegistryLoaded=true;
  card._xpLastActualCharging=false;
- card.hass={...card._hass,states:{...card._hass.states,'binary_sensor.is_charging':{state:'off',attributes:{}},'binary_sensor.cable_present':{state:'off',attributes:{}}}};
+ card.hass={...card._hass,states:{...card._hass.states,'binary_sensor.xpeng_g9_charging':{state:'off',attributes:{}},'binary_sensor.xpeng_g9_plugged_in':{state:'off',attributes:{}}}};
  card.xpNavigatePanel('extras','diagnostics');
  card.setConfig({type:'custom:xpeng-vehicle-card',model:'G9',year:'2026',prefix:'xpeng_g9'});
  assert.equal(card._xpPanel,null);
@@ -778,7 +778,7 @@ test('multi-hop modal Back stack clears on charge transition or vehicle switch',
  card.xpNavigatePanel('climate');
  card.xpNavigatePanel('extras','schedule');
  card._xpLastActualCharging=false;
- card.hass={...card._hass,states:{...card._hass.states,'binary_sensor.is_charging':{state:'on',attributes:{}},'binary_sensor.cable_present':{state:'on',attributes:{}}}};
+ card.hass={...card._hass,states:{...card._hass.states,'binary_sensor.xpeng_g9_charging':{state:'on',attributes:{}},'binary_sensor.xpeng_g9_plugged_in':{state:'on',attributes:{}}}};
  assert.equal(card._xpPanel,null,'New active charging scene invalidates the old subpage stack');
  assert.equal(card._xpNavStack.length,0);
 });

@@ -4,7 +4,7 @@
 
 The card preserves the night-lakeside setting, the selected vehicle artwork, and entity-driven controls. When the vehicle reports active charging, it automatically switches to a dedicated charging scene with a photographic XPENG charging station, a green cable overlay, and live charging information.
 
-**Stable release: [v1.0.6](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.6).** Previous stable: [v1.0.5](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.5). Historical releases and betas remain available for rollback. The charging block uses one shared responsive component for desktop, iPhone and Home Assistant Sections.
+**Stable release: [v1.0.6](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.6). Current opt-in beta: [v1.0.7-beta.5](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.7-beta.5).** Previous stable: [v1.0.5](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.5). Historical releases and betas remain available for rollback. The charging block uses one shared responsive component for desktop, iPhone and Home Assistant Sections.
 
 [Install with HACS](https://my.home-assistant.io/redirect/hacs_repository/?owner=matanmesika&repository=xpeng-vehicle-card&category=plugin) · [HACS product guide](docs/HACS_STORE_GUIDE.md) · [Screenshot gallery](docs/screenshots/README.md) · [Release acceptance](docs/G6_FINAL_STABILIZATION.md)
 
@@ -65,7 +65,7 @@ The card reads **existing Home Assistant/Xpengtk entities** and never independen
 
 The card is presently optimized for the G6. **G6 functional mapping status: COMPLETE** for the implemented and simulated-tested card features, *subject to real vehicle approval*. The artwork inventory separately records **30/33 G6 views**, with three G6 views still missing; the **other 14 vehicle families** have unfinished image coverage or verification. The interface does not substitute another model's images to hide missing artwork.
 
-[Artwork status](docs/ARTWORK_STATUS.md) · [Entity mapping](docs/XPENG_APP_FEATURE_MAP.md) · [Feature and safety notes](docs/HACS_STORE_GUIDE.md)
+[Artwork status](docs/ARTWORK_STATUS.md) · [Entity mapping](docs/XPENG_APP_FEATURE_MAP.md) · [Complete Xpengtk entity catalogue](docs/XPENGTK_ENTITY_CATALOG.md) · [Feature and safety notes](docs/HACS_STORE_GUIDE.md)
 
 ## Quality assurance and release status
 
