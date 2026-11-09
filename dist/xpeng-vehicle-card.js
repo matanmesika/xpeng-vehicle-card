@@ -56,7 +56,7 @@ const XP_XPENGTK_KEYS = Object.freeze({
  door_fr:[['binary_sensor','passenger_door']],
  door_rl:[['binary_sensor','rear_left_door']],
  door_rr:[['binary_sensor','rear_right_door']],
- trunk:[['binary_sensor','trunk'],['cover','trunk']],
+ trunk:[['binary_sensor','trunk'],['cover','trunk'],['cover','trunk_cover']],
  hood:[['binary_sensor','bonnet']]
 });
 
@@ -91,7 +91,7 @@ const XP_UNIQUE_KEYS=Object.freeze({
  location:[['device_tracker','location']],locked:[['binary_sensor','locked'],['lock','door_lock']],
  climate:[['binary_sensor','hvac_on'],['binary_sensor','climate']],fan_speed:[['sensor','hvac_fan_speed'],['sensor','fan_speed']],door_fl:[['binary_sensor','driver_door']],
  door_fr:[['binary_sensor','passenger_door']],door_rl:[['binary_sensor','rear_left_door']],
- door_rr:[['binary_sensor','rear_right_door']],trunk:[['binary_sensor','trunk'],['cover','trunk']],
+ door_rr:[['binary_sensor','rear_right_door']],trunk:[['binary_sensor','trunk'],['cover','trunk'],['cover','trunk_cover']],
  hood:[['binary_sensor','bonnet']]
 });
 /* Resolves Xpengtk stable unique IDs from HA Entity Registry so user-renamed
