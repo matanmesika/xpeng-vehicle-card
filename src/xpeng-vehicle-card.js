@@ -5242,7 +5242,7 @@ background:transparent!important;
 }
 .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action-core{gap:5px!important}
 .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action-ring{
- width:46px!important;height:46px!important;flex-basis:46px!important;
+ width:48px!important;height:48px!important;flex-basis:48px!important;
 }
 .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action-label{
  font-size:9px!important;line-height:1.1!important;
