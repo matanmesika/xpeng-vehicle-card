@@ -4930,3 +4930,55 @@ background:transparent!important;
 @container xpeng-layout (max-width:450px){
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{top:122px!important}
 }
+
+
+/* Beta 7: move the compact charging heading above the telemetry card,
+   then keep the card clear of both the title and the vehicle at phone sizes. */
+@container xpeng-layout (max-width:850px){
+ .xp-scene.xp-charge.xp-charge-navigation .xp-title{
+  top:90px!important;left:5%!important;gap:2px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-title h1{
+  font-size:25px!important;line-height:1!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-subtitle{
+  font-size:12px!important;line-height:1.1!important;letter-spacing:.08em!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{
+  top:143px!important;padding:6px 9px!important;gap:3px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-heading{
+  font-size:14px!important;line-height:1.05!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-soc{font-size:26px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta{padding-top:2px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-panel-actions{margin-top:4px!important}
+}
+@container xpeng-layout (max-width:360px){
+ .xp-scene.xp-charge.xp-charge-navigation .xp-title{top:84px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-title h1{font-size:23px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-subtitle{font-size:11px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{top:130px!important}
+}
+@media(max-width:850px){
+ .xp-scene.xp-charge.xp-charge-navigation .xp-title{
+  top:90px!important;left:5%!important;gap:2px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-title h1{font-size:25px!important;line-height:1!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-subtitle{
+  font-size:12px!important;line-height:1.1!important;letter-spacing:.08em!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{
+  top:143px!important;padding:6px 9px!important;gap:3px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-heading{font-size:14px!important;line-height:1.05!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-soc{font-size:26px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta{padding-top:2px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-panel-actions{margin-top:4px!important}
+}
+@media(max-width:360px){
+ .xp-scene.xp-charge.xp-charge-navigation .xp-title{top:84px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-title h1{font-size:23px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-subtitle{font-size:11px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{top:130px!important}
+}
