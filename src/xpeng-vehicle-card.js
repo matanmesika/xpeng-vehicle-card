@@ -5274,8 +5274,8 @@ background:transparent!important;
   width:40px!important;height:40px!important;flex-basis:40px!important;
  }
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action-ring>.xp-mdi-icon{
-  width:19px!important;height:19px!important;flex-basis:19px!important;
-  --xp-charge-icon:19px!important;--xp-icon-size:19px!important;
+  width:20px!important;height:20px!important;flex-basis:20px!important;
+  --xp-charge-icon:20px!important;--xp-icon-size:20px!important;--mdc-icon-size:20px!important;
  }
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action-label{font-size:8.5px!important}
 }
