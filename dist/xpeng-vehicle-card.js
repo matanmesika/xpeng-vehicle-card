@@ -5328,6 +5328,11 @@ background:transparent!important;
  }
 }
 
+/* At narrow card widths inside wider HA sections, keep charging details clear of the car. */
+@container xpeng-layout (max-width:450px){
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{top:122px!important}
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
