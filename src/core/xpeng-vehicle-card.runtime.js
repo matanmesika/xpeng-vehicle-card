@@ -719,21 +719,34 @@ class XpengVehicleCard extends HTMLElement{
    }
    return null;
  }
+ xpCoverAction(action,direction,buttonSuffix,label){
+   const coverSuffix={windows:'windows',trunk:'trunk',port:'charge_port'}[action];
+   const cover=coverSuffix?this.xpLive('cover',coverSuffix):null;
+   const features=Number(cover?.state?.attributes?.supported_features);
+   const feature=direction==='open'?1:2; // Home Assistant CoverEntityFeature.OPEN / CLOSE
+   if(cover&&Number.isFinite(features)&&(features&feature)){
+     return {domain:'cover',service:direction+'_cover',suffix:coverSuffix,label};
+   }
+   const button=this.xpLive('button',buttonSuffix);
+   return button?{domain:'button',service:'press',suffix:buttonSuffix,label}:null;
+ }
  xpToggleTarget(action){
    const state=this.xpActionState(action);
    if(state===null)return null;
    if(action==='doors')return state==='open'
      ?{domain:'lock',service:'lock',suffix:'door_lock',label:'Lock vehicle'}
      :this.xpAccessAllowed()?{domain:'lock',service:'unlock',suffix:'door_lock',label:'Unlock vehicle'}:null;
-   if(action==='windows')return state==='open'
-     ?{domain:'button',service:'press',suffix:'close_windows',label:'Close windows'}
-     :this.xpAccessAllowed()?{domain:'button',service:'press',suffix:'open_windows',label:'Open windows'}:null;
-   if(action==='trunk')return state==='open'
-     ?{domain:'button',service:'press',suffix:'close_trunk',label:'Close Trunk'}
-     :this.xpAccessAllowed()?{domain:'button',service:'press',suffix:'open_trunk',label:'Open Trunk'}:null;
+   if(action==='windows'){
+     if(state==='open')return this.xpCoverAction('windows','close','close_windows','Close windows');
+     return this.xpAccessAllowed()?this.xpCoverAction('windows','open','open_windows','Open windows'):null;
+   }
+   if(action==='trunk'){
+     if(state==='open')return this.xpCoverAction('trunk','close','close_trunk','Close Trunk');
+     return this.xpAccessAllowed()?this.xpCoverAction('trunk','open','open_trunk','Open Trunk'):null;
+   }
    if(action==='port')return state==='open'
-     ?{domain:'button',service:'press',suffix:'close_charge_port',label:'Close charging port'}
-     :{domain:'button',service:'press',suffix:'open_charge_port',label:'Open charging port'};
+     ?this.xpCoverAction('port','close','close_charge_port','Close charging port')
+     :this.xpCoverAction('port','open','open_charge_port','Open charging port');
    return null;
  }
  xpPendingToggle(action){
@@ -776,7 +789,7 @@ class XpengVehicleCard extends HTMLElement{
    const title=target?.label||(this.xpActionState(action)===null?'Status unknown':'Access permission required');
    return '<button type="button" data-xp-toggle="'+action+'" '+(usable?'':'disabled')+
      ' aria-label="'+xpEsc(title)+'" title="'+xpEsc(title)+'">'+
-     xpIcon(action==='doors'?(target?.service==='unlock'?'unlock':'lock'):action==='trunk'?(target?.suffix==='open_trunk'?'trunk_open':target?.suffix==='close_trunk'?'trunk_close':'trunk'):action==='port'?(target?.suffix==='open_charge_port'?'port_open':'plug'):(target?.suffix==='open_windows'?'windows_open':'windows'),20)+'<span>'+xpEsc(title)+'</span></button>';
+     xpIcon(action==='doors'?(target?.service==='unlock'?'unlock':'lock'):action==='trunk'?(target?.service==='open_cover'||target?.suffix==='open_trunk'?'trunk_open':target?.service==='close_cover'||target?.suffix==='close_trunk'?'trunk_close':'trunk'):action==='port'?(target?.service==='open_cover'||target?.suffix==='open_charge_port'?'port_open':'plug'):(target?.service==='open_cover'||target?.suffix==='open_windows'?'windows_open':'windows'),20)+'<span>'+xpEsc(title)+'</span></button>';
  }
  xpDock(){
    if(!this.xpUiEnabled())return '';
