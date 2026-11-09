@@ -1,0 +1,79 @@
+name: Publish XPENG Vehicle Card v1.0.7-beta.7
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: xpeng-v1.0.7-beta.7-release
+  cancel-in-progress: false
+
+jobs:
+  publish-prerelease:
+    if: github.repository == 'matanmesika/xpeng-vehicle-card' && github.ref == 'refs/heads/fix/g6-beta6-layout-xpengtk-aliases-20261109'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Reject existing tag or release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view v1.0.7-beta.7 >/dev/null 2>&1; then
+            echo 'Beta release already exists; refusing overwrite.'
+            exit 1
+          fi
+          if git ls-remote --exit-code --tags origin refs/tags/v1.0.7-beta.7 >/dev/null 2>&1; then
+            echo 'Beta tag already exists; refusing to move.'
+            exit 1
+          fi
+      - name: Validate runtime, bundle and HACS metadata
+        run: |
+          set -euo pipefail
+          node --check src/xpeng-vehicle-card.js
+          node --check dist/xpeng-vehicle-card.js
+          node --check scripts/capture-dashboard.cjs
+          cmp src/xpeng-vehicle-card.js dist/xpeng-vehicle-card.js
+          node tools/build_vehicle_card.mjs --check
+          python -m json.tool hacs.json >/dev/null
+          test -s docs/releases/v1.0.7-beta.7.md
+      - name: Run Xpengtk, charging and responsive regressions
+        run: |
+          set -euo pipefail
+          node --test tests/g6-charging-electrical-readings-beta.test.cjs tests/g6-wifi-connection-freshness-beta.test.cjs tests/g6-new-climate-status-beta.test.cjs
+          node --test tests/charging-cable-static.test.cjs tests/xpeng-controls-smoke.test.cjs tests/responsive-dual-state.test.cjs tests/g6-mobile-charging-icons.test.cjs tests/vehicle-artwork-mapping.test.cjs tests/release-documentation.test.cjs
+      - name: Install pinned Chromium for visual QA
+        run: |
+          npm install --prefix /tmp/xpeng-beta7-qa --no-audit --no-fund playwright@1.56.1 @mdi/js@7.4.47
+          /tmp/xpeng-beta7-qa/node_modules/.bin/playwright install --with-deps chromium
+      - name: Capture actual responsive card screenshots
+        env:
+          PLAYWRIGHT_MODULE: /tmp/xpeng-beta7-qa/node_modules/playwright
+        run: timeout 180s node scripts/capture-dashboard.cjs
+      - name: Upload browser screenshots for the release record
+        uses: actions/upload-artifact@v4
+        with:
+          name: xpeng-g6-v1.0.7-beta.7-screenshots
+          path: docs/screenshots/*.png
+          retention-days: 30
+          if-no-files-found: error
+      - name: Publish HACS-installable beta release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release create v1.0.7-beta.7 'dist/xpeng-vehicle-card.js#xpeng-vehicle-card.js' \
+            --target "${GITHUB_SHA}" \
+            --title 'XPENG Vehicle Card v1.0.7-beta.7 — Charging Cable Connector and Heading Alignment' \
+            --notes-file docs/releases/v1.0.7-beta.7.md \
+            --prerelease --latest=false
+          gh release view v1.0.7-beta.7 --json tagName,isPrerelease,isDraft,targetCommitish,url,assets
