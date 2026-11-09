@@ -4888,7 +4888,7 @@ background:transparent!important;
  }
  /* Only iPhone card: tighten data, but preserve every live value and action. */
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card{
-  top:142px!important;left:4%!important;width:92%!important;
+  top:122px!important;left:4%!important;width:92%!important;
   padding:9px 12px!important;border-radius:16px!important;
  }
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-heading{
@@ -4934,7 +4934,7 @@ background:transparent!important;
 }
 @container xpeng-layout (max-width:360px){
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card{
-  top:153px!important;padding:8px 10px!important;
+  top:130px!important;padding:8px 10px!important;
  }
  .xp-scene.xp-charge.xp-charge-navigation .xp-station.xp-station-v3.xp-station-xpeng19{
   right:1.5%!important;width:16%!important;min-width:43px!important;
