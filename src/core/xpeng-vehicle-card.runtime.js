@@ -9,7 +9,7 @@ const XP_KEYS = Object.freeze({
  connection:['sensor','api_connection_status'],soc:['sensor','soc','battery'],range:['sensor','range_km','estimated_range'],
  charging:['binary_sensor','is_charging','charging'],plugged:['binary_sensor','is_plugged_in','plugged_in'],target:['sensor','charge_target','charging_target'],
  power:['sensor','charge_power_kw','charging_power'],energy:['sensor','charge_session_energy_kwh','charge_session_energy'],remaining:['sensor','charge_remaining_min','charge_remaining'],
- current:['sensor','charge_current_a','charge_current'],voltage:['sensor','charge_voltage_v','charge_voltage'],odometer:['sensor','odometer_km','odometer'],
+ current:['sensor','charge_current_a','charge_current'],current_limit:['sensor','charge_current_limit_a','charge_current_limit'],voltage:['sensor','charge_voltage_v','charge_voltage'],odometer:['sensor','odometer_km','odometer'],
  locked:['binary_sensor','is_locked','locked'],door_fl:['binary_sensor','door_front_left_open'],
  door_fr:['binary_sensor','door_front_right_open'],door_rl:['binary_sensor','door_rear_left_open'],
  door_rr:['binary_sensor','door_rear_right_open'],trunk:['binary_sensor','trunk_open'],hood:['binary_sensor','hood_open'],
@@ -38,6 +38,7 @@ const XP_XPENGTK_KEYS = Object.freeze({
  power:[['sensor','charge_power']],
  remaining:[['sensor','charge_time_remaining']],
  current:[['sensor','charge_current']],
+ current_limit:[['sensor','charge_limit'],['number','charge_current_limit_control']],
  voltage:[['sensor','charge_voltage']],
  odometer:[['sensor','odometer']],
  tire_fl:[['sensor','tyre_pressure_fl'],['sensor','tyre_pressure_front_left']],
@@ -82,7 +83,7 @@ const XP_UNIQUE_KEYS=Object.freeze({
  connection:[['binary_sensor','mqtt_connected']],charging:[['binary_sensor','charging']],
  plugged:[['binary_sensor','plugged_in']],target:[['number','charge_limit_control'],['number','charge_limit'],['sensor','max_charge']],
  power:[['sensor','charge_power']],remaining:[['sensor','charge_time_remaining']],
- current:[['sensor','charge_current']],voltage:[['sensor','charge_voltage']],
+ current:[['sensor','charge_current']],current_limit:[['sensor','charge_limit'],['number','charge_current_limit_control']],voltage:[['sensor','charge_voltage']],
  tire_fl:[['sensor','tyre_pressure_fl']],tire_fr:[['sensor','tyre_pressure_fr']],
  tire_rl:[['sensor','tyre_pressure_rl']],tire_rr:[['sensor','tyre_pressure_rr']],
  last_update:[['sensor','last_data_update'],['sensor','last_update']],
@@ -153,6 +154,7 @@ const XP_CONTROL_FALLBACKS=Object.freeze({
  'select.steering_wheel_heat_select':'steering_wheel_heating',
  'sensor.slow_charge_port':'slow_charge_port',
  'binary_sensor.windows':'windows',
+ 'cover.trunk':['trunk_cover'],'cover.windows':['windows_cover'],'cover.charge_port':['charge_port_cover'],
  'switch.defrost_switch':'front_defrost',
  // Official Xpengtk >=0.6.28 uses climate_* unique IDs, but its English
  // entity names omit that prefix. Resolve registry first, then these names.
@@ -1364,7 +1366,9 @@ class XpengVehicleCard extends HTMLElement{
    const min=Number.isFinite(Number(attrs.min))?Number(attrs.min):50;
    const max=Number.isFinite(Number(attrs.max))?Number(attrs.max):100;
    const step=Number.isFinite(Number(attrs.step))&&Number(attrs.step)>0?Number(attrs.step):5;
-   return '<label class="xp-ux-charge-limit xp-charge-compact-limit"><span>Charge limit <b>'+
+   const currentLimit=this.number('current_limit');
+   const currentLimitRow=currentLimit===null?'':'<div class="xp-extra-line"><span>AC current limit</span><b>'+xpEsc(xpNum(currentLimit))+' A</b></div>';
+   return currentLimitRow+'<label class="xp-ux-charge-limit xp-charge-compact-limit"><span>Charge limit <b>'+
      xpEsc(xpNum(current))+'%</b></span><input type="range" data-xp-range="charge_limit_control" min="'+
      min+'" max="'+max+'" step="'+step+'" value="'+current+'" aria-label="Charge limit">'+
      '</label><p class="xp-ux-note">Changes are sent to Home Assistant only after selecting a slider value. Confirm the vehicle accepted it.</p>';
@@ -2245,7 +2249,7 @@ const XP_SENSOR_FIELD_META = Object.freeze({
  charging:['Charging','Charging state'],plugged:['Charging','Cable connected'],
  target:['Charging','Charging limit (%)'],power:['Charging','Charging power (kW)'],
  energy:['Charging','Session energy (kWh)'],remaining:['Charging','Time remaining (minutes)'],
- current:['Charging','Charging current (A)'],voltage:['Charging','Charging voltage (V)'],
+ current:['Charging','Charging current (A)'],current_limit:['Charging','AC current limit (A)'],voltage:['Charging','Charging voltage (V)'],
  odometer:['Vehicle status','Odometer (km)'],speed:['Vehicle status','Vehicle speed (km/h)'],
  locked:['Vehicle status','Locked'],door_fl:['Vehicle status','Front-left door'],
  door_fr:['Vehicle status','Front-right door'],door_rl:['Vehicle status','Rear-left door'],
