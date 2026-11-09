@@ -296,30 +296,32 @@ async function main(){
    const q=await car.evaluate(el=>{
      const r=el.shadowRoot,rect=x=>r.querySelector(x)?.getBoundingClientRect().toJSON(),
        st=rect('.xp-station-xpeng19'),car=rect('.xp-charge .xp-car'),
-       info=rect('.xp-charge-card'),
+       info=rect('.xp-charge-card'),title=rect('.xp-title'),
        mobile=r.querySelector('.xp-scene').getBoundingClientRect().width<=850,
        svg=r.querySelector(mobile?'.xp-cable-mobile':'.xp-cable-desktop'),
        d=svg.querySelector('.xp-charge-cable-core').getAttribute('d'),
        nums=[...d.matchAll(/-?[0-9]+(?:\\.[0-9]+)?/g)].map(x=>+x[0]),
        b=svg.getBoundingClientRect(),v=svg.viewBox.baseVal,
        point=(x,y)=>({x:b.left+x*b.width/v.width,y:b.top+y*b.height/v.height});
-     return {st,car,info,mobile,
+     return {st,car,info,title,mobile,
        start:point(nums[0],nums[1]),end:point(nums.at(-2),nums.at(-1)),
        photo:!!r.querySelector('svg[data-xp-station-art="photo"] image'),
        z:['.xp-station-xpeng19','.xp-charge .xp-car',mobile?'.xp-cable-mobile':'.xp-cable-desktop','.xp-charge-card']
          .map(x=>Number(getComputedStyle(r.querySelector(x)).zIndex))};
    });
-   const {st,car:c,start,end,z}=q;
+   const {st,car:c,start,end,z,title,info}=q;
    assert.ok(q.photo&&st&&c&&start&&end,'Charging photo/geometry absent: '+JSON.stringify(q));
    assert.ok(z.every((v,i)=>i===0||v>z[i-1]),'Station must be behind car; cable above: '+JSON.stringify(q));
    assert.ok(st.height/c.height>.57&&st.height/c.height<1.24,'Charger out of proportion: '+JSON.stringify(q));
    assert.ok(st.left>=c.right-15&&st.left<c.right+c.width*.22,'Charger not ahead of front headlamp: '+JSON.stringify(q));
    assert.ok(st.top<c.top+24&&st.bottom<c.bottom-10,'Charger must sit farther forward: '+JSON.stringify(q));
-   assert.ok(start.x>c.left+c.width*.25&&start.x<c.right&&start.y>c.top&&start.y<c.bottom,
-     'Cable origin must contact the car: '+JSON.stringify(q));
+   const cableTail={x:c.left+c.width*.758,y:c.top+c.height*.95};
+   assert.ok(Math.abs(start.x-cableTail.x)<14&&Math.abs(start.y-cableTail.y)<14,
+     'Green lead must continue from the exposed end of the artwork cable: '+JSON.stringify({q,cableTail}));
    assert.ok(end.x>=st.left-14&&end.x<st.right+10&&end.y>st.top&&end.y<st.bottom,
      'Cable must connect to the station: '+JSON.stringify(q));
-   if(q.mobile)assert.ok(q.info.bottom<=c.top+4,'Mobile charging card obscures car: '+JSON.stringify(q));
+   assert.ok(title.bottom<=info.top+2,'Charging title must sit above telemetry without overlap: '+JSON.stringify(q));
+   if(q.mobile)assert.ok(info.bottom<=c.top+4,'Mobile charging card obscures car: '+JSON.stringify(q));
    console.log('PASS charging visual agent '+width+'px',JSON.stringify(q));
  }
  await chargingVisualAgent(1400);
