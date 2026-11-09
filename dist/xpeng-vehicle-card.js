@@ -5314,6 +5314,20 @@ background:transparent!important;
  filter:none!important;
 }
 
+
+/* Real phone viewports can be narrow independently of their HA card container.
+   Keep the unified charging panel above the car on both screen and card breakpoints. */
+@media(max-width:520px){
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{
+  top:122px!important;
+ }
+}
+@media(max-width:360px){
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{
+  top:110px!important;
+ }
+}
+
 `;
 // Retain legacy manual entity mapping for older YAML; new configs are automatic.
 function xpSensorMappingMode(cfg,profile){
