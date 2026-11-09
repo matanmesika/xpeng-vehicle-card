@@ -497,8 +497,7 @@ test('existing HVAC schedules use Xpengtk appointment-specific switches only',as
   await card.xpSend('switch','turn_on','hvac_schedule_88');
   assert.deepEqual(JSON.parse(JSON.stringify(commands)),[
     {domain:'switch',service:'turn_off',data:{entity_id:'switch.workday'}},
-    {domain:'switch',service:'turn_on',data:{entity_id:'switch.weekend'}}
-  ]);
+    {domain:'switch',service:'turn_on',data:{entity_id:'switch.weekend'}}  ]);
   card._hass.states['switch.weekend'].state='unavailable';
   assert.doesNotMatch(card.xpExtraSectionContent('schedule'),/data-xp-hvac-schedule="88"/);
 });
@@ -997,8 +996,7 @@ test('Location requests HA native GPS map with dark mode and zoom 11, not a fabr
  const host={textContent:'Loading map…',replaceChildren(view){attached=view}};
  card.shadowRoot.querySelector=selector=>selector==='[data-xp-map-host]'?host:null;
  card.shadowRoot.contains=x=>x===host;
- sandbox.window.loadCardHelpers=async()=>({createCardElement(config){captured=config;return {hass:null}}});
- await card.xpMountMap();
+ sandbox.window.loadCardHelpers=async()=>({createCardElement(config){captured=config;return {hass:null}}}); await card.xpMountMap();
  assert.deepEqual(JSON.parse(JSON.stringify(captured)),{
    type:'map',entities:[{entity:'device_tracker.real_vehicle',label_mode:'icon',focus:true}],
    default_zoom:16,auto_fit:true,fit_zones:false,hours_to_show:0,theme_mode:'dark',aspect_ratio:'4:3'
@@ -1497,8 +1495,7 @@ test('beta.8 first Location open reuses proactively warmed HA map helpers',async
  assert.equal(loads,1,'Opening Location must not trigger a second bundle load');
  assert.equal(created,1,'One native HA map card is created');
  assert.notEqual(child.hass,card._hass);
- assert.equal(child.hass.states['device_tracker.user_gps'].attributes.icon,'mdi:car-back');
- assert.equal(child.config.entities[0].entity,'device_tracker.user_gps');
+ assert.equal(child.hass.states['device_tracker.user_gps'].attributes.icon,'mdi:car-back'); assert.equal(child.config.entities[0].entity,'device_tracker.user_gps');
  assert.equal(commands.length,0,'Preloading never issues vehicle commands');
 });
 
@@ -1743,7 +1740,7 @@ test('unified Xpengtk covers provide state and commands when legacy action butto
 
 test('legacy Xpengtk binary sensors plus separate buttons remain a valid window and trunk setup',()=>{
   const {card}=createCard({enable_access_controls:true});
-  const target=action=>JSON.parse(JSON.stringify(target(action)));
+  const target=action=>JSON.parse(JSON.stringify(card.xpToggleTarget(action)));
   card._xpengByKey={
     'binary_sensor.any_window_open':'binary_sensor.renamed_any_window_open',
     'binary_sensor.trunk':'binary_sensor.renamed_trunk',
