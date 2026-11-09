@@ -4925,3 +4925,8 @@ background:transparent!important;
   top:110px!important;
  }
 }
+
+/* At narrow card widths inside wider HA sections, keep charging details clear of the car. */
+@container xpeng-layout (max-width:450px){
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{top:122px!important}
+}
