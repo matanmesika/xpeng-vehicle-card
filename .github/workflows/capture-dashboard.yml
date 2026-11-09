@@ -17,6 +17,7 @@ on:
     paths:
       - scripts/capture-dashboard.cjs
       - src/xpeng-vehicle-card.js
+      - dist/xpeng-vehicle-card.js
       - .github/workflows/capture-dashboard.yml
   workflow_dispatch:
 
