@@ -1720,7 +1720,7 @@ test('AC current limit telemetry is mapped separately from battery percentage li
 
 
 test('unified Xpengtk covers provide state and commands when legacy action buttons are absent',async()=>{
-  const {card,commands}=createCard();
+  const {card,commands}=createCard({enable_access_controls:true});
   card._xpengByKey={
     'cover.trunk_cover':'cover.renamed_tailgate',
     'cover.windows_cover':'cover.renamed_windows',
@@ -1741,7 +1741,7 @@ test('unified Xpengtk covers provide state and commands when legacy action butto
 });
 
 test('legacy Xpengtk binary sensors plus separate buttons remain a valid window and trunk setup',()=>{
-  const {card}=createCard();
+  const {card}=createCard({enable_access_controls:true});
   card._xpengByKey={
     'binary_sensor.any_window_open':'binary_sensor.renamed_any_window_open',
     'binary_sensor.trunk':'binary_sensor.renamed_trunk',
