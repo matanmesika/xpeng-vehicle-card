@@ -1721,6 +1721,7 @@ test('AC current limit telemetry is mapped separately from battery percentage li
 
 test('unified Xpengtk covers provide state and commands when legacy action buttons are absent',async()=>{
   const {card,commands}=createCard({enable_access_controls:true});
+  const target=action=>JSON.parse(JSON.stringify(card.xpToggleTarget(action)));
   card._xpengByKey={
     'cover.trunk_cover':'cover.renamed_tailgate',
     'cover.windows_cover':'cover.renamed_windows',
@@ -1729,19 +1730,20 @@ test('unified Xpengtk covers provide state and commands when legacy action butto
   card._hass.states['cover.renamed_tailgate']={state:'closed',attributes:{supported_features:3,is_closed:true}};
   card._hass.states['cover.renamed_windows']={state:'closed',attributes:{supported_features:3,is_closed:true}};
   card._hass.states['cover.renamed_charge_port']={state:'closed',attributes:{supported_features:3,is_closed:true}};
-  assert.deepEqual(card.xpToggleTarget('trunk'),{domain:'cover',service:'open_cover',suffix:'trunk',label:'Open Trunk'});
-  assert.deepEqual(card.xpToggleTarget('windows'),{domain:'cover',service:'open_cover',suffix:'windows',label:'Open windows'});
-  assert.deepEqual(card.xpToggleTarget('port'),{domain:'cover',service:'open_cover',suffix:'charge_port',label:'Open charging port'});
+  assert.deepEqual(target('trunk'),{domain:'cover',service:'open_cover',suffix:'trunk',label:'Open Trunk'});
+  assert.deepEqual(target('windows'),{domain:'cover',service:'open_cover',suffix:'windows',label:'Open windows'});
+  assert.deepEqual(target('port'),{domain:'cover',service:'open_cover',suffix:'charge_port',label:'Open charging port'});
   await card.xpSend('cover','open_cover','windows',undefined,true);
   assert.deepEqual(JSON.parse(JSON.stringify(commands)),[
     {domain:'cover',service:'open_cover',data:{entity_id:'cover.renamed_windows'}}
   ]);
   card._hass.states['cover.renamed_windows']={state:'open',attributes:{supported_features:3,is_closed:false}};
-  assert.equal(card.xpToggleTarget('windows').service,'close_cover');
+  assert.equal(target('windows').service,'close_cover');
 });
 
 test('legacy Xpengtk binary sensors plus separate buttons remain a valid window and trunk setup',()=>{
   const {card}=createCard({enable_access_controls:true});
+  const target=action=>JSON.parse(JSON.stringify(target(action)));
   card._xpengByKey={
     'binary_sensor.any_window_open':'binary_sensor.renamed_any_window_open',
     'binary_sensor.trunk':'binary_sensor.renamed_trunk',
@@ -1754,10 +1756,10 @@ test('legacy Xpengtk binary sensors plus separate buttons remain a valid window 
   card._hass.states['binary_sensor.renamed_trunk']={state:'off',attributes:{}};
   for(const id of ['button.renamed_open_windows','button.renamed_close_windows','button.renamed_open_trunk','button.renamed_close_trunk'])
     card._hass.states[id]={state:'unknown',attributes:{}};
-  assert.deepEqual(card.xpToggleTarget('windows'),{domain:'button',service:'press',suffix:'open_windows',label:'Open windows'});
-  assert.deepEqual(card.xpToggleTarget('trunk'),{domain:'button',service:'press',suffix:'open_trunk',label:'Open Trunk'});
+  assert.deepEqual(target('windows'),{domain:'button',service:'press',suffix:'open_windows',label:'Open windows'});
+  assert.deepEqual(target('trunk'),{domain:'button',service:'press',suffix:'open_trunk',label:'Open Trunk'});
   card._hass.states['binary_sensor.renamed_any_window_open'].state='on';
-  assert.equal(card.xpToggleTarget('windows').suffix,'close_windows');
+  assert.equal(target('windows').suffix,'close_windows');
   card._hass.states['binary_sensor.renamed_trunk'].state='on';
-  assert.equal(card.xpToggleTarget('trunk').suffix,'close_trunk');
+  assert.equal(target('trunk').suffix,'close_trunk');
 });
