@@ -1684,3 +1684,36 @@ test('Owner charging composition stays layered and phone panel compact',()=>{
  assert.match(src,/\.xp-charge-card\{z-index:12!important\}/);
  assert.match(src,/top:142px!important/);
 });
+
+
+test('Xpengtk renamed cover registry entries resolve trunk, windows, and charge-port status',()=>{
+  const {card}=createCard(),st=card._hass.states;
+  card._xpengByKey={
+    'cover.trunk_cover':'cover.renamed_tailgate',
+    'cover.windows_cover':'cover.renamed_windows',
+    'cover.charge_port_cover':'cover.renamed_charge_port'
+  };
+  st['cover.renamed_tailgate']={state:'open',attributes:{}};
+  st['cover.renamed_windows']={state:'closed',attributes:{is_closed:true}};
+  st['cover.renamed_charge_port']={state:'open',attributes:{}};
+  assert.equal(card.xpActionState('trunk'),'open');
+  assert.equal(card.xpActionState('windows'),'closed');
+  assert.equal(card.xpActionState('port'),'open');
+  st['cover.renamed_windows'].state='open';
+  st['cover.renamed_windows'].attributes.is_closed=false;
+  assert.equal(card.xpActionState('windows'),'open');
+});
+
+test('AC current limit telemetry is mapped separately from battery percentage limit',()=>{
+  const {card}=createCard();
+  card._xpengByKey['number.charge_limit_control']='number.user_charge_limit';
+  card._xpengByKey['sensor.charge_limit']='sensor.user_ac_current_limit';
+  card._hass.states['number.user_charge_limit']={state:'80',attributes:{min:50,max:100,step:5}};
+  card._hass.states['sensor.user_ac_current_limit']={state:'27',attributes:{unit_of_measurement:'A'}};
+  assert.equal(card.number('target'),80);
+  assert.equal(card.number('current_limit'),27);
+  const panel=card.xpChargeLimitPanel();
+  assert.match(panel,/AC current limit/);
+  assert.match(panel,/27 A/);
+  assert.match(panel,/data-xp-range="charge_limit_control"/);
+});
