@@ -5067,7 +5067,7 @@ background:transparent!important;
 }
 .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action:disabled{opacity:.44!important;cursor:not-allowed!important}
 @container xpeng-layout (max-width:850px){
- .xp-scene{--xp-charge-ring:48px;--xp-charge-icon:21px;--xp-charge-gap:9px;--xp-charge-label:10px}
+ .xp-scene{--xp-charge-ring:46px;--xp-charge-icon:21px;--xp-charge-gap:9px;--xp-charge-label:10px}
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{
   left:4%!important;top:196px!important;width:92%!important;padding:12px 13px!important;border-radius:17px!important;
  }
@@ -5242,7 +5242,7 @@ background:transparent!important;
 }
 .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action-core{gap:5px!important}
 .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action-ring{
- width:48px!important;height:48px!important;flex-basis:48px!important;
+ width:46px!important;height:46px!important;flex-basis:46px!important;
 }
 .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action-label{
  font-size:9px!important;line-height:1.1!important;
