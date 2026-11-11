@@ -4982,3 +4982,10 @@ background:transparent!important;
  .xp-scene.xp-charge.xp-charge-navigation .xp-subtitle{font-size:11px!important}
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{top:130px!important}
 }
+
+/* G6 2026: one continuous cable laid out from the real car/station boxes.
+   Coloured end to end and animated (station -> car) only while charging. */
+.xp-charge-cable.xp-charge-cable-real{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;display:block}
+@keyframes xp-cable-flow{to{stroke-dashoffset:calc(var(--xp-cyc) * -1)}}
+.xp-charge-cable-real .xp-cable-pulse{animation:xp-cable-flow 1.4s linear infinite}
+@media (prefers-reduced-motion:reduce){.xp-charge-cable-real .xp-cable-pulse{animation:none;opacity:.55}}
