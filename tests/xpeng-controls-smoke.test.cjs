@@ -826,10 +826,9 @@ test('only sensor state triggers charging; confirmed charge renders green cable'
  card._hass.states['binary_sensor.cable_present'].state='on';
  card.render();
  assert.match(card.shadowRoot.innerHTML,/class="xp-charge-card(?: xp-charge-unified)?"/);
- assert.match(card.shadowRoot.innerHTML,/data-xp-cable="desktop"/);
- assert.match(card.shadowRoot.innerHTML,/data-xp-cable="mobile"/);
+ assert.match(card.shadowRoot.innerHTML,/data-xp-cable="live"/);
  card._hass.states['binary_sensor.is_charging'].state='off';card.render();
- assert.doesNotMatch(card.shadowRoot.innerHTML,/data-xp-cable="desktop"|data-xp-cable="mobile"/);
+ assert.doesNotMatch(card.shadowRoot.innerHTML,/data-xp-cable=/);
 });
 
 test('one-tap controls alter visible action labels, icons, and avoid duplicate confirms',async()=>{
@@ -1184,15 +1183,15 @@ test('charging preview ignores generic front image, respects dedicated image ove
  card._view='charging';
  assert.equal(card.assetSpec().src,'/local/owner-rear.png');
 });
-test('charging cable uses approved dedicated charging image and separate full-length native overlays',()=>{
+test('charging cable uses approved dedicated charging image and ONE live cable (never doubled)',()=>{
  const {card}=createCard({show_controls:true});
  card._view='charging';
- assert.match(card.assetSpec().src,/charging\.webp$/);
+ assert.match(card.assetSpec().src,/g6\/2026\/graphite_gray\/charging\.webp$/);
  const html=card.charging();
- assert.match(html,/data-xp-cable="desktop"/);
- assert.match(html,/data-xp-cable="mobile"/);
- assert.match(html,/M171 489.*343 487/);
- assert.match(html,/M935 460.*1284 465/);
+ assert.equal((html.match(/data-xp-cable=/g)||[]).length,1);
+ assert.match(html,/data-xp-cable="live"[^>]*data-xp-cable-host/);
+ // the fixed-coordinate overlays that drew a second cable over the photo are gone
+ assert.doesNotMatch(html,/M171 489|M935 460|data-xp-cable="desktop"|data-xp-cable="mobile"/);
  card._hass.states['binary_sensor.is_charging'].state='off';
  assert.doesNotMatch(card.charging(),/data-xp-cable/);
 });
@@ -1683,4 +1682,63 @@ test('Owner charging composition stays layered and phone panel compact',()=>{
  assert.match(src,/\.xp-charge-cable\{[\s\S]*?z-index:11!important/);
  assert.match(src,/\.xp-charge-card\{z-index:12!important\}/);
  assert.match(src,/top:142px!important/);
+});
+
+// ---- G6 2026 continuous charging cable -------------------------------------
+const cableApi=(()=>{const sb={};vm.runInNewContext(src.split('class XpengVehicleCard')[0]+'\n;this.api={xpCableGeometry,xpCableSvg,xpContainBox,XP_G6_PHOTO_CABLE,XP_STATION_HANDLE};',sb);return sb.api;})();
+const desktopBoxes={car:{x:473,y:413,width:462,height:264},station:{x:991,y:383,width:71.9,height:200}};
+const phoneBoxes={car:{x:12,y:362,width:319,height:182.2},station:{x:349,y:385,width:55,height:153}};
+test('cable is ONE smooth path from the station handle to the plug boot, at desktop and phone sizes',()=>{
+ for(const {car,station} of [desktopBoxes,phoneBoxes]){
+  const g=cableApi.xpCableGeometry(car,station);
+  assert.equal((g.d.match(/M/g)||[]).length,1,'single continuous path, no joined segments');
+  assert.doesNotMatch(g.d,/NaN|Infinity/);
+  const nums=g.d.slice(1).split(/[ C]+/).filter(Boolean).map(Number);
+  const start=nums.slice(0,2),end=nums.slice(-2);
+  const handle=[station.x+station.width*cableApi.XP_STATION_HANDLE[0],station.y+station.height*cableApi.XP_STATION_HANDLE[1]];
+  const scale=car.width/1110,boot=[car.x+cableApi.XP_G6_PHOTO_CABLE[0][0]*scale,car.y+car.height*cableApi.XP_G6_PHOTO_CABLE[0][1]/634];
+  assert.ok(Math.hypot(start[0]-handle[0],start[1]-handle[1])<0.2,'starts in the station handle (energy direction station -> car)');
+  assert.ok(Math.hypot(end[0]-boot[0],end[1]-boot[1])<0.2,'ends flush at the plug boot');
+  assert.ok(g.width>2&&g.width<car.width*0.012,'cable width follows the artwork scale');
+ }
+});
+test('only real charging colours the whole cable and animates energy towards the car',()=>{
+ const g=cableApi.xpCableGeometry(desktopBoxes.car,desktopBoxes.station);
+ const charging=cableApi.xpCableSvg(g,'charging','t');
+ const connected=cableApi.xpCableSvg(g,'connected','t');
+ assert.match(charging,/class="xp-cable-pulse"/);
+ assert.match(charging,/class="xp-cable-body"[^>]*|stroke="#11c983"/);
+ assert.doesNotMatch(connected,/xp-cable-pulse|#11c983|#00e08f/);
+ for(const svg of [charging,connected]){
+  assert.match(svg,/<mask id="xpcmt"[\s\S]*<polygon points="[\d.,\s-]+"/,'plug boot is masked: no cap or glow over the plug');
+  assert.match(svg,/<g mask="url\(#xpcmt\)">/);
+  assert.match(svg,/class="xp-cable-rim"[^>]*stroke-linecap="butt"|stroke-linecap="butt"[^>]*class="xp-cable-rim"/);
+ }
+ assert.match(src,/@keyframes xp-cable-flow\{to\{stroke-dashoffset:calc\(var\(--xp-cyc\) \* -1\)\}\}/,'pulses run forward along the station -> car path');
+ assert.match(src,/prefers-reduced-motion:reduce\)\{\.xp-charge-cable-real \.xp-cable-pulse\{animation:none/);
+});
+test('charging needs energy flow: a reported 0 kW vetoes a stale charging state',()=>{
+ const {card}=createCard();
+ card._xpengByKey['sensor.charge_power']='sensor.real_power';
+ card._hass.states['sensor.real_power']={state:'0',attributes:{unit_of_measurement:'kW'}};
+ assert.equal(card.xpChargingActive(),false);
+ card._hass.states['sensor.real_power'].state='10.5';
+ assert.equal(card.xpChargingActive(),true);
+ card._hass.states['sensor.real_power'].state='unavailable';
+ assert.equal(card.xpChargingActive(),true,'missing power telemetry never hides a confirmed charge');
+ card._hass.states['binary_sensor.is_charging'].state='off';
+ card._hass.states['sensor.real_power'].state='10.5';
+ assert.equal(card.xpChargingActive(),false,'power alone never invents charging');
+});
+test('Home Assistant updates never reset the live cable (animation keeps running)',()=>{
+ const {card}=createCard();
+ const host={nodeType:1,nodeName:'svg',attributes:[],hasAttribute:n=>n==='data-xp-cable-host',getAttribute:()=>null,setAttribute(){},removeAttribute(){},firstChild:{drawn:true}};
+ let reconciledInside=false;const orig=card.xpReconcileChildren.bind(card);
+ card.xpReconcileChildren=function(c,n){if(c===host)reconciledInside=true;return orig(c,n);};
+ const parent={firstChild:host,appendChild(){},replaceChild(){},removeChild(){}};
+ host.nextSibling=null;
+ const fresh={nodeType:1,nodeName:'svg',attributes:[],hasAttribute:()=>false,firstChild:null,nextSibling:null};
+ card.xpReconcileChildren(parent,{firstChild:fresh});
+ assert.equal(reconciledInside,false);
+ assert.deepEqual(host.firstChild,{drawn:true});
 });
