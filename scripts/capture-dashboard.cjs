@@ -298,15 +298,15 @@ async function main(){
        st=rect('.xp-station-xpeng19'),car=rect('.xp-charge .xp-car'),
        info=rect('.xp-charge-card'),title=rect('.xp-title'),
        mobile=r.querySelector('.xp-scene').getBoundingClientRect().width<=850,
-       svg=r.querySelector(mobile?'.xp-cable-mobile':'.xp-cable-desktop'),
-       d=svg.querySelector('.xp-charge-cable-core').getAttribute('d'),
-       nums=[...d.matchAll(/-?[0-9]+(?:\\.[0-9]+)?/g)].map(x=>+x[0]),
+       svg=r.querySelector('[data-xp-cable-host]'),
+       d=svg.querySelector('.xp-cable-body').getAttribute('d'),
+       nums=[...d.matchAll(/-?[0-9]+(?:[.][0-9]+)?/g)].map(x=>+x[0]),
        b=svg.getBoundingClientRect(),v=svg.viewBox.baseVal,
        point=(x,y)=>({x:b.left+x*b.width/v.width,y:b.top+y*b.height/v.height});
      return {st,car,info,title,mobile,
        start:point(nums[0],nums[1]),end:point(nums.at(-2),nums.at(-1)),
        photo:!!r.querySelector('svg[data-xp-station-art="photo"] image'),
-       z:['.xp-station-xpeng19','.xp-charge .xp-car',mobile?'.xp-cable-mobile':'.xp-cable-desktop','.xp-charge-card']
+       z:['.xp-station-xpeng19','.xp-charge .xp-car','[data-xp-cable-host]','.xp-charge-card']
          .map(x=>Number(getComputedStyle(r.querySelector(x)).zIndex))};
    });
    const {st,car:c,start,end,z,title,info}=q;
@@ -315,11 +315,11 @@ async function main(){
    assert.ok(st.height/c.height>.57&&st.height/c.height<1.24,'Charger out of proportion: '+JSON.stringify(q));
    assert.ok(st.left>=c.right-15&&st.left<c.right+c.width*.22,'Charger not ahead of front headlamp: '+JSON.stringify(q));
    assert.ok(st.top<c.top+24&&st.bottom<c.bottom-10,'Charger must sit farther forward: '+JSON.stringify(q));
-   const cableTail={x:c.left+c.width*.758,y:c.top+c.height*.95};
-   assert.ok(Math.abs(start.x-cableTail.x)<14&&Math.abs(start.y-cableTail.y)<14,
-     'Green lead must continue from the exposed end of the artwork cable: '+JSON.stringify({q,cableTail}));
-   assert.ok(end.x>=st.left-14&&end.x<st.right+10&&end.y>st.top&&end.y<st.bottom,
-     'Cable must connect to the station: '+JSON.stringify(q));
+   // One continuous cable, drawn in the energy direction: station handle -> plug boot.
+   assert.ok(end.x>c.left+c.width*.25&&end.x<c.right&&end.y>c.top&&end.y<c.bottom,
+     'Cable must end at the car charge port: '+JSON.stringify(q));
+   assert.ok(start.x>=st.left-14&&start.x<st.right+10&&start.y>st.top&&start.y<st.bottom,
+     'Cable must start at the station handle: '+JSON.stringify(q));
    assert.ok(title.bottom<=info.top+2,'Charging title must sit above telemetry without overlap: '+JSON.stringify(q));
    if(q.mobile)assert.ok(info.bottom<=c.top+4,'Mobile charging card obscures car: '+JSON.stringify(q));
    console.log('PASS charging visual agent '+width+'px',JSON.stringify(q));
@@ -329,12 +329,13 @@ async function main(){
  const rearArt=await car.locator('[data-car-art]').getAttribute('src');
  assert.match(rearArt,/\/g6\/2026\/graphite_gray\/charging\.webp/,'Charge view must use owner-supplied grey rear-three-quarter artwork');
  const overlays=await car.evaluate(el=>[...el.shadowRoot.querySelectorAll('svg[data-xp-cable]')].map(svg=>({
-  mode:svg.dataset.xpCable,visible:getComputedStyle(svg).display!=='none',
-  core:Number.parseFloat(getComputedStyle(svg.querySelector('.xp-charge-cable-core')).strokeWidth),
-  halo:Number.parseFloat(getComputedStyle(svg.querySelector('.xp-charge-cable-halo')).strokeWidth)
+  mode:svg.dataset.xpCable,cableMode:svg.dataset.xpCableMode,visible:getComputedStyle(svg).display!=='none',
+  segments:(svg.querySelector('.xp-cable-body')?.getAttribute('d').match(/M/g)||[]).length,
+  rim:Number.parseFloat(svg.querySelector('.xp-cable-rim')?.getAttribute('stroke-width'))
  })));
- assert.equal(overlays.filter(x=>x.visible).length,1,'Only one responsive charging cable may be visible');
- assert.ok(overlays.every(x=>x.core<=3&&x.halo<=6),'Green cable must remain thin: '+JSON.stringify(overlays));
+ assert.equal(overlays.length,1,'Exactly ONE charging cable exists (never doubled over the photo cable)');
+ assert.ok(overlays[0].visible&&overlays[0].segments===1&&overlays[0].cableMode==='charging','One continuous coloured cable: '+JSON.stringify(overlays));
+ assert.ok(overlays[0].rim>=2&&overlays[0].rim<=7,'Cable matches the pictured cable thickness: '+JSON.stringify(overlays));
  console.log('Owner-grey rear charging image and thin grounded cable:',JSON.stringify({rearArt,overlays}));
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
  await car.locator('button[data-xp-open="maintenance"]').first().click();
@@ -467,14 +468,15 @@ async function main(){
        const cables=[...r.querySelectorAll('svg[data-xp-cable]')];
        return {imageSrc:image?.getAttribute('src'),cables:cables.map(svg=>({
          mode:svg.dataset.xpCable,visible:getComputedStyle(svg).display!=='none',
-         stroke:parseFloat(getComputedStyle(svg.querySelector('.xp-charge-cable-core')).strokeWidth)
+         segments:(svg.querySelector('.xp-cable-body')?.getAttribute('d').match(/M/g)||[]).length,
+         stroke:parseFloat(svg.querySelector('.xp-cable-rim')?.getAttribute('stroke-width'))
        }))};
      });
      assert.match(details.imageSrc||'',/\/g6\/2026\/graphite_gray\/charging\.webp/,
        'All charging breakpoints must use owner-selected rear-grey image');
-     assert.equal(details.cables.length,2,'Both cable layouts must be defined');
-     assert.equal(details.cables.filter(c=>c.visible).length,1,'Exactly one charging cable should show');
-     assert.ok(details.cables.every(c=>c.stroke<=3),'Green cable must be thin at all breakpoints');
+     assert.equal(details.cables.length,1,'One cable laid out for every breakpoint');
+     assert.ok(details.cables[0].visible&&details.cables[0].segments===1,'Exactly one continuous charging cable should show');
+     assert.ok(details.cables.every(c=>c.stroke>=2&&c.stroke<=7),'Cable follows the artwork thickness at all breakpoints');
      console.log('Verified breakpoint charging imagery and cable:',JSON.stringify(details));
      const geo=await car.evaluate(el=>{
        const root=el.shadowRoot,rect=q=>root.querySelector(q)?.getBoundingClientRect().toJSON();
@@ -495,7 +497,7 @@ async function main(){
        'Charging telemetry must not cover the car: '+JSON.stringify(geo));
      const layers=await car.evaluate(el=>{
        const r=el.shadowRoot,station=r.querySelector('.xp-station-xpeng19'),
-          vehicle=r.querySelector('.xp-charge .xp-car'),cable=r.querySelector('.xp-cable-mobile'),
+          vehicle=r.querySelector('.xp-charge .xp-car'),cable=r.querySelector('[data-xp-cable-host]'),
           info=r.querySelector('.xp-charge-card');
        return {station:Number(getComputedStyle(station).zIndex),car:Number(getComputedStyle(vehicle).zIndex),
           cable:Number(getComputedStyle(cable).zIndex),info:Number(getComputedStyle(info).zIndex)};
@@ -1143,16 +1145,16 @@ async function main(){
  assert.equal(await car.locator('.xp-charge').count(),0,'Stopped charge must return to regular Home automatically');
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(true));
  assert.equal(await car.locator('.xp-charge').count(),1,'New charge session must enter Charging automatically');
- const greenDebug=await car.evaluate(e=>({active:e.xpChargingActive(),view:e._view,dismissed:e._xpChargingDismissed,last:e._xpLastActualCharging,charging:e.val('charging'),plugged:e.val('plugged'),svg:!!e.shadowRoot.querySelector('svg.xp-charge-cable-live')}));
+ const greenDebug=await car.evaluate(e=>({active:e.xpChargingActive(),view:e._view,dismissed:e._xpChargingDismissed,last:e._xpLastActualCharging,charging:e.val('charging'),plugged:e.val('plugged'),svg:!!e.shadowRoot.querySelector('svg.xp-charge-cable-real')}));
  console.log('Live cable after charge transition:',JSON.stringify(greenDebug));
- assert.equal(await car.locator('.xp-charge-cable-live').count(),2,'Both breakpoint-specific charging overlays are present: '+JSON.stringify(greenDebug));
+ assert.equal(await car.locator('.xp-charge-cable-real').count(),1,'One continuous charging cable is present: '+JSON.stringify(greenDebug));
  const liveCable=await car.evaluate(el=>{
   const svgs=[...el.shadowRoot.querySelectorAll('svg[data-xp-cable]')];
-  return svgs.map(svg=>({mode:svg.dataset.xpCable,visible:getComputedStyle(svg).display!=='none',paths:svg.querySelectorAll('path').length}));
+  return svgs.map(svg=>({mode:svg.dataset.xpCableMode,visible:getComputedStyle(svg).display!=='none',paths:svg.querySelectorAll('path').length,pulse:!!svg.querySelector('.xp-cable-pulse')}));
  });
- assert.equal(liveCable.filter(x=>x.visible).length,1,'Only the correct desktop/phone cable may be visible');
+ assert.ok(liveCable.length===1&&liveCable[0].visible&&liveCable[0].paths>0&&liveCable[0].pulse,'Charging cable is drawn with energy flow: '+JSON.stringify(liveCable));
  await page.evaluate(data=>{document.querySelector('xpeng-vehicle-card').hass=data;},demo(false));
- assert.equal(await car.locator('.xp-charge-cable-live').count(),0,'Idle state removes green cable');
+ assert.equal(await car.locator('[data-xp-cable]').count(),0,'Idle state removes the charging cable');
 
  // Stress test a real-sized mobile container with repeated Xpengtk state ticks.
  // Verify DOM identity and scroll position, not just a static screenshot.
