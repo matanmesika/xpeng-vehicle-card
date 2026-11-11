@@ -261,6 +261,99 @@ function xpBool(v){
   return null;
 }
 // Accept status sensors from other integrations without confusing 'plugged in' with charging.
+// ---------------------------------------------------------------------------
+// G6 2026 charging cable: ONE continuous, physically plausible cable.
+// Geometry comes from the real on-screen boxes of the car artwork and the
+// station photo, so it stays attached at every card width (phone and desktop).
+// The path runs station -> car, the direction energy flows.
+// Centre-line of the cable pictured in g6/2026/graphite_gray/charging.webp
+// (1110x634 px), from the plug's rubber boot down to the floor. The drawn cable
+// covers it exactly, so the photo cable and the drawn cable are never doubled.
+const XP_G6_CABLE_ART='vehicles/g6/2026/graphite_gray/charging.webp';
+const XP_G6_PHOTO_CABLE=Object.freeze([[627,285],[630,291],[634,303],[639,315],[644.5,327],[650,340],[655,352],[663,380],[670,410],[679,435],[684,460],[691,485],[697,503],[703,520],[713,537],[724,550],[745,568],[770,582],[800,593],[839,600]]);
+const XP_G6_PHOTO_SIZE=Object.freeze([1110,634]);
+const XP_G6_PHOTO_CABLE_WIDTH=10.5;
+// Station photo: holster handle, pictured holster cable and floor line
+// (fractions of the station image box).
+const XP_STATION_HANDLE=Object.freeze([0.305,0.495]);
+const XP_STATION_HOLSTER=Object.freeze([0.255,0.60]);
+const XP_STATION_TAIL=Object.freeze([0.21,0.70]);
+const XP_STATION_FOOT=Object.freeze([0.10,0.99]);
+function xpContainBox(box,natural){
+  const ar=natural[0]/natural[1];let w=box.width,h=w/ar;
+  if(h>box.height){h=box.height;w=h*ar;}
+  return {x:box.x+(box.width-w)/2,y:box.y+(box.height-h)/2,width:w,height:h};
+}
+// Centripetal Catmull-Rom -> cubic Bezier: smooth, no overshoot, no loops.
+function xpCableSpline(pts){
+  const f=v=>v.toFixed(1);
+  const dist=(a,b)=>Math.max(1e-3,Math.sqrt(Math.hypot(b[0]-a[0],b[1]-a[1])));
+  let d='M'+f(pts[0][0])+' '+f(pts[0][1]);
+  for(let i=0;i<pts.length-1;i++){
+    const p1=pts[i],p2=pts[i+1];
+    const p0=pts[i-1]||[2*p1[0]-p2[0],2*p1[1]-p2[1]];
+    const p3=pts[i+2]||[2*p2[0]-p1[0],2*p2[1]-p1[1]];
+    const d1=dist(p0,p1),d2=dist(p1,p2),d3=dist(p2,p3);
+    const c1=[0,1].map(k=>p1[k]+(p2[k]-p0[k])*d2/(3*(d1+d2)));
+    const c2=[0,1].map(k=>p2[k]-(p3[k]-p1[k])*d2/(3*(d2+d3)));
+    d+=' C'+f(c1[0])+' '+f(c1[1])+' '+f(c2[0])+' '+f(c2[1])+' '+f(p2[0])+' '+f(p2[1]);
+  }
+  return d;
+}
+// car: on-screen box of the car artwork (already contain-fitted);
+// station: on-screen box of the station photo. Same coordinate space.
+function xpCableGeometry(car,station){
+  const sx=fx=>station.x+station.width*fx,sy=fy=>station.y+station.height*fy;
+  const scale=car.width/XP_G6_PHOTO_SIZE[0];
+  const width=Math.max(2,XP_G6_PHOTO_CABLE_WIDTH*scale);
+  const photo=XP_G6_PHOTO_CABLE.map(([x,y])=>[car.x+x*scale,car.y+car.height*y/XP_G6_PHOTO_SIZE[1]]);
+  const tip=photo[photo.length-1],prev=photo[photo.length-2];
+  const ul=Math.hypot(tip[0]-prev[0],tip[1]-prev[1])||1,dir=[(tip[0]-prev[0])/ul,(tip[1]-prev[1])/ul];
+  // Floor run: leave the photo along its own heading, lie on the floor with a
+  // soft sag towards the viewer and reach the station's foot.
+  const foot=[sx(XP_STATION_FOOT[0]),sy(XP_STATION_FOOT[1])];
+  const span=Math.hypot(foot[0]-tip[0],foot[1]-tip[1]);
+  const lead=Math.min(span*0.25,160*scale);
+  const p1=[tip[0]+dir[0]*lead,tip[1]+dir[1]*lead];
+  const mid=[p1[0]+(foot[0]-p1[0])*0.6,p1[1]+(foot[1]-p1[1])*0.6+span*0.04];
+  // Rise: one natural bend up into the pictured holster cable and the handle.
+  const carToStation=[...photo,p1,mid,foot,[sx(XP_STATION_TAIL[0]),sy(XP_STATION_TAIL[1])],
+    [sx(XP_STATION_HOLSTER[0]),sy(XP_STATION_HOLSTER[1])],[sx(XP_STATION_HANDLE[0]),sy(XP_STATION_HANDLE[1])]];
+  // Flush start at the plug's rubber boot: mask a small quad beyond the car end
+  // so no cap, highlight or glow is ever drawn over the plug.
+  const S=photo[0],nl=Math.hypot(photo[1][0]-S[0],photo[1][1]-S[1])||1;
+  const u=[(photo[1][0]-S[0])/nl,(photo[1][1]-S[1])/nl],n=[-u[1],u[0]],r=width*2.2,back=width*3;
+  const q=(a,b)=>(S[0]+n[0]*a-u[0]*b).toFixed(1)+','+(S[1]+n[1]*a-u[1]*b).toFixed(1);
+  return {
+    d:xpCableSpline(carToStation.slice().reverse()),
+    floor:xpCableSpline([foot,mid,p1,tip]),
+    plugMask:[q(r,0),q(-r,0),q(-r,back),q(r,back)].join(' '),
+    width,scale:car.width/462
+  };
+}
+// mode: 'charging' (energy flows, coloured end to end) or 'connected' (black).
+function xpCableSvg(g,mode,id){
+  const w=g.width,k=g.scale,ch=mode==='charging',o=v=>v.toFixed(2),cyc=120*k;
+  const line=(d,stroke,width,extra='')=>'<path d="'+d+'" stroke="'+stroke+'" stroke-width="'+o(width)+'" fill="none"'+extra+'/>';
+  return '<defs>'+
+    '<filter id="xpcs'+id+'" x="-20%" y="-60%" width="140%" height="220%"><feGaussianBlur stdDeviation="'+o(w*.55)+'"/></filter>'+
+    '<filter id="xpcg'+id+'" x="-30%" y="-60%" width="160%" height="220%"><feGaussianBlur stdDeviation="'+o(w*.9)+'"/></filter>'+
+    '<filter id="xpcp'+id+'" x="-30%" y="-60%" width="160%" height="220%"><feGaussianBlur stdDeviation="'+o(w*.28)+'" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
+    '<mask id="xpcm'+id+'" maskUnits="userSpaceOnUse" x="-10000" y="-10000" width="20000" height="20000"><rect x="-10000" y="-10000" width="20000" height="20000" fill="#fff"/><polygon points="'+g.plugMask+'" fill="#000"/></mask>'+
+   '</defs><g mask="url(#xpcm'+id+')">'+
+    // contact shadow where the cable lies on the floor
+    line(g.floor,'#000',w*1.9,' class="xp-cable-shadow" stroke-opacity=".7" stroke-linecap="round" transform="translate(0 '+o(w*.45)+')" filter="url(#xpcs'+id+')"')+
+    (ch?line(g.floor,'#00e08f',w*3.2,' class="xp-cable-spill" stroke-opacity=".32" stroke-linecap="round" transform="translate(0 '+o(w*1.6)+')" filter="url(#xpcg'+id+')"')+
+        line(g.d,'#00e08f',w*1.9,' class="xp-cable-aura" stroke-opacity=".16" stroke-linecap="round" filter="url(#xpcg'+id+')"'):'')+
+    // round cable: dark rim, body, upper mid-tone and a specular line
+    line(g.d,ch?'#03301f':'#050607',w,' class="xp-cable-rim" stroke-linecap="butt" stroke-linejoin="round"')+
+    line(g.d,ch?'#11c983':'#16191d',w*.78,' class="xp-cable-body" stroke-linecap="butt" stroke-linejoin="round"')+
+    line(g.d,ch?'#46eaa9':'#2b3138',w*.36,' stroke-opacity="'+(ch?'.8':'.32')+'" stroke-linecap="round" transform="translate('+o(-w*.1)+' '+o(-w*.14)+')"')+
+    line(g.d,ch?'#b9ffe2':'#8a96a3',Math.max(.6,w*.12),' stroke-opacity="'+(ch?'.85':'.3')+'" stroke-linecap="round" transform="translate('+o(-w*.17)+' '+o(-w*.24)+')"')+
+    // energy pulses travelling station -> car, only while really charging
+    (ch?line(g.d,'#f3fffa',w*.42,' class="xp-cable-pulse" stroke-linecap="round" stroke-dasharray="'+o(18*k)+' '+o(cyc-18*k)+'" style="--xp-cyc:'+o(cyc)+'px" filter="url(#xpcp'+id+')"'):'')+
+   '</g>';
+}
 function xpChargingActive(v){
   const state=String(v??'').trim().toLowerCase().replace(/[ -]+/g,'_');
   if(['on','true','1','charging','charging_now','charging_active','in_progress','active'].includes(state))return true;
@@ -612,7 +705,11 @@ class XpengVehicleCard extends HTMLElement{
  xpChargingActive(){
   // A confirmed unplugged cable overrides stale charging telemetry.
   if(this.bool('plugged')===false)return false;
-  return xpChargingActive(this.val('charging'))===true;
+  if(xpChargingActive(this.val('charging'))!==true)return false;
+  // Charging means energy is actually flowing: a reported power of 0 kW
+  // (plugged in, idle, complete or waiting) is not a charging session.
+  const power=this.number('power');
+  return power===null||power>0;
  }
  xpActionState(action){
    if(action==='doors'){
@@ -1090,6 +1187,31 @@ class XpengVehicleCard extends HTMLElement{
     +xpIcon('pin',18)+' Location details in Home Assistant</button></div></div>';
  }
 
+ xpRealisticCable(){
+  return String(this.assetSpec?.()?.src||'').includes(XP_G6_CABLE_ART);
+ }
+ xpLayoutCable(){
+  const host=this.shadowRoot?.querySelector?.('[data-xp-cable-host]');
+  if(!host||typeof host.getBoundingClientRect!=='function')return;
+  const car=this.shadowRoot.querySelector('img.xp-car');
+  const station=this.shadowRoot.querySelector('.xp-xpeng-pedestal image')||this.shadowRoot.querySelector('.xp-xpeng-pedestal');
+  if(!car||!station)return;
+  if(!car.complete||!car.naturalWidth){
+    if(!car._xpCableWait){car._xpCableWait=true;car.addEventListener('load',()=>{car._xpCableWait=false;this.xpLayoutCable();},{once:true});}
+    return;
+  }
+  const H=host.getBoundingClientRect(),C=car.getBoundingClientRect(),P=station.getBoundingClientRect();
+  if(!H.width||!H.height||!C.width||!P.width)return;
+  const rel=b=>({x:b.x-H.x,y:b.y-H.y,width:b.width,height:b.height});
+  const carBox=xpContainBox(rel(C),[car.naturalWidth,car.naturalHeight]);
+  const mode=this.xpChargingActive()?'charging':'connected';
+  const key=[H.width,H.height,carBox.x,carBox.y,carBox.width,P.x-H.x,P.y-H.y,P.width,P.height].map(v=>Math.round(v)).join(',')+mode;
+  if(host.getAttribute('data-xp-cable-key')===key&&host.firstChild)return;
+  host.setAttribute('viewBox','0 0 '+H.width.toFixed(1)+' '+H.height.toFixed(1));
+  host.setAttribute('data-xp-cable-key',key);
+  host.setAttribute('data-xp-cable-mode',mode);
+  host.innerHTML=xpCableSvg(xpCableGeometry(carBox,rel(P)),mode,'live');
+ }
  xpFitModalContent(){
    const modal=this.shadowRoot?.querySelector?.('.xp-ux-modal');
    const area=modal?.querySelector?.('.xp-ux-modal-content');
@@ -1665,7 +1787,7 @@ class XpengVehicleCard extends HTMLElement{
  }
  connectedCallback(){if(this._hass)this.xpWarmMapHelpers();
   if(typeof ResizeObserver!=='undefined'&&!this._xpFitResizeObserver){
-   this._xpFitResizeObserver=new ResizeObserver(()=>this.xpFitModalContent());
+   this._xpFitResizeObserver=new ResizeObserver(()=>{this.xpFitModalContent();this.xpLayoutCable();});
   }if(!this._fullscreenHandler){this._fullscreenHandler=()=>{if(!document.fullscreenElement&&this._expanded){this._expanded=false;this.render();}};}document.addEventListener('fullscreenchange',this._fullscreenHandler);}
  disconnectedCallback(){this._xpFitResizeObserver?.disconnect();this._xpFitResizeObserver=null;this._xpObservedCard=null;if(this._fullscreenHandler)document.removeEventListener('fullscreenchange',this._fullscreenHandler);}
  toggleFullScreen(){this._expanded=!this._expanded;if(this._expanded&&this.requestFullscreen){this.requestFullscreen().catch(()=>{});}else if(!this._expanded&&document.fullscreenElement===this){document.exitFullscreen().catch(()=>{});}this.render();}
@@ -2019,7 +2141,9 @@ class XpengVehicleCard extends HTMLElement{
      <svg class="xp-xpeng-pedestal" viewBox="0 0 100 250" preserveAspectRatio="xMidYMid meet" role="presentation" data-xp-station-art="photo"><image href="${XP_STATION_PHOTO}" width="100" height="250" x="0" y="0" preserveAspectRatio="xMidYMid meet"/></svg>
      <span class="xp-station-display">${xpIcon('station',24)}</span><span class="xp-station-charge-light"></span><span class="xp-station-side-light"></span>
     </div>${this.carArt()}
-    ${this.model()==='G6'&&this.xpChargingActive()?
+    ${this.model()==='G6'&&this.xpChargingActive()&&this.xpRealisticCable()?
+      '<svg class="xp-charge-cable xp-charge-cable-real" data-xp-cable="live" data-xp-cable-host aria-hidden="true"></svg>':
+      this.model()==='G6'&&this.xpChargingActive()?
       '<svg class="xp-charge-cable xp-charge-cable-live xp-cable-desktop" data-xp-cable="desktop" aria-hidden="true" viewBox="0 0 1400 788" preserveAspectRatio="none"><path class="xp-charge-cable-halo" d="M935 460 C953 505 980 576 1025 604 C1090 648 1186 626 1220 607 C1264 583 1278 533 1284 465"/><path class="xp-charge-cable-core" d="M935 460 C953 505 980 576 1025 604 C1090 648 1186 626 1220 607 C1264 583 1278 533 1284 465"/></svg>'+
       '<svg class="xp-charge-cable xp-charge-cable-live xp-cable-mobile" data-xp-cable="mobile" aria-hidden="true" viewBox="0 0 390 780" preserveAspectRatio="none"><path class="xp-charge-cable-halo" d="M171 489 C185 522 200 570 230 584 C270 606 299 583 315 570 C331 551 339 500 343 487"/><path class="xp-charge-cable-core" d="M171 489 C185 522 200 570 230 584 C270 606 299 583 315 570 C331 551 339 500 343 487"/></svg>':''}
     <section class="xp-charge-card xp-charge-unified" aria-label="Charging information">
@@ -2072,7 +2196,8 @@ class XpengVehicleCard extends HTMLElement{
        const mountedMap=existing.hasAttribute('data-xp-map-host')&&
          this._xpPanel==='map'&&this._xpMapElement&&
          existing.contains(this._xpMapElement);
-       if(!mountedMap)this.xpReconcileChildren(existing,fresh);
+       const cableHost=existing.hasAttribute('data-xp-cable-host');
+       if(!mountedMap&&!cableHost)this.xpReconcileChildren(existing,fresh);
      }
      existing=after;
    }
@@ -2119,6 +2244,7 @@ class XpengVehicleCard extends HTMLElement{
    }
   }
   this.xpFitModalContent();
+  this.xpLayoutCable();
   if(this._xpPanel==='map')this.xpMountMap();
  }
 }
