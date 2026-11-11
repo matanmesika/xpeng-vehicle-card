@@ -1,5 +1,13 @@
 # XPENG Dashboard changelog
 
+## Unreleased — G6 realistic continuous charging cable (2026-11-11)
+
+- Replaced the two fixed-coordinate green cable overlays, which drew a second cable over the photo, missed the charge port and crossed the wheel. The G6 2026 charging scene now has ONE continuous cable: station handle → station foot → floor → the photo's own cable → the plug boot.
+- The cable is laid out from the real on-screen car and station boxes, so it stays attached on phone, tablet and desktop and after resizing.
+- It has realistic round-cable shading, a floor contact shadow and a flush start at the plug's rubber boot (masked, so nothing is drawn over the plug).
+- While actually charging, the cable is coloured end to end, with energy pulses flowing station → car. Charging now also requires reported power > 0 kW, so a stale "charging" state with 0 kW never shows the charging scene.
+- Home Assistant updates no longer redraw the cable, so the flow animation runs continuously. `prefers-reduced-motion` is respected.
+
 ## v1.0.4 — Stable (2026-10-19)
 
 - Rebuilt one charging-information component for desktop, phone and narrow Sections cards, with true MDI icons and centered icon+label groups.
