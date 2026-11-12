@@ -1,0 +1,63 @@
+name: Publish XPENG Vehicle Card v1.0.9 stable
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .release/v1.0.9
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-xpeng-v1.0.9-stable
+  cancel-in-progress: false
+
+jobs:
+  validate-and-release:
+    if: github.repository == 'matanmesika/xpeng-vehicle-card' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify approval and immutable release target
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          grep -qx 'APPROVED_v1.0.9' .release/v1.0.9
+          if gh release view v1.0.9 >/dev/null 2>&1; then
+            echo 'v1.0.9 already published; refusing to overwrite.'
+            exit 1
+          fi
+      - name: Verify frontend, HACS build and logo
+        run: |
+          set -euo pipefail
+          node --check src/xpeng-vehicle-card.js
+          node --check dist/xpeng-vehicle-card.js
+          cmp src/xpeng-vehicle-card.js dist/xpeng-vehicle-card.js
+          node tools/build_vehicle_card.mjs --check
+          python -m json.tool hacs.json >/dev/null
+          test -s assets/brand/xpeng-logo.svg
+          test -s docs/releases/v1.0.9.md
+      - name: Run regression and documentation suites
+        env:
+          XPENG_ALLOW_ENTITY_MAPPING_CHANGES: '1'
+        run: node --test tests/*.cjs
+      - name: Publish HACS-installable v1.0.9 stable
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release create v1.0.9 \
+            'dist/xpeng-vehicle-card.js#xpeng-vehicle-card.js' \
+            --target "$GITHUB_SHA" \
+            --title 'XPENG Vehicle Card v1.0.9 — Stable' \
+            --notes-file docs/releases/v1.0.9.md \
+            --latest
