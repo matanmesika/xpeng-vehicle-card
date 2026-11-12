@@ -5758,7 +5758,24 @@ class XpengVehicleCard extends HTMLElement{
  xpLive(domain,suffix){
   const id=this.xpengEntity(domain,suffix);
   const state=id?this._hass?.states?.[id]:null;
-  return state&&state.state!=='unavailable'&&(domain==='button'||state.state!=='unknown')?{id,state}:null;
+  // Xpengtk reports the cabin climate entity as 'unknown' while the vehicle has not
+  // published an HVAC mode, but its temperature range and controls remain usable.
+  return state&&state.state!=='unavailable'&&(domain==='button'||domain==='climate'||state.state!=='unknown')?{id,state}:null;
+ }
+ xpClimateRunning(climate){
+  const mode=climate?.state?.state;
+  if(mode==='off')return false;
+  if(mode&&mode!=='unknown')return true;
+  const status=this.xpLive('binary_sensor','hvac_on');
+  return status&&['on','off'].includes(status.state.state)?status.state.state==='on':null;
+ }
+ xpClimatePanelAvailable(){
+  // Open Climate whenever any cabin-climate entity is reachable; each control
+  // inside the panel already hides or disables itself when its entity is missing.
+  if(this.xpLive('climate','cabin_climate'))return true;
+  return ['hvac_on','climate_auto'].some(k=>this.xpLive('binary_sensor',k))||
+   ['climate_max_cooling','climate_max_heating','climate_rear_defrost','climate_refresh','climate_sterilisation','climate_ac_cleaning','climate_silent_mode','climate_pet_mode','defrost_switch'].some(k=>this.xpLive('switch',k))||
+   !!this.xpLive('number','fan_speed_control')||this.number('fan_speed')!==null;
  }
  xpChargingActive(){
   // A confirmed unplugged cable overrides stale charging telemetry.
@@ -5894,7 +5911,7 @@ class XpengVehicleCard extends HTMLElement{
        const pending=toggle?this.xpPendingToggle(action):null;
        const target=toggle?(pending?.target||this.xpToggleTarget(action)):null;
        const available=toggle?!pending&&!!(target&&this.xpLive(target.domain,target.suffix)):
-         action==='climate'?!!this.xpLive('climate','cabin_climate'):true;
+         action==='climate'?this.xpClimatePanelAvailable():true;
        const label=toggle?(target?.label||(this.xpActionState(action)===null?'Status unknown':'Access permission required')):title;
        const compact=toggle?({
          'Lock vehicle':'Lock','Unlock vehicle':'Unlock',
@@ -6104,7 +6121,7 @@ class XpengVehicleCard extends HTMLElement{
  xpClimatePrimaryControls(){
   const climate=this.xpLive('climate','cabin_climate');
   if(!climate)return '';
-  const running=climate.state.state!=='off';
+  const known=this.xpClimateRunning(climate),running=known===true;
   const a=climate.state.attributes||{}, modes=Array.isArray(a.hvac_modes)?a.hvac_modes:[];
   let auto='';
   if(modes.includes('auto')){
@@ -6124,7 +6141,7 @@ class XpengVehicleCard extends HTMLElement{
   return '<div class="xp-climate-primary-controls" role="group" aria-label="Climate and automatic mode controls">'
    +'<button type="button" class="xp-climate-primary xp-climate-power'+(running?' xp-ux-selected':'')
    +'" data-xp-climate="'+(running?'off':'on')+'" aria-pressed="'+String(running)+'">'
-   +xpIcon('power',32)+'<b>Climate power</b><small>'+(running?'On':'Off')+'</small></button>'
+   +xpIcon('power',32)+'<b>Climate power</b><small>'+(known===null?'Status unknown':running?'On':'Off')+'</small></button>'
    +auto+'</div>';
  }
 
@@ -6387,13 +6404,44 @@ class XpengVehicleCard extends HTMLElement{
    let attempts=0;
    const attempt=()=>{
      if(this._xpPanel!=='map'||this._xpMapElement!==map)return;
-     if(fit()){this._xpMapNeedsCenter=false;return;}
+     if(fit()){
+       this._xpMapNeedsCenter=false;
+       // HA draws the vehicle as a pin whose tip sits on the GPS point, so the visible
+       // car badge would sit above the middle. Nudge the camera once the marker is placed.
+       const surface=map.shadowRoot?.querySelector?.('ha-map')||map.querySelector?.('ha-map');
+       const nudge=()=>{if(this._xpPanel==='map'&&this._xpMapElement===map)this.xpCenterMapOnMarker(surface);};
+       if(typeof window.requestAnimationFrame==='function')window.requestAnimationFrame(()=>window.requestAnimationFrame(nudge));
+       else nudge();
+       if(typeof window.setTimeout==='function')window.setTimeout(nudge,450);
+       return;
+     }
      if(++attempts<12&&typeof window.setTimeout==='function')
        window.setTimeout(attempt,Math.min(1200,150+attempts*110));
    };
    if(typeof window.requestAnimationFrame==='function')
      window.requestAnimationFrame(()=>window.requestAnimationFrame(attempt));
    else attempt();
+ }
+ xpCenterMapOnMarker(surface){
+   // Center the visible marker badge (not the pin tip) inside the native map viewport.
+   const root=surface?.shadowRoot;
+   const engine=surface?._engine;
+   const raw=engine?._map||engine?.map||surface?._map||surface?.leafletMap;
+   if(!root||!raw||typeof raw.panBy!=='function')return false;
+   const view=root.querySelector?.('canvas')||root.querySelector?.('#map');
+   const marker=root.querySelector?.('ha-entity-marker');
+   if(!view||!marker)return false;
+   const v=view.getBoundingClientRect?.(),m=marker.getBoundingClientRect?.();
+   if(!v||!m||!v.width||!v.height||!m.width)return false;
+   const scale=(view.offsetWidth&&v.width)?v.width/view.offsetWidth:1;
+   const dx=((m.left+m.width/2)-(v.left+v.width/2))/(scale||1);
+   const dy=((m.top+Math.min(m.width,m.height||m.width)/2)-(v.top+v.height/2))/(scale||1);
+   if(!Number.isFinite(dx)||!Number.isFinite(dy))return false;
+   if(Math.abs(dx)<1.5&&Math.abs(dy)<1.5)return true;
+   // Ignore a marker that is clearly elsewhere; that means the camera is not on the vehicle yet.
+   if(Math.abs(dx)>v.width/2||Math.abs(dy)>v.height/2)return false;
+   raw.panBy([dx,dy],{animate:false,duration:0});
+   return true;
  }
  async xpMountMap(){
    if(this._xpPanel!=='map')return;
@@ -6415,9 +6463,13 @@ class XpengVehicleCard extends HTMLElement{
         this.xpLive('device_tracker','location')?.id!==gps.id)return;
      const map=helper.createCardElement({type:'map',entities:[{entity:gps.id,label_mode:'icon',focus:true}],
        default_zoom:16,auto_fit:true,fit_zones:false,hours_to_show:0,theme_mode:'dark',aspect_ratio:'4:3'});
+     // Grid layout makes HA fill the modal stage instead of a fixed 4:3 box that the
+     // stage crops on wide screens (which pushed the vehicle below the visible area).
+     map.layout='grid';
      map.hass=this.xpMapDisplayHass(gps);
      this._xpMapElement=map;this._xpMapEntityId=gps.id;
      this._xpMapNeedsCenter=true;
+     const at=gps.state?.attributes||{};this._xpMapCoords=at.latitude+','+at.longitude;
      host.replaceChildren(map);
      this.xpCenterMapOnVehicle(map,gps);
    }catch(err){
@@ -6958,6 +7010,10 @@ class XpengVehicleCard extends HTMLElement{
     if(this._xpMapElement){
       const loc=this.xpLive('device_tracker','location');
       this._xpMapElement.hass=loc?this.xpMapDisplayHass(loc):hass;
+      // Follow the vehicle when it moves while the Location modal stays open.
+      const at=loc?.state?.attributes||{},key=at.latitude+','+at.longitude;
+      if(loc&&this._xpMapCoords&&this._xpMapCoords!==key){this._xpMapNeedsCenter=true;this.xpCenterMapOnVehicle(this._xpMapElement,loc);}
+      if(loc)this._xpMapCoords=key;
     }
     for(const [suffix,action] of [['honk_horn','honk_horn'],['flash_lights','flash_lights']]){
       const button=this.shadowRoot.querySelector('[data-xp-map-action="'+action+'"]');
