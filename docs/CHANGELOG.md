@@ -1,5 +1,10 @@
 # XPENG Dashboard changelog
 
+## v1.0.9 — Stable (2026-11-12)
+
+- Location map: fills the modal on wide screens (no more 4:3 crop), centers the car badge rather than the pin tip, and follows the vehicle while open.
+- Climate: opens when the cabin climate entity reports `unknown`; Climate power falls back to the HVAC status sensor.
+
 ## v1.0.8 — Stable (2026-11-12)
 
 - HACS page: the official XPENG logo now appears at the top of the README/HACS page. It is stored in the repository (`assets/brand/xpeng-logo.svg`) on a light tile, so it stays readable in both light and dark Home Assistant themes. No card code changes.

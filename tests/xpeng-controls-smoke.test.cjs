@@ -1657,6 +1657,19 @@ test('Reopened native Location camera centers using the actual GPS with zoom 16'
  assert.match(src,/if\(this\._xpMapNeedsCenter\)this\.xpCenterMapOnVehicle\(this\._xpMapElement,gps\)/);
  assert.match(src,/if\(panel==='map'\)this\._xpMapNeedsCenter=true/);
 });
+test('Location map fills the modal and centers the visible vehicle badge',()=>{
+ const {card}=createCard();
+ const pans=[];
+ const canvas={offsetWidth:1000,getBoundingClientRect:()=>({left:0,top:0,width:1000,height:400})};
+ const marker={getBoundingClientRect:()=>({left:476,top:136,width:48,height:70})};
+ const surface={_engine:{_map:{panBy:(o)=>pans.push(o)}},shadowRoot:{querySelector:s=>s==='canvas'?canvas:s==='ha-entity-marker'?marker:null}};
+ assert.equal(card.xpCenterMapOnMarker(surface),true);
+ assert.deepEqual(JSON.parse(JSON.stringify(pans)),[[0,-40]]);
+ const far={getBoundingClientRect:()=>({left:900,top:390,width:48,height:70})};
+ surface.shadowRoot.querySelector=s=>s==='canvas'?canvas:s==='ha-entity-marker'?far:null;
+ assert.equal(card.xpCenterMapOnMarker(surface),false);
+ assert.match(src,/map\.layout='grid';\n\s*map\.hass=this\.xpMapDisplayHass\(gps\)/);
+});
 test('OTA explanation remains visible in English for Hebrew Home Assistant',()=>{
  const {card}=createCard();
  card._xpPanel='extras';card._xpExtraSection='updates';card._hass.locale.language='he';
