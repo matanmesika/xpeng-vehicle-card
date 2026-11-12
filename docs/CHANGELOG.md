@@ -1,6 +1,10 @@
 # XPENG Dashboard changelog
 
-## Unreleased — G6 realistic continuous charging cable (2026-11-11)
+## v1.0.8 — Stable (2026-11-12)
+
+- HACS page: the official XPENG logo now appears at the top of the README/HACS page. It is stored in the repository (`assets/brand/xpeng-logo.svg`) on a light tile, so it stays readable in both light and dark Home Assistant themes. No card code changes.
+
+## v1.0.7 — Stable: G6 realistic continuous charging cable (2026-11-11)
 
 - Replaced the two fixed-coordinate green cable overlays, which drew a second cable over the photo, missed the charge port and crossed the wheel. The G6 2026 charging scene now has ONE continuous cable: station handle → station foot → floor → the photo's own cable → the plug boot.
 - The cable is laid out from the real on-screen car and station boxes, so it stays attached on phone, tablet and desktop and after resizing.
