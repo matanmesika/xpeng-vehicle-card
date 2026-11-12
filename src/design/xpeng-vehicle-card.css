@@ -4486,7 +4486,7 @@ background:transparent!important;
  }
  /* Only iPhone card: tighten data, but preserve every live value and action. */
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card{
-  top:142px!important;left:4%!important;width:92%!important;
+  top:122px!important;left:4%!important;width:92%!important;
   padding:9px 12px!important;border-radius:16px!important;
  }
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-heading{
@@ -4532,7 +4532,7 @@ background:transparent!important;
 }
 @container xpeng-layout (max-width:360px){
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card{
-  top:153px!important;padding:8px 10px!important;
+  top:130px!important;padding:8px 10px!important;
  }
  .xp-scene.xp-charge.xp-charge-navigation .xp-station.xp-station-v3.xp-station-xpeng19{
   right:1.5%!important;width:16%!important;min-width:43px!important;
@@ -4674,7 +4674,7 @@ background:transparent!important;
 @container xpeng-layout (max-width:520px){
  .xp-scene{--xp-charge-ring:44px;--xp-charge-icon:20px;--xp-charge-gap:7px;--xp-charge-label:9px}
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{
-  top:142px!important;padding:9px 11px!important;border-radius:15px!important;
+  top:122px!important;padding:9px 11px!important;border-radius:15px!important;
  }
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-heading{font-size:15px!important;gap:5px!important}
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-heading>.xp-mdi-icon{
@@ -4702,7 +4702,7 @@ background:transparent!important;
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action-core{gap:5px!important}
 }
 @container xpeng-layout (max-width:360px){
- .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{top:153px!important;padding:8px 9px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{top:130px!important;padding:8px 9px!important}
  .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-stat-top small{font-size:8px!important}
 }
 
@@ -4797,3 +4797,195 @@ background:transparent!important;
  .xp-header .xp-meta-field{gap:8px!important}
  .xp-header .xp-meta-popover strong{font-size:12px!important;white-space:normal!important}
 }
+
+/* Charging layout fix: keep the scene title clear and compact the telemetry panel.
+   Position the panel below the full two-line title; preserve the cable and artwork. */
+.xp-scene.xp-charge.xp-charge-navigation .xp-title{
+ z-index:13!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{
+ left:4.3%!important;top:34%!important;width:37%!important;
+ padding:clamp(12px,1.45cqw,20px)!important;border-radius:18px!important;
+ gap:8px!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-heading{
+ font-size:clamp(18px,1.8cqw,26px)!important;gap:7px!important;line-height:1.12!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-heading>.xp-mdi-icon{
+ flex-basis:22px!important;width:22px!important;height:22px!important;--xp-icon-size:22px!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-progress{height:7px!important}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-main{gap:9px!important}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-soc{
+ font-size:clamp(34px,3.8cqw,54px)!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-range b{
+ font-size:clamp(17px,1.65cqw,24px)!important;gap:4px!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-divider{height:32px!important}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta{
+ padding-top:7px!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta>.xp-charge-stat{
+ padding-right:6px!important;padding-left:6px!important;gap:3px!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-stat-top small{
+ font-size:clamp(9px,.78cqw,11px)!important;line-height:1.12!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-stat-value{
+ font-size:clamp(13px,1.2cqw,18px)!important;line-height:1.12!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action{
+ min-height:68px!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action-core{gap:5px!important}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action-ring{
+ width:48px!important;height:48px!important;flex-basis:48px!important;
+}
+.xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action-label{
+ font-size:9px!important;line-height:1.1!important;
+}
+@container xpeng-layout (max-width:850px){
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{
+  left:5%!important;top:176px!important;width:90%!important;
+  padding:9px 11px!important;border-radius:16px!important;gap:6px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-heading{
+  font-size:17px!important;margin:0!important;gap:5px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-heading>.xp-mdi-icon{
+  flex-basis:19px!important;width:19px!important;height:19px!important;--xp-icon-size:19px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-progress{height:6px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-main{gap:8px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-soc{font-size:31px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-divider{height:27px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-range b{font-size:16px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta{padding-top:5px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta>.xp-charge-stat{
+  padding:0 4px!important;gap:2px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-stat-top small{font-size:9px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-stat-value{font-size:12px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action{min-height:58px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action-ring{
+  width:40px!important;height:40px!important;flex-basis:40px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action-ring>.xp-mdi-icon{
+  width:20px!important;height:20px!important;flex-basis:20px!important;
+  --xp-charge-icon:20px!important;--xp-icon-size:20px!important;--mdc-icon-size:20px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action-label{font-size:8.5px!important}
+}
+@container xpeng-layout (max-width:520px){
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{
+  left:5%!important;top:166px!important;width:90%!important;
+  padding:8px 10px!important;border-radius:15px!important;gap:5px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-heading{font-size:15px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-soc{font-size:28px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta>.xp-charge-stat{padding:0 3px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-stat-top small{font-size:8.5px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-stat-value{font-size:11px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action{min-height:54px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-action-ring{
+  width:44px!important;height:44px!important;flex-basis:44px!important;
+ }
+}
+@container xpeng-layout (max-width:360px){
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{
+  top:160px!important;padding:7px 8px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-heading{font-size:14px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-stat-top small{font-size:8px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-stat-value{font-size:10.5px!important}
+}
+
+/* Render the live charging lead as a green rubber jacket, not a neon glow.
+   Keep its verified path and endpoints aligned with the rear port and station. */
+.xp-charge-cable-live .xp-charge-cable-halo{
+ stroke:#174b36!important;stroke-width:5.6!important;opacity:1!important;
+ filter:drop-shadow(0 1px 2px rgba(0,0,0,.68))!important;
+}
+.xp-charge-cable-live .xp-charge-cable-core{
+ stroke:#63b984!important;stroke-width:2.7!important;opacity:.96!important;
+ filter:none!important;
+}
+
+
+/* Real phone viewports can be narrow independently of their HA card container.
+   Keep the unified charging panel above the car on both screen and card breakpoints. */
+@media(max-width:520px){
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{
+  top:122px!important;
+ }
+}
+@media(max-width:360px){
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{
+  top:110px!important;
+ }
+}
+
+/* At narrow card widths inside wider HA sections, keep charging details clear of the car. */
+@container xpeng-layout (max-width:450px){
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{top:122px!important}
+}
+
+
+/* Beta 7: move the compact charging heading above the telemetry card,
+   then keep the card clear of both the title and the vehicle at phone sizes. */
+@container xpeng-layout (max-width:850px){
+ .xp-scene.xp-charge.xp-charge-navigation .xp-title{
+  top:90px!important;left:5%!important;gap:2px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-title h1{
+  font-size:25px!important;line-height:1!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-subtitle{
+  font-size:12px!important;line-height:1.1!important;letter-spacing:.08em!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{
+  top:143px!important;padding:6px 9px!important;gap:3px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-heading{
+  font-size:14px!important;line-height:1.05!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-soc{font-size:26px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta{padding-top:2px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-panel-actions{margin-top:4px!important}
+}
+@container xpeng-layout (max-width:360px){
+ .xp-scene.xp-charge.xp-charge-navigation .xp-title{top:84px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-title h1{font-size:23px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-subtitle{font-size:11px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{top:130px!important}
+}
+@media(max-width:850px){
+ .xp-scene.xp-charge.xp-charge-navigation .xp-title{
+  top:90px!important;left:5%!important;gap:2px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-title h1{font-size:25px!important;line-height:1!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-subtitle{
+  font-size:12px!important;line-height:1.1!important;letter-spacing:.08em!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{
+  top:143px!important;padding:6px 9px!important;gap:3px!important;
+ }
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-heading{font-size:14px!important;line-height:1.05!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-soc{font-size:26px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-meta{padding-top:2px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-unified .xp-charge-panel-actions{margin-top:4px!important}
+}
+@media(max-width:360px){
+ .xp-scene.xp-charge.xp-charge-navigation .xp-title{top:84px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-title h1{font-size:23px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-subtitle{font-size:11px!important}
+ .xp-scene.xp-charge.xp-charge-navigation .xp-charge-card.xp-charge-unified{top:130px!important}
+}
+
+/* G6 2026: one continuous cable laid out from the real car/station boxes.
+   Coloured end to end and animated (station -> car) only while charging. */
+.xp-charge-cable.xp-charge-cable-real{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;display:block}
+@keyframes xp-cable-flow{to{stroke-dashoffset:calc(var(--xp-cyc) * -1)}}
+.xp-charge-cable-real .xp-cable-pulse{animation:xp-cable-flow 1.4s linear infinite}
+@media (prefers-reduced-motion:reduce){.xp-charge-cable-real .xp-cable-pulse{animation:none;opacity:.55}}

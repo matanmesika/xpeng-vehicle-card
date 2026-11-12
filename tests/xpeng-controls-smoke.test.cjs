@@ -497,8 +497,7 @@ test('existing HVAC schedules use Xpengtk appointment-specific switches only',as
   await card.xpSend('switch','turn_on','hvac_schedule_88');
   assert.deepEqual(JSON.parse(JSON.stringify(commands)),[
     {domain:'switch',service:'turn_off',data:{entity_id:'switch.workday'}},
-    {domain:'switch',service:'turn_on',data:{entity_id:'switch.weekend'}}
-  ]);
+    {domain:'switch',service:'turn_on',data:{entity_id:'switch.weekend'}}  ]);
   card._hass.states['switch.weekend'].state='unavailable';
   assert.doesNotMatch(card.xpExtraSectionContent('schedule'),/data-xp-hvac-schedule="88"/);
 });
@@ -770,7 +769,7 @@ test('multi-hop modal Back stack clears on charge transition or vehicle switch',
  card.xpNavigatePanel('extras','schedule');
  card._xpengRegistryLoaded=true;
  card._xpLastActualCharging=false;
- card.hass={...card._hass,states:{...card._hass.states,'binary_sensor.is_charging':{state:'off',attributes:{}},'binary_sensor.cable_present':{state:'off',attributes:{}}}};
+ card.hass={...card._hass,states:{...card._hass.states,'binary_sensor.xpeng_g9_charging':{state:'off',attributes:{}},'binary_sensor.xpeng_g9_plugged_in':{state:'off',attributes:{}}}};
  card.xpNavigatePanel('extras','diagnostics');
  card.setConfig({type:'custom:xpeng-vehicle-card',model:'G9',year:'2026',prefix:'xpeng_g9'});
  assert.equal(card._xpPanel,null);
@@ -778,7 +777,7 @@ test('multi-hop modal Back stack clears on charge transition or vehicle switch',
  card.xpNavigatePanel('climate');
  card.xpNavigatePanel('extras','schedule');
  card._xpLastActualCharging=false;
- card.hass={...card._hass,states:{...card._hass.states,'binary_sensor.is_charging':{state:'on',attributes:{}},'binary_sensor.cable_present':{state:'on',attributes:{}}}};
+ card.hass={...card._hass,states:{...card._hass.states,'binary_sensor.xpeng_g9_charging':{state:'on',attributes:{}},'binary_sensor.xpeng_g9_plugged_in':{state:'on',attributes:{}}}};
  assert.equal(card._xpPanel,null,'New active charging scene invalidates the old subpage stack');
  assert.equal(card._xpNavStack.length,0);
 });
@@ -826,10 +825,9 @@ test('only sensor state triggers charging; confirmed charge renders green cable'
  card._hass.states['binary_sensor.cable_present'].state='on';
  card.render();
  assert.match(card.shadowRoot.innerHTML,/class="xp-charge-card(?: xp-charge-unified)?"/);
- assert.match(card.shadowRoot.innerHTML,/data-xp-cable="desktop"/);
- assert.match(card.shadowRoot.innerHTML,/data-xp-cable="mobile"/);
+ assert.match(card.shadowRoot.innerHTML,/data-xp-cable="live"/);
  card._hass.states['binary_sensor.is_charging'].state='off';card.render();
- assert.doesNotMatch(card.shadowRoot.innerHTML,/data-xp-cable="desktop"|data-xp-cable="mobile"/);
+ assert.doesNotMatch(card.shadowRoot.innerHTML,/data-xp-cable=/);
 });
 
 test('one-tap controls alter visible action labels, icons, and avoid duplicate confirms',async()=>{
@@ -997,8 +995,7 @@ test('Location requests HA native GPS map with dark mode and zoom 11, not a fabr
  const host={textContent:'Loading map…',replaceChildren(view){attached=view}};
  card.shadowRoot.querySelector=selector=>selector==='[data-xp-map-host]'?host:null;
  card.shadowRoot.contains=x=>x===host;
- sandbox.window.loadCardHelpers=async()=>({createCardElement(config){captured=config;return {hass:null}}});
- await card.xpMountMap();
+ sandbox.window.loadCardHelpers=async()=>({createCardElement(config){captured=config;return {hass:null}}}); await card.xpMountMap();
  assert.deepEqual(JSON.parse(JSON.stringify(captured)),{
    type:'map',entities:[{entity:'device_tracker.real_vehicle',label_mode:'icon',focus:true}],
    default_zoom:16,auto_fit:true,fit_zones:false,hours_to_show:0,theme_mode:'dark',aspect_ratio:'4:3'
@@ -1184,15 +1181,15 @@ test('charging preview ignores generic front image, respects dedicated image ove
  card._view='charging';
  assert.equal(card.assetSpec().src,'/local/owner-rear.png');
 });
-test('charging cable uses approved dedicated charging image and separate full-length native overlays',()=>{
+test('charging cable uses approved dedicated charging image and ONE live cable (never doubled)',()=>{
  const {card}=createCard({show_controls:true});
  card._view='charging';
- assert.match(card.assetSpec().src,/charging\.webp$/);
+ assert.match(card.assetSpec().src,/g6\/2026\/graphite_gray\/charging\.webp$/);
  const html=card.charging();
- assert.match(html,/data-xp-cable="desktop"/);
- assert.match(html,/data-xp-cable="mobile"/);
- assert.match(html,/M171 489.*343 487/);
- assert.match(html,/M935 460.*1284 465/);
+ assert.equal((html.match(/data-xp-cable=/g)||[]).length,1);
+ assert.match(html,/data-xp-cable="live"[^>]*data-xp-cable-host/);
+ // the fixed-coordinate overlays that drew a second cable over the photo are gone
+ assert.doesNotMatch(html,/M171 489|M935 460|data-xp-cable="desktop"|data-xp-cable="mobile"/);
  card._hass.states['binary_sensor.is_charging'].state='off';
  assert.doesNotMatch(card.charging(),/data-xp-cable/);
 });
@@ -1497,8 +1494,7 @@ test('beta.8 first Location open reuses proactively warmed HA map helpers',async
  assert.equal(loads,1,'Opening Location must not trigger a second bundle load');
  assert.equal(created,1,'One native HA map card is created');
  assert.notEqual(child.hass,card._hass);
- assert.equal(child.hass.states['device_tracker.user_gps'].attributes.icon,'mdi:car-back');
- assert.equal(child.config.entities[0].entity,'device_tracker.user_gps');
+ assert.equal(child.hass.states['device_tracker.user_gps'].attributes.icon,'mdi:car-back'); assert.equal(child.config.entities[0].entity,'device_tracker.user_gps');
  assert.equal(commands.length,0,'Preloading never issues vehicle commands');
 });
 
@@ -1639,8 +1635,8 @@ test('Owner-photo station and cable exist in both scene sizes',()=>{
  assert.equal((charging.match(/class="xp-xpeng-pedestal"/g)||[]).length,1);
  assert.match(charging,/data-xp-cable="desktop"/);
  assert.match(charging,/data-xp-cable="mobile"/);
- assert.match(charging,/M935 460[\s\S]*?1284 465/);
- assert.match(charging,/M171 489[\s\S]*?343 487/);
+ assert.match(charging,/M1048 637[\s\S]*?1284 465/);
+ assert.match(charging,/M239 584[\s\S]*?343 487/);
  assert.match(src,/\.xp-scene\.xp-charge \.xp-station\.xp-station-v3\.xp-station-xpeng19/);
 });
 
@@ -1682,5 +1678,143 @@ test('Owner charging composition stays layered and phone panel compact',()=>{
  assert.match(src,/\.xp-car\{z-index:7!important\}/);
  assert.match(src,/\.xp-charge-cable\{[\s\S]*?z-index:11!important/);
  assert.match(src,/\.xp-charge-card\{z-index:12!important\}/);
- assert.match(src,/top:142px!important/);
+ assert.match(src,/top:122px!important/);
+});
+
+
+test('Xpengtk renamed cover registry entries resolve trunk, windows, and charge-port status',()=>{
+  const {card}=createCard(),st=card._hass.states;
+  card._xpengByKey={
+    'cover.trunk_cover':'cover.renamed_tailgate',
+    'cover.windows_cover':'cover.renamed_windows',
+    'cover.charge_port_cover':'cover.renamed_charge_port'
+  };
+  st['cover.renamed_tailgate']={state:'open',attributes:{}};
+  st['cover.renamed_windows']={state:'closed',attributes:{is_closed:true}};
+  st['cover.renamed_charge_port']={state:'open',attributes:{}};
+  assert.equal(card.xpActionState('trunk'),'open');
+  assert.equal(card.xpActionState('windows'),'closed');
+  assert.equal(card.xpActionState('port'),'open');
+  st['cover.renamed_windows'].state='open';
+  st['cover.renamed_windows'].attributes.is_closed=false;
+  assert.equal(card.xpActionState('windows'),'open');
+});
+
+test('AC current limit telemetry is mapped separately from battery percentage limit',()=>{
+  const {card}=createCard();
+  card._xpengByKey['number.charge_limit_control']='number.user_charge_limit';
+  card._xpengByKey['sensor.charge_limit']='sensor.user_ac_current_limit';
+  card._hass.states['number.user_charge_limit']={state:'80',attributes:{min:50,max:100,step:5}};
+  card._hass.states['sensor.user_ac_current_limit']={state:'27',attributes:{unit_of_measurement:'A'}};
+  assert.equal(card.number('target'),80);
+  assert.equal(card.number('current_limit'),27);
+  const panel=card.xpChargeLimitPanel();
+  assert.match(panel,/AC current limit/);
+  assert.match(panel,/27 A/);
+  assert.match(panel,/data-xp-range="charge_limit_control"/);
+});
+
+
+test('unified Xpengtk covers provide state and commands when legacy action buttons are absent',async()=>{
+  const {card,commands}=createCard({enable_access_controls:true});
+  const target=action=>JSON.parse(JSON.stringify(card.xpToggleTarget(action)));
+  card._xpengByKey={
+    'cover.trunk_cover':'cover.renamed_tailgate',
+    'cover.windows_cover':'cover.renamed_windows',
+    'cover.charge_port_cover':'cover.renamed_charge_port'
+  };
+  card._hass.states['cover.renamed_tailgate']={state:'closed',attributes:{supported_features:3,is_closed:true}};
+  card._hass.states['cover.renamed_windows']={state:'closed',attributes:{supported_features:3,is_closed:true}};
+  card._hass.states['cover.renamed_charge_port']={state:'closed',attributes:{supported_features:3,is_closed:true}};
+  assert.deepEqual(target('trunk'),{domain:'cover',service:'open_cover',suffix:'trunk',label:'Open Trunk'});
+  assert.deepEqual(target('windows'),{domain:'cover',service:'open_cover',suffix:'windows',label:'Open windows'});
+  assert.deepEqual(target('port'),{domain:'cover',service:'open_cover',suffix:'charge_port',label:'Open charging port'});
+  await card.xpSend('cover','open_cover','windows',undefined,true);
+  assert.deepEqual(JSON.parse(JSON.stringify(commands)),[
+    {domain:'cover',service:'open_cover',data:{entity_id:'cover.renamed_windows'}}
+  ]);
+  card._hass.states['cover.renamed_windows']={state:'open',attributes:{supported_features:3,is_closed:false}};
+  assert.equal(target('windows').service,'close_cover');
+});
+
+test('legacy Xpengtk binary sensors plus separate buttons remain a valid window and trunk setup',()=>{
+  const {card}=createCard({enable_access_controls:true});
+  const target=action=>JSON.parse(JSON.stringify(card.xpToggleTarget(action)));
+  card._xpengByKey={
+    'binary_sensor.any_window_open':'binary_sensor.renamed_any_window_open',
+    'binary_sensor.trunk':'binary_sensor.renamed_trunk',
+    'button.open_windows':'button.renamed_open_windows',
+    'button.close_windows':'button.renamed_close_windows',
+    'button.open_trunk':'button.renamed_open_trunk',
+    'button.close_trunk':'button.renamed_close_trunk'
+  };
+  card._hass.states['binary_sensor.renamed_any_window_open']={state:'off',attributes:{}};
+  card._hass.states['binary_sensor.renamed_trunk']={state:'off',attributes:{}};
+  for(const id of ['button.renamed_open_windows','button.renamed_close_windows','button.renamed_open_trunk','button.renamed_close_trunk'])
+    card._hass.states[id]={state:'unknown',attributes:{}};
+  assert.deepEqual(target('windows'),{domain:'button',service:'press',suffix:'open_windows',label:'Open windows'});
+  assert.deepEqual(target('trunk'),{domain:'button',service:'press',suffix:'open_trunk',label:'Open Trunk'});
+  card._hass.states['binary_sensor.renamed_any_window_open'].state='on';
+  assert.equal(target('windows').suffix,'close_windows');
+  card._hass.states['binary_sensor.renamed_trunk'].state='on';
+  assert.equal(target('trunk').suffix,'close_trunk');
+});
+
+// ---- G6 2026 continuous charging cable -------------------------------------
+const cableApi=(()=>{const sb={};vm.runInNewContext(src.split('class XpengVehicleCard')[0]+'\n;this.api={xpCableGeometry,xpCableSvg,xpContainBox,XP_G6_PHOTO_CABLE,XP_STATION_HANDLE};',sb);return sb.api;})();
+const desktopBoxes={car:{x:473,y:413,width:462,height:264},station:{x:991,y:383,width:71.9,height:200}};
+const phoneBoxes={car:{x:12,y:362,width:319,height:182.2},station:{x:349,y:385,width:55,height:153}};
+test('cable is ONE smooth path from the station handle to the plug boot, at desktop and phone sizes',()=>{
+ for(const {car,station} of [desktopBoxes,phoneBoxes]){
+  const g=cableApi.xpCableGeometry(car,station);
+  assert.equal((g.d.match(/M/g)||[]).length,1,'single continuous path, no joined segments');
+  assert.doesNotMatch(g.d,/NaN|Infinity/);
+  const nums=g.d.slice(1).split(/[ C]+/).filter(Boolean).map(Number);
+  const start=nums.slice(0,2),end=nums.slice(-2);
+  const handle=[station.x+station.width*cableApi.XP_STATION_HANDLE[0],station.y+station.height*cableApi.XP_STATION_HANDLE[1]];
+  const scale=car.width/1110,boot=[car.x+cableApi.XP_G6_PHOTO_CABLE[0][0]*scale,car.y+car.height*cableApi.XP_G6_PHOTO_CABLE[0][1]/634];
+  assert.ok(Math.hypot(start[0]-handle[0],start[1]-handle[1])<0.2,'starts in the station handle (energy direction station -> car)');
+  assert.ok(Math.hypot(end[0]-boot[0],end[1]-boot[1])<0.2,'ends flush at the plug boot');
+  assert.ok(g.width>2&&g.width<car.width*0.012,'cable width follows the artwork scale');
+ }
+});
+test('only real charging colours the whole cable and animates energy towards the car',()=>{
+ const g=cableApi.xpCableGeometry(desktopBoxes.car,desktopBoxes.station);
+ const charging=cableApi.xpCableSvg(g,'charging','t');
+ const connected=cableApi.xpCableSvg(g,'connected','t');
+ assert.match(charging,/class="xp-cable-pulse"/);
+ assert.match(charging,/class="xp-cable-body"[^>]*|stroke="#11c983"/);
+ assert.doesNotMatch(connected,/xp-cable-pulse|#11c983|#00e08f/);
+ for(const svg of [charging,connected]){
+  assert.match(svg,/<mask id="xpcmt"[\s\S]*<polygon points="[\d.,\s-]+"/,'plug boot is masked: no cap or glow over the plug');
+  assert.match(svg,/<g mask="url\(#xpcmt\)">/);
+  assert.match(svg,/class="xp-cable-rim"[^>]*stroke-linecap="butt"|stroke-linecap="butt"[^>]*class="xp-cable-rim"/);
+ }
+ assert.match(src,/@keyframes xp-cable-flow\{to\{stroke-dashoffset:calc\(var\(--xp-cyc\) \* -1\)\}\}/,'pulses run forward along the station -> car path');
+ assert.match(src,/prefers-reduced-motion:reduce\)\{\.xp-charge-cable-real \.xp-cable-pulse\{animation:none/);
+});
+test('charging needs energy flow: a reported 0 kW vetoes a stale charging state',()=>{
+ const {card}=createCard();
+ card._xpengByKey['sensor.charge_power']='sensor.real_power';
+ card._hass.states['sensor.real_power']={state:'0',attributes:{unit_of_measurement:'kW'}};
+ assert.equal(card.xpChargingActive(),false);
+ card._hass.states['sensor.real_power'].state='10.5';
+ assert.equal(card.xpChargingActive(),true);
+ card._hass.states['sensor.real_power'].state='unavailable';
+ assert.equal(card.xpChargingActive(),true,'missing power telemetry never hides a confirmed charge');
+ card._hass.states['binary_sensor.is_charging'].state='off';
+ card._hass.states['sensor.real_power'].state='10.5';
+ assert.equal(card.xpChargingActive(),false,'power alone never invents charging');
+});
+test('Home Assistant updates never reset the live cable (animation keeps running)',()=>{
+ const {card}=createCard();
+ const host={nodeType:1,nodeName:'svg',attributes:[],hasAttribute:n=>n==='data-xp-cable-host',getAttribute:()=>null,setAttribute(){},removeAttribute(){},firstChild:{drawn:true}};
+ let reconciledInside=false;const orig=card.xpReconcileChildren.bind(card);
+ card.xpReconcileChildren=function(c,n){if(c===host)reconciledInside=true;return orig(c,n);};
+ const parent={firstChild:host,appendChild(){},replaceChild(){},removeChild(){}};
+ host.nextSibling=null;
+ const fresh={nodeType:1,nodeName:'svg',attributes:[],hasAttribute:()=>false,firstChild:null,nextSibling:null};
+ card.xpReconcileChildren(parent,{firstChild:fresh});
+ assert.equal(reconciledInside,false);
+ assert.deepEqual(host.firstChild,{drawn:true});
 });

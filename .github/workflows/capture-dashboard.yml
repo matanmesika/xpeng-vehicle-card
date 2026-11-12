@@ -13,9 +13,11 @@ on:
       - release/v1.0.4-beta.21
       - release/v1.0.4
       - fix/g6-charging-station-alignment-20261019
+      - fix/g6-beta6-layout-xpengtk-aliases-20261109
     paths:
       - scripts/capture-dashboard.cjs
       - src/xpeng-vehicle-card.js
+      - dist/xpeng-vehicle-card.js
       - .github/workflows/capture-dashboard.yml
   workflow_dispatch:
 
@@ -28,7 +30,7 @@ concurrency:
 
 jobs:
   screenshots:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4

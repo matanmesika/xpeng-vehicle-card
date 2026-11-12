@@ -1,7 +1,17 @@
-# XPENG charging cable visual policy (2026-10-13)
+# XPENG charging cable visual policy (updated 2026-11-11)
 
-The real vehicle artwork's cable connector and cable silhouette are **always black**; they must not be replaced with a bright green cable path. Removed the historic neon teal SVG cable drawing from frontend src/dist so it cannot conflict with the separate `charging.webp` vehicle overlay.
+Owner decision (2026-11-11) replaces the 2026-10-13 policy.
 
-Charging status and battery metrics may use colored indicators. Animated energy flow, if subsequently designed, should be a distinct optional UI effect and never a recoloring of the car's raster cable or a false sensor state.
+## G6 2026 (graphite charging artwork)
 
-**Important:** This commit updates display behavior and tests only. The user-reviewed 16 regenerated charging WebP files are NOT part of this commit yet, and must be transferred and human-reviewed separately before any production merge. The G6 2026 artwork, approved scenic background and vehicle backend are untouched.
+- The scene shows **one continuous cable**. It runs from the station holster handle, down to the station foot, along the floor, and up into the plug's rubber boot.
+- The drawn cable exactly covers the cable pictured in `g6/2026/graphite_gray/charging.webp`. The traced centre-line is `XP_G6_PHOTO_CABLE`. The photo cable and the drawn cable are never doubled.
+- Geometry is computed at runtime from the real on-screen boxes of the car artwork and the station photo. It stays attached at every card width (phone and desktop) and never uses fixed-viewBox coordinates.
+- The cable starts flush with the plug boot. A mask guarantees that no cap, highlight or glow is drawn over the plug.
+- **While actually charging**, the whole cable is coloured end to end, with energy pulses travelling **station → car**. Charging means the charging entity reports charging **and** the reported power is not 0 kW.
+- When the car is plugged in but not charging (idle, complete, scheduled, or 0 kW), the charging scene is not shown. If the cable is ever drawn in that state, it is plain black with no flow.
+- `prefers-reduced-motion` stops the pulses.
+
+## Other models and artwork
+
+Other models and artwork keep their existing overlays until they get a traced cable centre-line.

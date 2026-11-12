@@ -39,7 +39,7 @@ Opt-in `show_controls: true` preserves the preexisting vehicle/charging artwork.
 | Disarm X-Guard | `sentinel_switch` (`switch`) | Not shown; Access permission required |
 | Vehicle GPS | `location` (`device_tracker`) | Native HA entity detail, never guessed location |
 | Charge-cable release latch | no distinct verified Xpengtk entity or action | **Not implemented**; `stop_charge` and `open_charge_port` do not unlock the cable |
-| Pet mode, MAX A/C, sterilisation, rear separate temperature | no verified independent entity in Xpengtk | Not offered as fake controls |
+| Climate quick modes (MAX heat/cool, Refresh, Sterilisation, A/C cleaning, rear defrost, Pet mode) | Xpengtk switch entities keyed by `climate_*`; commands require its capability and policy approval | v1.0.7-beta.2 exposes these as buttons only when `control_allowed: true` and a known on/off state are present. Silent mode is in Xpengtk but is not yet in the beta card |
 | Seat massage | model equipment may support it; no verified control entity | Not offered until real command is measured |
 | Exterior door opening | no verified direct per-door control | Not offered |
 
@@ -90,12 +90,13 @@ Official XPENG G6 material (including regional availability caveats) describes A
 | Front windscreen defrost | `switch.defrost_switch` (`toggle`) | Action tile with live on/off state |
 | HVAC schedule | `calendar.hvac_schedule_calendar` / `sensor.hvac_schedules`, and `switch.hvac_schedule_<appointment_id>` | View existing schedules; enable/disable individual schedules where a matching native switch exists. No invented schedule creation |
 | Front/rear seat heat and ventilation, steering heat | Native Xpengtk `select` entities | Direct in-image 1→2→3→Off on each supported control, with passenger front heat Off limited by upstream |
-| Heating MAX / Cooling MAX | No distinct Xpengtk *command* verified. Some telemetry may describe quick warm/cool *state*. | No actionable tile |
-| Refresh / sterilisation / A/C cleaning | No verified Xpengtk entity/service action | Hidden, never send undocumented MQTT |
-| Rear window defroster | No verified separate Xpengtk remote *switch* | Hidden; mirror-heating status is not a rear-defrost command |
-| Pet Mode | No verified Xpengtk command | Hidden |
+| MAX heating / MAX cooling | `switch.climate_max_heating` / `switch.climate_max_cooling` | v1.0.7 beta shows an On/Off button only when Xpengtk publishes `control_allowed: true` |
+| Refresh / sterilisation / A/C cleaning | `switch.climate_refresh`, `switch.climate_sterilisation`, `switch.climate_ac_cleaning` | v1.0.7 beta capability-guards each command |
+| Rear window defroster | `switch.climate_rear_defrost` | v1.0.7 beta uses this distinct switch; mirror-heating status is not substituted |
+| Pet Mode | `switch.climate_pet_mode` | v1.0.7 beta capability-guards the switch |
+| Silent mode | `switch.climate_silent_mode` | Present in Xpengtk; not included in the current v1.0.7 beta climate buttons |
 
-These checks are based on the current upstream `climate.py`, `switch.py`, `number.py`, `button.py`, `select.py`, `calendar.py`, and documented `services.yaml`. OEM-app features can exist on the car without being available as remote controls to Home Assistant. The card never upgrades display-only telemetry to a button.
+These mappings are taken from the current upstream `climate_modes.py`, `vehicle_capabilities.py`, `switch.py`, `climate.py`, `number.py`, `button.py`, `select.py`, and `calendar.py`. The seven v1.0.7-beta.2 controls only become clickable when Xpengtk confirms support and permission. Other features remain status-only or hidden. Actual physical execution must still be checked on the vehicle.
 
 
 ### HVAC schedule creation: upstream capability and multi-car safety

@@ -55,8 +55,10 @@ test('Pedestal guardian: single responsive premium XPENG station and original dy
  assert.match(runtime,/data-xp-station-art="photo"/);
   assert.match(runtime,/data:image\/webp;base64/);
   assert.doesNotMatch(runtime,/id="xp19-case"/);
- assert.match(runtime,/M935 460[^\"]*1284 465/);
- assert.match(runtime,/M171 489[^\"]*343 487/);
+ // G6 2026: one continuous cable laid out from the real car/station boxes.
+ assert.match(runtime,/data-xp-cable="live" data-xp-cable-host/);
+ assert.match(runtime,/const XP_G6_PHOTO_CABLE=Object\.freeze\(/);
+ assert.match(runtime,/xpLayoutCable\(\)/);
 });
 test('Build guardian: isolated design and runtime create identical HACS JS',()=>{
  assert.equal(bundle,dist);
