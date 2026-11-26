@@ -108,7 +108,7 @@ entities:
 | `sensor_mapping_mode` | `auto` (`manual` when `entities` is set) | `auto` finds entities by `prefix` and ignores `entities`; `manual` uses `entities` first and finds the rest by `prefix`. |
 | `entities` | — | Manual sensor mapping (see below). |
 
-### Sensors the card uses
+### Sensor mapping
 
 All of them are optional. A sensor that's missing hides its row instead of showing a wrong value.
 
