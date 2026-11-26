@@ -1,88 +1,139 @@
 <img src="https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/assets/brand/xpeng-logo.svg" alt="XPENG logo" width="360">
 
-# XPENG Vehicle Card for Home Assistant
+# XPENG Vehicle Card
 
-**An unofficial, responsive vehicle dashboard for Home Assistant, powered by existing Xpengtk entities.** One Lovelace card automatically adapts to desktop, iPhone, and narrow Home Assistant Sections layouts. There is no separate mobile dashboard.
+<a href="https://my.home-assistant.io/redirect/hacs_repository/?owner=matanmesika&repository=xpeng-vehicle-card&category=plugin"><img alt="HACS Custom" src="https://img.shields.io/badge/HACS-Custom-41BDF5.svg"></a>
+<a href="https://github.com/matanmesika/xpeng-vehicle-card/releases/latest"><img alt="Release" src="https://img.shields.io/github/v/release/matanmesika/xpeng-vehicle-card"></a>
 
-The card preserves the night-lakeside setting, the selected vehicle artwork, and entity-driven controls. When the vehicle reports active charging, it automatically switches to a dedicated charging scene with a photographic XPENG charging station, a green cable overlay, and live charging information.
+A Home Assistant dashboard card for **XPENG** cars, built on the Xpengtk integration. One card shows the car's status, charging, climate, maintenance and location, and adapts to desktop, phone and Home Assistant Sections layouts.
 
-**Stable release: [v1.0.9](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.9).** Previous stable: [v1.0.8](https://github.com/matanmesika/xpeng-vehicle-card/releases/tag/v1.0.8). Historical releases and betas remain available for rollback. The charging block uses one shared responsive component for desktop, iPhone and Home Assistant Sections.
+## Screenshots
 
-[Install with HACS](https://my.home-assistant.io/redirect/hacs_repository/?owner=matanmesika&repository=xpeng-vehicle-card&category=plugin) · [HACS product guide](docs/HACS_STORE_GUIDE.md) · [Screenshot gallery](docs/screenshots/README.md) · [Release acceptance](docs/G6_FINAL_STABILIZATION.md)
+**Home, charging, climate and maintenance** are captured from the card with data from a real 2026 XPENG G6 in Home Assistant: battery, range, odometer, tire pressures, service date and cabin temperature. The car wasn't charging at the time, so the charging power, current, voltage and time left in the charging images are illustrative. Location, charge controls, diagnostics and more options use sample values, and the map is a placeholder outside Home Assistant.
 
-## Actual dashboard screenshots
-
-Screenshots below were captured from **the running card in Chromium**, with simulated Home Assistant/Xpengtk sensor values. They are not recreated screenshots or AI-generated interface mockups. Vehicle and charging-station artwork may itself be illustrative; the browser tests do not prove live vehicle commands. The standalone map capture uses a placeholder map; actual map tiles and GPS centering require Home Assistant.
-
-| Screen | Desktop | Mobile |
+| Screen | Desktop | Phone |
 | --- | --- | --- |
-| Overview and seven shortcuts | ![G6 desktop overview](docs/screenshots/home-desktop.png) | ![G6 iPhone overview](docs/screenshots/home-mobile.png) |
-| Automatic charging — grouped Power (kW), Current (A), Voltage (V), time and limit | ![G6 desktop charging](docs/screenshots/charging-desktop.png) | ![G6 iPhone charging](docs/screenshots/charging-mobile.png) |
-| HVAC, cabin seats and steering-wheel controls | ![G6 desktop climate](docs/screenshots/climate-desktop.png) | ![G6 iPhone climate](docs/screenshots/climate-mobile.png) |
-| Four tires and available maintenance data | ![G6 desktop maintenance](docs/screenshots/maintenance-desktop.png) | ![G6 iPhone maintenance](docs/screenshots/maintenance-mobile.png) |
-| Location and supported horn/flash commands | ![G6 desktop map placeholder](docs/screenshots/map-desktop.png) | ![G6 iPhone map placeholder](docs/screenshots/map-mobile.png) |
-| More Options and supported Xpengtk controls | ![G6 desktop options](docs/screenshots/functions-desktop.png) | ![G6 iPhone options](docs/screenshots/functions-mobile.png) |
+| Home | ![Home, desktop](docs/screenshots/home-desktop.png) | ![Home, phone](docs/screenshots/home-mobile.png) |
+| Charging | ![Charging, desktop](docs/screenshots/charging-desktop.png) | ![Charging, phone](docs/screenshots/charging-mobile.png) |
+| Climate | ![Climate, desktop](docs/screenshots/climate-desktop.png) | ![Climate, phone](docs/screenshots/climate-mobile.png) |
+| Maintenance and tire pressure | ![Maintenance, desktop](docs/screenshots/maintenance-desktop.png) | ![Maintenance, phone](docs/screenshots/maintenance-mobile.png) |
+| Location, horn and flash | ![Location, desktop](docs/screenshots/map-desktop.png) | ![Location, phone](docs/screenshots/map-mobile.png) |
+| More options | ![More options, desktop](docs/screenshots/functions-desktop.png) | ![More options, phone](docs/screenshots/functions-mobile.png) |
 
-[Charge limit and schedules](docs/screenshots/charge-controls-mobile.png) · [Entity diagnostics](docs/screenshots/diagnostics-mobile.png)
+| Charge limit and schedules | Entity diagnostics |
+| :---: | :---: |
+| ![Charge controls](docs/screenshots/charge-controls-mobile.png) | ![Diagnostics](docs/screenshots/diagnostics-mobile.png) |
 
-## Install and configure
+## Features
 
-In **HACS → Custom repositories**, add `https://github.com/matanmesika/xpeng-vehicle-card` under **Dashboard**. Install a stable release or explicitly select a beta using **Redownload → Need a different version?**. Reload Home Assistant's frontend after updating; a hard refresh may be necessary to clear a cached JavaScript bundle.
+- **Home:** battery and range, connection state, the car's picture in your model, year and paint, and seven shortcuts (climate, lock, windows, charge port, trunk, maintenance, location).
+- **Charging:** switches on by itself while the car charges. Shows charging power, current and voltage, time left and charge limit, with charge limit, schedule and stop buttons when your integration supports them.
+- **Climate:** target temperature, fan, heating and cooling, front seat heating and ventilation, rear seat heating and the heated steering wheel, on a picture of the cabin.
+- **Maintenance:** live pressure of all four tires (bar, PSI or kPa), next service, odometer and vehicle details.
+- **Location:** the car on the Home Assistant map, with horn and flash.
+- **More options:** other vehicle settings, software update information and entity diagnostics.
+- **Visual editor:** model, year, trim, paint, interior colour (dashboard, steering wheel, door inserts, console and seats), tire unit, controls, and manual mapping of every sensor.
 
-Add a card via the visual editor, or use YAML:
+## Requirements
+
+The **Xpengtk** Home Assistant integration, installed and signed in to your XPENG account. The card reads its entities and calls its actions. It doesn't connect to XPENG itself.
+
+## Installation
+
+### HACS (recommended)
+
+<a href="https://my.home-assistant.io/redirect/hacs_repository/?owner=matanmesika&repository=xpeng-vehicle-card&category=plugin"><img alt="Open your Home Assistant instance and open a repository inside HACS." src="https://my.home-assistant.io/badges/hacs_repository.svg"></a>
+
+1. Click the button above, or in **HACS → ⋮ → Custom repositories** add `https://github.com/matanmesika/xpeng-vehicle-card` with type **Dashboard**.
+2. Find **XPENG Vehicle Card** and choose **Download**.
+3. Reload the browser (on the phone app: close and reopen it).
+
+### Manual
+
+Copy `dist/xpeng-vehicle-card.js` to `<config>/www/xpeng-vehicle-card/`, then add `/local/xpeng-vehicle-card/xpeng-vehicle-card.js` as a **JavaScript module** under **Settings → Dashboards → ⋮ → Resources**.
+
+## Setup
+
+### Automatic
+
+Add the card from the dashboard editor (**Add card → XPENG Vehicle Card**), or with YAML:
 
 ```yaml
 type: custom:xpeng-vehicle-card
+prefix: xpeng_g6          # the start of your Xpengtk entity IDs, e.g. sensor.xpeng_g6_battery
 model: G6
 year: "2026"
 color: graphite_gray
-interior: dark_gray
-prefix: xpeng_g6  # Example only; match your actual Xpengtk entity names
-show_controls: true
-enable_access_controls: false
-grid_options:
-  columns: full
-  rows: auto
+interior: light_gray
 ```
 
-The prefix, model/year/paint and actual available entities must match your installation. The interior color is selected in the **card editor**, not in the Climate screen. Access actions require both the integration's permissions and an explicit card setting.
+In automatic mode the card finds the Xpengtk entities that start with your `prefix`.
 
-**Dependency:** an independently installed, configured and authenticated Xpengtk Home Assistant integration providing the supported entities. This is a *frontend card*, not a vehicle integration, API client, account login or credential-renewal service.
+### Manual (visual editor or YAML)
 
-## What the card can display and control
+| Visual editor |
+| :---: |
+| <img src="docs/editor.png" alt="XPENG card editor" width="380"> |
 
-- **Overview:** battery and range, connection state, approved vehicle artwork and seven compact shortcuts.
-- **Charging:** automatically shown while the charging sensor reports an active state. The electrical row groups **Charging power (kW), Current (A), and Voltage (V)**, with **Time remaining** and **Charge limit** together below. Battery percentage and estimated range remain above. Current and Voltage display `0.0 A` and `0.0 V` if their mapped readings are missing or invalid; these are **display placeholders, not measured zeroes**. Charging limits, schedules and stop/release actions appear only when supported.
-- **Climate:** supported temperature, fan, heating/cooling, front-seat heat/ventilation, rear-seat heating and heated steering wheel using mapped Home Assistant entities. A control is not proof that an unsupported physical feature exists.
-- **Vehicle actions:** lock/unlock, windows, trunk and charge flap through actual supported entities. State-sensitive action labels and pending-command suppression help avoid duplicate commands.
-- **Maintenance:** four live tire pressure sensors with unit preferences plus odometer, service information and identity only when the integration supplies them.
-- **Location:** native Home Assistant tracker map and horn/flash when the correct entities and permissions are available.
-- **More Options:** supported vehicle settings, Software Updates information and diagnostics. No unsupported manual software-update command is invented.
+In the editor, set **Mapping mode** to *Manual · choose sensors* and pick any of the 41 sensors yourself. A field left blank keeps the automatic mapping. A value can also be an attribute, written as `entity_id|attribute_name`.
 
-All dashboard, editor, help and error labels are **English-only** regardless of the Home Assistant interface language. Unknown or unavailable entity states are normally shown as unavailable; the **Charging Current and Voltage** tiles specifically use `0.0` as a display-only fallback. The card does not infer actual electrical measurements or guarantee control execution.
+```yaml
+type: custom:xpeng-vehicle-card
+prefix: xpeng_g6
+model: G6
+year: "2026"
+trim: core_performance_awd
+color: graphite_gray
+interior: light_gray
+tire_pressure_unit: psi
+show_controls: true
+enable_access_controls: false
+sensor_mapping_mode: manual
+entities:
+  soc: sensor.xpeng_g6_battery
+  range: sensor.xpeng_g6_range
+  tire_fl: sensor.xpeng_g6_tyre_pressure_front_left
+```
 
-## Sensor mapping and support
+### Options
 
-The card reads **existing Home Assistant/Xpengtk entities** and never independently polls XPENG servers. Check **Developer Tools → States** and the card's Entity Diagnostics to verify your entity IDs and vehicle feedback. A successful Home Assistant service call means the command was accepted by Home Assistant; it does not establish that the vehicle executed it.
+| Option | Default | Description |
+| --- | --- | --- |
+| `prefix` | `my_xpeng` | The start of your Xpengtk entity IDs. |
+| `model`, `year`, `trim` | `G6`, `2026` | Choose the car's picture. Trim is shown as a label only. |
+| `color`, `interior` | `graphite_gray`, `dark_gray` | Exterior paint and interior colour of the pictures. |
+| `tire_pressure_unit` | `bar` | `bar`, `psi` or `kpa`. |
+| `show_controls` | `true` on G6 | Shows the seven shortcut buttons. |
+| `enable_access_controls` | `false` | Allows unlock and window actions. Needs Xpengtk access permission. |
+| `sensor_mapping_mode` | `auto` (`manual` when `entities` is set) | `auto` finds entities by `prefix` and ignores `entities`; `manual` uses `entities` first and finds the rest by `prefix`. |
+| `entities` | — | Manual sensor mapping (see below). |
 
-The card is presently optimized for the G6. **G6 functional mapping status: COMPLETE** for the implemented and simulated-tested card features, *subject to real vehicle approval*. The artwork inventory separately records **30/33 G6 views**, with three G6 views still missing; the **other 14 vehicle families** have unfinished image coverage or verification. The interface does not substitute another model's images to hide missing artwork.
+### Sensors the card uses
 
-[Artwork status](docs/ARTWORK_STATUS.md) · [Entity mapping](docs/XPENG_APP_FEATURE_MAP.md) · [Complete Xpengtk entity catalogue](docs/XPENGTK_ENTITY_CATALOG.md) · [Feature and safety notes](docs/HACS_STORE_GUIDE.md)
+All of them are optional. A sensor that's missing hides its row instead of showing a wrong value.
 
-## Quality assurance and release status
+| Group | Keys |
+| --- | --- |
+| Vehicle | `model`, `name`, `powertrain`, `connection` |
+| Battery | `soc`, `health`, `battery_voltage`, `battery_current`, `battery_12v` |
+| Range | `range`, `fuel`, `fuel_range`, `combined` |
+| Charging | `charging`, `plugged`, `target`, `power`, `energy`, `remaining`, `current`, `current_limit`, `voltage` |
+| Vehicle status | `odometer`, `speed`, `locked`, `door_fl`, `door_fr`, `door_rl`, `door_rr`, `trunk`, `hood`, `location`, `last_update` |
+| Climate | `climate`, `cabin`, `outside`, `fan_speed` |
+| Tires | `tire_fl`, `tire_fr`, `tire_rl`, `tire_rr` |
 
-The automated suite checks source/dist parity, frontend syntax, HACS metadata, vehicle-image inventory, action and permission safeguards, English-only content, responsive geometry at desktop and 320/390/420px, and **14 browser screenshots**. These use simulated vehicle states and are not evidence of real-car execution.
+## Status
 
-For `v1.0.6`, the owner approved the grouped electrical charging layout and requested a stable release. Chromium browser captures validate the frontend layout, but on-device Home Assistant, iPhone Safari, GPS, TPMS and supported vehicle commands still require real-world verification.
+**G6 functional mapping status: COMPLETE.** The artwork inventory has 30/33 G6 views. The other 14 vehicle families still have incomplete pictures, so the card is tuned for the G6. See [artwork status](docs/ARTWORK_STATUS.md), [entity mapping](docs/XPENG_APP_FEATURE_MAP.md) and the [Xpengtk entity catalogue](docs/XPENGTK_ENTITY_CATALOG.md).
 
-[Owner acceptance checklist](docs/G6_FINAL_STABILIZATION.md) · [Browser screenshot index](docs/screenshots/README.md)
+## Troubleshooting
 
-## Developer structure
-
-The executable card runtime is maintained in `src/core/`, visual CSS in `src/design/`, and the distributable bundle in `dist/` with a matching entrypoint in `src/`. `assets/` contains backgrounds, cabin photos and vehicle imagery; `tests/` and `scripts/` contain regressions and reproducible browser captures. Some artwork is illustrative or unverified; view provenance and licensing before reusing assets outside this project.
-
-This community project is **not affiliated with or endorsed by XPENG**.
+- **Rows are empty:** check that `prefix` matches your entity IDs (*Developer Tools → States*), or map the sensors manually in the editor.
+- **Unlock or windows are missing:** turn on `enable_access_controls`, and check that your Xpengtk account has access permission.
+- **An old version still shows after an update:** reload the browser, or close and reopen the phone app.
 
 ## License
 
 [MIT](LICENSE) © 2026 Matan Mesika
+
+This is an unofficial project, not affiliated with or endorsed by XPENG.
