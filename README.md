@@ -82,3 +82,7 @@ For `v1.0.6`, the owner approved the grouped electrical charging layout and requ
 The executable card runtime is maintained in `src/core/`, visual CSS in `src/design/`, and the distributable bundle in `dist/` with a matching entrypoint in `src/`. `assets/` contains backgrounds, cabin photos and vehicle imagery; `tests/` and `scripts/` contain regressions and reproducible browser captures. Some artwork is illustrative or unverified; view provenance and licensing before reusing assets outside this project.
 
 This community project is **not affiliated with or endorsed by XPENG**.
+
+## License
+
+[MIT](LICENSE) © 2026 Matan Mesika
