@@ -9,7 +9,7 @@ A Home Assistant dashboard card for **XPENG** cars, built on the Xpengtk integra
 
 ## Screenshots
 
-**Home, charging, climate and maintenance** are captured from the card with data from a real 2026 XPENG G6 in Home Assistant: battery, range, odometer, tire pressures, service date and cabin temperature. The car wasn't charging at the time, so the charging power, current, voltage and time left in the charging images are illustrative. Location, charge controls, diagnostics and more options use sample values, and the map is a placeholder outside Home Assistant.
+All screenshots are captured from the card with data from a real 2026 XPENG G6 in Home Assistant: battery, range, odometer, tire pressures, service date, cabin temperature and the entity list. The car wasn't charging at the time, so the charging power, current, voltage and time left are illustrative. The map is a drawn placeholder, so no real location is shown; in Home Assistant the card uses the native map.
 
 | Screen | Desktop | Phone |
 | --- | --- | --- |

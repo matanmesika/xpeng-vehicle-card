@@ -1,6 +1,6 @@
 # XPENG G6 — Screenshot gallery
 
-The fourteen PNGs show the **actual card running in Chromium**. Home, charging, climate and maintenance (desktop and phone) use entity states from a real 2026 G6 in Home Assistant; the charging power, current, voltage and time left are illustrative because the car wasn't charging. The other screenshots use sample values, and the Location screenshot uses a map stub.
+The fourteen PNGs show the **actual card running in Chromium**. All of them use entity states from a real 2026 G6 in Home Assistant; the charging power, current, voltage and time left are illustrative because the car wasn't charging. The Location screenshot uses a drawn placeholder map, so no real location is shown.
 
 | View | Desktop | iPhone-sized |
 | --- | --- | --- |
