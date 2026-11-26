@@ -18,7 +18,7 @@ test('English README and screenshot index reference the fourteen current screens
  const actual=fs.readdirSync(dir).filter(f=>/\.(?:png|jpe?g|webp)$/i.test(f)).sort();
  assert.deepEqual(actual,screenshotNames.slice().sort(),'The curated screenshot folder must contain exactly 14 files');
  for(const doc of ['README.md','docs/screenshots/README.md']){
-   const markdown=read(doc),base=path.join(root,path.dirname(doc));
+   const markdown=read(doc).split('https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/').join(''),base=path.join(root,path.dirname(doc));
    const markdownImages=[...markdown.matchAll(/!\[[^\]]*\]\(([^)]+)\)/g)].map(m=>m[1]);
    assert.ok(markdownImages.length>=10||doc==='docs/screenshots/README.md',doc+' should include the desktop/mobile gallery');
    for(const rel of markdownImages){

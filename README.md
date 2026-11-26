@@ -13,16 +13,16 @@ A Home Assistant dashboard card for **XPENG** cars, built on the Xpengtk integra
 
 | Screen | Desktop | Phone |
 | --- | --- | --- |
-| Home | ![Home, desktop](docs/screenshots/home-desktop.png) | ![Home, phone](docs/screenshots/home-mobile.png) |
-| Charging | ![Charging, desktop](docs/screenshots/charging-desktop.png) | ![Charging, phone](docs/screenshots/charging-mobile.png) |
-| Climate | ![Climate, desktop](docs/screenshots/climate-desktop.png) | ![Climate, phone](docs/screenshots/climate-mobile.png) |
-| Maintenance and tire pressure | ![Maintenance, desktop](docs/screenshots/maintenance-desktop.png) | ![Maintenance, phone](docs/screenshots/maintenance-mobile.png) |
-| Location, horn and flash | ![Location, desktop](docs/screenshots/map-desktop.png) | ![Location, phone](docs/screenshots/map-mobile.png) |
-| More options | ![More options, desktop](docs/screenshots/functions-desktop.png) | ![More options, phone](docs/screenshots/functions-mobile.png) |
+| Home | ![Home, desktop](https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/docs/screenshots/home-desktop.png) | ![Home, phone](https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/docs/screenshots/home-mobile.png) |
+| Charging | ![Charging, desktop](https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/docs/screenshots/charging-desktop.png) | ![Charging, phone](https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/docs/screenshots/charging-mobile.png) |
+| Climate | ![Climate, desktop](https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/docs/screenshots/climate-desktop.png) | ![Climate, phone](https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/docs/screenshots/climate-mobile.png) |
+| Maintenance and tire pressure | ![Maintenance, desktop](https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/docs/screenshots/maintenance-desktop.png) | ![Maintenance, phone](https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/docs/screenshots/maintenance-mobile.png) |
+| Location, horn and flash | ![Location, desktop](https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/docs/screenshots/map-desktop.png) | ![Location, phone](https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/docs/screenshots/map-mobile.png) |
+| More options | ![More options, desktop](https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/docs/screenshots/functions-desktop.png) | ![More options, phone](https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/docs/screenshots/functions-mobile.png) |
 
 | Charge limit and schedules | Entity diagnostics |
 | :---: | :---: |
-| ![Charge controls](docs/screenshots/charge-controls-mobile.png) | ![Diagnostics](docs/screenshots/diagnostics-mobile.png) |
+| ![Charge controls](https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/docs/screenshots/charge-controls-mobile.png) | ![Diagnostics](https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/docs/screenshots/diagnostics-mobile.png) |
 
 ## Features
 
@@ -73,7 +73,7 @@ In automatic mode the card finds the Xpengtk entities that start with your `pref
 
 | Visual editor |
 | :---: |
-| <img src="docs/editor.png" alt="XPENG card editor" width="380"> |
+| <img src="https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/docs/editor.png" alt="XPENG card editor" width="380"> |
 
 In the editor, set **Mapping mode** to *Manual · choose sensors* and pick any of the 41 sensors yourself. A field left blank keeps the automatic mapping. A value can also be an attribute, written as `entity_id|attribute_name`.
 
@@ -124,7 +124,7 @@ All of them are optional. A sensor that's missing hides its row instead of showi
 
 ## Status
 
-**G6 functional mapping status: COMPLETE.** The artwork inventory has 30/33 G6 views. The other 14 vehicle families still have incomplete pictures, so the card is tuned for the G6. See [artwork status](docs/ARTWORK_STATUS.md), [entity mapping](docs/XPENG_APP_FEATURE_MAP.md) and the [Xpengtk entity catalogue](docs/XPENGTK_ENTITY_CATALOG.md).
+**G6 functional mapping status: COMPLETE.** The artwork inventory has 30/33 G6 views. The other 14 vehicle families still have incomplete pictures, so the card is tuned for the G6. See [artwork status](https://github.com/matanmesika/xpeng-vehicle-card/blob/main/docs/ARTWORK_STATUS.md), [entity mapping](https://github.com/matanmesika/xpeng-vehicle-card/blob/main/docs/XPENG_APP_FEATURE_MAP.md) and the [Xpengtk entity catalogue](https://github.com/matanmesika/xpeng-vehicle-card/blob/main/docs/XPENGTK_ENTITY_CATALOG.md).
 
 ## Troubleshooting
 
@@ -134,6 +134,6 @@ All of them are optional. A sensor that's missing hides its row instead of showi
 
 ## License
 
-[MIT](LICENSE) © 2026 Matan Mesika
+[MIT](https://github.com/matanmesika/xpeng-vehicle-card/blob/main/LICENSE) © 2026 Matan Mesika
 
 This is an unofficial project, not affiliated with or endorsed by XPENG.

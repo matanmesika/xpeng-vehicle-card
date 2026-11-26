@@ -317,7 +317,7 @@ test('P7i keeps exact-year colour selection for the 2024-only paints',()=>{
 });
 
 test('root README links to the same curated fourteen screenshot gallery as actual Playwright',()=>{
- const readme=fs.readFileSync(path.join(ROOT,'README.md'),'utf8');
+ const readme=fs.readFileSync(path.join(ROOT,'README.md'),'utf8').split('https://raw.githubusercontent.com/matanmesika/xpeng-vehicle-card/main/').join('');
  const gallery=fs.readFileSync(path.join(ROOT,'docs/screenshots/README.md'),'utf8');
  const names=[
   'home-desktop','home-mobile','charging-desktop','charging-mobile',

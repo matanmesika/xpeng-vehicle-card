@@ -1,5 +1,9 @@
 # XPENG Dashboard changelog
 
+## v1.0.10 — Stable (2026-11-26)
+
+- Documentation only: new README with setup, options and entities tables, the card editor, and screenshots from a real 2026 G6. README images and links use full URLs so they show on the Home Assistant / HACS store page. No card code changes.
+
 ## v1.0.9 — Stable (2026-11-12)
 
 - Location map: fills the modal on wide screens (no more 4:3 crop), centers the car badge rather than the pin tip, and follows the vehicle while open.
