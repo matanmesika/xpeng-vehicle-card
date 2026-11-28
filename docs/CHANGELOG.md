@@ -1,5 +1,9 @@
 # XPENG Dashboard changelog
 
+## v1.0.11 — Stable (2026-11-28)
+
+- Faster on phones and the Raspberry Pi: the card no longer rebuilds itself every time any entity in Home Assistant changes, only when one of its own entities (or the language) changes, plus once every 30 seconds. Icons no longer flash and taps are not lost while other devices update.
+
 ## v1.0.10 — Stable (2026-11-26)
 
 - Documentation only: new README with setup, options and entities tables, the card editor, and screenshots from a real 2026 G6. README images and links use full URLs so they show on the Home Assistant / HACS store page. No card code changes.
