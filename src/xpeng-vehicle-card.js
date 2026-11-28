@@ -7021,7 +7021,25 @@ class XpengVehicleCard extends HTMLElement{
     }
     return;
   }
+  // Home Assistant sends a new hass object on every state change in the house. Rebuilding
+  // this large card each time is costly on phones and the Pi, so only redraw when one of the
+  // vehicle's own entities or the language changed, or at least every 30 s for times shown.
+  if(this._xpengRegistryLoaded&&this._xpengByKey&&!this.xpRelevantChanged(hass))return;
   this.render();
+ }
+ xpRelevantChanged(hass){
+  const seen=this._xpSeen||{};
+  const next={__lang:hass?.locale?.language||hass?.language,__now:seen.__now||0};
+  let changed=next.__lang!==seen.__lang||Date.now()-next.__now>30000||!seen.__init;
+  for(const id of Object.values(this._xpengByKey||{})){
+   if(typeof id!=='string'||!id)continue;
+   next[id]=hass?.states?.[id];
+   if(next[id]!==seen[id])changed=true;
+  }
+  next.__init=true;
+  if(changed)next.__now=Date.now();
+  this._xpSeen=next;
+  return changed;
  }
  get hass(){return this._hass;}
  getCardSize(){return 8;}
